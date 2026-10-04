@@ -1,0 +1,14 @@
+/node_modules/
+/dist/
+/data/
+/runtime/
+/analysis/
+/verification-output/
+/playwright-output/
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+/*.exe
+/_*-fixture.*

@@ -1,0 +1,68 @@
+/* Keep the same operating hierarchy as the console narrows. */
+.app-shell .main-shell,.app-shell main,.app-shell .studio-main,.app-shell .studio-aside,.app-shell .settings-column{min-width:0}
+.app-shell .look-identity{min-width:0;max-width:100%}
+.app-shell .look-identity>div{min-width:0}
+.app-shell .look-identity strong{white-space:nowrap}
+.app-shell .look-identity>small{font-size:9px;color:var(--muted);white-space:nowrap}
+.app-shell .look-toggles button{cursor:pointer}
+.app-shell .settings-form .director-look{margin-bottom:0;padding:14px;gap:12px}
+.app-shell .settings-form .look-identity{flex:1 1 200px}
+.app-shell .settings-form .look-heading,.app-shell .settings-form .look-toggles{flex-basis:100%}
+.app-shell .settings-form .look-toggles{justify-content:flex-start}
+@media(max-width:1280px){
+  .app-shell .studio-grid{grid-template-columns:minmax(0,1fr)}
+  .app-shell .studio-aside{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:18px}
+  .app-shell .match-bar{gap:18px}.app-shell .match-versus{gap:16px}
+  .app-shell .look-identity>small{display:none}
+  .app-shell .heading-actions{flex-wrap:wrap;justify-content:flex-end}
+}
+@media(max-width:1024px){
+  .app-shell .sidebar{width:72px;padding:24px 10px}
+  .app-shell .main-shell{margin-left:72px}
+  .app-shell .sidebar-brand{justify-content:center;padding:0;margin-bottom:30px}
+  .app-shell .sidebar .brand>div:last-child,.app-shell .brand-edition,.app-shell .sidebar .workspace-label,.app-shell .sidebar-session,.app-shell .sidebar .legal-note{display:none}
+  .app-shell .sidebar .nav-item{justify-content:center;padding:0;gap:0;min-height:46px}
+  .app-shell .sidebar .nav-item>span,.app-shell .sidebar-bottom small,.app-shell .sidebar .local-status strong,.app-shell .sidebar .local-status>span:last-child{display:none}
+  .app-shell .sidebar .local-status{justify-content:center}
+  .app-shell .sidebar .sidebar-divider{margin:20px 5px}
+  .app-shell main{padding:24px}.app-shell .topbar{padding-inline:24px}
+  .app-shell .page-heading{align-items:flex-start;gap:18px}
+  .app-shell .look-identity{flex:1 1 200px}
+  .app-shell .look-toggles{justify-content:flex-start}
+  .app-shell .connection-card-grid.client-connection-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:850px){
+  .app-shell .studio-aside{grid-template-columns:1fr}
+  .app-shell .page-heading{flex-direction:column}
+  .app-shell .heading-actions{justify-content:flex-start}
+  .app-shell .match-bar{flex-wrap:wrap}.app-shell .match-identity{width:100%}
+  .app-shell .match-versus{margin-left:0}.app-shell .match-time{margin-left:auto}
+  .app-shell .roster-columns,.app-shell .draft-edit-grid,.app-shell .settings-columns,.app-shell .help-grid{grid-template-columns:1fr}
+  .app-shell .phase-bar{flex-wrap:wrap}.app-shell .phases{flex-wrap:wrap}
+  .app-shell .pb-content{gap:18px}
+}
+@media(max-width:600px){
+  .app-shell .sidebar{width:56px;padding:20px 6px}.app-shell .main-shell{margin-left:56px}
+  .app-shell .sidebar-brand .brand-icon{width:30px;height:30px}.app-shell .sidebar-brand .brand-icon svg{width:22px;height:22px}
+  .app-shell main{padding:20px 12px}.app-shell .topbar{padding-inline:12px;gap:10px}
+  .app-shell .breadcrumbs{gap:7px;font-size:10px}.app-shell .breadcrumbs>span:nth-child(2),.app-shell .topbar-divider,.app-shell .topbar-right>svg,.app-shell .topbar-right>span:not(.mode-pill){display:none}
+  .app-shell .topbar-right{gap:8px}.app-shell .avatar{display:none}
+  .app-shell .page-heading h1{font-size:25px}.app-shell .page-heading p{font-size:11px;line-height:1.8}
+  .app-shell .heading-actions{gap:7px;max-width:100%}.app-shell .heading-actions .button{padding:9px 10px;font-size:10px}
+  .app-shell .match-bar{padding:16px;gap:15px}.app-shell .match-identity{gap:10px;min-width:0}.app-shell .match-icon{width:34px;height:34px;flex-shrink:0}.app-shell .match-identity>div:last-child{min-width:0}.app-shell .match-identity strong{font-size:13px;overflow-wrap:anywhere}.app-shell .match-identity>div:last-child>span{font-size:10px;line-height:1.8}
+  .app-shell .match-versus{gap:13px}.app-shell .match-versus>span{font-size:23px}.app-shell .match-versus>b{font-size:20px}.app-shell .match-time{font-size:21px;padding-left:12px}.app-shell .match-time small{display:none}
+  .app-shell .phase-bar{align-items:stretch;gap:10px}.app-shell .phases{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4px}.app-shell .phases button{justify-content:flex-start;padding:8px;font-size:10px;gap:7px}.app-shell .phases button>svg{display:none}.app-shell .demo-controls{margin-left:auto}
+  .app-shell .monitor-row{grid-template-columns:1fr;gap:14px}.app-shell .monitor-label{padding:10px 12px}.app-shell .monitor-label>span:first-child{font-size:10px}.app-shell .monitor-footer{padding:9px 12px}
+  .app-shell .take-bar{flex-direction:column;align-items:stretch;padding:14px;gap:12px}.app-shell .take-route{flex-wrap:wrap;gap:8px;font-size:10px}.app-shell .take-button{justify-content:center;min-width:0;width:100%}
+  .app-shell .director-look{padding:14px;gap:12px}.app-shell .look-heading{width:100%}.app-shell .look-identity{flex-basis:100%;padding:9px}.app-shell .look-identity span{font-size:9px;overflow-wrap:anywhere}.app-shell .look-toggles{width:100%;gap:6px;flex-basis:100%}.app-shell .look-toggles button{padding:8px;font-size:9px;gap:5px}.app-shell .look-toggles button>span{margin-left:0}
+  .app-shell .panel-head{padding:16px 14px;gap:10px;flex-wrap:wrap}.app-shell .panel-head h2{font-size:13px}.app-shell .panel-head>.muted{font-size:9px}
+  .app-shell .scene-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 12px 12px;gap:10px}.app-shell .scene-meta{padding:10px 4px 5px;gap:4px}.app-shell .scene-meta strong{font-size:11px}.app-shell .scene-meta small{font-size:8px}
+  .app-shell .roster-columns{padding:0 12px 14px;gap:16px}.app-shell .roster-table-head,.app-shell .roster-row{grid-template-columns:minmax(0,1fr) 60px 32px 44px;gap:6px;padding-inline:8px}.app-shell .roster-row strong{font-size:11px}.app-shell .roster-row>span{font-size:10px}.app-shell .roster-row .champion-image{width:25px;height:25px}.app-shell .roster-row>span:first-child{gap:7px}.app-shell .roster-team-head{gap:8px}.app-shell .roster-team-head>span:nth-child(3){font-size:9px}
+  .app-shell .connection-card-grid,.app-shell .connection-card-grid.client-connection-card-grid,.app-shell .form-grid,.app-shell .team-card-grid{grid-template-columns:1fr}
+  .app-shell .settings-form,.app-shell .management-editor .form-grid{padding:16px}.app-shell .field{min-width:0}.app-shell .field input,.app-shell .field select,.app-shell .field textarea{min-width:0;max-width:100%}
+  .app-shell .economy-roi-row{grid-template-columns:repeat(2,minmax(0,1fr))}.app-shell .economy-roi-row>span{grid-column:1/-1}.app-shell .economy-calibration-header,.app-shell .export-bar,.app-shell .inline-buttons{flex-wrap:wrap}
+  .app-shell .pb-content{flex-direction:column;padding:16px}.app-shell .pb-profile{width:100%}.app-shell .pb-profile>.pb-image{width:100px;height:100px}.app-shell .pb-stats{gap:8px}.app-shell .pb-stats strong{font-size:20px}.app-shell .pb-items{gap:6px}
+  .app-shell .help-card{padding:22px}.app-shell .help-limits{grid-column:auto;padding:22px}.app-shell .workspace-footer{flex-wrap:wrap;line-height:1.8}
+  .remote-page{padding:18px 14px}.remote-page .monitor-row{grid-template-columns:1fr}.remote-page .remote-scene-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){.app-shell *{scroll-behavior:auto;transition:none!important}.app-shell .spinning{animation:none}}

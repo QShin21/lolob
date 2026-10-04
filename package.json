@@ -1,0 +1,43 @@
+{
+  "name": "riftcast-director",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "英雄联盟本地赛事导播工作台",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "concurrently -k -n SERVICE,UI \"npm:dev:server\" \"npm:dev:ui\"",
+    "dev:server": "tsx watch server/index.ts",
+    "dev:ui": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "start": "tsx server/index.ts",
+    "predesktop": "node scripts/ensure-electron.cjs && node scripts/ensure-obs.cjs",
+    "setup:obs": "node scripts/ensure-obs.cjs",
+    "desktop": "electron .",
+    "test": "tsx --test server/*.test.ts",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "lucide-react": "^0.468.0",
+    "multer": "^2.0.2",
+    "obs-websocket-js": "^5.0.6",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^5.0.3",
+    "concurrently": "^9.2.1",
+    "electron": "^44.5.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5"
+  }
+}

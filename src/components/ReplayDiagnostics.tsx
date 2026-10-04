@@ -1,0 +1,11 @@
+import { useEffect, useState } from 'react';
+import { Check, RefreshCw, Search } from 'lucide-react';
+import { api } from '../lib';
+
+interface Diagnostic {status:string;detail:string;configPath?:string;configEnabled?:boolean;restartRequired:boolean;lastProbeAt:string;endpoints:{path:string;available:boolean;statusCode?:number;errorKind?:string}[];playback?:{paused:boolean;time:number;speed:number;length?:number}}
+export function ReplayDiagnostics({status}:{status:string}) {
+  const [result,setResult]=useState<Diagnostic>();const [busy,setBusy]=useState(false);const [error,setError]=useState('');
+  async function probe(){setBusy(true);setError('');try{setResult(await api<Diagnostic>('/api/replay/diagnostics'));}catch(e){setError(e instanceof Error?e.message:'诊断失败');}finally{setBusy(false);}}
+  useEffect(()=>{void probe();},[status]);
+  return <section className="panel replay-diagnostics"><div className="panel-head"><h2><Search size={17}/>回放接口诊断</h2><button className="button small" disabled={busy} onClick={()=>void probe()}><RefreshCw size={14}/>{busy?'检测中…':'重新检测'}</button></div><div className="diagnostic-content">{result?<><div className={`diagnostic-outcome ${result.status==='ready'?'ready':''}`}><span className={`status-dot ${result.status==='ready'?'green':'amber'}`}/><strong>{result.status==='ready'?'回放 API 已就绪':'需要处理连接条件'}</strong><p>{result.detail}</p></div><div className="diagnostic-config"><span>Replay 开关</span><b>{result.configEnabled===true?<><Check size={14}/>已启用</>:result.configEnabled===false?'尚未启用':'未找到配置'}</b>{result.configPath&&<code>{result.configPath}</code>}</div><div className="diagnostic-endpoints">{result.endpoints.map(e=><div key={e.path}><code>{e.path}</code><span className={e.available?'green-text':'muted'}>{e.available?'可读取':e.statusCode?`HTTP ${e.statusCode}`:e.errorKind==='refused'?'端口未启动':e.errorKind||'不可用'}</span></div>)}</div>{result.playback&&<p className="muted">当前回放 {Math.floor(result.playback.time/60)}:{String(Math.floor(result.playback.time%60)).padStart(2,'0')} · {result.playback.speed}× · {result.playback.paused?'已暂停':'播放中'}</p>}<small className="muted">检测时间 {new Date(result.lastProbeAt).toLocaleTimeString('zh-CN')}</small></>:<p className="muted">检查本机 2999 端口、Replay 路径与游戏配置。</p>}{error&&<p className="request-error">{error}</p>}</div></section>;
+}

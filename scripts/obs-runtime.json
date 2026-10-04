@@ -1,0 +1,16 @@
+{
+  "version": "32.2.2",
+  "platform": "win32",
+  "architecture": "x64",
+  "assetName": "OBS-Studio-32.2.2-Windows-x64.zip",
+  "url": "https://github.com/obsproject/obs-studio/releases/download/32.2.2/OBS-Studio-32.2.2-Windows-x64.zip",
+  "size": 187851583,
+  "sha256": "4d6e40e3ab155f56b30de517380566a206d74b63cdf5ad49aa596924768f97e1",
+  "releaseUrl": "https://github.com/obsproject/obs-studio/releases/tag/32.2.2",
+  "releaseApiUrl": "https://api.github.com/repos/obsproject/obs-studio/releases/tags/32.2.2",
+  "sourceUrl": "https://github.com/obsproject/obs-studio/releases/download/32.2.2/OBS-Studio-32.2.2-Sources.tar.gz",
+  "sourceSha256": "ec81fb66b03e75ddb3076b576f62679c39262e0e9960cef3e17a40dc5d68e6b4",
+  "licenseUrl": "https://raw.githubusercontent.com/obsproject/obs-studio/32.2.2/COPYING",
+  "verifiedAt": "2026-10-04",
+  "checksumSource": "GitHub release Checksums and official GitHub asset digest"
+}
