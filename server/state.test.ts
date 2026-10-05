@@ -98,14 +98,14 @@ test('legacy overlay API names resolve to ARENA and unknown looks are rejected',
 
 test('legacy real states with absent history fields never inherit demonstration samples',()=>{
   const original=applyAction(createSeed(),{type:'set-mode',mode:'live'});
-  const old=structuredClone(original);delete old.draftHistory;delete old.incomeSnapshots;
+  const old=structuredClone(original);delete old.draftHistory;
   const restored=normalizeSavedState(old);
-  assert.deepEqual(restored.draftHistory,[]);assert.deepEqual(restored.incomeSnapshots,[]);
+  assert.deepEqual(restored.draftHistory,[]);assert.equal(Object.hasOwn(restored,'incomeSnapshots'),false);
   assert.deepEqual(restored.events,[]);assert.deepEqual(restored.economy,[]);
-  assert.equal(old.draftHistory,undefined);assert.equal(old.incomeSnapshots,undefined);
+  assert.equal(old.draftHistory,undefined);assert.equal(Object.hasOwn(old,'incomeSnapshots'),false);
   const historical=createSeed();historical.mode='live';
   const retained=normalizeSavedState(historical);
-  assert.deepEqual(retained.draftHistory,historical.draftHistory);assert.deepEqual(retained.incomeSnapshots,historical.incomeSnapshots);
+  assert.deepEqual(retained.draftHistory,historical.draftHistory);assert.equal(Object.hasOwn(retained,'incomeSnapshots'),false);
 });
 
 test('real recordings require observed statistics and preserve their actual time and source',()=>{

@@ -43,7 +43,7 @@ test('automatic HUD hides only broadcast interface panels and preserves the nati
 });
 
 test('live scenes enable game-provided bottom corners and restore their original hidden settings', async () => {
-  for (const scene of ['live', 'income', 'economy', 'ranking'] as const) {
+  for (const scene of ['live', 'gold-ranking', 'economy', 'ranking'] as const) {
     const saved = originalRender();
     saved.interfaceAll = false;
     saved.interfaceTarget = false;

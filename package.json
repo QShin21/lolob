@@ -13,6 +13,9 @@
     "start": "tsx server/index.ts",
     "predesktop": "node scripts/ensure-electron.cjs && node scripts/ensure-obs.cjs",
     "setup:obs": "node scripts/ensure-obs.cjs",
+    "prepare:champion-art": "node scripts/prepare-champion-art.mjs",
+    "verify:champion-art": "node scripts/prepare-champion-art.mjs --verify",
+    "verify:broadcast-controls": "node scripts/verify-broadcast-controls.mjs",
     "desktop": "electron .",
     "test": "tsx --test server/*.test.ts",
     "check": "tsc --noEmit"
@@ -36,6 +39,7 @@
     "@vitejs/plugin-react": "^5.0.3",
     "concurrently": "^9.2.1",
     "electron": "^44.5.1",
+    "sharp": "^0.35.5",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vite": "^7.1.5"

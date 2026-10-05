@@ -1,7 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { BroadcastState, GameResult, Player, Recording, Side } from '../shared/types';
 import { currentGameResult, gameResultKey, rosterFingerprint } from '../shared/game-results';
-import { currentIncomeSnapshot } from './player-income';
 
 export function explicitWinner(value: unknown): Side | undefined {
   if(typeof value==='string')value=value.toUpperCase();
@@ -46,9 +45,8 @@ export function finalizeGame(state:BroadcastState,options:{source:GameResult['so
   if(options.sourceGameId&&state.gameResults?.some(result=>result.seriesId===state.match.seriesId&&result.sourceGameId===options.sourceGameId))return undefined;
   if(state.mode==='live'&&(!state.players.some(p=>p.statsSource==='api'||p.statsSource==='ocr'||p.id.startsWith('live-'))||state.events.some(e=>e.id.startsWith('demo-'))))return undefined;
   const now=options.now??Date.now(),id=`game-${randomUUID()}`,endedAt=new Date(now).toISOString();
-  const income=currentIncomeSnapshot(state);
   const observed=state.players.map(p=>p.statsSampledAt).filter((value):value is string=>!!value&&Number.isFinite(Date.parse(value))).sort();
-  const snapshot:Recording={id,title:`${state.match.title} · 第 ${state.match.game} 局 · 赛后`,createdAt:endedAt,mode:state.mode,duration:state.gameTime,sourceGameTime:state.gameTime,...(observed[0]?{observedAt:observed[0]}:state.connections.live.updatedAt?{observedAt:state.connections.live.updatedAt}:{}),players:structuredClone(state.players),stats:structuredClone(state.stats),events:structuredClone(state.events),economy:structuredClone(state.economy),...(state.economyFeed?{economyFeed:structuredClone(state.economyFeed)}:{}),...(income?{incomeSnapshots:[structuredClone(income)]}:{})};
+  const snapshot:Recording={id,title:`${state.match.title} · 第 ${state.match.game} 局 · 赛后`,createdAt:endedAt,mode:state.mode,duration:state.gameTime,sourceGameTime:state.gameTime,...(observed[0]?{observedAt:observed[0]}:state.connections.live.updatedAt?{observedAt:state.connections.live.updatedAt}:{}),players:structuredClone(state.players),stats:structuredClone(state.stats),events:structuredClone(state.events),economy:structuredClone(state.economy),...(state.economyFeed?{economyFeed:structuredClone(state.economyFeed)}:{})};
   const result:GameResult={id,key,seriesId:state.match.seriesId||state.match.title,...(state.match.seriesId?.startsWith(`${state.mode}:schedule:`)?{matchId:state.match.seriesId.slice(`${state.mode}:schedule:`.length)}:{}),game:state.match.game,blueTeamId:state.match.blueTeamId,redTeamId:state.match.redTeamId,winner:null,endedAt,source:options.source,...(options.sourceGameId?{sourceGameId:options.sourceGameId}:state.activeSourceGameId?{sourceGameId:state.activeSourceGameId}:{}),snapshot,match:structuredClone(state.match),teams:structuredClone(state.teams),draft:structuredClone(state.draft),seriesComplete:false,terminalSampleAccepted:options.terminal===true};
   if(options.source==='manual')result.terminalSampleAccepted=true;
   result.selectedPlayerId=state.selectedPlayerId;

@@ -1,11 +1,12 @@
+import { bundledChampions } from '../shared/champion-art';
 import { randomUUID } from 'node:crypto';
 import type { BroadcastAction, BroadcastState, Champion, Recording, Team, Match, Player, Side } from '../shared/types';
 import { captureManualDraft, getFearlessBans, initializeDraftHistory, startDraftSeries } from './draft-history';
-import { createDemoIncomeSnapshot, currentIncomeSnapshot, incomeCategories, incomeCategoryLabels, incomeGameKey, updateIncomeSnapshots } from './player-income';
+import { playerFeedControl, playerFeedPairs, playerFeedInterval } from '../shared/player-feeds';
 import { currentGameResult, frozenGameState, reportGameResult, rosterFingerprint } from '../shared/game-results';
 import { finalizeGame } from './game-results';
 
-export const scenes = ['standby', 'draft', 'lineup', 'live', 'economy', 'ranking', 'schedule', 'postgame', 'interview', 'teamfight', 'income'] as const;
+export const scenes = ['standby', 'draft', 'lineup', 'live', 'economy', 'ranking', 'schedule', 'postgame', 'interview', 'teamfight', 'gold-ranking'] as const;
 export const phases = ['pregame', 'draft', 'live', 'postgame'] as const;
 const roles = ['上单', '打野', '中单', '下路', '辅助'];
 export const fallbackChampionData = [
@@ -14,9 +15,7 @@ export const fallbackChampionData = [
   ['Yone',777,'封魔剑魂','刺客'],['Renekton',58,'荒漠屠夫','战士'],['Leblanc',7,'诡术妖姬','法师'],['Ashe',22,'寒冰射手','射手'],['Rell',526,'镕铁少女','辅助'],
   ['Sejuani',113,'北地之怒','坦克'],['Kalista',429,'复仇之矛','射手'],['Orianna',61,'发条魔灵','法师'],['Rumble',68,'机械公敌','战士'],['Poppy',78,'圣锤之毅','坦克'],
 ] as const;
-export function fallbackChampions(version = '16.19.1'): Champion[] {
-  return fallbackChampionData.map(([id,key,name,tag]) => ({ id,key,name,title:tag,tags:[tag],image:`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${id}.png`,splash:`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${id}_0.jpg` }));
-}
+export function fallbackChampions(_version = '16.19.1'): Champion[] { return bundledChampions(); }
 export function createSeed(): BroadcastState {
   const names = [['山岚','追风','星河','流光','青禾'],['赤霄','临渊','长夜','烬羽','望舒']];
   const teams: Team[] = [
@@ -47,7 +46,6 @@ export function createSeed(): BroadcastState {
     draftHistory:[{seriesId:'demo-seed-series',game:1,blueTeamId:'azure',redTeamId:'ember',bluePicks:fallbackChampionData.slice(10,15).map(c=>c[0]),redPicks:fallbackChampionData.slice(15,20).map(c=>c[0]),recordedAt:'2026-10-03T11:00:00.000Z',source:'demo'}],
   };
   captureManualDraft(seed);
-  seed.incomeSnapshots=[createDemoIncomeSnapshot(seed)];
   return seed;
 }
 export function normalizeSavedState(saved: BroadcastState): BroadcastState {
@@ -55,9 +53,16 @@ export function normalizeSavedState(saved: BroadcastState): BroadcastState {
   // Persistent live states must never acquire sample matches from missing legacy fields.
   if(saved.mode==='live'){
     clearLiveData(defaults);defaults.phase='pregame';defaults.paused=false;
-    defaults.draftHistory=[];defaults.incomeSnapshots=[];
+    defaults.draftHistory=[];
   }
-  return {...defaults,...saved,overlay:{...defaults.overlay,...saved.overlay,preset:'arena',playerFeeds:{blue:{...defaults.overlay.playerFeeds!.blue,...saved.overlay.playerFeeds?.blue},red:{...defaults.overlay.playerFeeds!.red,...saved.overlay.playerFeeds?.red}}},settings:{...defaults.settings,...saved.settings}};
+  const restored:BroadcastState={...defaults,...saved,overlay:{...defaults.overlay,...saved.overlay,preset:'arena',playerFeeds:{blue:{...defaults.overlay.playerFeeds!.blue,...saved.overlay.playerFeeds?.blue},red:{...defaults.overlay.playerFeeds!.red,...saved.overlay.playerFeeds?.red}}},settings:{...defaults.settings,...saved.settings}};
+  // Persisted scene IDs from the removed ten-minute card now open the live ranking.
+  for(const key of ['previewScene','programScene'] as const)if((restored[key] as string)==='income')restored[key]='gold-ranking';
+  restored.overlay.playerFeedPairs=playerFeedPairs(saved.overlay);
+  restored.overlay.playerFeedControl=playerFeedControl(saved.overlay);
+  delete restored.overlay.playerFeedControl.nextSwitchAt;
+  delete (restored as unknown as Record<string,unknown>).incomeSnapshots;
+  return restored;
 }
 export class ValidationError extends Error {}
 export const record = (value: unknown): Record<string,unknown> => { if(!value || typeof value!=='object'||Array.isArray(value)) throw new ValidationError('请求内容必须是对象'); return value as Record<string,unknown>; };
@@ -69,6 +74,18 @@ const imageUrl = (value:unknown):string => {const url=str(value,2048);if(!/^\/up
 function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
   if(p.patchVersion!==undefined)s.overlay.patchVersion=str(p.patchVersion,20);
   if(p.bottomTitle!==undefined)s.overlay.bottomTitle=str(p.bottomTitle,150);
+  if(p.playerFeedPairs!==undefined){
+    if(!Array.isArray(p.playerFeedPairs)||p.playerFeedPairs.length!==5)throw new ValidationError('需要上单、打野、中单、下路、辅助五组选手画面');
+    s.overlay.playerFeedPairs=p.playerFeedPairs.map(value=>{
+      const pair=record(value);
+      return Object.fromEntries((['blue','red'] as const).map(side=>{
+        const feed=record(pair[side]);
+        const mode=oneOf(feed.mode,['image','camera','off'] as const),device=str(feed.cameraDeviceId,2048);
+        if(mode==='camera'&&!device.trim())throw new ValidationError('请选择摄像头源');
+        return [side,{mode,imageUrl:feed.imageUrl===''?'':imageUrl(feed.imageUrl),cameraDeviceId:device,label:str(feed.label,80)}];
+      })) as import('../shared/types').PlayerFeedPair;
+    });
+  }
   if(p.playerFeeds!==undefined){
     const feeds=record(p.playerFeeds),defaults=createSeed().overlay.playerFeeds!;
     const next={blue:{...defaults.blue,...s.overlay.playerFeeds?.blue},red:{...defaults.red,...s.overlay.playerFeeds?.red}};
@@ -81,6 +98,7 @@ function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
       if(next[side].mode==='camera'&&!next[side].cameraDeviceId.trim())throw new ValidationError('请选择摄像头源');
     }
     s.overlay.playerFeeds=next;
+    if(s.overlay.playerFeedPairs)s.overlay.playerFeedPairs[1]=structuredClone(next);
   }
 }
 const stringList = (v:unknown):string[]=>{if(!Array.isArray(v)||v.length>5)throw new ValidationError('BP 每侧最多五个英雄');return v.map(i=>str(i,64));};
@@ -96,7 +114,7 @@ export function resetRuntimeState(s: BroadcastState):void {
   delete s.gameClock;
   delete s.settings.obsPassword;
   delete s.economyFeed;
-  if(s.mode==='live'){if(currentGameResult(s)){const frozen=frozenGameState(s);Object.assign(s,{players:frozen.players,stats:frozen.stats,events:frozen.events,economy:frozen.economy,draft:frozen.draft,gameTime:frozen.gameTime,incomeSnapshots:frozen.incomeSnapshots,phase:'postgame',paused:true});}else{clearLiveData(s);s.phase='pregame';s.paused=false;}}
+  if(s.mode==='live'){if(currentGameResult(s)){const frozen=frozenGameState(s);Object.assign(s,{players:frozen.players,stats:frozen.stats,events:frozen.events,economy:frozen.economy,draft:frozen.draft,gameTime:frozen.gameTime,phase:'postgame',paused:true});}else{clearLiveData(s);s.phase='pregame';s.paused=false;}}
   s.connections={lcu:{status:'disconnected',detail:'本地服务已启动 · 等待连接'},live:{status:'disconnected',detail:'本地服务已启动 · 等待连接'},replay:{status:'disconnected',detail:'本地服务已启动 · 等待连接'},obs:{status:'disconnected',detail:'本地服务已启动 · 等待连接'}};
 }
 function prepareMatch(s: BroadcastState):void {
@@ -112,10 +130,7 @@ function prepareMatch(s: BroadcastState):void {
 export function snapshotRecording(state:BroadcastState,options:{id?:string;title?:string;now?:number}={}):Recording {
   const now=options.now??Date.now();
   if(state.mode==='live'&&state.gameClock?.awaitingLiveSample)throw new ValidationError('回放位置已变化，等待当前画面的局内统计重新采样后保存记录');
-  const income=currentIncomeSnapshot(state);
-  const savedIncome=income?.mode===state.mode?income:undefined;
-  if(state.mode==='live'&&savedIncome?.players.some(player=>incomeCategories.some(category=>player.values[category].source==='demo')))throw new ValidationError('当前十分钟卡片含有演示经济来源，无法保存为真实记录');
-  const snapshot:Recording={id:options.id??randomUUID(),title:options.title??`${state.match.title} · 第 ${state.match.game} 局`,createdAt:new Date(now).toISOString(),duration:state.gameTime,mode:state.mode,players:structuredClone(state.players),stats:structuredClone(state.stats),events:structuredClone(state.events),economy:structuredClone(state.economy),...(state.economyFeed?{economyFeed:structuredClone(state.economyFeed)}:{}),...(savedIncome?{incomeSnapshots:[structuredClone(savedIncome)]}:{})};
+  const snapshot:Recording={id:options.id??randomUUID(),title:options.title??`${state.match.title} · 第 ${state.match.game} 局`,createdAt:new Date(now).toISOString(),duration:state.gameTime,mode:state.mode,players:structuredClone(state.players),stats:structuredClone(state.stats),events:structuredClone(state.events),economy:structuredClone(state.economy),...(state.economyFeed?{economyFeed:structuredClone(state.economyFeed)}:{})};
   if(state.mode==='demo')return snapshot;
   const maximumAge=Math.max(10000,state.settings.pollInterval*3);
   const fresh=(value:string|undefined)=>{const time=Date.parse(value??'');return Number.isFinite(time)&&now-time>=-1000&&now-time<=maximumAge;};
@@ -126,10 +141,7 @@ export function snapshotRecording(state:BroadcastState,options:{id?:string;title
       snapshot.economy=snapshot.economy.filter(point=>Number.isFinite(point.time)&&point.time<=state.gameTime+1&&['manual','ocr'].includes(point.source??'none'));
       return snapshot;
     }
-    if(!savedIncome||savedIncome.players.length===0||!Number.isFinite(Date.parse(savedIncome.createdAt)))throw new ValidationError('尚未取得真实对局样本，请连接游戏后保存记录');
-    snapshot.observedAt=savedIncome.createdAt;snapshot.sourceGameTime=savedIncome.capturedTime;
-    snapshot.duration=savedIncome.capturedTime;snapshot.events=[];snapshot.economy=[];delete snapshot.economyFeed;
-    return snapshot;
+    throw new ValidationError('尚未取得真实对局样本，请连接游戏后保存记录');
   }
   if(!Number.isFinite(state.gameTime)||state.gameTime<0)throw new ValidationError('当前游戏时间无效，等待游戏重新采样后保存');
   if(state.events.some(event=>event.id.startsWith('demo-')))throw new ValidationError('当前真实数据含有演示事件，请重新连接游戏后保存');
@@ -166,7 +178,7 @@ export function applyAction(current:BroadcastState,input:unknown):BroadcastState
   initializeDraftHistory(s);
   if(type==='set-overlay')applyBottomOverlay(s,record(a.patch));
   switch(type as BroadcastAction['type']) {
-    case 'set-mode': {const next=oneOf(a.mode,['demo','live']);if(next!==s.mode){s.mode=next;delete s.finishedGameId;delete s.reportGameId;delete s.awaitingNextGame;delete s.activeSourceGameId;startDraftSeries(s);if(next==='live'){clearLiveData(s);s.paused=false;s.phase='pregame';}else {const d=createSeed();Object.assign(s,{players:d.players,stats:d.stats,events:d.events,economy:d.economy,draft:d.draft,gameTime:d.gameTime,phase:d.phase,paused:false});if(s.match.game>1)s.draftHistory!.push({...d.draftHistory![0],seriesId:s.match.seriesId!,game:s.match.game-1,blueTeamId:s.match.blueTeamId,redTeamId:s.match.redTeamId});captureManualDraft(s);s.incomeSnapshots=[...(s.incomeSnapshots??[]).filter(entry=>entry.gameKey!==incomeGameKey(s)),createDemoIncomeSnapshot(s)];}}break;}
+    case 'set-mode': {const next=oneOf(a.mode,['demo','live']);if(next!==s.mode){s.mode=next;delete s.finishedGameId;delete s.reportGameId;delete s.awaitingNextGame;delete s.activeSourceGameId;startDraftSeries(s);if(next==='live'){clearLiveData(s);s.paused=false;s.phase='pregame';}else {const d=createSeed();Object.assign(s,{players:d.players,stats:d.stats,events:d.events,economy:d.economy,draft:d.draft,gameTime:d.gameTime,phase:d.phase,paused:false});if(s.match.game>1)s.draftHistory!.push({...d.draftHistory![0],seriesId:s.match.seriesId!,game:s.match.game-1,blueTeamId:s.match.blueTeamId,redTeamId:s.match.redTeamId});captureManualDraft(s);}}break;}
     case 'set-phase':s.phase=oneOf(a.phase,phases);if(s.phase==='live')captureManualDraft(s);break;
     case 'preview-scene':s.previewScene=oneOf(a.scene,scenes);break;
     case 'take':s.programScene=a.scene===undefined?s.previewScene:oneOf(a.scene,scenes);break;
@@ -176,9 +188,15 @@ export function applyAction(current:BroadcastState,input:unknown):BroadcastState
     case 'set-teams': {if(!Array.isArray(a.teams)||a.teams.length<2||a.teams.length>64)throw new ValidationError('队伍数量应为 2–64');s.teams=a.teams.map(v=>{const t=record(v);const roster=t.players;if(!Array.isArray(roster)||roster.length>20)throw new ValidationError('选手名单格式错误');const color=str(t.color,7);if(!/^#[0-9a-f]{6}$/i.test(color))throw new ValidationError('队伍颜色需使用 #RRGGBB');return {id:str(t.id,80),name:str(t.name,80),tag:str(t.tag,12),color,...(t.logo?{logo:imageUrl(t.logo)}:{}),players:roster.map(v=>{const p=record(v);return{name:str(p.name,80),role:str(p.role,30),...(p.portrait?{portrait:imageUrl(p.portrait)}:{})};})};});const ids=new Set(s.teams.map(t=>t.id));if(ids.size!==s.teams.length)throw new ValidationError('队伍 ID 重复');if(![s.match.blueTeamId,s.match.redTeamId,...s.schedule.flatMap(m=>[m.blueTeamId,m.redTeamId])].every(id=>ids.has(id)))throw new ValidationError('该战队正在用于赛程或当前比赛，请先修改相关对阵');break;}
     case 'set-schedule': {if(!Array.isArray(a.schedule)||a.schedule.length>200)throw new ValidationError('赛程数量超限');s.schedule=a.schedule.map(v=>{const m=record(v);const date=str(m.scheduledAt,60);if(!Number.isFinite(Date.parse(date)))throw new ValidationError('赛程时间无效');const blueTeamId=str(m.blueTeamId,80),redTeamId=str(m.redTeamId,80);if(blueTeamId===redTeamId||![blueTeamId,redTeamId].every(id=>s.teams.some(t=>t.id===id)))throw new ValidationError('赛程队伍无效');return {id:str(m.id,80),title:str(m.title,150),blueTeamId,redTeamId,scheduledAt:date,format:str(m.format,30),status:oneOf(m.status,['scheduled','live','finished']),blueScore:Math.floor(num(m.blueScore,0,99)),redScore:Math.floor(num(m.redScore,0,99))} satisfies Match;});if(new Set(s.schedule.map(m=>m.id)).size!==s.schedule.length)throw new ValidationError('赛程 ID 重复');break;}
     case 'set-draft': {const p=record(a.patch);for(const k of ['bluePicks','redPicks','blueBans','redBans'] as const)if(p[k]!==undefined)s.draft[k]=stringList(p[k]);if(p.bluePicks!==undefined||p.redPicks!==undefined){const picks=[...s.draft.bluePicks,...s.draft.redPicks].filter(Boolean);if(new Set(picks).size!==picks.length)throw new ValidationError('同一局英雄选择不能重复');const banned=getFearlessBans(s);if(picks.some(id=>banned.has(id)))throw new ValidationError('该英雄已在本系列赛前局选用，属于全局禁用');s.draft.locked=false;delete s.draftHistoryPending;}if(p.timer!==undefined)s.draft.timer=Math.floor(num(p.timer,0,600));if(p.activeTeam!==undefined)s.draft.activeTeam=oneOf(p.activeTeam,['blue','red']);if(p.action!==undefined)s.draft.action=str(p.action,80);if(s.phase==='live'&&(p.bluePicks!==undefined||p.redPicks!==undefined))captureManualDraft(s);break;}
-    case 'select-player': {const id=a.playerId===null?null:str(a.playerId,150);if(id!==null&&!s.players.some(p=>p.id===id)&&!currentIncomeSnapshot(s)?.players.some(p=>p.playerId===id))throw new ValidationError('选手不存在');s.selectedPlayerId=id;break;}
+    case 'set-player-feed-control': {
+      const mode=oneOf(a.mode,['manual','auto'] as const),index=a.activeIndex===undefined?playerFeedControl(s.overlay).activeIndex:num(a.activeIndex,0,4);
+      if(!Number.isInteger(index))throw new ValidationError('选手对位须为 0–4 的整数');
+      s.overlay.playerFeedControl={mode,activeIndex:index,...(mode==='auto'?{nextSwitchAt:Date.now()+playerFeedInterval}:{})};
+      break;
+    }
+    case 'select-player': {const id=a.playerId===null?null:str(a.playerId,150);if(id!==null&&!s.players.some(p=>p.id===id))throw new ValidationError('选手不存在');s.selectedPlayerId=id;break;}
     case 'demo-pause':if(s.mode!=='demo')throw new ValidationError('演示暂停仅适用于演示数据');s.paused=bool(a.paused);break;
-    case 'demo-reset': {if(s.mode!=='demo')throw new ValidationError('当前使用真实数据，请先切换演示模式');const d=createSeed();Object.assign(s,{players:d.players,gameTime:d.gameTime,stats:d.stats,draft:d.draft,events:d.events,economy:d.economy,paused:false});s.incomeSnapshots=[...(s.incomeSnapshots??[]).filter(entry=>entry.gameKey!==incomeGameKey(s)),createDemoIncomeSnapshot(s)];break;}
+    case 'demo-reset': {if(s.mode!=='demo')throw new ValidationError('当前使用真实数据，请先切换演示模式');const d=createSeed();Object.assign(s,{players:d.players,gameTime:d.gameTime,stats:d.stats,draft:d.draft,events:d.events,economy:d.economy,paused:false});break;}
     case 'save-recording':{s.recordings.unshift(snapshotRecording(s,{...(a.title?{title:str(a.title,150)}:{})}));s.recordings=s.recordings.slice(0,100);break;}
     case 'finalize-game': {const winner=a.winner===undefined||a.winner===null?undefined:oneOf(a.winner,['blue','red']as const);const previous=currentGameResult(s);if(previous?.winner&&winner&&previous.winner!==winner)throw new ValidationError('已确认的胜方不能重复改写');if(!finalizeGame(s,{source:'manual',winner}))throw new ValidationError('尚未取得本局实际样本，请先连接对局');break;}
     case 'next-game': {const result=currentGameResult(s);if(!result)throw new ValidationError('请先保存本局赛后结果');if(!result.winner)throw new ValidationError('请先确认本局胜方，再进入下一局');if(result.seriesComplete)throw new ValidationError('本系列赛已结束，请从赛程载入下一场比赛');if(s.match.game>=99)throw new ValidationError('局号已达到上限');const gate={...(result.sourceGameId?{sourceGameId:result.sourceGameId}:{}),rosterFingerprint:rosterFingerprint(result.snapshot.players),gameTime:result.snapshot.duration};result.selectedPlayerId=s.selectedPlayerId;s.match.game++;prepareMatch(s);s.reportGameId=result.id;s.awaitingNextGame=gate;s.previewScene='draft';break;}
@@ -200,7 +218,6 @@ export function tickDemo(s:BroadcastState):void {
   s.stats.blue.gold=s.players.filter(p=>p.team==='blue').reduce((v,p)=>v+(p.gold??0),0);s.stats.red.gold=s.players.filter(p=>p.team==='red').reduce((v,p)=>v+(p.gold??0),0);
   if(s.gameTime%15===0)s.economy.push({time:s.gameTime,blue:s.stats.blue.gold,red:s.stats.red.gold});s.economy=s.economy.slice(-1200);
   if(s.gameTime%65===0){const side=s.gameTime%130===0?'red':'blue';const killer=s.players.find(p=>p.team===side&&p.role==='中单');const victim=s.players.find(p=>p.team!==side&&p.role==='辅助');if(killer&&victim){killer.kills++;victim.deaths++;victim.isDead=true;victim.respawnTimer=12;victim.health=0;s.stats[side].kills++;s.events.push({id:`demo-${s.gameTime}`,time:s.gameTime,type:'ChampionKill',text:`${killer.name} 击杀 ${victim.name}`,team:side});s.events=s.events.slice(-300);}}
-  updateIncomeSnapshots(s);
 }
 export function publicState(state:BroadcastState):BroadcastState {const result=structuredClone(state);delete result.settings.obsPassword;return result;}
 export function csvRecording(r:Recording):string {
@@ -208,7 +225,5 @@ export function csvRecording(r:Recording):string {
   const sources={none:'不可用',api:'游戏 API',manual:'人工校准',ocr:'观战 HUD 识别'};
   const source=r.mode==='demo'?'演示':sources[r.economyFeed?.source??'none'];
   const rows:unknown[][]=[['数据来源',r.mode==='demo'?'演示':'真实'],['实际采样时间',r.observedAt??'未记录'],['实际游戏秒数',r.sourceGameTime??r.duration],['队伍','选手','位置','英雄','击杀','死亡','助攻','补刀','等级','个人累计经济','个人经济来源','个人经济采样时间','当前金币','KDA / 补刀来源','KDA / 补刀采样时间','个人经济对应游戏秒数','KDA / 补刀对应游戏秒数'],...r.players.map(p=>[p.team,p.name,p.role,p.championName,p.kills,p.deaths,p.assists,p.cs,p.level,p.gold??'不可用',r.mode==='demo'?'演示':p.goldSource==='api'?'游戏 API':p.goldSource==='ocr'?'观战 HUD 识别':'不可用',p.goldSampledAt??'',p.currentGold??'不可用',r.mode==='demo'?'演示':p.statsSource==='api'?'游戏 API':p.statsSource==='ocr'?'观战 HUD 识别':'未记录',p.statsSampledAt??'',p.goldGameTime??'',p.statsGameTime??'']),[],['团队','团队累计经济','经济来源'],['blue',r.stats.blue.gold??'不可用',source],['red',r.stats.red.gold??'不可用',source],[],['比赛秒数','蓝方经济','红方经济','采样来源'],...r.economy.map(p=>[p.time,p.blue,p.red,r.mode==='demo'?'演示':sources[p.source??'none']])];
-  const incomeSources={api:'兼容游戏 API',telemetry:'赛事数据桥',demo:'演示',unavailable:'未提供'};
-  for(const snapshot of r.incomeSnapshots??[]){rows.push([],['十分钟经济来源','目标秒数',snapshot.targetTime,'实际采样秒数',snapshot.capturedTime,'数据来源',snapshot.mode==='demo'?'演示':'真实','状态',snapshot.status],['队伍','选手','位置','英雄','十分钟个人累计经济',...incomeCategories.flatMap(key=>[incomeCategoryLabels[key],`${incomeCategoryLabels[key]}来源`])]);for(const player of snapshot.players)rows.push([player.team,player.name,player.role,player.championId,player.totalGold??'未提供',...incomeCategories.flatMap(key=>[player.values[key].value??'未提供',incomeSources[player.values[key].source]])]);}
   return '\uFEFF'+rows.map(row=>row.map(quote).join(',')).join('\r\n');
 }

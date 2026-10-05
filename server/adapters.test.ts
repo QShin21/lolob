@@ -48,16 +48,16 @@ test('Live inventory preserves empty equipment slots and the separate trinket po
   assert.deepEqual(normalized.players[0].itemSlots,[1056,0,0,3157,0,0,3363]);assert.deepEqual(normalized.players[0].items,[1056,3157,3363]);assert.equal(normalized.players[1].itemSlots,undefined);assert.deepEqual(normalized.players[1].items,[1001,3364]);
 });
 
-test('Live combat details belong only to their identified player and compatible income extensions stay explicit',()=>{
+test('Live combat details belong only to their identified player and retired income extensions are ignored',()=>{
   const normalized=normalizeLive({activePlayer:{riotId:'Active#CN',currentGold:900,championStats:{currentHealth:560,maxHealth:900,resourceValue:120,resourceMax:400,resourceType:'MANA'}},allPlayers:[
     {team:'ORDER',riotId:'Active#CN',position:'TOP',isDead:false,respawnTimer:0,summonerSpells:{summonerSpellOne:{displayName:'闪现',id:4},summonerSpellTwo:{rawDisplayName:'SummonerTeleport'}},goldSources:{kills:0,minions:1000,monsters:-4,passive:'1213'}},
     {team:'ORDER',riotId:'Other#CN',position:'JUNGLE',isDead:true,respawnTimer:12},
     {team:'CHAOS',riotId:'Red#CN',championStats:{currentHealth:500,maxHealth:800},income:{monsters:800,other:300}}
   ]},[]);
   const active=normalized.players.find(player=>player.id==='live-Active#CN')!;
-  assert.equal(active.gold,null,'currentGold must never replace lifetime gold');assert.equal(active.currentGold,900);assert.equal(active.goldSource,undefined);assert.equal(active.health,560);assert.equal(active.maxResource,400);assert.equal(active.resourceType,'MANA');assert.deepEqual(active.summonerSpells,[{name:'闪现',id:4},{name:'SummonerTeleport',rawName:'SummonerTeleport'}]);assert.deepEqual(active.income,{kills:0,minions:1000});
+  assert.equal(active.gold,null,'currentGold must never replace lifetime gold');assert.equal(active.currentGold,900);assert.equal(active.goldSource,undefined);assert.equal(active.health,560);assert.equal(active.maxResource,400);assert.equal(active.resourceType,'MANA');assert.deepEqual(active.summonerSpells,[{name:'闪现',id:4},{name:'SummonerTeleport',rawName:'SummonerTeleport'}]);assert.equal(Object.hasOwn(active,'income'),false);
   const other=normalized.players.find(player=>player.id==='live-Other#CN')!;assert.equal(other.currentGold,undefined);assert.equal(other.health,undefined);assert.equal(other.isDead,true);assert.equal(other.respawnTimer,12);
-  const red=normalized.players.find(player=>player.id==='live-Red#CN')!;assert.equal(red.health,500);assert.deepEqual(red.income,{monsters:800,other:300});
+  const red=normalized.players.find(player=>player.id==='live-Red#CN')!;assert.equal(red.health,500);assert.equal(Object.hasOwn(red,'income'),false);
   const ambiguous=normalizeLive({activePlayer:{summonerName:'Same',championStats:{currentHealth:200}},allPlayers:[{team:'ORDER',summonerName:'Same',riotId:'Same#BLUE'},{team:'CHAOS',summonerName:'Same',riotId:'Same#RED'}]},[]);
   assert.ok(ambiguous.players.every(player=>player.health===undefined));
 });

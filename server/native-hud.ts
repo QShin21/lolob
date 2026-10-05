@@ -1,7 +1,7 @@
 import type { BroadcastState, NativeHudStatus } from '../shared/types';
 
 type Request = (port: number, endpoint: string, options?: {method?: string; body?: unknown}) => Promise<any>;
-const liveScenes = new Set(['live', 'income', 'economy', 'ranking']);
+const liveScenes = new Set(['live', 'gold-ranking', 'economy', 'ranking']);
 const teamfightDetail = '团战视图保留游戏原生 HUD；切入后请在游戏观战窗口按 A 使用团战视角';
 const hiddenFields = ['interfaceReplay','interfaceScore','interfaceScoreboard','interfaceFrames','interfaceTimeline','interfaceChat','interfaceQuests','interfaceAnnounce','interfaceKillCallouts'] as const;
 // These lower corners remain game-rendered beneath the broadcast footer.

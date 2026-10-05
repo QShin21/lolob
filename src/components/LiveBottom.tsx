@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { BroadcastState, Champion, Player, Side } from '../../shared/types';
 import { runeImage, summonerSpellImage } from '../../shared/player-assets';
+import { resolvedPlayerFeed, playerFeedControl } from '../../shared/player-feeds';
 import { bottomGoldDifference, bottomItemSlots, bottomPlayers } from '../../server/bottom-scoreboard';
-import { championFor, getTeam, playerCs, playerKda } from '../lib';
+import { championFor, playerCs, playerKda } from '../lib';
 import { dataDragonItemImage, type ItemAssets } from './useItemCatalog';
 import { useUltimateIcons } from './useUltimateIcons';
 import './live-bottom.css';
@@ -86,10 +87,10 @@ function PlayerRow({player,champions,items,version,side,ultimateIcon}:{player?:P
   </div>;
 }
 function PlayerFeed({state,side}:{state:BroadcastState;side:Side}) {
-  const feed=state.overlay.playerFeeds?.[side],player=bottomPlayers(state,side)[1];
+  const feed=resolvedPlayerFeed(state,side);
   if(feed?.mode==='off')return null;
-  const label=feed?.label||player?.name||getTeam(state,side)?.players[1]?.name||'';
-  return <div className={`lb-feed ${side} ${feed?.mode==='camera'?'is-camera':'is-image'}`} aria-label={`${side==='blue'?'蓝':'红'}方选手画面`}>
+  const label=feed.label;
+  return <div className={`lb-feed ${side} ${feed?.mode==='camera'?'is-camera':'is-image'}`} data-feed-index={playerFeedControl(state.overlay).activeIndex} aria-label={`${side==='blue'?'蓝':'红'}方选手画面`}>
     {feed?.mode==='image'&&feed.imageUrl&&<img src={feed.imageUrl} alt={label||'选手图片'}/>}{label&&<div className="lb-nameplate">{label}</div>}
   </div>;
 }

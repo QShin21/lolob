@@ -5,7 +5,7 @@ export const sceneInfo: Record<Scene, { name: string; description: string; short
   lineup: { name: '首发对位', description: '选手阵容 · 英雄展示', shortcut: '3' },
   live: { name: '局内计分板', description: '比分 · 选手 · 资源', shortcut: '4' },
   teamfight: { name: '团战视图', description: '原生视角 · 游戏内按 A', shortcut: 'T' },
-  income: { name: '十分钟经济来源', description: '自动快照 · 六类收益', shortcut: 'G' },
+  'gold-ranking': { name: '十人经济排行', description: '累计经济 · 全场排序', shortcut: 'G' },
   economy: { name: '经济曲线', description: '经济走势 · 领先差值', shortcut: '5' },
   ranking: { name: '选手数据榜', description: 'KDA · 补刀 · 装备', shortcut: '6' },
   schedule: { name: '赛程看板', description: '赛程 · BO 比分', shortcut: '7' },

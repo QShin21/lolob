@@ -165,9 +165,9 @@ test('delayed LCU and manual phase changes preserve the authoritative live roste
 test('new broadcast scenes and native HUD modes are validated through state actions', () => {
   let state = fresh();
   state = applyAction(state, { type: 'preview-scene', scene: 'teamfight' });
-  state = applyAction(state, { type: 'take', scene: 'income' });
+  state = applyAction(state, { type: 'take', scene: 'gold-ranking' });
   assert.equal(state.previewScene, 'teamfight');
-  assert.equal(state.programScene, 'income');
+  assert.equal(state.programScene, 'gold-ranking');
   assert.equal(state.overlay.nativeHud, 'auto');
   assert.equal(applyAction(state, { type: 'set-overlay', patch: { nativeHud: 'mask' } }).overlay.nativeHud, 'mask');
   assert.throws(() => applyAction(state, { type: 'set-overlay', patch: { nativeHud: 'invalid' } }));

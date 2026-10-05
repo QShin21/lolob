@@ -6,6 +6,8 @@ import { ObsBroadcast } from './obs-broadcast';
 import { Adapters, ChampionCatalog } from './adapters';
 import { createSeed } from './state';
 import { engineScene, enginePreviewScene } from './obs-engine';
+import { playerFeedPairs } from '../shared/player-feeds';
+import { applyAction } from './state';
 
 const names={blue:'RiftCast 蓝方选手摄像头',red:'RiftCast 红方选手摄像头'};
 const feeds:Record<Side,PlayerFeedSettings>={
@@ -196,4 +198,27 @@ test('failed camera sync is throttled across broadcast ticks and retries a chang
   assert.ok(obs.requests.length>count,'Explicit camera retry bypasses automatic failure backoff');
   state.overlay.playerFeeds.blue.cameraDeviceId=feeds.blue.cameraDeviceId;assert.equal((await adapters.syncPlayerFeeds()).applied,true);
   assert.ok(obs.requests.length>count);
+});
+
+test('five-pair manual and automatic selections route each side to the matching OBS camera on both buses',async()=>{
+  let state=createSeed();state.connections.obs.status='connected';state.programScene='live';state.previewScene='live';
+  const pairs=playerFeedPairs(state.overlay),obs=new CameraObs();
+  for(let index=0;index<5;index++)for(const side of ['blue','red']as const){
+    const id=`camera-${side}-${index}`;
+    obs.devices.push({itemName:id,itemValue:id,itemEnabled:true});
+    pairs[index][side]={mode:'camera',cameraDeviceId:id,imageUrl:'',label:`${side} ${index}`};
+  }
+  state=applyAction(state,{type:'set-overlay',patch:{playerFeedPairs:pairs}});
+  const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('unused'));(adapters as any).obs.call=obs.call;
+  for(let index=0;index<5;index++){
+    state=applyAction(state,{type:'set-player-feed-control',mode:index%2?'auto':'manual',activeIndex:index});
+    await adapters.syncPlayerFeeds();
+    for(const side of ['blue','red']as const)assert.equal(obs.settings.get(names[side])!.video_device_id,`camera-${side}-${index}`);
+  }
+  assert.equal(obs.inputs.filter(input=>input.inputKind==='dshow_input').length,2,'Reuse the two owned sources while switching devices');
+  assert.ok(!obs.requests.some(request=>['StartStream','StopStream','SetCurrentProgramScene'].includes(request.type)));
+  const finalPair=structuredClone(pairs);finalPair[4].blue.mode='image';finalPair[4].red.mode='off';
+  state=applyAction(state,{type:'set-overlay',patch:{playerFeedPairs:finalPair}});
+  obs.requests=[];await adapters.syncPlayerFeeds();
+  assert.ok(obs.requests.filter(request=>request.type==='SetSceneItemEnabled').every(request=>request.data.sceneItemEnabled===false));
 });

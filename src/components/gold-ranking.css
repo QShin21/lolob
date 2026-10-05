@@ -1,0 +1,11 @@
+.cast-gold-ranking{position:absolute;left:16%;width:68%;bottom:1.5%;background:#0b1723f5;border:1px solid #a4c5d545;border-radius:.5cqw;overflow:hidden;z-index:2;transform:scale(clamp(.5,var(--hud-scale,1),1));transform-origin:bottom center}
+.cast-gold-ranking>header{display:flex;align-items:center;gap:1cqw;padding:.7cqw 1.2cqw;background:#162936;border-bottom:1px solid var(--cast-line)}
+.cast-gold-ranking>header>span{font:.56cqw var(--cast-font);letter-spacing:.1cqw;color:var(--cast-accent);padding-right:1cqw;border-right:1px solid var(--cast-line)}
+.cast-gold-ranking>header>strong{font:600 1.12cqw var(--cast-font)}.cast-gold-ranking>header>small{margin-left:auto;font:.56cqw var(--cast-font);color:#a9becb}
+.cast-gold-columns{display:grid;grid-template-columns:1fr 1fr;gap:1.8cqw;padding:.55cqw 1.2cqw .8cqw}.cast-gold-columns ol{list-style:none;margin:0;padding:0;min-width:0}
+.cast-gold-columns li{display:grid;grid-template-columns:1.2cqw 2.35cqw minmax(0,1fr) 4.3cqw;gap:.6cqw;align-items:center;height:3.05cqw;border-bottom:1px solid #a4c5d51c}.cast-gold-columns li:last-child{border-bottom:0}
+.cast-gold-position{font:1cqw var(--cast-display);text-align:center;color:#a6bcc9}.cast-gold-hero{width:2.35cqw;height:2.35cqw;display:grid;place-items:center;border:.08cqw solid var(--cast-side,#a4c5d545);background:#1c2a36;border-radius:.25cqw;overflow:hidden}.cast-gold-hero img{width:100%;height:100%;object-fit:contain}
+.cast-gold-track{min-width:0;display:flex;flex-direction:column;gap:.32cqw}.cast-gold-identity{display:flex;align-items:center;gap:.5cqw;min-width:0}.cast-gold-identity strong{font-size:.92cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cast-gold-identity small{font:.5cqw var(--cast-font);color:var(--cast-side);margin-left:auto;flex-shrink:0}
+.cast-gold-bar{display:block;height:.63cqw;background:#253644;overflow:hidden;border-radius:.1cqw}.cast-gold-bar i{display:block;height:100%;background:var(--cast-side,#83e6c5);transition:width .35s ease}
+.cast-gold-amount{text-align:right;font:1.18cqw var(--cast-display);font-variant-numeric:tabular-nums}.cast-gold-columns .is-unavailable .cast-gold-amount{color:#93a8b6}
+.gold-ranking-controls{padding-bottom:18px}.gold-ranking-controls>p,.gold-ranking-controls>.inline-buttons{margin:0 20px 14px}

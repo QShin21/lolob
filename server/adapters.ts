@@ -1,3 +1,4 @@
+import { bundledChampions, bundledChampionVersion, localChampionAssets } from '../shared/champion-art';
 import https from 'node:https';
 import { randomUUID } from 'node:crypto';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
@@ -9,7 +10,7 @@ import { ObsBroadcast } from './obs-broadcast';
 import { ObsEngine, engineScene, enginePreviewScene, type ObsEngineOptions } from './obs-engine';
 import { LocalApiError, diagnoseReplay, validPlayback, type ReplayDiagnostics } from './replay';
 import { EconomyBridge } from './economy';
-import { normalizeIncomeValues } from './player-income';
+import { activePlayerFeedPair } from '../shared/player-feeds';
 import { normalizePlayerDetails } from './player-details';
 import { absorbTerminalGameSample, acceptNextGameSample, explicitWinner, finalizeGame, lcuWinner, matchingTerminalGameSample, sourceGameId } from './game-results';
 import { currentGameResult } from '../shared/game-results';
@@ -78,7 +79,6 @@ export function normalizeLive(data:Json,champions:Champion[]):{players:Player[];
   const players:Player[]=allPlayers.flatMap((p,i)=>{const side=sideValue(p.team);if(!side)return [];const raw=text(p.rawChampionName).replace(/^game_character_displayname_/, '');const c=championBy(champions,raw)||championBy(champions,p.championName);const scores=p.scores??{};const statsAvailable=['kills','deaths','assists','creepScore'].every(key=>typeof scores[key]==='number'&&Number.isFinite(scores[key])&&Number.isInteger(scores[key])&&scores[key]>=0);const total=positive(p.totalGold)?p.totalGold:null;const liveItems=list(p.items);const slotted=liveItems.filter(item=>Number.isInteger(item.slot)&&item.slot>=0&&item.slot<=6);const itemSlots=slotted.length?Array<number>(7).fill(0):undefined;if(itemSlots)for(const item of slotted)itemSlots[item.slot]=Math.max(0,n(item.itemID));
     const sourceStats=p.championStats??(activeIdentity(p)?active.championStats:undefined);const combat:Partial<Player>={};if(total!==null){combat.goldSource='api';combat.goldGameTime=gameTime;combat.goldSampledAt=sampledAt;}if(positive(p.currentGold))combat.currentGold=p.currentGold;else if(activeIdentity(p)&&positive(active.currentGold))combat.currentGold=active.currentGold;for(const [source,target]of [['currentHealth','health'],['maxHealth','maxHealth'],['resourceValue','resource'],['resourceMax','maxResource']]as const)if(positive(sourceStats?.[source]))combat[target]=sourceStats[source];if(text(sourceStats?.resourceType))combat.resourceType=sourceStats.resourceType;if(typeof p.isDead==='boolean')combat.isDead=p.isDead;if(positive(p.respawnTimer))combat.respawnTimer=p.respawnTimer;
     Object.assign(combat,normalizePlayerDetails(p,activeIdentity(p)?active:undefined));
-    const income=normalizeIncomeValues(p.goldSources)??normalizeIncomeValues(p.income);if(income)combat.income=income;
     const runeIds=[p.runes?.keystone?.id,p.runes?.primaryRuneTree?.id,p.runes?.secondaryRuneTree?.id].filter((id):id is number=>Number.isInteger(id)&&id>0);if(runeIds.length)combat.runeIds=runeIds;
     return [{id:`live-${text(p.riotId)||text(p.summonerName)||i}`,name:text(p.riotIdGameName)||text(p.summonerName)||text(p.riotId)||`选手 ${i+1}`,role:roleNames[text(p.position).toUpperCase()]??'待分路',championId:c?.id??raw,championName:c?.name??text(p.championName,'未知英雄'),statsAvailable,...(statsAvailable?{statsSource:'api' as const,statsSampledAt:sampledAt,statsGameTime:gameTime}:{}),kills:n(scores.kills),deaths:n(scores.deaths),assists:n(scores.assists),cs:n(scores.creepScore),level:n(p.level,1),gold:total,items:liveItems.sort((a,b)=>n(a.slot)-n(b.slot)).map(i=>n(i.itemID)).filter(i=>i>0),...(itemSlots?{itemSlots}:{}),team:side,runes:[text(p.runes?.keystone?.displayName),text(p.runes?.primaryRuneTree?.displayName),text(p.runes?.secondaryRuneTree?.displayName)].filter(Boolean),...combat}];
   }).sort((a,b)=>a.team.localeCompare(b.team)||((roleOrder.indexOf(a.role)<0?5:roleOrder.indexOf(a.role))-(roleOrder.indexOf(b.role)<0?5:roleOrder.indexOf(b.role))));
@@ -91,12 +91,12 @@ export function normalizeLive(data:Json,champions:Champion[]):{players:Player[];
   return {players,stats,events:events.slice(-1000),gameTime,ended,...(winner?{winner}:{})};
 }
 export class ChampionCatalog {
-  version='16.19.1';champions=fallbackChampions();private pending:Promise<void>|null=null;private loadedAt=0;
+  version=bundledChampionVersion;champions=bundledChampions();private pending:Promise<void>|null=null;private loadedAt=0;
   constructor(private dataDir:string){}
   async load():Promise<void>{
     if(this.pending)return this.pending;if(Date.now()-this.loadedAt<3600000)return;
-    this.pending=(async()=>{const file=path.join(this.dataDir,'champions.json');try{const cached=JSON.parse(await readFile(file,'utf8'));if(Array.isArray(cached.champions)&&cached.champions.length>0){this.champions=cached.champions;this.version=cached.version;}}catch{/* bundled fallback */}
-      try{const versions=await fetch('https://ddragon.leagueoflegends.com/api/versions.json',{signal:AbortSignal.timeout(7000)}).then(r=>{if(!r.ok)throw Error();return r.json();})as string[];const version=versions[0];if(!/^\d+\.\d+\.\d+$/.test(version))throw Error();const data=await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/zh_CN/champion.json`,{signal:AbortSignal.timeout(7000)}).then(r=>{if(!r.ok)throw Error();return r.json();})as Json;this.version=version;this.champions=Object.values(data.data).map((c:any)=>({id:c.id,key:Number(c.key),name:c.name,title:c.title,tags:c.tags,image:`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${c.image.full}`,splash:`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${c.id}_0.jpg`}));await mkdir(this.dataDir,{recursive:true});await writeFile(file,JSON.stringify({version:this.version,champions:this.champions}));}catch{/* use local catalog; never replace live match data */}this.loadedAt=Date.now();})();
+    this.pending=(async()=>{const file=path.join(this.dataDir,'champions.json');try{const cached=JSON.parse(await readFile(file,'utf8'));if(Array.isArray(cached.champions)&&cached.champions.length>0){this.champions=localChampionAssets(cached.champions);this.version=cached.version;}}catch{/* bundled fallback */}
+      try{const versions=await fetch('https://ddragon.leagueoflegends.com/api/versions.json',{signal:AbortSignal.timeout(7000)}).then(r=>{if(!r.ok)throw Error();return r.json();})as string[];const version=versions[0];if(!/^\d+\.\d+\.\d+$/.test(version))throw Error();const data=await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/zh_CN/champion.json`,{signal:AbortSignal.timeout(7000)}).then(r=>{if(!r.ok)throw Error();return r.json();})as Json;this.version=version;this.champions=localChampionAssets(Object.values(data.data).map((c:any)=>({id:c.id,key:Number(c.key),name:c.name,title:c.title,tags:c.tags,image:`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${c.image.full}`,splash:`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${c.id}_0.jpg`})));await mkdir(this.dataDir,{recursive:true});await writeFile(file,JSON.stringify({version:this.version,champions:this.champions}));}catch{/* use local catalog; never replace live match data */}this.loadedAt=Date.now();})();
     try{await this.pending;}finally{this.pending=null;}
   }
 }
@@ -161,11 +161,12 @@ export class Adapters {
     if(this.get().connections.obs.status!=='connected')return {applied:false,detail:'摄像头配置已保存，连接 OBS 引擎后自动应用'};
     const state=this.get();
     const programVisible=state.programScene==='live',previewVisible=state.previewScene==='live';
-    const signature=JSON.stringify({feeds:(['blue','red']as const).map(side=>({side,mode:state.overlay.playerFeeds?.[side].mode,device:state.overlay.playerFeeds?.[side].cameraDeviceId})),program:programVisible,preview:previewVisible});
+    const activeFeeds=activePlayerFeedPair(state.overlay);
+    const signature=JSON.stringify({feeds:(['blue','red']as const).map(side=>({side,mode:activeFeeds[side].mode,device:activeFeeds[side].cameraDeviceId})),program:programVisible,preview:previewVisible});
     if(signature===this.playerFeedsSignature)return {applied:true};
     if(this.playerFeedsRetry?.signature===signature&&Date.now()<this.playerFeedsRetry.after)return {applied:false,detail:this.playerFeedsRetry.detail};
     if(this.playerFeedsSync){await this.playerFeedsSync.catch(()=>{});return this.syncPlayerFeeds();}
-    const feeds=state.overlay.playerFeeds?structuredClone(state.overlay.playerFeeds):undefined;
+    const feeds=structuredClone(activeFeeds);
     const apply=async()=>{
       const available=await this.obs.call('GetSceneList');
       const programName=available.scenes.some(scene=>scene.sceneName===engineScene)?engineScene:available.currentProgramSceneName;
