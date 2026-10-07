@@ -5,7 +5,9 @@ import './styles.css';
 import './director.css';
 import './responsive.css';
 import './studio-workflow.css';
-ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);
-
+import { UiThemeProvider } from './ui-theme';
 import './console-system.css';
 import './audience-system.css';
+import './ui-theme.css';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><UiThemeProvider><App/></UiThemeProvider></React.StrictMode>);

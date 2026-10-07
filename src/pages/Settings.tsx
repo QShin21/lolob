@@ -12,6 +12,7 @@ import { EconomySourcePanel } from '../components/EconomySourcePanel';
 import { EmbeddedObs, type ObsEngineStatus } from '../components/EmbeddedObs';
 import { NativeHudControls } from '../components/ObserverGraphics';
 import { LiveBottomControls } from '../components/LiveBottomControls';
+import { AppearanceSettings } from '../components/AppearanceSettings';
 import './management.css';
 
 type Target = keyof BroadcastState['connections'];
@@ -31,7 +32,7 @@ async function request<T = Record<string, unknown>>(url: string, body?: Record<s
 type Props = StateContext & { onOpenStudio?: () => void; outputReady?: boolean; onOutputReady?: (ready: boolean) => void };
 export function Settings({ state, send, notify, champions, onOpenStudio, outputReady, onOutputReady }: Props) {
   const settingsDraft=useConfigDraft(state.settings,state.production?.configVersion),settings=settingsDraft.draft,setSettings=settingsDraft.setDraft;
-  const [section,setSection]=useState<'data'|'video'|'audio'|'output'|'graphics'|'diagnostics'>('data');
+  const [section,setSection]=useState<'data'|'video'|'audio'|'output'|'graphics'|'appearance'|'diagnostics'>('data');
   const overlayDraft=useConfigDraft(state.overlay,state.production?.configVersion),overlay=overlayDraft.draft,setOverlay=overlayDraft.setDraft;
   const remoteOverlay = useRef<OverlaySettings>({...state.overlay});
   const [pending, setPending] = useState<string | null>(null);
@@ -89,7 +90,8 @@ export function Settings({ state, send, notify, champions, onOpenStudio, outputR
   const obsConnected = obsEngine?.connected ?? false;
   return <div className="settings-page">
     <div className="settings-workflow-heading"><div><span className="section-eyebrow">开播准备 · 连接与输出</span><h2>连接数据，准备播出</h2><p className="muted">当前赛事：{state.match.title} · 第 {state.match.game} 局。先选择数据来源，再完成 OBS 配置并返回导播台。</p></div>{onOpenStudio && <button className="button small" onClick={onOpenStudio}>返回导播台<ArrowRight size={15} /></button>}</div>
-    <div className="settings-section-nav"><TaskTabs items={[{id:'data',label:'数据'},{id:'video',label:'画面'},{id:'audio',label:'声音'},{id:'output',label:'输出'},{id:'graphics',label:'包装'},{id:'diagnostics',label:'诊断 / 协作'}]} value={section} onChange={setSection} label="设置分类"/></div>
+    <div className="settings-section-nav"><TaskTabs items={[{id:'data',label:'数据'},{id:'video',label:'画面'},{id:'audio',label:'声音'},{id:'output',label:'输出'},{id:'graphics',label:'包装'},{id:'appearance',label:'外观'},{id:'diagnostics',label:'诊断 / 协作'}]} value={section} onChange={setSection} label="设置分类"/></div>
+    <div hidden={section!=='appearance'}><AppearanceSettings /></div>
     {(settingsDraft.conflict||overlayDraft.conflict)&&<div className="editor-draft-note" role="alert"><p>其他席位更新了配置。本地输入已保留。变化字段：{[...settingsDraft.changedFields,...overlayDraft.changedFields].filter(k=>k!=='obsPassword').join('、')}</p><button className="button" onClick={()=>{settingsDraft.discard();overlayDraft.discard();}}>采用最新配置</button><button className="button" onClick={()=>{settingsDraft.rebase();overlayDraft.rebase();}}>核对后保留本地修改</button></div>}
 <div hidden={section!=='data'}>    <section className="panel mode-panel"><div><h2>数据来源</h2><p className="muted">演示模式可离线体验完整导播流程；实时模式读取本机客户端。</p></div><div className="mode-switch"><button className={state.mode === 'demo' ? 'active' : ''} disabled={busy} onClick={() => run('mode', () => send({ type: 'set-mode', mode: 'demo' }), '已切换到演示模式')}><Play size={15} />演示数据{state.mode === 'demo' && <Check size={14} />}</button><button className={state.mode === 'live' ? 'active' : ''} disabled={busy} onClick={() => run('mode', () => send({ type: 'set-mode', mode: 'live' }), '已切换到实时模式')}><Radio size={15} />客户端实时{state.mode === 'live' && <Check size={14} />}</button></div></section>
     <div className="connection-card-grid client-connection-card-grid">{connectionCards.map(({ target, name, subtitle, icon: Icon, note }) => <section className="panel connection-card" key={target}><div className="connection-card-title"><span className="connection-icon"><Icon size={21} /></span><span className={`connection-status ${state.connections[target].status}`}><i />{connectionLabels[state.connections[target].status]}</span></div><h3>{name}</h3><small>{subtitle}</small><p className="muted">{note}</p><div className="connection-detail" title={state.connections[target].detail}>{state.connections[target].detail || '等待连接'}</div><button className="button small" disabled={busy} onClick={() => connect(target)}><RefreshCw size={14} className={pending === target ? 'spinning' : ''} />{pending === target ? '正在连接…' : state.connections[target].status === 'connected' ? '重新连接' : '连接服务'}</button></section>)}</div>

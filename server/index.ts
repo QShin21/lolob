@@ -22,6 +22,7 @@ import { writeDurableState } from './durable-state';
 import { ResourceCache } from './resource-cache';
 import { audit } from './production';
 import { resourceInventory } from './resource-inventory';
+import { version as appVersion } from '../package.json';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dataDir=process.env.RIFTCAST_DATA_DIR?path.resolve(process.env.RIFTCAST_DATA_DIR):path.join(root,'data');
@@ -72,7 +73,7 @@ app.use((req,res,next)=>{
   next();
 });
 app.use(express.json({limit:'512kb'}));
-app.get('/api/health',(_req,res)=>res.json({service:'riftcast-director',version:'0.3.0',status:'ok',mode:state.mode,lanEnabled:lan}));
+app.get('/api/health',(_req,res)=>res.json({service:'riftcast-director',version:appVersion,status:'ok',mode:state.mode,lanEnabled:lan}));
 app.get('/api/obs/cameras',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'摄像头源仅支持在导播主机读取'});return;}res.json(await adapters.obsCameraDevices());});
 app.post('/api/obs/player-feeds',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'选手摄像头仅支持在导播主机应用'});return;}seats.authorize(req.headers['x-seat-token'],'output');res.json(await adapters.syncPlayerFeeds(true));});
 app.get('/api/state',(_req,res)=>res.json(publicState(state)));

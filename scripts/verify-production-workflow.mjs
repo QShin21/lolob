@@ -8,7 +8,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { tsImport } from "tsx/esm/api";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const evidence = path.join(root, "verification-output", "production-0.4.0");
+const { version } = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const evidence = path.join(root, "verification-output", `production-${version}`);
 await mkdir(evidence, { recursive: true });
 const { createSeed } = await tsImport("../server/state.ts", import.meta.url);
 const seed = createSeed();
@@ -456,7 +457,7 @@ try {
     path.join(evidence, "report.json"),
     JSON.stringify(
       {
-        version: "0.4.0",
+        version,
         tests,
         errors,
         boundary:

@@ -1,5 +1,6 @@
 import type { BroadcastState } from "../../shared/types";
 import type { WorkflowPage } from "../components/DirectorWorkflow";
+import { version } from "../../package.json";
 export function Help({
   state,
   onNavigate,
@@ -62,6 +63,7 @@ export function Help({
       </section>
       <section className="panel help-limits">
         <h2>常见状态与下一步</h2>
+        <p><b>界面风格：</b>在「连接与输出 → 外观」选择深色或浅色。切换立即生效并在本机保存，节目包装继续沿用播出配色。</p>
         <p>
           <b>等待 BP：</b>客户端已连接，进入选人后继续同步。<b>应用失败：</b>
           检查 OBS 与游戏来源，重新核对预监后切入。<b>版本冲突：</b>
@@ -73,7 +75,7 @@ export function Help({
           排版示意用于检查文字与布局。录像暂停、跳转和倍速会影响游戏来源，播出期间由服务端保护。
         </p>
         <p>
-          RiftCast 0.4.0 ·{" "}
+          RiftCast {version} ·{" "}
           {state.mode === "demo" ? "当前演示数据" : "当前本地实况"} · OBS{" "}
           {state.connections.obs.status === "connected" ? "已连接" : "待连接"}
           。启动错误与日志入口可在桌面应用“帮助”菜单查看。

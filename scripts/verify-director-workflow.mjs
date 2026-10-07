@@ -88,9 +88,10 @@ const tests = [];
 const entryPath = path
   .join(root, "_director-workflow-fixture.tsx")
   .replaceAll("\\", "/");
-const entry = `import React from 'react';import {createRoot} from 'react-dom/client';import App from '/src/App.tsx';
+const entry = `import React from 'react';import {createRoot} from 'react-dom/client';import App from '/src/App.tsx';import {UiThemeProvider} from '/src/ui-theme.tsx';
 import '/src/styles.css';import '/src/director.css';import '/src/pages/management.css';import '/src/responsive.css';import '/src/studio-workflow.css';import '/src/console-system.css';import '/src/audience-system.css';
-createRoot(document.getElementById('root')).render(<App/>);`;
+import '/src/ui-theme.css';
+createRoot(document.getElementById('root')).render(<UiThemeProvider><App/></UiThemeProvider>);`;
 let vite;
 const stateWss = new WebSocketServer({ noServer: true });
 const previewWss = new WebSocketServer({ noServer: true });
@@ -1007,6 +1008,12 @@ try {
   console.log(
     `PASS: director workflow and three-level screen layout. Isolated evidence: ${evidence}`,
   );
+} catch (error) {
+  const pages = browser?.contexts().flatMap(context => context.pages()) || [];
+  const page = pages[0];
+  await writeFile(path.join(evidence, 'failure.json'), JSON.stringify({ message: String(error), errors, url: page?.url(), body: await page?.locator('body').innerText().catch(() => '') }, null, 2));
+  await page?.screenshot({ path: path.join(evidence, 'failure.png'), fullPage: true }).catch(() => {});
+  throw error;
 } finally {
   await browser?.close();
   previewStream.close();
