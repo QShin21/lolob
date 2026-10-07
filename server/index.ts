@@ -16,6 +16,12 @@ import { tickPlayerFeeds } from '../shared/player-feeds';
 import { NativeHudController } from './native-hud';
 import { ObsPreviewStream } from './obs-preview-stream';
 import { currentGameResult, frozenGameState } from '../shared/game-results';
+import { ensureProduction, preserveProgram, programState, publishProgram } from '../shared/production';
+import { ControlSeats } from './control-seats';
+import { writeDurableState } from './durable-state';
+import { ResourceCache } from './resource-cache';
+import { audit } from './production';
+import { resourceInventory } from './resource-inventory';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dataDir=process.env.RIFTCAST_DATA_DIR?path.resolve(process.env.RIFTCAST_DATA_DIR):path.join(root,'data');
@@ -26,16 +32,34 @@ await mkdir(uploadDir,{recursive:true});
 let state=createSeed();
 try{const saved=JSON.parse(await readFile(stateFile,'utf8'))as BroadcastState;if(saved&&saved.match&&saved.overlay&&saved.settings&&Array.isArray(saved.players)&&Array.isArray(saved.teams)&&['demo','live'].includes(saved.mode))state=normalizeSavedState(saved);}catch{/* first run uses explicit demo mode */}
 resetRuntimeState(state);
+delete ensureProduction(state).control;
+const seats=new ControlSeats();
 const app=express();const server=http.createServer(app);const wss=new WebSocketServer({noServer:true,maxPayload:4096});let writeTimer:ReturnType<typeof setTimeout>|undefined;let dirty=false;let pendingWrite:Promise<void>|undefined;let shuttingDown=false;
-function persist():Promise<void>{dirty=true;if(pendingWrite)return pendingWrite;pendingWrite=(async()=>{try{while(dirty){dirty=false;try{await writeFile(`${stateFile}.tmp`,JSON.stringify(publicState(state),null,2),'utf8');await rename(`${stateFile}.tmp`,stateFile);}catch(e){console.error('状态保存失败：',e instanceof Error?e.message:'无法写入文件');}}}finally{pendingWrite=undefined;}})();return pendingWrite;}
-function broadcast(){if(shuttingDown)return;void adapters.syncPlayerFeeds().catch(()=>{});const value=JSON.stringify(publicState(state));for(const socket of wss.clients)if(socket.readyState===WebSocket.OPEN){if(socket.bufferedAmount>1024*1024)socket.close(1013,'客户端接收速度过慢');else socket.send(value);}if(writeTimer)clearTimeout(writeTimer);writeTimer=setTimeout(()=>{void persist();},250);}
-function commit(work:(s:BroadcastState)=>void){if(shuttingDown)return;const beforeResult=currentGameResult(state),beforeWinner=beforeResult?.winner,beforeTerminal=beforeResult?.terminalSampleAccepted;work(state);if(currentGameResult(state)){const frozen=frozenGameState(state);Object.assign(state,{players:frozen.players,stats:frozen.stats,events:frozen.events,economy:frozen.economy,draft:frozen.draft,gameTime:frozen.gameTime,economyFeed:frozen.economyFeed,phase:'postgame',paused:true});delete state.gameClock;}state.revision++;broadcast();const afterResult=currentGameResult(state);if(afterResult&&(afterResult.id!==beforeResult?.id||afterResult.winner!==beforeWinner||afterResult.terminalSampleAccepted!==beforeTerminal))void persist();}
+function persist():Promise<void>{
+  dirty=true;if(pendingWrite)return pendingWrite;
+  pendingWrite=(async()=>{try{while(dirty){
+    dirty=false;const revision=state.revision;
+    ensureProduction(state).persistence={status:'saving',at:new Date().toISOString(),revision};
+    try{
+      const value=publicState(state);ensureProduction(value).persistence={status:'saved',at:new Date().toISOString(),revision};
+      await writeDurableState(stateFile,value);
+      ensureProduction(state).persistence={status:'saved',at:new Date().toISOString(),revision};
+    }catch{
+      ensureProduction(state).persistence={status:'failed',at:new Date().toISOString(),revision,detail:'状态文件保存失败，请检查数据目录与磁盘空间'};
+      broadcast(false);throw new Error('状态文件保存失败，请检查数据目录与磁盘空间');
+    }
+  }}finally{pendingWrite=undefined;}})();return pendingWrite;
+}
+
+function broadcast(scheduleWrite=true){if(shuttingDown)return;void adapters.syncPlayerFeeds().catch(()=>{});const value=JSON.stringify(publicState(state));for(const socket of wss.clients)if(socket.readyState===WebSocket.OPEN){if(socket.bufferedAmount>1024*1024)socket.close(1013,'客户端接收速度过慢');else socket.send(value);}if(scheduleWrite){if(writeTimer)clearTimeout(writeTimer);writeTimer=setTimeout(()=>{void persist().catch(()=>{});},250);}}
+function commit(work:(s:BroadcastState)=>void){if(shuttingDown)return;const beforeResult=currentGameResult(state),beforeWinner=beforeResult?.winner,beforeTerminal=beforeResult?.terminalSampleAccepted;work(state);if(currentGameResult(state)){const frozen=frozenGameState(state);Object.assign(state,{players:frozen.players,stats:frozen.stats,events:frozen.events,economy:frozen.economy,draft:frozen.draft,gameTime:frozen.gameTime,economyFeed:frozen.economyFeed,phase:'postgame',paused:true});delete state.gameClock;}state.revision++;broadcast();const afterResult=currentGameResult(state);if(afterResult&&(afterResult.id!==beforeResult?.id||afterResult.winner!==beforeWinner||afterResult.terminalSampleAccepted!==beforeTerminal))void persist().catch(()=>{});}
 const economy:EconomyBridge=new EconomyBridge(()=>state,commit,{frame:():Promise<Buffer>=>adapters.spectatorFrame()});state.economyFeed=economy.status();
 const catalog=new ChampionCatalog(dataDir);const adapters:Adapters=new Adapters(()=>state,commit,catalog,undefined,economy);void catalog.load();
+const resources=new ResourceCache(path.join(dataDir,'resources'));
 await adapters.initializeObsEngine({root,dataDir,overlayUrl:`http://127.0.0.1:${port}/overlay`});
 const monitorWss=new WebSocketServer({noServer:true,maxPayload:64,perMessageDeflate:false});
 const monitorStream=new ObsPreviewStream(kind=>adapters.obsEngineLiveFrame(kind));
-const nativeHud=new NativeHudController(()=>state,commit,localJson);
+const nativeHud=new NativeHudController(()=>programState(state),commit,localJson);
 function connectGameSources(){if(process.env.RIFTCAST_AUTO_CONNECT==='0')return;void Promise.allSettled((['lcu','live','replay']as const).map(target=>adapters.connect(target)));}
 app.disable('x-powered-by');
 app.use((req,res,next)=>{
@@ -44,14 +68,64 @@ app.use((req,res,next)=>{
   if(!validHost(req.headers.host,port,lan)){res.status(403).json({error:'请求主机不在允许列表中'});return;}
   if(!validOrigin(req.headers.origin,port,lan)){res.status(403).json({error:'请求来源不在允许列表中'});return;}
   if(!['GET','HEAD','OPTIONS'].includes(req.method)&&!isLoopback(req.socket.remoteAddress)&&!validToken(req.headers['x-control-token']??req.query.token,controlToken)){res.status(401).json({error:'需要手机控制配对令牌'});return;}
+  if(!['GET','HEAD','OPTIONS'].includes(req.method)&&!isLoopback(req.socket.remoteAddress)&&req.path!=='/api/control/seat'&&!seats.resolve(req.headers['x-seat-token'])){res.status(403).json({error:'请先连接已授权的操作席位'});return;}
   next();
 });
 app.use(express.json({limit:'512kb'}));
-app.get('/api/health',(_req,res)=>res.json({service:'riftcast-director',version:'0.2.0',status:'ok',mode:state.mode,lanEnabled:lan}));
+app.get('/api/health',(_req,res)=>res.json({service:'riftcast-director',version:'0.3.0',status:'ok',mode:state.mode,lanEnabled:lan}));
 app.get('/api/obs/cameras',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'摄像头源仅支持在导播主机读取'});return;}res.json(await adapters.obsCameraDevices());});
-app.post('/api/obs/player-feeds',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'选手摄像头仅支持在导播主机应用'});return;}res.json(await adapters.syncPlayerFeeds(true));});
+app.post('/api/obs/player-feeds',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'选手摄像头仅支持在导播主机应用'});return;}seats.authorize(req.headers['x-seat-token'],'output');res.json(await adapters.syncPlayerFeeds(true));});
 app.get('/api/state',(_req,res)=>res.json(publicState(state)));
-app.post('/api/action',(req,res)=>{const action=record(req.body);if(!isLoopback(req.socket.remoteAddress)&&action.type==='set-settings')throw new ValidationError('连接设置仅支持在导播主机修改');const previousMode=state.mode,previousProgramScene=state.programScene;const next=applyAction(state,action);if(action.type==='set-settings'){const patch=record(action.patch);if(patch.obsPassword!==undefined)adapters.setPassword(String(patch.obsPassword));}state=next;broadcast();if(["finalize-game","next-game"].includes(String(action.type)))void persist();res.json(publicState(state));if(previousProgramScene!==state.programScene)void nativeHud.tick(true);if(previousMode!=='live'&&state.mode==='live')connectGameSources();});
+let actionQueue:Promise<unknown>=Promise.resolve();
+app.post('/api/control/seat',(req,res)=>{const seat=seats.issue(req.body,isLoopback(req.socket.remoteAddress),req.headers['x-seat-token']);const owner=seats.ownerInfo();if(owner)ensureProduction(state).control={owner:owner.id,name:owner.name};res.json(seat);});
+app.post('/api/control/invite',(req,res)=>{if(!isLoopback(req.socket.remoteAddress))throw new ValidationError('邀请操作席位请由主机导播发起');seats.authorize(req.headers['x-seat-token'],'engine');const seat=seats.issue({...record(req.body),fresh:true},true);const address=lanAddresses()[0];res.json({...seat,url:lan&&address?`http://${address}:${port}/remote?token=${encodeURIComponent(controlToken)}&seat=${encodeURIComponent(String(seat.token))}`:undefined});});
+app.post('/api/control/claim',async(req,res,next)=>{const run=actionQueue.catch(()=>{}).then(async()=>{const body=record(req.body);const control=seats.claim(req.headers['x-seat-token'],body.reason);commit(s=>{ensureProduction(s).control=control;audit(s,'claim-control',control.name,String(body.reason));});await persist();res.json(control);});actionQueue=run;try{await run;}catch(error){next(error);}});
+app.use('/api',(req,_res,next)=>{if(['GET','HEAD','OPTIONS'].includes(req.method)||req.path.startsWith('/control/')||req.path==='/action'||req.path==='/obs/engine/monitor'&&isLoopback(req.socket.remoteAddress)){next();return;}const type=req.path==='/replay'?'replay':req.path.startsWith('/obs/production')?'obs-production':req.path.startsWith('/obs/')?'engine':req.path.startsWith('/assets')?'set-teams':req.path.startsWith('/economy')?'set-settings':'engine';seats.authorize(req.headers['x-seat-token'],type);if(type==='obs-production'&&['play-clip','emergency','return-live','audio','tracks','start-buffer','stop-buffer'].includes(String(req.body?.action)))seats.authorize(req.headers['x-seat-token'],'output');next();});
+app.post('/api/action',async(req,res,next)=>{
+  const run=actionQueue.catch(()=>{}).then(async()=>{
+    const action=record(req.body),type=String(action.type),command=type==='production'?record(action.command):undefined;
+    const seat=seats.authorize(req.headers['x-seat-token'],type,command);
+    if(seat.role==='subtitle'&&(type!=='set-overlay'||Object.keys(record(action.patch)).some(k=>!['ticker','tickerText'].includes(k))))throw new ValidationError('字幕席仅可编辑待播字幕');
+    if(type==='set-match'&&['game','seriesId','blueTeamId','redTeamId'].some(k=>record(action.patch)[k]!==undefined))seats.authorize(req.headers['x-seat-token'],'load-match');
+    const fingerprint=JSON.stringify(action);
+    if(seats.duplicate(seat.id,action.requestId,fingerprint)){await persist();res.json(publicState(state));return;}
+    if(seat.id!=='local'&&(!Number.isInteger(action.expectedConfigVersion)||typeof action.requestId!=='string'||!action.requestId))throw new ValidationError('请携带预期配置版本与请求 ID，刷新操作席位后重试');
+    if(action.expectedConfigVersion!==undefined&&action.expectedConfigVersion!==ensureProduction(state).configVersion){res.status(409).json({error:'配置已被其他席位修改，请核对最新版本后重新保存',version:state.production!.configVersion});return;}
+    if(!isLoopback(req.socket.remoteAddress)&&type==='set-settings')throw new ValidationError('连接设置仅支持在导播主机修改');
+    const previousDynamic=state.production?.dynamicPreview,previousMode=state.mode,previousProgramScene=state.programScene;
+    const nextState=applyAction(state,action),p=ensureProduction(nextState);
+    if(type==='set-settings'){const patch=record(action.patch);if(patch.obsPassword!==undefined)adapters.setPassword(String(patch.obsPassword));}
+    if(p.audit.at(-1))p.audit.at(-1)!.actor=seat.name;
+    if(type==='production'&&command?.op==='check'){const check=p.checks[command.id as keyof typeof p.checks];if(check)check.actor=seat.name;}
+    if(type==='correct-result'&&p.corrections.at(-1))p.corrections.at(-1)!.actor=seat.name;
+    const applies=type==='take'||type==='production'&&command?.op==='immediate';
+    const cadence=type==='production'&&command?.op==='settings';
+    if(applies&&state.connections.obs.status==='connected'){
+      const application=p.application;
+      ensureProduction(state).application=structuredClone(application);state.revision++;broadcast();
+      try{
+        await adapters.productionApply(true,nextState);
+        if(application)p.application={...application,status:'applied',detail:'OBS 来源已应用，请核对节目画面'};
+        publishProgram(state,nextState);
+      }catch{
+        ensureProduction(state).application={...application,version:application?.version??0,status:'failed',at:new Date().toISOString(),detail:'OBS 来源应用失败，已保留此前节目；请检查来源并重新 TAKE'};
+        await adapters.syncPlayerFeeds(true).catch(()=>{});
+      }
+      state.revision++;broadcast();
+    }else{
+      state=nextState;broadcast();
+      if(cadence&&state.connections.obs.status==='connected'){
+        try{await adapters.productionApply(false);}
+        catch{ensureProduction(state).dynamicPreview=previousDynamic??false;throw new ValidationError('预监设置应用失败，请核对 OBS 引擎后重试');}
+      }
+    }
+    seats.remember(seat.id,action.requestId,fingerprint,ensureProduction(state).configVersion);
+    await persist();res.json(publicState(state));
+    if(previousProgramScene!==state.programScene||type==='take'||type==='production')void nativeHud.tick(true);
+    if(previousMode!=='live'&&state.mode==='live')connectGameSources();
+  });
+  actionQueue=run;try{await run;}catch(e){next(e);}
+});
 app.get('/api/champions',async(_req,res)=>{await catalog.load();res.json({version:catalog.version,champions:catalog.champions});});
 app.post('/api/connect',async(req,res)=>{const target=record(req.body).target;if(!['lcu','live','replay','obs'].includes(String(target)))throw new ValidationError('连接目标无效');if(target==='obs'&&!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'输出引擎仅支持在导播主机连接'});return;}await adapters.connect(target as 'lcu');res.json(publicState(state));});
 app.post('/api/replay',async(req,res)=>res.json(await adapters.replay(req.body)));
@@ -75,12 +149,21 @@ app.post('/api/obs/engine/mode',async(req,res)=>res.json(await adapters.obsEngin
 app.post('/api/obs/engine/setup',async(req,res)=>res.json(await adapters.obsEngineSetup(req.body)));
 app.get('/api/obs/engine/preview',async(_req,res)=>res.json(await adapters.obsEnginePreview()));
 app.post('/api/obs/engine/monitor',async(req,res)=>res.json(await adapters.obsEngineMonitor(req.body)));
-app.post('/api/obs/engine/output',async(req,res)=>res.json(await adapters.obsEngineOutput(req.body)));
+app.post('/api/obs/engine/output',async(req,res)=>{const result=await adapters.obsEngineOutput(req.body);await persist();res.json(result);});
+app.get('/api/obs/production',async(_req,res)=>{res.setHeader('Cache-Control','no-store');res.json(await adapters.productionStatus());});
+app.post('/api/obs/production',async(req,res,next)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'制作引擎仅支持在导播主机操作'});return;}const run=actionQueue.catch(()=>{}).then(async()=>{seats.authorize(req.headers['x-seat-token'],'obs-production');if(['play-clip','emergency','return-live','audio','tracks','start-buffer','stop-buffer'].includes(String(req.body?.action)))seats.authorize(req.headers['x-seat-token'],'output');const result=await adapters.productionControl(req.body);await persist();res.json(result);});actionQueue=run;try{await run;}catch(error){next(error);}});
+app.get('/api/obs/game-frame',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).end();return;}res.setHeader('Cache-Control','no-store');res.type('png').send(await adapters.spectatorFrame());});
+app.get('/api/archive',(_req,res)=>{res.setHeader('Content-Disposition','attachment; filename="riftcast-event-package.json"');res.json({version:'0.3.0',exportedAt:new Date().toISOString(),match:state.match,teams:state.teams,schedule:state.schedule,results:state.gameResults,recordings:state.recordings,production:state.production});});
+app.get('/api/clips/:id/file',(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).end();return;}const clip=state.production?.clips.find(c=>c.id===req.params.id);if(!clip)throw new ValidationError('片段不存在');res.sendFile(path.resolve(clip.file));});
+app.get('/api/videos/:id/file',(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).end();return;}const video=state.production?.videos.find(v=>v.id===req.params.id&&v.file);if(!video)throw new ValidationError('录像文件待确认');res.download(path.resolve(video.file));});
+app.get('/api/resources/inventory',async(_req,res)=>res.json(await resourceInventory(root,dataDir,state)));
+app.get('/api/resources/asset',async(req,res)=>{const resource=await resources.read(req.query.url,process.env.RIFTCAST_OFFLINE==='1');res.setHeader('Cache-Control','public, max-age=31536000, immutable');res.type(resource.type).send(resource.bytes);});
+app.post('/api/resources/cache',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress))throw new ValidationError('素材准备仅支持主机维护');if(state.connections.obs.status==='connected'){const output=await adapters.obsEngineStatus();if(output.streamActive||output.recordActive)throw new ValidationError('离线素材更新请安排在停播窗口');}res.json(await resources.prepare(String(record(req.body).version)));});
 app.get('/api/network',(req,res)=>{res.setHeader('Cache-Control','no-store');res.json({enabled:lan,urls:lan?lanAddresses().map(address=>`http://${address}:${port}/remote`):[],...(isLoopback(req.socket.remoteAddress)?{controlToken}:{}),message:lan?'手机与主机需连接同一局域网':'以 ENABLE_LAN=1 启动服务后可开启手机控制'});});
 const upload=multer({storage:multer.memoryStorage(),limits:{fileSize:8*1024*1024,files:1,fields:4},fileFilter:(_req,file,cb)=>{if(!['image/png','image/jpeg','image/webp','image/gif'].includes(file.mimetype)){cb(new ValidationError('仅支持 PNG、JPEG、WebP、GIF 图片'));return;}cb(null,true);}});
 app.post('/api/assets',upload.single('file'),async(req,res)=>{if(!req.file)throw new ValidationError('请选择图片文件');const info=inspectImage(req.file.buffer);if(req.file.mimetype!==info.mime)throw new ValidationError('图片签名与文件类型不符');const id=randomUUID();const file=`${id}.${info.extension}`;await writeFile(path.join(uploadDir,file),req.file.buffer);const asset={id,name:path.basename(req.file.originalname.replaceAll('\\','/')).slice(0,100),url:`/uploads/${file}`,type:info.mime,createdAt:new Date().toISOString()};commit(s=>{s.assets.unshift(asset);s.assets=s.assets.slice(0,1000);});res.status(201).json(asset);});
 app.use('/uploads',express.static(uploadDir,{index:false,dotfiles:'deny',maxAge:'1d',setHeaders:res=>res.setHeader('Content-Security-Policy',"default-src 'none'")}));
-app.get('/api/export',(req,res)=>{const format=req.query.format??'json';if(!['json','csv'].includes(String(format)))throw new ValidationError('导出格式需为 json 或 csv');let recording:Recording|undefined;if(req.query.recordingId){recording=state.recordings.find(r=>r.id===req.query.recordingId);if(!recording)throw new ValidationError('记录不存在');}else recording=snapshotRecording(state,{id:'current',title:state.match.title});res.setHeader('Content-Disposition',`attachment; filename="riftcast-${recording.id.replace(/[^a-z0-9-]/gi,'')}.${format}"`);if(format==='csv'){res.type('text/csv; charset=utf-8').send(csvRecording(recording));return;}res.json(recording);});
+app.get('/api/export',(req,res)=>{const format=req.query.format??'json';if(!['json','csv'].includes(String(format)))throw new ValidationError('导出格式需为 json 或 csv');let recording:Recording|undefined;if(req.query.recordingId){recording=state.recordings.find(r=>r.id===req.query.recordingId)??state.gameResults?.find(r=>r.snapshot.id===req.query.recordingId)?.snapshot??state.production?.invalidAttempts.find(r=>r.result?.snapshot.id===req.query.recordingId)?.result?.snapshot;if(!recording)throw new ValidationError('记录不存在');}else recording=snapshotRecording(state,{id:'current',title:state.match.title});res.setHeader('Content-Disposition',`attachment; filename="riftcast-${recording.id.replace(/[^a-z0-9-]/gi,'')}.${format}"`);if(format==='csv'){res.type('text/csv; charset=utf-8').send(csvRecording(recording));return;}res.json(recording);});
 app.use('/api',(_req,res)=>res.status(404).json({error:'接口不存在'}));
 app.use(express.static(path.join(root,'dist'),{index:false}));
 app.get(/.*/,(_req,res)=>res.sendFile(path.join(root,'dist','index.html'),error=>{if(error&&!res.headersSent)res.status(503).type('text').send('前端尚未构建。请执行 npm run build，或使用 npm run dev 开发模式。');}));
@@ -97,12 +180,12 @@ server.on('upgrade',(req,socket,head)=>{
   wss.handleUpgrade(req,socket,head,ws=>{wss.emit('connection',ws,req);});
 });
 wss.on('connection',ws=>{ws.send(JSON.stringify(publicState(state)));ws.on('error',()=>{});});
-const heartbeat=setInterval(()=>{void nativeHud.tick();if(state.mode==='demo'&&!state.paused&&['live','draft'].includes(state.phase)){tickDemo(state);state.revision++;broadcast();}},1000);
+const heartbeat=setInterval(()=>{void nativeHud.tick();void adapters.productionTick().catch(()=>{});const p=ensureProduction(state);if(p.analysisEndsAt&&Date.now()>=p.analysisEndsAt){delete p.analysisEndsAt;state.programScene='live';void adapters.productionApply().catch(()=>{});state.revision++;broadcast();}if(state.mode==='demo'&&!state.paused&&['live','draft'].includes(state.phase)){tickDemo(state);state.revision++;broadcast();}},1000);
 const feedRotation=setInterval(()=>{if(tickPlayerFeeds(state)){state.revision++;broadcast();}},100);
 const ocrPoll=setInterval(()=>{if(!currentGameResult(state))void economy.poll();},100);
 let nextPoll=0;const poll=setInterval(()=>{if(Date.now()<nextPoll)return;nextPoll=Date.now()+state.settings.pollInterval;void adapters.poll();},500);
 server.listen(port,lan?'0.0.0.0':'127.0.0.1',()=>{console.log(`RiftCast 本地服务：http://127.0.0.1:${port}${lan?' · 局域网控制已启用':''}`);if(state.mode==='live')connectGameSources();if(process.env.RIFTCAST_OBS_AUTOSTART==='1')void adapters.obsEngineStatus().then(status=>status.mode==='embedded'?adapters.obsEngineStart():undefined).catch(()=>{/* Failure is displayed in the engine panel without blocking the director. */});});
 server.on('error',error=>{console.error('本地服务启动失败：',error.message);process.exitCode=1;clearInterval(heartbeat);clearInterval(feedRotation);clearInterval(poll);clearInterval(ocrPoll);economy.close();void closeSpectatorOcrWorker();});
-async function shutdown(){if(shuttingDown)return;shuttingDown=true;clearInterval(heartbeat);clearInterval(feedRotation);clearInterval(poll);clearInterval(ocrPoll);economy.close();if(writeTimer)clearTimeout(writeTimer);monitorStream.close();monitorWss.close();let exitCode=0;await closeSpectatorOcrWorker();await nativeHud.close();try{await adapters.close();}catch{console.error('内置输出引擎未能正常关闭，请在引擎窗口确认输出已停止。');exitCode=1;}wss.close();server.close();await persist();process.exit(exitCode);}
+async function shutdown(){if(shuttingDown)return;shuttingDown=true;clearInterval(heartbeat);clearInterval(feedRotation);clearInterval(poll);clearInterval(ocrPoll);economy.close();if(writeTimer)clearTimeout(writeTimer);monitorStream.close();monitorWss.close();let exitCode=0;await closeSpectatorOcrWorker();await nativeHud.close();try{await adapters.close();}catch{console.error('内置输出引擎未能正常关闭，请在引擎窗口确认输出已停止。');exitCode=1;}wss.close();server.close();try{await persist();}catch{console.error('退出保存失败，请保留数据目录并检查磁盘。');exitCode=1;}process.exit(exitCode);}
 process.on('SIGINT',()=>{void shutdown();});process.on('SIGTERM',()=>{void shutdown();});
 process.on('message',(message:unknown)=>{if(message==='riftcast-shutdown'||(message!==null&&typeof message==='object'&&!Array.isArray(message)&&(message as {type?:unknown}).type==='riftcast-shutdown'))void shutdown();});

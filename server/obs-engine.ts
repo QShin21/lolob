@@ -9,6 +9,8 @@ import { ObsClient } from './obs-client';
 import { ObsPerformanceMonitor, type ObsPerformance } from './obs-performance';
 import { record, str, ValidationError } from './state';
 import { OBS_SNAPSHOT_INTERVAL_MS } from '../shared/obs-preview-policy';
+import { prepareEmergencyCollection } from './obs-emergency';
+export { emergencyScene } from './obs-emergency';
 
 const runFile = promisify(execFile);
 export const engineScene = 'RiftCast 节目';
@@ -32,6 +34,8 @@ export interface ObsEngineOptions { root: string; dataDir: string; overlayUrl: s
 
 /** An isolated official OBS process, controlled entirely through the director UI. */
 export class ObsEngine {
+  recordingPath?:string;
+  private previewFps=1;
   mode: Mode = process.env.RIFTCAST_OBS_MODE === 'external' ? 'external' : 'embedded';
   private child?: ChildProcess;
   private endpoint?: { url: string; password: string };
@@ -256,7 +260,7 @@ export class ObsEngine {
   private async connectEndpoint(endpoint: { url: string; password: string }) {
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
-      await Promise.race([this.obs.connect(endpoint.url, endpoint.password, { rpcVersion: 1 }), new Promise<never>((_resolve, reject) => { timer = setTimeout(() => reject(new Error()), 2500); })]);
+      await Promise.race([this.obs.connect(endpoint.url, endpoint.password, { rpcVersion: 1, eventSubscriptions: 131071 }), new Promise<never>((_resolve, reject) => { timer = setTimeout(() => reject(new Error()), 2500); })]);
       if (this.closing) throw new Error();
       this.connected = true;
     } catch {
@@ -289,6 +293,8 @@ export class ObsEngine {
     const fps = encoder === 'x264' ? 30 : this.selection.outputFps ?? 60;
     await this.updateIni(profileFile, { Video: { BaseCX: '1920', BaseCY: '1080', OutputCX: '1920', OutputCY: '1080', FPSType: '2', FPSCommon: String(fps), FPSNum: String(fps), FPSDen: '1', ColorFormat: 'NV12', ColorSpace: '709', ColorRange: 'Partial' }, Output: { Mode: 'Simple' }, SimpleOutput: { StreamEncoder: encoder, RecEncoder: encoder, RecQuality: 'Stream', Preset: 'superfast', NVENCPreset2: 'p4' } });
     await initial(path.join(scenes, 'RiftCast.json'), JSON.stringify({ name: 'RiftCast', current_scene: engineScene, current_program_scene: engineScene, scene_order: [{ name: engineScene }], sources: [{ name: engineScene, id: 'scene', settings: { items: [] } }], groups: [], quick_transitions: [] }));
+    await this.updateIni(profileFile,{SimpleOutput:{RecRB:'true',RecRBTime:'60',RecRBSize:'512',RecFormat2:'mkv'}});
+    await prepareEmergencyCollection(path.join(scenes,'RiftCast.json'),this.options.dataDir);
     // Never pass authentication in command-line arguments or send it to the renderer.
     const pluginFile = path.join(plugin, 'config.json');
     await writeFile(`${pluginFile}.tmp`, JSON.stringify({ first_load: false, server_enabled: true, server_port: port, alerts_enabled: false, auth_required: true, server_password: password }), { encoding: 'utf8', mode: 0o600 });
@@ -438,6 +444,11 @@ export class ObsEngine {
     await this.exclusive(() => this.configureSources(input));
     return this.status();
   }
+  async setPreviewCadence(fps:1|30) {
+    if(this.previewFps===fps)return;this.previewFps=fps;
+    if(!this.connected)return;
+    await this.exclusive(async()=>{const inputs=await this.call('GetInputList');if(inputs.inputs.some(i=>i.inputName===previewHudInput))await this.call('SetInputSettings',{inputName:previewHudInput,inputSettings:{fps,fps_custom:true},overlay:true});});
+  }
   async preview() {
     if (!this.connected) throw new ValidationError('输出引擎尚未连接');
     const lifetime = this.outputActive ? 5000 : 1500;
@@ -502,7 +513,7 @@ export class ObsEngine {
     if (existingHud && existingHud.inputKind !== 'browser_source') throw new ValidationError('预监 HUD 来源类型冲突，请检查内置引擎配置');
     const url = new URL(this.options.overlayUrl); url.searchParams.set('preview', '1');
     // Keep the owned preview HUD at the same cadence as its sampled monitor.
-    const settings = { url: url.href, width: 1920, height: 1080, fps: 1000 / OBS_SNAPSHOT_INTERVAL_MS, fps_custom: true, css: 'body { background: rgba(0,0,0,0); margin: 0; overflow: hidden; }', reroute_audio: false, shutdown: false, restart_when_active: false };
+    const settings = { url: url.href, width: 1920, height: 1080, fps: this.previewFps, fps_custom: true, css: 'body { background: rgba(0,0,0,0); margin: 0; overflow: hidden; }', reroute_audio: false, shutdown: false, restart_when_active: false };
     const { scenes } = await this.monitorCall(generation, 'GetSceneList');
     if (!scenes.some(scene => scene.sceneName === enginePreviewScene)) await this.monitorCall(generation, 'CreateScene', { sceneName: enginePreviewScene });
     let { sceneItems } = await this.monitorCall(generation, 'GetSceneItemList', { sceneName: enginePreviewScene });
@@ -559,7 +570,7 @@ export class ObsEngine {
       if (action === 'start-stream') { await this.call('StartStream'); await this.waitOutput('stream', true); }
       else if (action === 'stop-stream') { await this.call('StopStream'); await this.waitOutput('stream', false); }
       else if (action === 'start-record') { await this.call('StartRecord'); await this.waitOutput('record', true); }
-      else if (action === 'stop-record') { await this.call('StopRecord'); await this.waitOutput('record', false); }
+      else if (action === 'stop-record') { const result=await this.call('StopRecord');this.recordingPath=result.outputPath; await this.waitOutput('record', false); }
       else throw new ValidationError('输出操作无效');
     });
     return this.status();

@@ -1,5 +1,5 @@
 import type { OBSRequestTypes, OBSResponseTypes } from 'obs-websocket-js';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, createHash } from 'node:crypto';
 import type { PlayerFeedSettings, Side } from '../shared/types';
 import { record, str, ValidationError } from './state';
 
@@ -8,6 +8,7 @@ const hudName='RiftCast HUD';
 const transparentCss='body { background-color: rgba(0, 0, 0, 0); margin: 0px auto; overflow: hidden; }';
 const finite=(value:unknown):number=>typeof value==='number'&&Number.isFinite(value)&&value>=0?value:0;
 const cameraNames={blue:'RiftCast 蓝方选手摄像头',red:'RiftCast 红方选手摄像头'} as const;
+export const playerCameraName=(device:string)=>'RiftCast 选手摄像头 '+createHash('sha256').update(device).digest('hex').slice(0,16);
 const cameraPanels={blue:{x:306,y:829.4,width:190,height:250.6},red:{x:1424,y:829.4,width:190,height:250.6}} as const;
 export interface CameraScene { sceneName:string; hudName:string; visible:boolean }
 type CameraDevice={name:string;id:string};
@@ -127,21 +128,23 @@ export class ObsBroadcast {
   }
   /** Browser overlays provide labels; camera pixels are cropped underneath them. */
   async applyPlayerFeeds(feeds:Record<Side,PlayerFeedSettings>|undefined,scenes:CameraScene[]){
+    const names=Object.fromEntries((['blue','red'] as const).map(side=>[side,feeds?.[side]?.mode==='camera' ? playerCameraName(feeds[side].cameraDeviceId) : cameraNames[side]])) as Record<Side,string>;
+    const owned=(name:unknown)=>typeof name==='string'&&(Object.values(cameraNames).some(v=>v===name)||/^RiftCast 选手摄像头 [a-f0-9]{16}$/.test(name));
     this.ensureConnected();
     if(this.mutating)throw new ValidationError('OBS 配置正在处理中，请稍后再试');
     this.mutating=true;
     try{
       const {inputs}=await this.call('GetInputList');
       const selected=(['blue','red'] as const).filter(side=>feeds?.[side]?.mode==='camera');
-      if(!selected.length&&!inputs.some(input=>Object.values(cameraNames).some(name=>input.inputName===name)))return {applied:true,scenes:[]};
+      if(!selected.length&&!inputs.some(input=>owned(input.inputName)))return {applied:true,scenes:[]};
       for(const side of selected){
         const id=feeds![side].cameraDeviceId;
         if(typeof id!=='string'||!id||id.length>2048||/[\u0000-\u001f\u007f]/.test(id))throw new ValidationError('请选择有效的选手摄像头设备');
       }
       // Validate both sources and every scene before changing a camera or its transform.
       for(const side of ['blue','red'] as const){
-        const existing=inputs.find(input=>input.inputName===cameraNames[side]);
-        if(existing&&existing.inputKind!=='dshow_input')throw new ValidationError(`OBS 中同名 ${cameraNames[side]} 来源类型冲突，请先手动改名`);
+        const existing=inputs.find(input=>input.inputName===names[side]);
+        if(existing&&existing.inputKind!=='dshow_input')throw new ValidationError(`OBS 中同名 ${names[side]} 来源类型冲突，请先手动改名`);
       }
       const targets:({scene:CameraScene;items:OBSResponseTypes['GetSceneItemList']['sceneItems']})[]=[];
       for(const scene of scenes){
@@ -156,8 +159,8 @@ export class ObsBroadcast {
       }
       const video=selected.length?await this.call('GetVideoSettings'):undefined;
       if(video&&(!Number.isFinite(video.baseWidth)||!Number.isFinite(video.baseHeight)||video.baseWidth<1||video.baseHeight<1))throw new Error('OBS 画布尺寸不可用，请重新连接引擎');
-      const sourceForSide:Record<Side,string>={...cameraNames};
-      if(selected.length===2&&feeds!.blue.cameraDeviceId===feeds!.red.cameraDeviceId)sourceForSide.red=cameraNames.blue;
+      const sourceForSide:Record<Side,string>={...names};
+      if(selected.length===2&&feeds!.blue.cameraDeviceId===feeds!.red.cameraDeviceId)sourceForSide.red=names.blue;
       const sources=new Map<string,{settings:{video_device_id:string;deactivate_when_not_showing:boolean;use_custom_audio_device:boolean;audio_output_mode:number};exists:boolean;changed:boolean}>();
       for(const side of selected){
         const inputName=sourceForSide[side];
@@ -169,7 +172,7 @@ export class ObsBroadcast {
       }
       if([...sources.values()].some(source=>source.changed)){
         // Release owned devices before swapping selections, including two cameras exchanged between sides.
-        for(const target of targets)for(const item of target.items)if(Object.values(cameraNames).some(name=>item.sourceName===name))await this.call('SetSceneItemEnabled',{sceneName:target.scene.sceneName,sceneItemId:Number(item.sceneItemId),sceneItemEnabled:false});
+        for(const target of targets)for(const item of target.items)if(owned(item.sourceName))await this.call('SetSceneItemEnabled',{sceneName:target.scene.sceneName,sceneItemId:Number(item.sceneItemId),sceneItemEnabled:false});
       }
       for(const [inputName,source]of sources){
         if(!source.exists){
@@ -197,7 +200,7 @@ export class ObsBroadcast {
           await this.call('SetSceneItemIndex',{sceneName,sceneItemId,sceneItemIndex:target.items.length-1});
           await this.call('SetSceneItemEnabled',{sceneName,sceneItemId,sceneItemEnabled:target.scene.visible});
         }
-        for(const item of target.items)if(Object.values(cameraNames).some(name=>item.sourceName===name)&&!claimed.has(Number(item.sceneItemId)))await this.call('SetSceneItemEnabled',{sceneName:target.scene.sceneName,sceneItemId:Number(item.sceneItemId),sceneItemEnabled:false});
+        for(const item of target.items)if(owned(item.sourceName)&&!claimed.has(Number(item.sceneItemId)))await this.call('SetSceneItemEnabled',{sceneName:target.scene.sceneName,sceneItemId:Number(item.sceneItemId),sceneItemEnabled:false});
       }
       for(const target of targets){
         const hud=target.items.find(item=>item.sourceName===target.scene.hudName)!;

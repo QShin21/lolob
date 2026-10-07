@@ -66,7 +66,7 @@ test('LCU end of another known game is ignored until the observed game confirms 
 });
 
 test('next game preserves series, teams and BO score while detaching frozen data',()=>{
-  const prior=observedState();prior.selectedPlayerId=prior.players[0].id;finalizeGame(prior,{source:'live',winner:'blue',sourceGameId:'123'});
+  const prior=observedState();prior.selectedPlayerId=prior.players[0].id;finalizeGame(prior,{source:'live',winner:'blue',sourceGameId:'123',terminal:true});
   const state=applyAction(prior,{type:'next-game'});
   assert.equal(state.match.game,2);assert.equal(state.match.blueScore,1);assert.equal(state.match.seriesId,prior.match.seriesId);assert.equal(state.match.blueTeamId,prior.match.blueTeamId);assert.equal(state.phase,'pregame');assert.equal(state.previewScene,'draft');assert.equal(state.programScene,prior.programScene);
   assert.equal(currentGameResult(state),undefined);assert.equal(state.gameTime,0);assert.equal(state.stats.blue.gold,null);assert.equal(state.events.length,0);assert.equal(state.economy.length,0);assert.equal(state.selectedPlayerId,null);assert.ok(state.players.every(p=>!p.championId&&p.gold===null));assert.equal(state.gameResults?.[0].snapshot.players[0].kills,2);
@@ -85,7 +85,7 @@ test('without source IDs, time reset accepts the next game and late previous-gam
 });
 
 test('series completion updates schedule and blocks advance; reloading schedule resumes archive',()=>{
-  let state=observedState();state.match.blueScore=1;finalizeGame(state,{source:'live',winner:'blue'});
+  let state=observedState();state.match.blueScore=1;finalizeGame(state,{source:'live',winner:'blue',terminal:true});
   assert.equal(currentGameResult(state)?.seriesComplete,true);assert.equal(state.schedule[0].status,'finished');assert.equal(state.schedule[0].blueScore,2);assert.throws(()=>applyAction(state,{type:'next-game'}),/本系列赛已结束/);
   state=applyAction(state,{type:'load-match',matchId:'m1'});assert.equal(state.phase,'postgame');assert.equal(state.match.blueScore,2);assert.equal(state.gameResults?.length,1);
 });

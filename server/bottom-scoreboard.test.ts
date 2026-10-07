@@ -11,13 +11,15 @@ test('bottom scoreboard pairs lanes independently of source order',()=>{
   assert.equal(bottomPlayers(s,'blue')[2],undefined);
   assert.equal(bottomPlayers(s,'blue')[3]?.role,'下路');
 });
-test('live lead uses fresh OCR cumulative gold and expires without fallback values',()=>{
+test('live lead accepts matched fresh API and OCR cumulative gold and rejects stale or mismatched samples',()=>{
   const [blue,red]=[createSeed().players[0],createSeed().players[5]],now=Date.now();
-  Object.assign(blue,{gold:12800,currentGold:200,goldSource:'ocr',goldExpiresAt:new Date(now+1000).toISOString()});
-  Object.assign(red,{gold:12000,currentGold:2000,goldSource:'ocr',goldExpiresAt:new Date(now+1000).toISOString()});
+  Object.assign(blue,{gold:12800,currentGold:200,goldSource:'ocr',goldSampledAt:new Date(now).toISOString(),goldGameTime:100,goldExpiresAt:new Date(now+1000).toISOString()});
+  Object.assign(red,{gold:12000,currentGold:2000,goldSource:'ocr',goldSampledAt:new Date(now).toISOString(),goldGameTime:100,goldExpiresAt:new Date(now+1000).toISOString()});
   assert.equal(bottomGoldDifference('live',blue,red,now),800);
   assert.equal(bottomGoldDifference('live',blue,red,now+1000),null);
-  red.goldSource='api';assert.equal(bottomGoldDifference('live',blue,red,now),null);
+  red.goldSource='api';assert.equal(bottomGoldDifference('live',blue,red,now),800);
+  red.goldGameTime=104;assert.equal(bottomGoldDifference('live',blue,red,now),null);red.goldGameTime=100;
+  red.role='待分路';assert.equal(bottomGoldDifference('live',blue,red,now),null);red.role=blue.role;
   assert.equal(bottomGoldDifference('live',blue,undefined,now),null);
   assert.equal(bottomGoldDifference('demo',blue,red,now),800);
 });

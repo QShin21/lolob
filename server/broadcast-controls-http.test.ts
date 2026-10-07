@@ -72,6 +72,8 @@ test('five-pair controls persist over HTTP, migrate the retired scene, rotate in
     const response = await service.post('/api/action', { type: 'set-overlay', patch: { playerFeedPairs: pairs } });
     assert.equal(response.status, 200);
     assert.equal((await service.post('/api/action', { type: 'set-player-feed-control', mode: 'auto', activeIndex: 0 })).status, 200);
+    assert.equal((await service.post('/api/action', { type: 'preview-scene', scene:'live' })).status, 200);
+    assert.equal((await service.post('/api/action', { type: 'take' })).status, 200);
     const start = Date.now();
     while (Date.now() - start < 8000) {
       current = await service.state();

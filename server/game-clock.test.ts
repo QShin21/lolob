@@ -57,7 +57,7 @@ test('malformed sample validity cannot keep an unbounded display clock running',
 });
 
 test('adapters publish actual Live and Replay clocks while preserving gameTime recording semantics',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});let liveTime=241.5;let replayAvailable=true;let playback={time:900.25,speed:2,paused:true};
+  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.programScene='standby';let liveTime=241.5;let replayAvailable=true;let playback={time:900.25,speed:2,paused:true};
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('.'),async(_port,endpoint,options)=>{
     if(endpoint==='/liveclientdata/allgamedata')return {allPlayers:[{riotId:'Clock#Fixture',championName:'Ahri',team:'ORDER',scores:{kills:0,deaths:0,assists:0,creepScore:0}}],gameData:{gameTime:liveTime},events:{Events:[]}};
     if(endpoint==='/replay/playback'){if(!replayAvailable)throw new Error('fixture replay disconnected');if(options?.method==='POST')playback={...playback,...options.body as typeof playback};return {...playback};}
@@ -75,7 +75,7 @@ test('adapters publish actual Live and Replay clocks while preserving gameTime r
 });
 
 test('expired Replay metadata yields a fresh frozen Live anchor and runtime resets clear the old session',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.settings.pollInterval=500;let liveTime=120;let replayAvailable=true;let playback={time:120,speed:8,paused:false};
+  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.programScene='standby';state.settings.pollInterval=500;let liveTime=120;let replayAvailable=true;let playback={time:120,speed:8,paused:false};
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('.'),async(_port,endpoint,options)=>{
     if(endpoint==='/liveclientdata/allgamedata')return {allPlayers:[{riotId:'Clock#Fixture',championName:'Ahri',team:'ORDER',scores:{kills:0,deaths:0,assists:0,creepScore:0}}],gameData:{gameTime:liveTime},events:{Events:[]}};
     if(endpoint==='/replay/playback'){if(!replayAvailable)throw new Error('fixture replay disconnected');if(options?.method==='POST')playback={...playback,...options.body as typeof playback};return {...playback};}

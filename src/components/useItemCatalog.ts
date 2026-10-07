@@ -1,3 +1,5 @@
+import { cachedResource } from '../../shared/resource-url';
+import { bundledChampionVersion } from '../../shared/champion-art';
 import { useEffect, useState } from 'react';
 import type { Champion } from '../../shared/types';
 
@@ -15,7 +17,7 @@ const patchPattern = /^\d+\.\d+\.\d+$/;
 
 export function dataDragonItemImage(version: string, id: number): string | undefined {
   return patchPattern.test(version) && Number.isInteger(id) && id > 0
-    ? `${dragonOrigin}/cdn/${version}/img/item/${id}.png` : undefined;
+    ? cachedResource(`${dragonOrigin}/cdn/${version}/img/item/${id}.png`) : undefined;
 }
 
 function readCachedAssets(value: unknown, version: string): ItemAssets | null {
@@ -44,7 +46,7 @@ function loadItemAssets(version: string): Promise<ItemAssets | null> {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 6000);
     try {
-      const response = await fetch(`${dragonOrigin}/cdn/${version}/data/zh_CN/item.json`, {
+      const response = await fetch(cachedResource(`${dragonOrigin}/cdn/${version}/data/zh_CN/item.json`), {
         mode: 'cors', credentials: 'omit', cache: 'force-cache', signal: controller.signal,
       });
       if (!response.ok) return null;
@@ -64,8 +66,8 @@ function loadItemAssets(version: string): Promise<ItemAssets | null> {
 }
 
 /** Share official item assets between the observer roster, selected-player focus and control panel. */
-export function useItemCatalog(champions: Champion[]): { version: string; items: ItemAssets; status: ItemCatalogStatus } {
-  const version = champions.map(champion => champion.image.match(/\/cdn\/(\d+\.\d+\.\d+)\//)?.[1]).find(Boolean) || '';
+export function useItemCatalog(champions: Champion[], lockedVersion?:string): { version: string; items: ItemAssets; status: ItemCatalogStatus } {
+  const version = lockedVersion||champions.map(champion => champion.image.match(/\/cdn\/(\d+\.\d+\.\d+)\//)?.[1]).find(Boolean) || bundledChampionVersion;
   const [catalog, setCatalog] = useState<{ version: string; items: ItemAssets | null }>({ version: '', items: null });
   useEffect(() => {
     if (!version) return;

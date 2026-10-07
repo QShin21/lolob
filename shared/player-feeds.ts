@@ -24,22 +24,20 @@ export function resolvedPlayerFeed(state: BroadcastState, side: Side, index = pl
   const feed = playerFeedPairs(state.overlay)[index][side];
   const player = bottomPlayers(state, side)[index];
   const team = state.teams.find(team => team.id === state.match[`${side}TeamId`]);
-  const member = team?.players.find(member => player?.name && member.name === player.name) ?? team?.players.find(member => member.role === playerFeedRoles[index]) ?? team?.players[index];
+  const member = team?.players.find(member => player?.name && member.name === player.name) ?? team?.players.find(member => member.role === playerFeedRoles[index]);
   return { ...feed, label: feed.label || player?.name || member?.name || '', imageUrl: feed.imageUrl || player?.portrait || member?.portrait || '' };
 }
-/** One server clock controls cameras, labels, program and preview together. */
+/** Each bus keeps its selected pair; production holds suspend the rotation clocks. */
 export function tickPlayerFeeds(state: BroadcastState, now = Date.now()): boolean {
-  const control = state.overlay.playerFeedControl;
-  if (!control || control.mode !== 'auto') return false;
-  if (state.programScene !== 'live' && state.previewScene !== 'live') {
-    if (control.nextSwitchAt === undefined) return false;
-    delete control.nextSwitchAt;
-    return true;
+  const p=state.production,hold=!!(p?.feedHold||p?.pause||p?.playingClipId||state.programScene==='teamfight');
+  const buses=[{control:state.overlay.playerFeedControl,visible:state.previewScene==='live'||!p&&state.programScene==='live'},
+    {control:p?.program?.overlay.playerFeedControl,visible:state.programScene==='live'}];
+  let changed=false;
+  for(const {control,visible} of buses){
+    if(!control||control.mode!=='auto')continue;
+    if(!visible||hold){if(control.nextSwitchAt!==undefined){delete control.nextSwitchAt;changed=true;}continue;}
+    if(control.nextSwitchAt===undefined){control.nextSwitchAt=now+playerFeedInterval;changed=true;continue;}
+    if(now>=control.nextSwitchAt){control.activeIndex=(control.activeIndex+1)%5;control.nextSwitchAt=now+playerFeedInterval;changed=true;}
   }
-  if (control.nextSwitchAt === undefined) { control.nextSwitchAt = now + playerFeedInterval; return true; }
-  if (now < control.nextSwitchAt) return false;
-  // Resume with a complete five-second slot after a delayed heartbeat.
-  control.activeIndex = (control.activeIndex + 1) % 5;
-  control.nextSwitchAt = now + playerFeedInterval;
-  return true;
+  return changed;
 }

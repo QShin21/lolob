@@ -41,16 +41,16 @@ function Identity({player,ultimateIcon}:{player?:Player;ultimateIcon?:string}) {
   const status=state==='ready'?'终极技能就绪':state==='unlearned'?'终极技能尚未学习':state==='cooldown'?`终极技能冷却${ultimate?.cooldownRemaining!=null?` ${Math.ceil(ultimate.cooldownRemaining)} 秒`:''}`:'终极技能状态未提供';
   return <div className="lb-identity">
     <div className="lb-identity-line">
-      <span className={`lb-ultimate ${state}`} title={status} aria-label={status}>
+      {state!=='unknown'&&<span className={`lb-ultimate ${state}`} title={status} aria-label={status}>
         <Icon src={ultimate?.icon||ultimateIcon} label="终极技能" missing="R"/>
         {state==='cooldown'&&ultimate?.cooldownRemaining!=null&&<b>{Math.ceil(ultimate.cooldownRemaining)}</b>}
-      </span>
+      </span>}
       <strong className="lb-player-name" title={player?.name}>{player?.name||'—'}</strong>
     </div>
     <div className="lb-vitals">
-      <Meter current={player?.experience} max={player?.maxExperience} kind="experience" label="当前等级经验"/>
-      <Meter current={player?.health} max={player?.maxHealth} kind="health" label="生命值"/>
-      <Meter current={player?.resource} max={player?.maxResource} kind={`resource ${(player?.resourceType||'mana').toLowerCase()}`} label="资源值"/>
+      {player?.maxExperience!==undefined&&<Meter current={player?.experience} max={player?.maxExperience} kind="experience" label="当前等级经验"/>}
+      {player?.maxHealth!==undefined&&<Meter current={player?.health} max={player?.maxHealth} kind="health" label="生命值"/>}
+      {player?.maxResource!==undefined&&<Meter current={player?.resource} max={player?.maxResource} kind={`resource ${(player?.resourceType||'mana').toLowerCase()}`} label="资源值"/>}
     </div>
   </div>;
 }
@@ -64,9 +64,9 @@ function Inventory({player,items,version}:{player?:Player;items:ItemAssets;versi
   const questLabel=questKnown?`分路任务${quest?.completed?'已完成':'进行中'}${quest?.progress!=null?` ${quest.progress}${quest.maxProgress!=null?` / ${quest.maxProgress}`:''}`:''}`:'分路任务状态未提供';
   return <div className="lb-inventory" aria-label="装备、分路任务与饰品">
     <div className="lb-items">{slots.slice(0,6).map(itemIcon)}</div>
-    <div className={`lb-quest ${questKnown?quest?.completed?'is-complete':'is-pending':'is-unavailable'}`} aria-label={questLabel} title={questLabel}>
+    {questKnown&&<div className={`lb-quest ${questKnown?quest?.completed?'is-complete':'is-pending':'is-unavailable'}`} aria-label={questLabel} title={questLabel}>
       {quest?.icon?<Icon src={quest.icon} label={questLabel}/>:<span className="lb-quest-mark">{questKnown?quest?.completed?'✓':'◇':'?'}</span>}
-    </div>
+    </div>}
     <div className="lb-trinket" title={player?.visionScore!=null?`视野得分 ${player.visionScore}`:'视野得分未提供'}>
       <span className="lb-vision-score">{player?.visionScore!=null?Math.round(player.visionScore):'—'}</span>
       <Icon src={items[slots[6]]?.image||dataDragonItemImage(version,slots[6])} label={slots[6]?(items[slots[6]]?.name||'饰品'):'空饰品栏'}/>

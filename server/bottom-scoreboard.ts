@@ -9,7 +9,10 @@ export function bottomPlayers(state:Pick<BroadcastState,'players'>,side:Side):(P
 }
 /** Live row differences use fresh cumulative OCR samples; current gold and item prices are excluded. */
 export function bottomGoldDifference(mode:BroadcastState['mode'],blue?:Player,red?:Player,now=Date.now()):number|null {
-  const valid=(p?:Player)=>!!p&&p.gold!==null&&Number.isFinite(p.gold)&&(mode==='demo'||(p.goldSource==='ocr'&&!!p.goldExpiresAt&&Date.parse(p.goldExpiresAt)>now));
+  const canonical=(p?:Player)=>roles.findIndex(names=>names.includes(p?.role.toUpperCase()??''));
+  if(mode==='live'&&(canonical(blue)<0||canonical(blue)!==canonical(red)||blue?.team===red?.team))return null;
+  const valid=(p?:Player)=>!!p&&p.gold!==null&&Number.isFinite(p.gold)&&(mode==='demo'||(['api','ocr'].includes(p.goldSource??'')&&Number.isFinite(Date.parse(p.goldSampledAt??''))&&now-Date.parse(p.goldSampledAt!)>=-1000&&now-Date.parse(p.goldSampledAt!)<=10000&&(!p.goldExpiresAt||Date.parse(p.goldExpiresAt)>now)));
+  if(mode==='live'&&(!Number.isFinite(blue?.goldGameTime)||!Number.isFinite(red?.goldGameTime)||Math.abs(blue!.goldGameTime!-red!.goldGameTime!)>2||Math.abs(Date.parse(blue?.goldSampledAt??'')-Date.parse(red?.goldSampledAt??''))>2000))return null;
   return valid(blue)&&valid(red)?blue!.gold!-red!.gold!:null;
 }
 export function bottomItemSlots(player?:Player):number[] {

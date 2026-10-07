@@ -1,6 +1,6 @@
 {
   "name": "riftcast-director",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "英雄联盟本地赛事导播工作台",
@@ -14,6 +14,8 @@
     "predesktop": "node scripts/ensure-electron.cjs && node scripts/ensure-obs.cjs",
     "setup:obs": "node scripts/ensure-obs.cjs",
     "prepare:champion-art": "node scripts/prepare-champion-art.mjs",
+    "prepare:offline": "node scripts/prepare-offline.mjs",
+    "verify:production": "node scripts/verify-production-workflow.mjs",
     "verify:champion-art": "node scripts/prepare-champion-art.mjs --verify",
     "verify:broadcast-controls": "node scripts/verify-broadcast-controls.mjs",
     "desktop": "electron .",

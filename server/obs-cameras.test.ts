@@ -2,14 +2,14 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type OBSWebSocket from 'obs-websocket-js';
 import type { PlayerFeedSettings, Side } from '../shared/types';
-import { ObsBroadcast } from './obs-broadcast';
+import { ObsBroadcast, playerCameraName } from './obs-broadcast';
 import { Adapters, ChampionCatalog } from './adapters';
 import { createSeed } from './state';
 import { engineScene, enginePreviewScene } from './obs-engine';
 import { playerFeedPairs } from '../shared/player-feeds';
 import { applyAction } from './state';
 
-const names={blue:'RiftCast 蓝方选手摄像头',red:'RiftCast 红方选手摄像头'};
+const names={blue:playerCameraName('camera-blue'),red:playerCameraName('camera-red')};
 const feeds:Record<Side,PlayerFeedSettings>={
   blue:{mode:'camera',cameraDeviceId:'camera-blue',imageUrl:'',label:'Raptor'},
   red:{mode:'camera',cameraDeviceId:'camera-red',imageUrl:'',label:'Heng'}
@@ -143,14 +143,14 @@ test('both panels can share one camera without opening the same USB device twice
   assert.ok(!obs.requests.some(request=>request.type==='CreateInput'||request.type==='CreateSceneItem'||request.type==='SetInputSettings'));
 });
 
-test('swapping camera devices releases both owned inputs before changing selections',async()=>{
+test('swapping cameras changes scene mappings while each physical device keeps its immutable source',async()=>{
   const obs=new CameraObs();const controller=new ObsBroadcast(()=>true,obs.call);await controller.applyPlayerFeeds(feeds,scenes);
   obs.requests=[];
   await controller.applyPlayerFeeds({blue:{...feeds.blue,cameraDeviceId:feeds.red.cameraDeviceId},red:{...feeds.red,cameraDeviceId:feeds.blue.cameraDeviceId}},scenes);
-  const firstSettings=obs.requests.findIndex(request=>request.type==='SetInputSettings');
-  const disabled=obs.requests.slice(0,firstSettings).filter(request=>request.type==='SetSceneItemEnabled'&&request.data.sceneItemEnabled===false);
-  assert.equal(disabled.length,4);
-  assert.equal(obs.requests.filter(request=>request.type==='SetInputSettings').length,2);
+  assert.equal(obs.requests.filter(request=>request.type==='SetInputSettings').length,0);
+  assert.equal(obs.inputs.filter(i=>i.inputKind==='dshow_input').length,2);
+  const redItem=obs.items.get(engineScene)!.find(i=>i.sourceName===names.red)!;
+  assert.equal(obs.requests.find(r=>r.type==='SetSceneItemTransform'&&r.data.sceneItemId===redItem.sceneItemId)!.data.sceneItemTransform.positionX,306);
 });
 
 test('switching to image or off disables both camera buses without touching uploaded images',async()=>{
@@ -212,13 +212,15 @@ test('five-pair manual and automatic selections route each side to the matching 
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('unused'));(adapters as any).obs.call=obs.call;
   for(let index=0;index<5;index++){
     state=applyAction(state,{type:'set-player-feed-control',mode:index%2?'auto':'manual',activeIndex:index});
+    state=applyAction(state,{type:'take'});
     await adapters.syncPlayerFeeds();
-    for(const side of ['blue','red']as const)assert.equal(obs.settings.get(names[side])!.video_device_id,`camera-${side}-${index}`);
+    for(const side of ['blue','red']as const)assert.equal(obs.settings.get(playerCameraName(`camera-${side}-${index}`))!.video_device_id,`camera-${side}-${index}`);
   }
-  assert.equal(obs.inputs.filter(input=>input.inputKind==='dshow_input').length,2,'Reuse the two owned sources while switching devices');
+  assert.equal(obs.inputs.filter(input=>input.inputKind==='dshow_input').length,10,'Each device is opened through one shared source for both buses');
   assert.ok(!obs.requests.some(request=>['StartStream','StopStream','SetCurrentProgramScene'].includes(request.type)));
   const finalPair=structuredClone(pairs);finalPair[4].blue.mode='image';finalPair[4].red.mode='off';
   state=applyAction(state,{type:'set-overlay',patch:{playerFeedPairs:finalPair}});
+  state=applyAction(state,{type:'take'});
   obs.requests=[];await adapters.syncPlayerFeeds();
   assert.ok(obs.requests.filter(request=>request.type==='SetSceneItemEnabled').every(request=>request.data.sceneItemEnabled===false));
 });

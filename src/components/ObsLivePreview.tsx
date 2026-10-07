@@ -320,7 +320,7 @@ function NativePreview({ kind, connected, enabled = true, className = '', onStat
 
 export function ObsLivePreview(props: Props) {
   const [embedded, setEmbedded] = useState(false);
-  const nativeRequested = props.kind === 'program' && props.purpose === 'program' && !!window.riftcastPreview?.embed;
+  const nativeRequested = (props.kind === 'program' && props.purpose === 'program'||props.kind==='preview'&&props.purpose==='dynamic') && !!window.riftcastPreview?.embed;
   useEffect(() => {
     if (!nativeRequested || !props.connected) { setEmbedded(false); return; }
     let cancelled = false;

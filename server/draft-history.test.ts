@@ -11,7 +11,13 @@ import { Adapters, ChampionCatalog } from './adapters';
 const picks = (offset = 0) => ({ bluePicks: fallbackChampionData.slice(offset, offset + 5).map(champion => champion[0]), redPicks: fallbackChampionData.slice(offset + 5, offset + 10).map(champion => champion[0]) });
 const draft = (offset = 0, locked = true): DraftState => ({ ...picks(offset), blueBans: [], redBans: [], timer: 0, activeTeam: 'blue', action: '选择英雄', locked });
 function fresh(): BroadcastState {
-  return applyAction(applyAction(createSeed(), { type: 'set-mode', mode: 'live' }), { type: 'set-match', patch: { game: 1 } });
+  return applyAction(applyAction(createSeed(), { type: 'set-mode', mode: 'live' }), { type: 'set-match', patch: { game: 1, seriesId:'draft-fixture-series', blueScore:0, redScore:0 } });
+}
+function advance(state:BroadcastState):BroadcastState{
+  state.players=roster().map(p=>({...p,statsSource:'api',statsSampledAt:new Date().toISOString()}));state.events=[];
+  state=applyAction(state,{type:'finalize-game',winner:'blue'});
+  state=applyAction(state,{type:'production',command:{op:'accept-final',reason:'fixture final sample unavailable'}});
+  return applyAction(state,{type:'next-game'});
 }
 const entries = (state: BroadcastState) => (state.draftHistory ?? []).filter(entry => entry.seriesId === state.match.seriesId);
 function roster(offset = 0): Player[] {
@@ -29,7 +35,7 @@ test('locked LCU candidates become history only when gameflow confirms game star
   assert.equal(entries(state).length, 1);
   assert.equal(entries(state)[0].sourceGameId, '123');
   assert.equal(state.draftHistoryPending, undefined);
-  state = applyAction(state, { type: 'set-match', patch: { game: 2 } });
+  state = advance(state);
   assert.deepEqual(getFearlessHistory(state).map(entry => entry.game), [1]);
   assert.equal(getFearlessBans(state).size, 10);
 });
@@ -52,7 +58,7 @@ test('final roster trades and side changes retain the champions under the origin
   [traded[0].championId, traded[5].championId] = [traded[5].championId, traded[0].championId];
   observeLcuDraft(state, { phase: 'ChampSelect', draft: draft(), players: traded });
   observeLcuDraft(state, { phase: 'InProgress', gameId: 'match-1' });
-  state = applyAction(state, { type: 'set-match', patch: { game: 2, blueTeamId: 'ember', redTeamId: 'azure' } });
+  state = advance(state); state = applyAction(state, { type: 'set-match', patch: { blueTeamId: 'ember', redTeamId: 'azure' } });
   assert.equal(entries(state).length, 1);
   assert.deepEqual(historyForTeam(state, state.match.blueTeamId)[0].picks, traded.slice(5).map(player => player.championId));
   assert.deepEqual(historyForTeam(state, state.match.redTeamId)[0].picks, traded.slice(0, 5).map(player => player.championId));
@@ -81,7 +87,7 @@ test('an old live sample after advancing the game number cannot become the next 
   let state = fresh();
   state.players = roster();
   captureLiveDraft(state, 123);
-  state = applyAction(state, { type: 'set-match', patch: { game: 2 } });
+  state = advance(state);
   state.players = roster();
   captureLiveDraft(state);
   assert.deepEqual(entries(state).map(entry => entry.game), [1]);
@@ -117,8 +123,8 @@ test('different fixtures and restarted series isolate their global bans while re
   assert.equal(getFearlessHistory(state).length, 0);
   assert.equal(getFearlessBans(state).size, 0);
   assert.ok(state.draftHistory?.some(entry => entry.seriesId === oldSeries));
-  state = applyAction(state, { type: 'set-match', patch: { game: 2 } });
-  state = applyAction(state, { type: 'set-match', patch: { game: 1 } });
+  state = advance(state);
+  state = applyAction(state, { type: 'set-match', patch: { game: 1, seriesId:'restart-fixture-series', blueScore:0, redScore:0 } });
   assert.notEqual(state.match.seriesId, 'live:schedule:m2');
 });
 
@@ -129,7 +135,7 @@ test('manual complete drafts require entering live and reject previous picks on 
   assert.equal(entries(state).length, 0);
   state = applyAction(state, { type: 'set-phase', phase: 'live' });
   assert.equal(entries(state).length, 1);
-  state = applyAction(state, { type: 'set-match', patch: { game: 2 } });
+  state = advance(state);
   assert.throws(() => applyAction(state, { type: 'set-draft', patch: { bluePicks: [picks().redPicks[0]] } }), /全局禁用/);
   assert.deepEqual(state.draft.bluePicks, []);
   state = applyAction(state, { type: 'set-draft', patch: { bluePicks: picks(10).bluePicks } });
@@ -164,6 +170,7 @@ test('delayed LCU and manual phase changes preserve the authoritative live roste
 
 test('new broadcast scenes and native HUD modes are validated through state actions', () => {
   let state = fresh();
+  state.players=roster();state.phase='live';
   state = applyAction(state, { type: 'preview-scene', scene: 'teamfight' });
   state = applyAction(state, { type: 'take', scene: 'gold-ranking' });
   assert.equal(state.previewScene, 'teamfight');

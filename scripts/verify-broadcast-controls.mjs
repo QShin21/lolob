@@ -58,6 +58,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   page.on('pageerror', error => errors.push(error.message));
   // Item/rune/ultimate telemetry is outside this fixture. Hero art always uses real local assets.
+  await page.route('**/api/resources/asset?**', route => route.fulfill({json:{data:{}}}));
   await page.route('https://**', route => route.fulfill(route.request().url().includes('.json') ? { json: { data: {} } } : { contentType: 'image/png', body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2n1cAAAAASUVORK5CYII=', 'base64') }));
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   const settings = page.locator('.live-bottom-controls'), switcher = page.locator('#director-switcher');
@@ -72,7 +73,7 @@ try {
   assert.deepEqual(state.overlay.playerFeedPairs.map(pair => [pair.blue.imageUrl, pair.red.imageUrl]), Array.from({ length: 5 }, (_, index) => [`/uploads/player-${index}.webp`, `/uploads/player-${index + 5}.webp`]));
   checks.push('UI saves five independent blue/red material pairs');
   for (let index = 0; index < 5; index++) {
-    await switcher.getByRole('button', { name: /^手动切入/ }).nth(index).click();
+    await switcher.getByRole('button', { name: /^准备/ }).nth(index).click();
     await page.waitForFunction(index => document.querySelector('.lb-feed.blue')?.dataset.feedIndex === String(index), index);
     assert.equal(await page.locator('.lb-feed.blue img').getAttribute('src'), `/uploads/player-${index}.webp`);
     assert.equal(await page.locator('.lb-feed.red img').getAttribute('src'), `/uploads/player-${index + 5}.webp`);
@@ -80,7 +81,7 @@ try {
     assert.equal(await page.locator('.lb-feed.red .lb-nameplate').textContent(), original.players[index + 5].name);
   }
   await page.locator('.fixture-stage').screenshot({ path: path.join(evidence, 'live-player-feeds.png') });
-  checks.push('Every manual cut changes both portraits and both lane names');
+  checks.push('Every manual preparation updates both preview portraits and lane names');
   await switcher.getByRole('button', { name: '5 秒自动轮播', exact: true }).click();
   let previous = Date.now();
   for (let step = 0; step < 5; step++) {
@@ -89,7 +90,7 @@ try {
     assert.equal(await page.locator('.lb-feed.red').getAttribute('data-feed-index'), String(step));
   }
   checks.push('Complete five-slot auto cycle uses five-second wall-clock slots and synchronized panels');
-  await switcher.getByRole('button', { name: '手动切入中单对位' }).click();
+  await switcher.getByRole('button', { name: '准备中单对位' }).click();
   assert.equal(state.overlay.playerFeedControl.mode, 'manual');
   assert.equal(state.overlay.playerFeedControl.activeIndex, 2);
   // Test camera selection through the same editable group, without starting a physical source.

@@ -12,6 +12,7 @@ export function MatchLifecycle({ state, send, notify, onNextGame, onRecords, onR
   const [pending, setPending] = useState(false);
   const pendingRef = useRef(false);
   const [error, setError] = useState('');
+  const [reason,setReason]=useState('');
   if (!result) return null;
   const winner = result.winner ? getTeam({ ...state, match: result.match, teams: result.teams }, result.winner) : undefined;
   const waitingForSample=gameResultAwaitingTerminalSample(result);
@@ -28,8 +29,11 @@ export function MatchLifecycle({ state, send, notify, onNextGame, onRecords, onR
       {!result.winner && <><button className="button small" disabled={pending} onClick={() => void act({ type: 'finalize-game', winner: 'blue' }, '已确认蓝色方获胜并更新系列赛比分')}>确认蓝方获胜</button><button className="button small" disabled={pending} onClick={() => void act({ type: 'finalize-game', winner: 'red' }, '已确认红色方获胜并更新系列赛比分')}>确认红方获胜</button></>}
       <button className="button small" disabled={pending} onClick={() => void act({ type: 'preview-scene', scene: 'postgame' }, `第 ${result.game} 局赛后报告已设为预监`, onReport)}><FileText size={13} />赛后报告</button>
       <button className="button small" disabled={pending} onClick={onRecords}><Archive size={13} />比赛记录</button>
-      <button className="button primary small" disabled={pending || !result.winner || result.seriesComplete} title={result.seriesComplete ? '本场系列赛已结束，请从赛事准备载入下一场比赛' : !result.winner ? '请先确认本局胜方，系列赛比分更新后即可进入下一局' : '保留本场战队与系列赛比分，进入下一局 BP 准备'} onClick={() => void act({ type: 'next-game' }, `已进入第 ${result.game + 1} 局准备，上局记录已保留`, onNextGame)}>{result.seriesComplete ? <Trophy size={13} /> : <ArrowRight size={13} />}{pending ? '正在处理…' : result.seriesComplete ? '系列赛已结束' : `下一局 · GAME ${result.game + 1}`}</button>
+      <button className="button small" disabled={pending} onClick={()=>void act({type:'preview-scene',scene:'interview'},'采访已设为待播')}>准备采访</button>
+      <button className="button primary small" disabled={pending || waitingForSample || !result.winner || result.seriesComplete} title={result.seriesComplete ? '本场系列赛已结束，请从赛事准备载入下一场比赛' : !result.winner ? '请先确认本局胜方，系列赛比分更新后即可进入下一局' : '保留本场战队与系列赛比分，进入下一局 BP 准备'} onClick={() => void act({ type: 'next-game' }, `已进入第 ${result.game + 1} 局准备，上局记录已保留`, onNextGame)}>{result.seriesComplete ? <Trophy size={13} /> : <ArrowRight size={13} />}{pending ? '正在处理…' : result.seriesComplete ? '系列赛已结束' : `下一局 · GAME ${result.game + 1}`}</button>
     </div>
     {error && <p className="match-lifecycle-error" role="alert">{error}</p>}
+    {waitingForSample&&<div><input aria-label="采用现有终局记录的理由" placeholder="终局接口不可用时，填写裁判确认理由" value={reason} onChange={e=>setReason(e.target.value)}/><button className="button small" disabled={pending||!reason.trim()} onClick={()=>void act({type:'production',command:{op:'accept-final',reason}},'已确认采用现有记录，缺失字段继续保留')}>凭理由采用现有记录</button></div>}
+    {!waitingForSample&&result.terminalSampleComplete===false&&<p className="muted">终局数据仍含缺失或末次观察值，导出保留原采样时间。</p>}
   </section>;
 }

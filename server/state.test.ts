@@ -50,7 +50,7 @@ test('loading the next fixture resets match stats and uses its own roster and po
   const current=applyAction(createSeed(),{type:'save-recording'});current.selectedPlayerId=current.players[0].id;current.teams.find(t=>t.id==='jade')!.players[0].portrait='/uploads/player.png';
   const next=applyAction(current,{type:'load-match',matchId:'m2'});
   assert.equal(next.match.blueTeamId,'jade');assert.equal(next.match.redTeamId,'storm');assert.equal(next.match.game,1);assert.equal(next.match.subtitle,'');assert.equal(next.phase,'pregame');assert.equal(next.gameTime,0);assert.deepEqual(next.events,[]);assert.deepEqual(next.economy,[]);assert.deepEqual(next.draft.blueBans,[]);assert.equal(next.stats.red.kills,0);assert.equal(next.selectedPlayerId,null);assert.equal(next.players[0].name,'竹影');assert.equal(next.players[0].portrait,'/uploads/player.png');assert.ok(next.players.every(p=>p.gold===null&&p.championId===''));assert.equal(next.recordings.length,1);assert.equal(current.gameTime,1124);
-  const game=applyAction(current,{type:'set-match',patch:{game:3}});assert.equal(game.gameTime,0);assert.equal(game.players[0].name,'山岚');
+  assert.throws(()=>applyAction(current,{type:'set-match',patch:{game:3}}),/统一的下一局/);
 });
 
 test('team and schedule edits preserve references and reject duplicate fixture identities',()=>{

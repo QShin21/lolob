@@ -1,3 +1,4 @@
+import { cachedResource } from './resource-url';
 import type { SummonerSpell } from './types';
 
 const spellIds: Record<number, string> = {1:'SummonerBoost',3:'SummonerExhaust',4:'SummonerFlash',6:'SummonerHaste',7:'SummonerHeal',11:'SummonerSmite',12:'SummonerTeleport',13:'SummonerMana',14:'SummonerDot',21:'SummonerBarrier',30:'SummonerPoroRecall',31:'SummonerPoroThrow',32:'SummonerSnowball',39:'SummonerSnowURFSnowball_Mark',54:'Summoner_UltBookPlaceholder',55:'Summoner_UltBookSmitePlaceholder',2201:'SummonerCherryHold',2202:'SummonerCherryFlash'};
@@ -29,7 +30,7 @@ export function summonerSpellKey(spell?: SummonerSpell): string | undefined {
 
 export function summonerSpellImage(spell: SummonerSpell | undefined, version: string): string | undefined {
   const key = summonerSpellKey(spell);
-  return key && /^\d+\.\d+\.\d+$/.test(version) ? `https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${key}.png` : undefined;
+  return key && /^\d+\.\d+\.\d+$/.test(version) ? cachedResource(`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${key}.png`) : undefined;
 }
 
 // Paths verified against Riot's 16.19.1 runesReforged.json; style artwork is version independent.
@@ -42,5 +43,5 @@ const runePaths: Record<number, string> = {
   8351:'Styles/Inspiration/GlacialAugment/GlacialAugment.png',8360:'Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png',8369:'Styles/Inspiration/FirstStrike/FirstStrike.png',
 };
 export function runeImage(id?: number): string | undefined {
-  return id && runePaths[id] ? `https://ddragon.leagueoflegends.com/cdn/img/perk-images/${runePaths[id]}` : undefined;
+  return id && runePaths[id] ? cachedResource(`https://ddragon.leagueoflegends.com/cdn/img/perk-images/${runePaths[id]}`) : undefined;
 }

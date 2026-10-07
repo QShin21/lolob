@@ -71,7 +71,7 @@ function TeamResources({ state, side }: { state: BroadcastState; side: Side }) {
   const stats = state.stats[side];
   const connected = state.mode === 'demo' || !!currentGameResult(state) || state.connections.live.status === 'connected';
   return <div className={`lt-resources ${side}`}>
-    <span className="lt-towers" title="摧毁防御塔"><TowerGlyph /><b>{connected ? stats.towers : '—'}</b></span>
+    <span className="lt-towers" title="摧毁防御塔"><TowerGlyph /><b>{connected&&stats.objectivesAvailable!==false ? stats.towers : '—'}</b></span>
     <span className="lt-gold" title={`团队经济：${stats.gold == null ? '未提供' : stats.gold}`}><GoldGlyph /><b>{stats.gold == null ? '—' : `${(stats.gold / 1000).toFixed(1)}K`}</b></span>
   </div>;
 }
@@ -85,6 +85,7 @@ function DragonStrip({ state, side }: { state: BroadcastState; side: Side }) {
     taken: index < count,
     kind: index < count ? dragonKind(kills[index]) : emptyDragonSlots[index % emptyDragonSlots.length],
   }));
+  if(state.stats[side].objectivesAvailable===false)return <div className={`lt-dragons ${side}`} aria-label="巨龙事件未提供">—</div>;
   return <div className={`lt-dragons ${side}`} aria-label={`${side === 'blue' ? '蓝方' : '红方'}巨龙 ${connected ? count : '未提供'}`}>
     {slots.map((slot, index) => <span key={index} className={slot.taken ? 'taken' : ''} title={slot.taken ? dragonLabels[slot.kind] : '尚未获得巨龙'}><DragonGlyph kind={slot.kind} /></span>)}
   </div>;

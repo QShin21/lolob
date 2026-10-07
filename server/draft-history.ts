@@ -45,8 +45,10 @@ export function startDraftSeries(state: BroadcastState, seriesId = `series-${ran
 export function getFearlessHistory(state: BroadcastState): DraftHistoryGame[] {
   return (state.draftHistory ?? []).filter(entry => validHistory(entry) && entry.seriesId === state.match.seriesId && entry.game < state.match.game && sameTeams(entry, state)).sort((a, b) => a.game - b.game);
 }
-export function getFearlessBans(state: BroadcastState): Set<string> {
-  return new Set(getFearlessHistory(state).flatMap(entry => [...entry.bluePicks, ...entry.redPicks]));
+export function getFearlessBans(state: BroadcastState, teamId?: string): Set<string> {
+  const rules=state.production?.rules;
+  if(rules?.mode==='standard'||rules?.exceptionGames.includes(state.match.game))return new Set();
+  return new Set(getFearlessHistory(state).flatMap(entry => rules?.scope==='team'&&teamId ? entry.blueTeamId===teamId?entry.bluePicks:entry.redTeamId===teamId?entry.redPicks:[] : [...entry.bluePicks, ...entry.redPicks]));
 }
 export function historyForTeam(state: BroadcastState, teamId: string): { game: number; picks: string[] }[] {
   return getFearlessHistory(state).map(entry => ({ game: entry.game, picks: [...(entry.blueTeamId === teamId ? entry.bluePicks : entry.redTeamId === teamId ? entry.redPicks : [])] })).filter(entry => entry.picks.length > 0);

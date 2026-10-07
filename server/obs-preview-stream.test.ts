@@ -21,6 +21,9 @@ test('only the explicitly designated studio program can own a native display', (
   assert.equal(usesNativeObsPreview('program', 'monitor', true, true), false, 'connection settings remain sampled');
   assert.equal(usesNativeObsPreview('preview', 'program', true, true), false, 'preview cannot acquire a native display');
   assert.equal(usesNativeObsPreview('program', 'program', true, true), true);
+  assert.equal(usesNativeObsPreview('preview', 'dynamic', true, true), true, 'optional main preview may acquire a native projector');
+  assert.equal(usesNativeObsPreview('preview', 'dynamic', false, true), false, 'browser keeps snapshots');
+  assert.equal(usesNativeObsPreview('preview', 'dynamic', true, false), false, 'external OBS keeps snapshots');
   assert.equal(usesNativeObsPreview('program', 'program', false, true), false, 'browser falls back to snapshots');
   assert.equal(usesNativeObsPreview('program', 'program', true, false), false, 'external OBS falls back to snapshots');
   assert.equal(OBS_SNAPSHOT_INTERVAL_MS, 1000);

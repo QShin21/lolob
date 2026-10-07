@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { BroadcastState, GameResult, Player, Recording, Side } from '../shared/types';
 import { currentGameResult, gameResultKey, rosterFingerprint } from '../shared/game-results';
+import { ensureProduction } from '../shared/production';
 
 export function explicitWinner(value: unknown): Side | undefined {
   if(typeof value==='string')value=value.toUpperCase();
@@ -30,11 +31,24 @@ function seriesComplete(state:BroadcastState):boolean {
   return Number.isInteger(count)&&count>0&&(state.match.blueScore>=Math.floor(count/2)+1||state.match.redScore>=Math.floor(count/2)+1);
 }
 function applyWinner(state:BroadcastState,result:GameResult,winner:Side):void {
+  const production=ensureProduction(state);
   result.winner=winner;result.winnerTeamId=winner==='blue'?result.blueTeamId:result.redTeamId;
   state.match[`${winner}Score`]++;
+  production.scores[result.winnerTeamId!]=(production.scores[result.winnerTeamId!]??state.match[`${winner}Score`]-1)+1;
   result.match=structuredClone(state.match);result.seriesComplete=seriesComplete(state);
   const match=result.matchId?state.schedule.find(m=>m.id===result.matchId):undefined;
   if(match){match.blueScore=match.blueTeamId===result.blueTeamId?state.match.blueScore:state.match.redScore;match.redScore=match.redTeamId===result.redTeamId?state.match.redScore:state.match.blueScore;match.status=result.seriesComplete?'finished':'live';}
+  syncResultRecording(state, result);
+}
+export function terminalComplete(players: Player[]): boolean {
+  return players.length === 10 && players.every(p => p.statsAvailable !== false && Number.isFinite(p.statsGameTime) && [p.kills,p.deaths,p.assists,p.cs].every(v => Number.isInteger(v) && v >= 0) && p.gold !== null);
+}
+export function syncResultRecording(state: BroadcastState, result: GameResult): void {
+  result.snapshot.result = { resultId: result.id, seriesId: result.seriesId, game: result.game, attempt: Number(JSON.parse(result.key).at(-1)) || 1,
+    winner: result.winner, winnerTeamId: result.winnerTeamId, version: 1 + (state.production?.corrections.filter(c => c.resultId === result.id).length ?? 0),
+    terminalComplete: result.terminalSampleComplete === true, seriesComplete: result.seriesComplete, blueScore: result.match.blueScore, redScore: result.match.redScore };
+  const recording = state.recordings.find(r => r.id === result.id);
+  if (recording) Object.assign(recording, structuredClone(result.snapshot));
 }
 /** Confirmed end signals archive the last actually observed sample, including its original sample time. */
 export function finalizeGame(state:BroadcastState,options:{source:GameResult['source'];winner?:Side;sourceGameId?:string;now?:number;terminal?:boolean}):GameResult|undefined {
@@ -48,10 +62,12 @@ export function finalizeGame(state:BroadcastState,options:{source:GameResult['so
   const observed=state.players.map(p=>p.statsSampledAt).filter((value):value is string=>!!value&&Number.isFinite(Date.parse(value))).sort();
   const snapshot:Recording={id,title:`${state.match.title} · 第 ${state.match.game} 局 · 赛后`,createdAt:endedAt,mode:state.mode,duration:state.gameTime,sourceGameTime:state.gameTime,...(observed[0]?{observedAt:observed[0]}:state.connections.live.updatedAt?{observedAt:state.connections.live.updatedAt}:{}),players:structuredClone(state.players),stats:structuredClone(state.stats),events:structuredClone(state.events),economy:structuredClone(state.economy),...(state.economyFeed?{economyFeed:structuredClone(state.economyFeed)}:{})};
   const result:GameResult={id,key,seriesId:state.match.seriesId||state.match.title,...(state.match.seriesId?.startsWith(`${state.mode}:schedule:`)?{matchId:state.match.seriesId.slice(`${state.mode}:schedule:`.length)}:{}),game:state.match.game,blueTeamId:state.match.blueTeamId,redTeamId:state.match.redTeamId,winner:null,endedAt,source:options.source,...(options.sourceGameId?{sourceGameId:options.sourceGameId}:state.activeSourceGameId?{sourceGameId:state.activeSourceGameId}:{}),snapshot,match:structuredClone(state.match),teams:structuredClone(state.teams),draft:structuredClone(state.draft),seriesComplete:false,terminalSampleAccepted:options.terminal===true};
-  if(options.source==='manual')result.terminalSampleAccepted=true;
+  result.terminalSampleComplete = options.terminal === true && terminalComplete(state.players);
+  if(state.mode==='demo'){result.terminalSampleAccepted=true;result.terminalSampleComplete=true;}
   result.selectedPlayerId=state.selectedPlayerId;
   state.gameResults=[...(state.gameResults??[]),result];state.finishedGameId=id;state.reportGameId=id;state.phase='postgame';state.paused=true;delete state.gameClock;
   if(options.winner)applyWinner(state,result,options.winner);
+  syncResultRecording(state,result);
   if(!state.recordings.some(recording=>recording.id===id))state.recordings=[structuredClone(snapshot),...state.recordings].slice(0,100);
   return result;
 }
@@ -82,7 +98,7 @@ export function absorbTerminalGameSample(state:BroadcastState,sample:TerminalSam
   for(const side of ['blue','red']as const)if(snapshot.stats[side].gold===null)snapshot.stats[side].gold=previousStats[side].gold;
   const observed=snapshot.players.map(p=>p.statsSampledAt).filter((value):value is string=>!!value&&Number.isFinite(Date.parse(value))).sort();if(observed[0])snapshot.observedAt=observed[0];
   if(sample.sourceGameId)result.sourceGameId=sample.sourceGameId;
-  result.terminalSampleAccepted=true;result.source='live';
-  const recording=state.recordings.find(r=>r.id===result.id);if(recording)Object.assign(recording,structuredClone(snapshot));
+  result.terminalSampleAccepted=true;result.terminalSampleComplete=terminalComplete(sample.players);result.source='live';
+  syncResultRecording(state,result);
   return true;
 }

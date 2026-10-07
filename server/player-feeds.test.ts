@@ -41,6 +41,7 @@ test('each of five pairs persists independent material settings and resolves its
 });
 test('server-controlled rotation holds each pair for five seconds, wraps and stops immediately on manual cut', () => {
   let state = applyAction(createSeed(), { type: 'set-player-feed-control', mode: 'auto', activeIndex: 0 });
+  state.previewScene='live';state=applyAction(state,{type:'take'});
   const start = state.overlay.playerFeedControl!.nextSwitchAt! - 5000;
   assert.equal(tickPlayerFeeds(state, start + 4999), false);
   for (let step = 1; step <= 5; step++) {
@@ -49,6 +50,7 @@ test('server-controlled rotation holds each pair for five seconds, wraps and sto
     assert.equal(tickPlayerFeeds(state, start + step * 5000 + 4999), false);
   }
   state = applyAction(state, { type: 'set-player-feed-control', mode: 'manual', activeIndex: 3 });
+  state=applyAction(state,{type:'take'});
   assert.equal(tickPlayerFeeds(state, start + 100000), false);
   assert.deepEqual(state.overlay.playerFeedControl, { mode: 'manual', activeIndex: 3 });
 });
@@ -57,6 +59,8 @@ test('automatic rotation waits off-air and restarts a complete slot when a live 
   state.programScene = 'teamfight'; state.previewScene = 'draft';
   assert.equal(tickPlayerFeeds(state, 1000), true);
   assert.equal(state.overlay.playerFeedControl!.nextSwitchAt, undefined);
+  assert.equal(tickPlayerFeeds(state,2000),false,'Teamfight holds rotation even when preview becomes live');
+  state.programScene='standby';
   state.previewScene = 'live'; tickPlayerFeeds(state, 2000);
   assert.equal(state.overlay.playerFeedControl!.nextSwitchAt, 7000);
   assert.equal(tickPlayerFeeds(state, 6999), false);

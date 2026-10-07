@@ -1,3 +1,4 @@
+import { cachedResource } from '../../shared/resource-url';
 import { useEffect, useState } from 'react';
 
 /** Static champion R artwork only; readiness and cooldown remain player telemetry. */
@@ -17,14 +18,14 @@ function loadUltimateIcon(version: string, championId: string): Promise<string |
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 6000);
     try {
-      const response = await fetch(`${dragonOrigin}/cdn/${version}/data/en_US/champion/${championId}.json`, {
+      const response = await fetch(cachedResource(`${dragonOrigin}/cdn/${version}/data/en_US/champion/${championId}.json`), {
         mode: 'cors', credentials: 'omit', cache: 'force-cache', signal: controller.signal,
       });
       if (!response.ok) return undefined;
       const payload = await response.json() as { data?: Record<string, { spells?: { image?: { full?: unknown } }[] }> };
       const filename = payload.data?.[championId]?.spells?.[3]?.image?.full;
       return typeof filename === 'string' && spellImagePattern.test(filename)
-        ? `${dragonOrigin}/cdn/${version}/img/spell/${filename}` : undefined;
+        ? cachedResource(`${dragonOrigin}/cdn/${version}/img/spell/${filename}`) : undefined;
     } catch { return undefined; }
     finally { window.clearTimeout(timeout); }
   })();

@@ -71,6 +71,7 @@ const server = http.createServer(async (req, res) => {
       const action = await readBody(); actions.push(action); state = applyAction(state, action); broadcast(); json(res, state); return;
     }
     if (url.pathname === '/api/state') { json(res, state); return; }
+    if (url.pathname === '/api/control/seat') { json(res, { id: 'fixture-director', token: 'fixture-seat-token', name: '隔离导播席', role: 'director', owner: true }); return; }
     if (url.pathname === '/api/champions') { json(res, { version: '16.19.1', champions }); return; }
     if (url.pathname === '/api/obs/engine/output') {
       const body = await readBody(); outputRequests.push(body);
@@ -268,7 +269,7 @@ try {
   const match = state.schedule.find(match => match.title === '隔离工作流验收赛事');
   assert.ok(match, 'New competition is saved to in-memory schedule');
   const matchRow = page.locator('.schedule-table-row').filter({ hasText: '隔离工作流验收赛事' });
-  await matchRow.getByRole('button', { name: /载入/ }).click(); await page.waitForTimeout(120);
+  const loadButton=matchRow.getByRole('button',{name:/按住载入/});await loadButton.focus();await page.keyboard.down('Enter');await page.waitForTimeout(1100);await page.keyboard.up('Enter');await page.waitForTimeout(120);
   assert.equal(state.match.title, match.title);
   tests.push('create competition, save schedule and load current match using only fresh in-memory state');
 
@@ -297,8 +298,7 @@ try {
   await page.locator('.studio-output-dock').waitFor();
   const beforeOutputs = outputRequests.length;
   await page.locator('.studio-output-dock').getByRole('button', { name: '开始推流', exact: true }).click();
-  await page.locator('.studio-output-dock').getByRole('button', { name: '停止推流', exact: true }).waitFor();
-  await page.locator('.studio-output-dock').getByRole('button', { name: '停止推流', exact: true }).click();
+  const stopButton=page.locator('.studio-output-dock').getByRole('button',{name:/^按住.*停止推流$/});await stopButton.waitFor();await stopButton.focus();await page.keyboard.down('Enter');await page.waitForTimeout(1100);await page.keyboard.up('Enter');
   await page.locator('.studio-output-dock').getByRole('button', { name: '开始推流', exact: true }).waitFor();
   await page.locator('.studio-output-dock').getByRole('button', { name: '开始录制', exact: true }).click();
   await page.locator('.studio-output-dock').getByRole('button', { name: '停止录制', exact: true }).waitFor();
@@ -326,7 +326,7 @@ try {
   const previousRevision=state.revision;state=createSeed();state.revision=previousRevision+1;state.match.seriesId='demo:schedule:m1';state.match.game=1;state.match.blueScore=0;state.match.redScore=0;
   state.match.format='BO3';state.phase='live';state.selectedPlayerId=state.players[0].id;
   state.connections.obs={status:'connected',detail:'Isolated fixture'};state.programScene='ranking';
-  const result=finalizeGame(state,{source:'live',winner:'blue'});state.revision++;broadcast();
+  const result=finalizeGame(state,{source:'live',winner:'blue'});state=applyAction(state,{type:'take',scene:'ranking'});state.revision++;broadcast();
   await navigate(page,'导播工作台');await page.locator('.match-lifecycle').waitFor();
   assert.equal(state.recordings.length,1);assert.equal(state.match.blueScore,1);
   const endLayoutFailures=[];

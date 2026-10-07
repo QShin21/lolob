@@ -1,3 +1,4 @@
+import { cachedResource } from '../shared/resource-url';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { summonerSpellImage, summonerSpellKey, runeImage } from '../shared/player-assets';
@@ -19,7 +20,7 @@ test('summoner icons accept real localized spectator spell tokens and evolved va
   for (const [name, rawName, expected] of cases) assert.equal(summonerSpellKey({ name, rawName }), expected);
   assert.equal(summonerSpellKey({id:4,name:'未知'}),'SummonerFlash');
   assert.equal(summonerSpellKey({id:999999,name:'unsupported'}),undefined);
-  assert.equal(summonerSpellImage({name:'SummonerTeleportUpgrade'},'16.19.1'),'https://ddragon.leagueoflegends.com/cdn/16.19.1/img/spell/SummonerTeleport.png');
+  assert.equal(summonerSpellImage({name:'SummonerTeleportUpgrade'},'16.19.1'),cachedResource('https://ddragon.leagueoflegends.com/cdn/16.19.1/img/spell/SummonerTeleport.png'));
   assert.equal(summonerSpellImage({name:'Flash'},'../../assets'),undefined);
 });
 

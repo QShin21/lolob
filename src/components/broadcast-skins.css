@@ -60,3 +60,4 @@
 .cast-observer-id strong{font-size:calc(.8cqw * var(--roster-zoom))}
 .cast-scene-draft .cast-sponsor{left:auto;right:4%;top:5%;bottom:auto;height:1.7cqw}
 .cast-gold-diff{top:calc(1.1% + 6.25cqw * var(--hud-scale,1))}.cast-score-team .cast-team-mark{border:1px solid #a4c5d533;border-radius:.3cqw;background:#ffffff06}
+.cast-draft-preselect{position:absolute;z-index:3;top:6.8cqw;left:.5cqw;padding:.35cqw .55cqw;background:#10202dee;color:#d3e1e0;font-size:.7cqw;border:1px dashed #93bbb0}

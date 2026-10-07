@@ -20,7 +20,8 @@ export const playerKda = (p?: Player, compact = false) => !p || p.statsAvailable
 export const playerCs = (p?: Player) => !p || p.statsAvailable === false ? '—' : p.cs;
 export async function api<T>(url: string, init?: RequestInit): Promise<T> {
   const token = new URLSearchParams(location.search).get('token') || sessionStorage.getItem('riftcast-control-token');
-  const response = await fetch(url, { ...init, headers: { ...(init?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...(token ? { 'X-Control-Token': token } : {}), ...init?.headers } });
+  const seat=sessionStorage.getItem('riftcast-seat-token');
+  const response = await fetch(url, { ...init, headers: { ...(init?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...(token ? { 'X-Control-Token': token } : {}),...(seat?{'X-Seat-Token':seat}:{}), ...init?.headers } });
   if (!response.ok) { const error = await response.json().catch(() => ({})); throw new Error(error.error || error.message || `请求失败 (${response.status})`); }
   return response.json();
 }
