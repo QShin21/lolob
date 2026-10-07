@@ -79,6 +79,8 @@ const bool = (value:unknown):boolean => { if(typeof value!=='boolean')throw new 
 const oneOf = <T extends string>(value:unknown,choices:readonly T[]):T => {if(typeof value!=='string'||!choices.includes(value as T))throw new ValidationError('未知选项');return value as T;};
 const imageUrl = (value:unknown):string => {const url=str(value,2048);if(!/^\/uploads\/[a-z0-9-]+\.(png|jpg|webp|gif)$/.test(url)&&!/^https:\/\//.test(url))throw new ValidationError('图片地址须为已上传素材或 HTTPS 地址');return url;};
 function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
+  if(p.scheduleView!==undefined){const v=record(p.scheduleView);const day=str(v.day,10);if(day&&!/^\d{4}-\d{2}-\d{2}$/.test(day))throw new ValidationError('赛程日期格式无效');s.overlay.scheduleView={page:Math.floor(num(v.page,0,1000)),filter:oneOf(v.filter,['all','upcoming','day'] as const),day};}
+  if(p.interview!==undefined){const v=record(p.interview);s.overlay.interview={name:str(v.name,80),team:str(v.team,80),role:str(v.role,80),topic:str(v.topic,120),dock:oneOf(v.dock,['left','right'] as const)};}
   if(p.patchVersion!==undefined)s.overlay.patchVersion=str(p.patchVersion,20);
   if(p.bottomTitle!==undefined)s.overlay.bottomTitle=str(p.bottomTitle,150);
   if(p.playerFeedPairs!==undefined){
@@ -89,7 +91,7 @@ function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
         const feed=record(pair[side]);
         const mode=oneOf(feed.mode,['image','camera','off'] as const),device=str(feed.cameraDeviceId,2048);
         if(mode==='camera'&&!device.trim())throw new ValidationError('请选择摄像头源');
-        return [side,{mode,imageUrl:feed.imageUrl===''?'':imageUrl(feed.imageUrl),cameraDeviceId:device,label:str(feed.label,80)}];
+        return [side,{mode,imageUrl:feed.imageUrl===''?'':imageUrl(feed.imageUrl),cameraDeviceId:device,label:str(feed.label,80),...(feed.focusX===undefined?{}:{focusX:num(feed.focusX,0,100)}),...(feed.focusY===undefined?{}:{focusY:num(feed.focusY,0,100)})}];
       })) as import('../shared/types').PlayerFeedPair;
     });
   }
@@ -102,6 +104,7 @@ function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
       if(feed.imageUrl!==undefined)next[side].imageUrl=feed.imageUrl===''?'':imageUrl(feed.imageUrl);
       if(feed.cameraDeviceId!==undefined)next[side].cameraDeviceId=str(feed.cameraDeviceId,2048);
       if(feed.label!==undefined)next[side].label=str(feed.label,80);
+      for(const key of ['focusX','focusY'] as const)if(feed[key]!==undefined)next[side][key]=num(feed[key],0,100);
       if(next[side].mode==='camera'&&!next[side].cameraDeviceId.trim())throw new ValidationError('请选择摄像头源');
     }
     s.overlay.playerFeeds=next;

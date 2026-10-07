@@ -168,3 +168,14 @@ test('result CSV tracks corrections and invalid remake attempts consistently wit
   const missingRow=csvRecording(incomplete).split('\r\n').find(row=>row.includes(`"${incomplete.players[0].name}"`))!;
   assert.ok(missingRow.includes('"不可用","不可用","不可用","不可用","不可用"'));assert.equal(missingRow.includes('"999"'),false);
 });
+
+test('audio peak hold expires and disconnected or stale samples remain unavailable',async t=>{
+ let now=1000;t.mock.method(Date,'now',()=>now);
+ const s=createSeed(),obs=new ProductionObsFixture(),production=new ObsProduction(obs as unknown as ObsClient,()=>s,work=>work(s));
+ const meter=(peak:number)=>obs.emit('InputVolumeMeters',{inputs:[{inputName:'RiftCast 桌面音频',inputLevelsMul:[[peak]]}]});
+ meter(.9);now=2000;meter(.1);let bus=(await production.status()).audio[0];
+ assert.ok(bus.available&&'heldPeakDb' in bus&&Math.abs(bus.heldPeakDb!-20*Math.log10(.9))<.001);assert.equal('peakDb' in bus&&bus.peakDb,-20);
+ now=5000;meter(.2);bus=(await production.status()).audio[0];assert.equal('heldPeakDb' in bus&&bus.heldPeakDb,'peakDb' in bus&&bus.peakDb);
+ now=7100;bus=(await production.status()).audio[0];assert.equal('meterAvailable' in bus&&bus.meterAvailable,false);
+ obs.emit('ConnectionClosed');assert.equal('peakDb' in (await production.status()).audio[0],false);
+});

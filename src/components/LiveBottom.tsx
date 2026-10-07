@@ -90,8 +90,8 @@ function PlayerFeed({state,side}:{state:BroadcastState;side:Side}) {
   const feed=resolvedPlayerFeed(state,side);
   if(feed?.mode==='off')return null;
   const label=feed.label;
-  return <div className={`lb-feed ${side} ${feed?.mode==='camera'?'is-camera':'is-image'}`} data-feed-index={playerFeedControl(state.overlay).activeIndex} aria-label={`${side==='blue'?'蓝':'红'}方选手画面`}>
-    {feed?.mode==='image'&&feed.imageUrl&&<img src={feed.imageUrl} alt={label||'选手图片'}/>}{label&&<div className="lb-nameplate">{label}</div>}
+  return <div className={`lb-feed ${side} ${feed?.mode==='camera'?'is-camera':feed?.imageUrl?'is-image':'is-empty'}`} data-feed-index={playerFeedControl(state.overlay).activeIndex} aria-label={`${side==='blue'?'蓝':'红'}方选手画面`}>
+    {feed?.mode==='image'&&feed.imageUrl&&<img src={feed.imageUrl} style={{objectPosition:`${feed.focusX??50}% ${feed.focusY??35}%`}} alt={label||'选手图片'} onError={e=>{e.currentTarget.style.visibility='hidden';e.currentTarget.parentElement?.classList.add('is-empty');}}/>}{label&&<div className="lb-nameplate">{label}</div>}
   </div>;
 }
 export function LiveBottom({state,champions,items,version}:{state:BroadcastState;champions:Champion[];items:ItemAssets;version:string}) {

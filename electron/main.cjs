@@ -145,6 +145,15 @@ async function closeProjector(prepared) {
 
 function installPreviewBridge() {
   // Only the two projector windows owned by the embedded OBS can enter this host.
+  ipcMain.handle('riftcast:choose-path', async (event, kind) => {
+    if (!trustedRenderer(event.sender, event.senderFrame) || !['game','lockfile'].includes(kind)) throw new Error('无效的路径选择请求');
+    const result = await dialog.showOpenDialog(mainWindow, {title:kind==='game'?'选择英雄联盟安装目录':'选择客户端 lockfile',properties:[kind==='game'?'openDirectory':'openFile']});
+    return result.canceled ? null : result.filePaths[0] || null;
+  });
+  ipcMain.handle('riftcast:open-logs', async event => {
+    if (!trustedRenderer(event.sender,event.senderFrame)) throw new Error('无效的日志请求');
+    return shell.openPath(logPath);
+  });
   ipcMain.handle('riftcast-preview:release', (event, kind) => {
     if (!trustedRenderer(event.sender, event.senderFrame) || !['preview', 'program'].includes(kind)) return;
     // Cancel queued layout updates before waiting for the native operation queue.
@@ -486,6 +495,8 @@ function createWindow() {
       ...(dev ? [{ role: 'toggleDevTools', label: '开发者工具' }] : []),
     ] },
     { label: '帮助', submenu: [
+      { label: 'RiftCast 0.4.0 · 使用指南与快捷键', click: () => mainWindow.webContents.executeJavaScript("location.hash='help'") },
+      { label: '显示模式说明', click: () => dialog.showMessageBox(mainWindow,{type:'info',title:'节目与预监显示',message:'节目使用 OBS 原生投影；普通监视使用每秒快照。',detail:'原生动态预监在制作台镜头设置中启用。HUD 排版示意用于检查文字布局。'}) },
       { label: '打开启动日志', click: () => shell.openPath(logPath).catch((error) => log(error.message)) },
       { label: 'Riot 接口文档', click: () => openExternal('https://developer.riotgames.com/docs/lol') },
       { label: 'OBS 开源许可与来源', click: () => shell.openPath(path.join(projectRoot, 'THIRD_PARTY_OBS.md')).catch((error) => log(error.message)) },

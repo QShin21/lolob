@@ -1,0 +1,197 @@
+/* Audience typography changes preserve the native HUD mask and camera rectangles. */
+.broadcast-canvas {
+  --cast-text: #f1f4e9;
+  --cast-muted: #bcc9bf;
+  font-variant-numeric: tabular-nums;
+}
+.cast-countdown strong.countdown-message {
+  font-size: 2.8cqw;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+.cast-standby-match > div > span {
+  max-width: 24cqw;
+  overflow-wrap: anywhere;
+}
+.cast-standby-match > div > strong {
+  max-width: 24cqw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cast-lineup-side h2 .cast-team-mark {
+  width: 3.5cqw;
+  height: 3.5cqw;
+}
+.cast-lineup-five article > strong {
+  font-size: 1.22cqw;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cast-lineup-photo img {
+  object-fit: cover;
+  object-position: 50% 35%;
+  filter: brightness(0.96);
+}
+.cast-lineup-photo:after {
+  content: "";
+  position: absolute;
+  inset: 60% 0 0;
+  background: linear-gradient(transparent, #0e1719b3);
+  pointer-events: none;
+}
+.lb-player-name {
+  font-size: 0.91cqw !important;
+}
+.lb-cs,
+.lb-kda {
+  font-size: 0.88cqw !important;
+}
+.lb-patch {
+  background: #192d2a !important;
+  border-color: #526e55 !important;
+  color: #e0efc5 !important;
+}
+.lb-feed.is-empty {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.lb-feed.is-empty .lb-nameplate {
+  bottom: 0;
+  background: #172725dd;
+}
+.lb-feed.is-image img {
+  object-fit: cover;
+}
+.cast-source-status {
+  font-size: 0.95cqw;
+}
+.cast-interview.dock-right {
+  left: auto;
+  right: 4%;
+  max-width: 78%;
+}
+.cast-interview .cast-interview-name {
+  min-width: 0;
+}
+.cast-interview-name strong {
+  font-size: 2.3cqw;
+  max-width: 48cqw;
+  overflow-wrap: anywhere;
+}
+.cast-interview-name > span {
+  font-size: 1.05cqw;
+}
+.cast-interview {
+  bottom: 13% !important;
+}
+.cast-schedule-pagination {
+  font-size: 1.15cqw;
+  text-align: right;
+  padding: 1cqw 5cqw;
+  color: #bcccba;
+}
+.cast-winner {
+  font-size: 1.6cqw;
+  color: #cdec9c;
+  font-style: normal;
+  line-height: 1.7;
+}
+.cast-result > span {
+  min-width: 0;
+}
+.cast-analysis .economy-chart svg text {
+  font-size: 14px;
+}
+.cast-economy .chart-sample-note {
+  font-size: 0.85cqw;
+  padding-right: 1cqw;
+}
+.cast-draft-card.waiting.active-slot {
+  outline: 2px solid #d4ef98;
+  outline-offset: -2px;
+}
+.cast-draft-timer small {
+  font-size: 1cqw;
+}
+.cast-ban-history {
+  min-height: 5.4cqw;
+}
+.cast-graphic-header > div strong {
+  overflow-wrap: anywhere;
+}
+.champion-image .champion-fallback {
+  font-size: 0.8em;
+  color: #ccd9cd;
+  padding: 0.2em;
+  text-align: center;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.cast-gold-columns .cast-gold-column-label {
+  display: block;
+  height: auto;
+  font-size: 0.75cqw;
+  padding: 0.2cqw;
+  color: #c1d0c4;
+  border-bottom: 1px solid #b8cbb733;
+}
+.cast-gold-ranking > header > small {
+  font-size: 0.75cqw;
+}
+.cast-gold-identity small {
+  font-size: 0.7cqw;
+  max-width: 6cqw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cast-gold-columns li {
+  transition: background-color 0.2s ease;
+}
+
+.cast-gold-column {
+  min-width: 0;
+}
+.cast-history-game.is-pending {
+  opacity: 0.45;
+}
+.cast-history-game.is-pending .champion-image:after,
+.cast-history-game.is-standard .champion-image:after {
+  display: none;
+}
+
+.cast-scene-gold-ranking.has-ticker .cast-gold-ranking {
+  bottom: 4%;
+}
+
+.cast-lineup-side h2 .cast-team-mark > b {
+  font-size: 2.4cqw;
+}
+.cast-lineup-five article > strong {
+  font-size: 1.12cqw;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  min-height: 4.5cqw;
+}
+.cast-draft-player {
+  font-size: 0.98cqw;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  max-height: 2.5cqw;
+}
+.cast-draft-role {
+  bottom: 4.35cqw;
+}

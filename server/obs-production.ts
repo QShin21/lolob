@@ -12,7 +12,7 @@ const clamp = (v: unknown, min: number, max: number) => { if (typeof v !== 'numb
 
 /** Independent OBS media playback never sends writes to the Riot client. */
 export class ObsProduction {
-  private meters = new Map<string, { peakDb: number; at: number; lastSignalAt: number }>();
+  private meters = new Map<string, { peakDb: number; heldPeakDb:number; holdUntil:number; at: number; lastSignalAt: number }>();
   private recordId?: string;
   private recordKey?: string;
   private recordingStartedAt?: string;
@@ -26,7 +26,8 @@ export class ObsProduction {
         if (typeof input.inputName !== 'string' || !audioNames.includes(input.inputName) || !Array.isArray(input.inputLevelsMul)) continue;
         const values = input.inputLevelsMul.flat().filter((v): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0);
         const peak = Math.max(0, ...values), previous = this.meters.get(input.inputName);
-        this.meters.set(input.inputName, { peakDb: peak > 0 ? 20 * Math.log10(peak) : -96, at: now, lastSignalAt: peak > .001 ? now : previous?.lastSignalAt ?? now });
+        const peakDb=peak>0?20*Math.log10(peak):-96,hold=previous&&now<previous.holdUntil&&previous.heldPeakDb>peakDb;
+        this.meters.set(input.inputName, {peakDb,heldPeakDb:hold?previous.heldPeakDb:peakDb,holdUntil:hold?previous.holdUntil:now+3500, at: now, lastSignalAt: peak > .001 ? now : previous?.lastSignalAt ?? now });
       }
     });
     obs.on('ConnectionClosed', () => this.meters.clear());
@@ -38,7 +39,7 @@ export class ObsProduction {
       try {
         const [volume, mute, monitor, sync] = await Promise.all([this.obs.call('GetInputVolume', { inputName: name }), this.obs.call('GetInputMute', { inputName: name }), this.obs.call('GetInputAudioMonitorType', { inputName: name }), this.obs.call('GetInputAudioSyncOffset', { inputName: name })]);
         const meter = this.meters.get(name);
-        return { name, available: true, db: volume.inputVolumeDb, muted: mute.inputMuted, monitor: monitor.monitorType, syncOffset: sync.inputAudioSyncOffset, ...(meter && Date.now() - meter.at < 2000 ? { peakDb: meter.peakDb, silentSeconds: (Date.now() - meter.lastSignalAt) / 1000 } : {}), meterAvailable: !!meter && Date.now() - meter.at < 2000 };
+        return { name, available: true, db: volume.inputVolumeDb, muted: mute.inputMuted, monitor: monitor.monitorType, syncOffset: sync.inputAudioSyncOffset, ...(meter && Date.now() - meter.at < 2000 ? { peakDb: meter.peakDb, heldPeakDb:Date.now()<meter.holdUntil?meter.heldPeakDb:meter.peakDb, silentSeconds: (Date.now() - meter.lastSignalAt) / 1000 } : {}), meterAvailable: !!meter && Date.now() - meter.at < 2000 };
       } catch { return { name, available: false }; }
     }));
     const [recording, directory, buffer, scenes] = await Promise.allSettled([this.obs.call('GetRecordStatus'), this.obs.call('GetRecordDirectory'), this.obs.call('GetReplayBufferStatus'), this.obs.call('GetSceneList')]);
@@ -47,7 +48,10 @@ export class ObsProduction {
       try { const info = await statfs(directory.value.recordDirectory); disk = { directory: directory.value.recordDirectory, freeBytes: info.bavail * info.bsize, detail: '已取得本机可用空间' }; }
       catch { disk = { directory: directory.value.recordDirectory, detail: '录制路径不可读，请选择可写磁盘' }; }
     }
-    return { audio, disk, recording: recording.status === 'fulfilled' ? recording.value : null, bufferActive: buffer.status === 'fulfilled' ? buffer.value.outputActive : null,
+    let playback:{id:string;remainingSeconds:number;cursorSeconds:number;sampledAt:string}|null=null;
+    const playing=state.production?.clips.find(c=>c.id===state.production?.playingClipId);
+    if(playing){try{const media=await this.obs.call('GetMediaInputStatus',{inputName:replayInput});if(Number.isFinite(media.mediaCursor))playback={id:playing.id,cursorSeconds:media.mediaCursor/1000,remainingSeconds:Math.max(0,playing.outPoint-media.mediaCursor/1000),sampledAt:new Date().toISOString()};}catch{/* playback remains explicitly unknown */}}
+    return { audio, disk, playback, recording: recording.status === 'fulfilled' ? recording.value : null, bufferActive: buffer.status === 'fulfilled' ? buffer.value.outputActive : null,
       emergencyAvailable: scenes.status === 'fulfilled' && scenes.value.scenes.some(s => s.sceneName === emergencyScene),
       gameSource: state.connections.live.status === 'connected' ? '数据已连接 · 图像须人工核对' : '等待本局数据和画面', platform: '接收端须人工回看', programVersion: state.production?.program?.version, previewVersion: state.production?.configVersion };
   }

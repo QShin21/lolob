@@ -329,5 +329,8 @@ export function ObsLivePreview(props: Props) {
     }).catch(() => {});
     return () => { cancelled = true; };
   }, [props.connected, nativeRequested]);
-  return usesNativeObsPreview(props.kind, props.purpose, !!window.riftcastPreview?.embed, embedded) ? <NativePreview {...props} /> : <ScreenshotPreview {...props} />;
+  const surface=useRef<HTMLDivElement>(null),[onScreen,setOnScreen]=useState(false);
+  useEffect(()=>{const observer=new IntersectionObserver(entries=>setOnScreen(entries.some(e=>e.isIntersecting)));if(surface.current)observer.observe(surface.current);return()=>observer.disconnect();},[]);
+  const visibleProps={...props,enabled:props.enabled!==false&&onScreen};
+  return <div ref={surface} className="obs-preview-visibility">{usesNativeObsPreview(props.kind, props.purpose, !!window.riftcastPreview?.embed, embedded) ? <NativePreview {...visibleProps} /> : <ScreenshotPreview {...visibleProps} />}</div>;
 }

@@ -22,7 +22,7 @@ export async function api<T>(url: string, init?: RequestInit): Promise<T> {
   const token = new URLSearchParams(location.search).get('token') || sessionStorage.getItem('riftcast-control-token');
   const seat=sessionStorage.getItem('riftcast-seat-token');
   const response = await fetch(url, { ...init, headers: { ...(init?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...(token ? { 'X-Control-Token': token } : {}),...(seat?{'X-Seat-Token':seat}:{}), ...init?.headers } });
-  if (!response.ok) { const error = await response.json().catch(() => ({})); throw new Error(error.error || error.message || `请求失败 (${response.status})`); }
+  if (!response.ok) { const error = await response.json().catch(() => ({})); const message=error.error || error.message || `请求失败 (${response.status})`; throw new Error(/not connected/i.test(message)?'OBS 尚未连接，请在连接与输出中连接引擎':message); }
   return response.json();
 }
 export const dispatch = (action: BroadcastAction) => api<BroadcastState>('/api/action', { method: 'POST', body: JSON.stringify(action) });
