@@ -1,0 +1,437 @@
+✔ companion uses final track 1, pins capture defaults and restores independent recording tracks and monitoring (66.411155ms)
+✔ failed native audio start restores monitoring and tracks without starting a partial mix (6.723878ms)
+✔ cable feedback is rejected for defaults and the additional Pack45 16-channel endpoint (1.441263ms)
+✔ new replay or music sources are enrolled during output without changing mute, gain or sync (2.17257ms)
+✔ persisted route snapshot recovers after a crash and missing sources do not prevent recovery (2.124127ms)
+✔ native failure and disappearing endpoints are never reported as healthy output (1.504908ms)
+✔ production cannot alter bridge-owned monitoring or recording tracks while audio is live (9.076289ms)
+✔ music import validates signatures, persists an owned file and starts paused at a safe default gain (7.46471ms)
+✔ invalid music extension, renamed image, oversize data and unsafe persisted paths are rejected (41.088411ms)
+✔ custom edits remain staged through save, reload and deletion; TAKE freezes content (13.146596ms)
+✔ custom scenes validate references, geometry, limits and control seat permissions (37.418275ms)
+✔ OBS builds independent layers, validates missing windows and preserves borrowed sources on failure (36.014488ms)
+✔ custom scenes can be queued in rundown and cannot be deleted while referenced (8.610339ms)
+✔ embedded preview switches and returns without any screenshot subscribers (2.810807ms)
+✔ external preview switches and returns without any screenshot subscribers (1.527221ms)
+✔ RTMP configuration checks inactive OBS and returns only a credential-free confirmation (2.6392ms)
+✔ RTMP configuration refuses active, reconnecting, unknown and disconnected OBS states (1.188904ms)
+✔ RTMP validation and OBS failures never include stream credentials in error messages (0.703185ms)
+✔ HUD installation creates a transparent browser input and safely reuses matching sources (3.530827ms)
+✔ HUD installation refuses conflicting sources, missing scenes and external URLs (0.837857ms)
+✔ Bilibili endpoints use OBS WebSocket protocol and keep keys out of HTTP, WS, files and logs (1823.592745ms)
+✔ camera enumeration reads actual OBS device identifiers and removes its disabled probe (6.75342ms)
+✔ device enumeration reuses an existing DirectShow source and cleans a probe after failed properties (1.055313ms)
+✔ two cameras cover only their exact panels, mute camera audio and sit under both browser buses (4.896736ms)
+✔ camera rectangles follow HUD letterboxing on a non 16:9 OBS canvas (0.623966ms)
+✔ both panels can share one camera without opening the same USB device twice (1.134231ms)
+✔ swapping cameras changes scene mappings while each physical device keeps its immutable source (17.524727ms)
+✔ switching to image or off disables both camera buses without touching uploaded images (0.629464ms)
+✔ unknown devices and conflicting source types cannot change existing camera selections (0.661161ms)
+✔ adapter sync caches stable settings and updates camera visibility independently for program and preview (4.185959ms)
+✔ failed camera sync is throttled across broadcast ticks and retries a changed selection immediately (2.723435ms)
+✔ five-pair manual and automatic selections route each side to the matching OBS camera on both buses (95.695975ms)
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+✔ portable configuration is isolated, authenticated and preserves existing profile settings (1526.517653ms)
+✔ spectator OCR captures only the verified original LoL source at native resolution (2.517196ms)
+✔ automatic scene setup creates exact LoL capture, muted microphone and HUD above game (6.495954ms)
+✔ setup refuses active or unconfirmed outputs and invalid primitive selections before mutation (15.960721ms)
+✔ source conflicts are rejected and unavailable window values are never applied (6.02667ms)
+✔ delayed LoL startup binds only exact enabled executable and preserves a selected window (43.332989ms)
+✔ lost transport reconnects the owned live OBS without restarting or altering active outputs (36.301142ms)
+✔ failed reconnect retains owned process and sanitizes transport error credentials (17.967391ms)
+✔ concurrent start requests share one launch and mutations are serialized (24.620981ms)
+✔ shutdown stops only owned outputs and never sends stop commands to external OBS (99.96068ms)
+✔ mode switch refuses active or disconnected owned outputs and source preview validates data (9.121212ms)
+✔ startup migrates the owned profile to hardware encoding while retaining destination and bitrate (226.970033ms)
+✔ simultaneous previews share one GPU screenshot and output preview has lower overhead (1.344507ms)
+✔ missing optional OBS statistics retain connection and output controls (2.476324ms)
+✔ saved mode honors explicit environment and external process settings stay outside engine state (6.610345ms)
+✔ output commands wait for asynchronous recording start and final stop states (621.173425ms)
+✔ OBS readiness waits for a loaded collection after transport identification (507.294693ms)
+✔ runtime lock refuses another live service and retains ownership until OBS exits (25.337436ms)
+✔ stale runtime lock is reclaimed only when both owner and child have exited (8.89989ms)
+✔ live monitors capture new frames and create a visual-only preview without touching program or outputs (48.155703ms)
+✔ reconnecting refreshes an existing preview HUD to 1 FPS while preserving the program HUD and game capture (5.870365ms)
+✔ desktop monitor opens the correct native bus without screenshot polling or output actions (35.316259ms)
+✔ live capture rejects invalid frames and external preview requires studio mode (1.276514ms)
+✔ engine mutations wait for the in-flight monitor and old connection work never prepares a new transport (16.430335ms)
+✔ owned preview reactivates after studio mode or its bus is changed (22.328143ms)
+✔ Douyin destination persists and virtual camera starts independently of RTMP and recording (62.834792ms)
+✔ companion audio failure prevents partial camera start and cleans up the attempted route (2.997576ms)
+✔ audio-only owned route also prevents source and destination mutations until stopped (5.622183ms)
+✔ owned audio loader preserves unrelated scripts, supports Unicode paths and leaves one recovery backup (65.46013ms)
+✔ live virtual camera prevents source, engine, destination and driver changes (52.988933ms)
+✔ companion output rejects missing registration, missing sources and unintended RTMP starts (11.761823ms)
+✔ virtual camera start and stop wait for actual output state rather than the RPC acknowledgement (632.578638ms)
+✔ owned virtual camera closes with its engine while external OBS camera remains untouched (2.88702ms)
+✔ owned collection migrates virtual camera to Program while preserving original scene configuration (143.158822ms)
+✔ an unavailable virtual camera plugin does not block RTMP setup and cannot report a running camera (3.436044ms)
+✔ successful first registration restarts only the inactive owned engine to load the camera plugin (1.217166ms)
+✔ pending presentation counts editorial changes without counting live telemetry or rotation timers (26.151506ms)
+✔ TAKE eligibility distinguishes offline, role, owner, waiting and applied states (0.847011ms)
+✔ gold curves split a lead crossing at zero and preserve missing/backwards clock gaps (0.222594ms)
+✔ schedule pagination covers every match, clamps stale pages and uses Beijing calendar days (44.446319ms)
+✔ interview, schedule and crop edits remain staged, survive restart and reject malformed input (4.043255ms)
+✔ ranking scene announces the actual person selected for broadcast (0.545098ms)
+✔ HTTP seats enforce stale forms, idempotent submissions and explicit ownership transfer (1206.15038ms)
+✔ delayed success source application publishes PGM only after preparation and preserves telemetry (1257.256824ms)
+✔ delayed failure source application publishes PGM only after preparation and preserves telemetry (1149.596168ms)
+✔ HTTP save failure stays visible and rejects a mutation acknowledgement (559.82999ms)
+✔ independent OBS clip previews, trims, restores audio and returns at its out-point (33.941401ms)
+✔ clip buffers index the on-air game while later-game content is being prepared (53.238527ms)
+✔ failed media switch restores original sound policy; emergency and track changes confirm actual output (15.881652ms)
+✔ continuous recording maps game and video time segments to a verified file (8.716084ms)
+✔ durable state replacement reopens correctly and failed replacement rejects without losing prior state (3.32057ms)
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+✔ OBS emergency collection stays native and keeps existing scenes when prepared repeatedly (994.88004ms)
+✔ offline assets are pinned, cached once across concurrent readers, and reused without a network (127.369113ms)
+✔ manual BP survives restart while game statistics are invalidated; new series starts at zero (6.44638ms)
+✔ resource countdown expires with the game version, stale clock and replay discontinuity (1.161383ms)
+✔ alerts acknowledge one incident, resolve independently and reopen for a later recurrence (3.486861ms)
+✔ result CSV tracks corrections and invalid remake attempts consistently with JSON (37.262463ms)
+✔ audio peak hold expires and disconnected or stale samples remain unavailable (19.810501ms)
+✔ same-scene TAKE stages manual configuration while current-match telemetry continues (12.079834ms)
+✔ live retains the full previous-game context during next-game preparation (12.485608ms)
+✔ postgame retains the full previous-game context during next-game preparation (5.111477ms)
+✔ interview retains the full previous-game context during next-game preparation (5.181813ms)
+✔ draft retains the full previous-game context during next-game preparation (6.490025ms)
+✔ lineup retains the full previous-game context during next-game preparation (5.84717ms)
+✔ schedule retains the full previous-game context during next-game preparation (4.594412ms)
+✔ on-air terminal data remains frozen after source loss and next-game preparation (4.560261ms)
+✔ scores, feed mappings and sample gate follow team identities across a side swap (3.987381ms)
+✔ corrections recalculate the effective ledger and exports without duplicating game wins (7.385598ms)
+✔ manual BP assignments are staged, and standard / per-team fearless exceptions respect rules (2.39982ms)
+✔ preselected heroes stay outside locked choices and history (0.611307ms)
+✔ remake archives the invalid attempt and gates the old game without advancing the BO number (3.167211ms)
+✔ check fingerprints expire by affected source while unrelated checks stay valid (2.187551ms)
+✔ terminal arrival and completeness remain distinct, and a partial record requires an explicit reason (2.485608ms)
+✔ replay writes remain blocked while an independent clip is on air (0.963895ms)
+✔ seat ownership, role permissions and repeated request IDs remain authoritative (0.572098ms)
+✔ program and preview feed selection have separate clocks and hold through pauses (2.587461ms)
+✔ preview does not go on air until take, and password is never broadcast (6.277246ms)
+✔ switching to real source clears all synthetic match data (1.554792ms)
+✔ demo respects pause and save recording is a detached snapshot (2.072569ms)
+✔ untrusted mutations are rejected without modifying current state (2.676725ms)
+✔ Live API preserves unavailable cumulative gold and reads correct team / tower owner (7.049415ms)
+✔ LCU draft uses explicit teams and action sequence, including red local team (1.321723ms)
+✔ lockfile validation and origin checks restrict authentication to local service (0.410666ms)
+✔ image upload checks dimensions and signature; CSV neutralizes spreadsheet formulas (1.956484ms)
+✔ restoring real mode keeps persistent production assets and recordings while clearing old match samples (1.599069ms)
+✔ loading the next fixture resets match stats and uses its own roster and portraits (2.765037ms)
+✔ team and schedule edits preserve references and reject duplicate fixture identities (19.929904ms)
+✔ sponsor image accepts uploaded assets and can be removed (2.148833ms)
+✔ saved legacy looks restore as ARENA while preserving production configuration (55.694456ms)
+✔ legacy overlay API names resolve to ARENA and unknown looks are rejected (2.987321ms)
+✔ legacy real states with absent history fields never inherit demonstration samples (2.552989ms)
+✔ real recordings require observed statistics and preserve their actual time and source (1.829865ms)
+✔ a successful replay seek blocks records until matching current Live data arrives (1.518567ms)
+✔ recording discards expired OCR gold while preserving fresh API statistics and original state (1.417586ms)
+✔ legacy live recording compatibility still requires a fresh connected client (1.541943ms)
+✔ fresh explicitly sourced team economy can be saved without a player roster (1.163115ms)
+✔ incomplete and invalid API scores cannot be saved as real zero statistics (5.663304ms)
+ℹ tests 129
+ℹ suites 0
+ℹ pass 129
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6968.341246

@@ -1,0 +1,27 @@
+
+> riftcast-director@0.7.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1667 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                               0.97 kB │ gzip:   0.59 kB
+dist/assets/Settings-CRgjkYd5.css            17.41 kB │ gzip:   3.66 kB
+dist/assets/management-B-V7SuPd.css          33.90 kB │ gzip:   6.62 kB
+dist/assets/index-CK-gDA3v.css              196.52 kB │ gzip:  38.72 kB
+dist/assets/save-CsG8-r50.js                  0.32 kB │ gzip:   0.23 kB
+dist/assets/management-Bpriafyu.js            0.46 kB │ gzip:   0.30 kB
+dist/assets/LiveData-DRnW0lEZ.js             10.52 kB │ gzip:   4.00 kB
+dist/assets/EconomySourcePanel-3ikCP_SJ.js   11.34 kB │ gzip:   4.70 kB
+dist/assets/Draft-DMnnSY4k.js                13.74 kB │ gzip:   4.50 kB
+dist/assets/Management-APUEox84.js           30.62 kB │ gzip:  10.49 kB
+dist/assets/Settings-CIUyhWWQ.js             59.73 kB │ gzip:  18.97 kB
+dist/assets/index-D8KiMhbg.js               470.44 kB │ gzip: 144.85 kB
+✓ built in 2.68s
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
