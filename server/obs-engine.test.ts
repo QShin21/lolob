@@ -18,6 +18,7 @@ class MockObs extends EventEmitter {
   disconnections = 0;
   stream = { outputActive: false, outputReconnecting: false };
   recording = { outputActive: false };
+  camera = { outputActive: false };
   windows = [{ itemName: 'League of Legends', itemValue: leagueWindow, itemEnabled: true }, { itemName: 'Other Game', itemValue: 'Other:Window:other.exe', itemEnabled: true }];
   inputs: any[] = [];
   sceneItems: any[] = [];
@@ -29,6 +30,7 @@ class MockObs extends EventEmitter {
     this.requests.push({ type, data });
     if (type === 'GetStreamStatus') return this.stream;
     if (type === 'GetRecordStatus') return this.recording;
+    if (type === 'GetVirtualCamStatus') return this.camera;
     if (type === 'GetProfileParameter') return { parameterValue: this.encoder, defaultParameterValue: 'x264' };
     if (type === 'GetVideoSettings') return { fpsNumerator: this.encoder === 'x264' ? 30 : 60, fpsDenominator: 1 };
     if (type === 'GetStats') return { activeFps: 60, cpuUsage: 2, averageFrameRenderTime: 1, renderSkippedFrames: 0, renderTotalFrames: 60, outputSkippedFrames: 0, outputTotalFrames: 60 };
@@ -36,6 +38,8 @@ class MockObs extends EventEmitter {
     if (type === 'StopStream') { this.stream.outputActive = false; this.stream.outputReconnecting = false; return {}; }
     if (type === 'StartRecord') { this.recording.outputActive = true; return {}; }
     if (type === 'StopRecord') { this.recording.outputActive = false; return {}; }
+    if (type === 'StartVirtualCam') { this.camera.outputActive = true; return {}; }
+    if (type === 'StopVirtualCam') { this.camera.outputActive = false; return {}; }
     if (type === 'GetSceneList') return { scenes: [{ sceneName: engineScene }], currentProgramSceneName: engineScene };
     if (type === 'GetCurrentProgramScene') return { sceneName: engineScene };
     if (type === 'GetStudioModeEnabled') return { studioModeEnabled: true };
@@ -73,6 +77,11 @@ async function fixture(t: TestContext) {
   // All tests use mock transports and mock children. No real OBS process is launched.
   internal.requestProcessClose = async (child: FakeChild) => child.exit();
   internal.preferredEncoder = async () => 'x264';
+  internal.cameraDriver = { status: async () => ({ available: true, installed: true }), install: async () => ({ available: true, installed: true }) };
+  let audioActive = false;
+  internal.companionAudio = { get managing() { return audioActive; }, recover: async () => {}, prepare: async () => {}, start: async () => { audioActive = true; }, stop: async () => { audioActive = false; },
+    status: async () => ({ supported: true, available: true, installed: true, ready: true, active: audioActive, sampleRate: 48000, channels: 2, track: 1 }),
+    driver: { status: async () => ({ installed: true }), install: async () => ({ installed: true }) } };
   t.after(async () => {
     internal.endWindowRefresh();
     const absolute = path.resolve(dir);
@@ -253,7 +262,7 @@ test('shutdown stops only owned outputs and never sends stop commands to externa
   owned.internal.child = child; owned.internal.connected = true;
   owned.obs.stream.outputActive = true; owned.obs.recording.outputActive = true;
   await owned.engine.close();
-  assert.deepEqual(owned.obs.requests.map(request => request.type), ['GetStreamStatus', 'StopStream', 'GetStreamStatus', 'GetRecordStatus', 'StopRecord', 'GetRecordStatus']);
+  assert.deepEqual(owned.obs.requests.map(request => request.type), ['GetStreamStatus', 'StopStream', 'GetStreamStatus', 'GetRecordStatus', 'StopRecord', 'GetRecordStatus', 'GetVirtualCamStatus']);
   assert.equal(child.exitCode, 0);
   assert.equal(owned.internal.child, undefined);
   await assert.rejects(owned.engine.output({ action: 'start-record' }));
@@ -491,4 +500,166 @@ test('owned preview reactivates after studio mode or its bus is changed', async 
   obs.emit('CurrentPreviewSceneChanged', { sceneName: 'Other preview' }); assert.equal(internal.livePreviewPrepared, false);
   await engine.liveFrame('preview');
   assert.equal(obs.requests.filter(r => r.type === 'SetCurrentPreviewScene').length, 3);
+});
+
+test('Douyin destination persists and virtual camera starts independently of RTMP and recording', async t => {
+  const { dir, engine, internal, obs } = await fixture(t);
+  internal.connected = true; await engine.setup({});
+  await engine.setDestination({ destination: 'douyin' });
+  obs.requests = [];
+  const started = await engine.output({ action: 'start-virtual-camera' });
+  assert.equal(started.virtualCamActive, true);
+  assert.equal(started.streamActive, false);
+  assert.equal(started.recordActive, false);
+  assert.equal(started.destination, 'douyin');
+  assert.equal(started.companionAudio.active, true);
+  assert.ok(!obs.requests.some(r => ['StartStream', 'StopStream', 'StartRecord', 'StopRecord', 'SetCurrentProgramScene', 'SetCurrentPreviewScene'].includes(r.type)));
+  await engine.output({ action: 'start-virtual-camera' });
+  assert.equal(obs.requests.filter(r => r.type === 'StartVirtualCam').length, 1, 'start is idempotent after live state confirmation');
+  const saved = JSON.parse(await readFile(path.join(dir, 'data/obs-engine.json'), 'utf8'));
+  assert.equal(saved.selection.destination, 'douyin');
+  assert.equal(saved.virtualCamActive, undefined, 'active outputs never auto-start from persisted configuration');
+  await engine.initialize(); assert.equal((await engine.status()).destination, 'douyin');
+  const stopped = await engine.output({ action: 'stop-virtual-camera' });
+  assert.equal(stopped.virtualCamActive, false);
+  assert.equal(stopped.companionAudio.active, false);
+  assert.equal(stopped.destination, 'douyin');
+});
+
+test('companion audio failure prevents partial camera start and cleans up the attempted route', async t => {
+  const { engine, internal, obs } = await fixture(t); internal.connected = true; await engine.setup({}); await engine.setDestination({ destination: 'douyin' });
+  let stopped = 0; internal.companionAudio.start = async () => { throw new Error('mix-device-failed'); };
+  internal.companionAudio.stop = async () => { stopped++; };
+  await assert.rejects(engine.output({ action: 'start-virtual-camera' }), /mix-device-failed/);
+  assert.equal(obs.camera.outputActive, false); assert.equal(stopped, 1);
+  assert.ok(!obs.requests.some(request => request.type === 'StartVirtualCam'));
+});
+test('audio-only owned route also prevents source and destination mutations until stopped', async t => {
+  const { engine, internal } = await fixture(t); internal.connected = true; await engine.setup({});
+  await internal.companionAudio.start();
+  await assert.rejects(engine.setup({}), /停止伴侣混音/);
+  await assert.rejects(engine.setDestination({ destination: 'douyin' }), /停止伴侣混音/);
+  await internal.companionAudio.stop(); await engine.setDestination({ destination: 'douyin' });
+});
+test('owned audio loader preserves unrelated scripts, supports Unicode paths and leaves one recovery backup', async t => {
+  const { dir, internal } = await fixture(t); await internal.prepareConfig(12345, 'fixture-secret');
+  const runtime = path.join(dir, 'runtime/obs-studio');
+  await mkdir(path.join(runtime, 'bin/64bit'), { recursive: true }); await mkdir(path.join(runtime, 'data/riftcast'), { recursive: true });
+  await writeFile(path.join(runtime, 'bin/64bit/riftcast-audio-bridge.dll'), 'fixture');
+  await writeFile(path.join(runtime, 'data/riftcast/riftcast-audio.lua'), 'fixture');
+  const file = path.join(runtime, 'config/obs-studio/basic/scenes/RiftCast.json');
+  const collection = JSON.parse(await readFile(file, 'utf8')); collection.modules = { other: { preserved: true }, 'scripts-tool': [{ path: 'D:/用户/custom.lua', settings: { userValue: 3 } }] };
+  await writeFile(file, JSON.stringify(collection)); await internal.prepareAudioBridgeConfig(file);
+  const backup = await readFile(file + '.before-audio-bridge', 'utf8'); await internal.prepareAudioBridgeConfig(file);
+  const result = JSON.parse(await readFile(file, 'utf8')); assert.equal(result.modules.other.preserved, true);
+  assert.equal(result.modules['scripts-tool'].length, 2); assert.equal(result.modules['scripts-tool'][0].settings.userValue, 3);
+  assert.equal(result.modules['scripts-tool'][1].settings.library, path.join(runtime, 'bin/64bit/riftcast-audio-bridge.dll').replaceAll('\\', '/'));
+  assert.equal(await readFile(file + '.before-audio-bridge', 'utf8'), backup);
+});
+
+test('live virtual camera prevents source, engine, destination and driver changes', async t => {
+  const { engine, internal, obs } = await fixture(t);
+  internal.connected = true; obs.camera.outputActive = true;
+  for (const change of [() => engine.setup({}), () => engine.setMode({ mode: 'external' }), () => engine.setDestination({ destination: 'rtmp' }), () => engine.installVirtualCamera()]) {
+    obs.requests = [];
+    await assert.rejects(change(), /先停止伴侣画面/);
+    assert.ok(obs.requests.every(r => ['GetStreamStatus', 'GetRecordStatus', 'GetVirtualCamStatus'].includes(r.type)));
+  }
+  obs.camera.outputActive = undefined as any;
+  await assert.rejects(engine.setup({}), /无法确认虚拟摄像头状态/);
+  assert.equal((await engine.status()).virtualCamActive, null, 'unknown camera state never reports stopped');
+});
+
+test('companion output rejects missing registration, missing sources and unintended RTMP starts', async t => {
+  const { engine, internal, obs } = await fixture(t);
+  internal.connected = true;
+  await engine.setDestination({ destination: 'douyin' });
+  await assert.rejects(engine.output({ action: 'start-stream' }), /当前为直播伴侣输出/);
+  internal.cameraDriver.status = async () => ({ available: true, installed: false });
+  await assert.rejects(engine.output({ action: 'start-virtual-camera' }), /请先安装虚拟摄像头/);
+  internal.cameraDriver.status = async () => ({ available: true, installed: true });
+  await assert.rejects(engine.output({ action: 'start-virtual-camera' }), /先应用内置引擎/);
+  assert.ok(!obs.requests.some(r => ['StartStream', 'StartVirtualCam'].includes(r.type)));
+  await assert.rejects(engine.setDestination({ destination: 'unknown' }), /方式无效/);
+  engine.mode = 'external';
+  await assert.rejects(engine.setDestination({ destination: 'douyin' }), /内置 OBS/);
+});
+
+test('virtual camera start and stop wait for actual output state rather than the RPC acknowledgement', async t => {
+  const { engine, internal, obs } = await fixture(t);
+  internal.connected = true; await engine.setup({});
+  await engine.setDestination({ destination: 'douyin' });
+  const original = obs.call.bind(obs);
+  let pending: boolean | undefined, polls = 0;
+  obs.call = async (type, data) => {
+    if (type === 'StartVirtualCam' || type === 'StopVirtualCam') { obs.requests.push({ type, data }); pending = type === 'StartVirtualCam'; polls = 0; return {}; }
+    if (type === 'GetVirtualCamStatus' && pending !== undefined) { polls++; if (polls >= 3) { obs.camera.outputActive = pending; pending = undefined; } }
+    return original(type, data);
+  };
+  assert.equal((await engine.output({ action: 'start-virtual-camera' })).virtualCamActive, true);
+  assert.ok(polls >= 3);
+  assert.equal((await engine.output({ action: 'stop-virtual-camera' })).virtualCamActive, false);
+  assert.ok(polls >= 3);
+});
+
+test('owned virtual camera closes with its engine while external OBS camera remains untouched', async t => {
+  const { engine, internal, obs } = await fixture(t);
+  internal.connected = true; internal.child = new FakeChild(); obs.camera.outputActive = true;
+  await engine.close();
+  assert.equal(obs.camera.outputActive, false);
+  assert.ok(obs.requests.some(r => r.type === 'StopVirtualCam'));
+  const external = await fixture(t); external.engine.mode = 'external'; external.internal.connected = true; external.obs.camera.outputActive = true;
+  await external.engine.close();
+  assert.equal(external.obs.camera.outputActive, true);
+  assert.ok(!external.obs.requests.some(r => r.type === 'StopVirtualCam'));
+});
+
+test('owned collection migrates virtual camera to Program while preserving original scene configuration', async t => {
+  const { dir, internal } = await fixture(t);
+  await internal.prepareConfig(12345, 'test-config-password');
+  const collectionFile = path.join(dir, 'runtime/obs-studio/config/obs-studio/basic/scenes/RiftCast.json');
+  const original = JSON.parse(await readFile(collectionFile, 'utf8'));
+  original['virtual-camera'] = { type2: 4 }; original.preservedSetting = 'keep';
+  await writeFile(collectionFile, JSON.stringify(original));
+  await internal.prepareConfig(12346, 'test-config-password');
+  const migrated = JSON.parse(await readFile(collectionFile, 'utf8'));
+  assert.deepEqual(migrated['virtual-camera'], { type2: 3 });
+  assert.equal(migrated.preservedSetting, 'keep');
+  assert.deepEqual(migrated.sources, original.sources);
+  assert.equal(migrated.current_program_scene, original.current_program_scene);
+  assert.ok(await readFile(collectionFile + '.before-virtual-camera', 'utf8'));
+});
+
+test('an unavailable virtual camera plugin does not block RTMP setup and cannot report a running camera', async t => {
+  const { engine, internal, obs } = await fixture(t);
+  internal.connected = true;
+  const original = obs.call.bind(obs);
+  obs.call = async (type, data) => {
+    if (type === 'GetVirtualCamStatus') throw Object.assign(new Error('VirtualCam is not available.'), { code: 604 });
+    return original(type, data);
+  };
+  await engine.setup({});
+  const status = await engine.status();
+  assert.equal(status.connected, true);
+  assert.equal(status.virtualCamActive, false);
+  assert.equal(status.virtualCamera.requiresRestart, true);
+  await engine.setDestination({ destination: 'douyin' });
+  await assert.rejects(engine.output({ action: 'start-virtual-camera' }), /重新加载摄像头/);
+  assert.ok(!obs.requests.some(r => r.type === 'StartVirtualCam'));
+});
+
+test('successful first registration restarts only the inactive owned engine to load the camera plugin', async t => {
+  const { engine, internal, obs } = await fixture(t);
+  const child = new FakeChild();
+  internal.connected = true; internal.child = child;
+  let installed = false, launches = 0;
+  internal.cameraDriver.status = async () => ({ available: true, installed });
+  internal.cameraDriver.install = async () => { installed = true; return { available: true, installed: true }; };
+  internal.launch = async () => { launches++; internal.child = new FakeChild(); obs.emit('Identified'); };
+  await engine.installVirtualCamera();
+  assert.equal(installed, true);
+  assert.equal(child.exitCode, 0);
+  assert.equal(launches, 1);
+  assert.equal((await engine.status()).connected, true);
+  assert.ok(!obs.requests.some(r => ['StartStream', 'StartRecord', 'StartVirtualCam'].includes(r.type)));
 });

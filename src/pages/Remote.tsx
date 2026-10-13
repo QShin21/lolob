@@ -6,7 +6,7 @@ import { MonitorPane } from "../components/MonitorPane";
 import { Notification, TakeControl, TaskTabs } from "../components/ConsoleUI";
 import { ProductionDesk } from "../components/ProductionDesk";
 import { applicationLabel, pendingContent } from "../../shared/presentation";
-import { sceneInfo } from "../lib";
+import { sceneDetails, sceneInfo } from "../lib";
 const roleNames = {
   readonly: "只读席",
   data: "资料席",
@@ -57,7 +57,7 @@ export function Remote(
       <p role="status">{applicationLabel(state)}</p>
       {canPrepare && (
         <section className="remote-scene-grid" aria-label="准备场景">
-          {(Object.keys(sceneInfo) as Scene[]).map((scene) => (
+          {([...Object.keys(sceneInfo), ...(state.customScenes ?? []).map(s => s.id)] as Scene[]).map((scene) => (
             <button
               className={`button ${state.previewScene === scene ? "primary" : ""}`}
               key={scene}
@@ -65,7 +65,7 @@ export function Remote(
                 void send({ type: "preview-scene", scene }).catch(() => {})
               }
             >
-              {sceneInfo[scene].name}
+              {sceneDetails(state,scene).name}
               {state.programScene === scene && <small>PGM</small>}
             </button>
           ))}

@@ -1,3 +1,4 @@
+import { validateCustomScene, validateSceneId } from './custom-scenes';
 import { bundledChampions } from '../shared/champion-art';
 import { randomUUID } from 'node:crypto';
 import type { BroadcastAction, BroadcastState, Champion, Recording, Team, Match, Player, Side } from '../shared/types';
@@ -62,6 +63,9 @@ export function normalizeSavedState(saved: BroadcastState): BroadcastState {
   const restored:BroadcastState={...defaults,...saved,overlay:{...defaults.overlay,...saved.overlay,preset:'arena',playerFeeds:{blue:{...defaults.overlay.playerFeeds!.blue,...saved.overlay.playerFeeds?.blue},red:{...defaults.overlay.playerFeeds!.red,...saved.overlay.playerFeeds?.red}}},settings:{...defaults.settings,...saved.settings}};
   // Persisted scene IDs from the removed ten-minute card now open the live ranking.
   for(const key of ['previewScene','programScene'] as const)if((restored[key] as string)==='income')restored[key]='gold-ranking';
+  restored.customScenes=[];
+  for(const scene of (Array.isArray(saved.customScenes)?saved.customScenes:[]).slice(0,50)){try{restored.customScenes.push(validateCustomScene(scene,restored));}catch{/* Invalid saved custom scenes cannot become executable OBS sources. */}}
+  for(const key of ['previewScene','programScene'] as const){try{validateSceneId(restored[key],restored);}catch{restored[key]='standby';}}
   restored.overlay.playerFeedPairs=playerFeedPairs(saved.overlay);
   restored.overlay.playerFeedControl=playerFeedControl(saved.overlay);
   delete restored.overlay.playerFeedControl.nextSwitchAt;
@@ -195,9 +199,24 @@ export function applyAction(current:BroadcastState,input:unknown):BroadcastState
   switch(type as BroadcastAction['type']) {
     case 'set-mode': {const next=oneOf(a.mode,['demo','live']);if(next!==s.mode){preserveProgram(s);s.mode=next;delete s.finishedGameId;delete s.reportGameId;delete s.awaitingNextGame;delete s.activeSourceGameId;startDraftSeries(s);production.scores={};production.baseScores={};production.attempt=1;if(next==='live'){clearLiveData(s);s.paused=false;s.phase='pregame';}else {const d=createSeed();Object.assign(s,{players:d.players,stats:d.stats,events:d.events,economy:d.economy,draft:d.draft,gameTime:d.gameTime,phase:d.phase,paused:false});if(s.match.game>1)s.draftHistory!.push({...d.draftHistory![0],seriesId:s.match.seriesId!,game:s.match.game-1,blueTeamId:s.match.blueTeamId,redTeamId:s.match.redTeamId});captureManualDraft(s);}ensureProduction(s);}break;}
     case 'set-phase':s.phase=oneOf(a.phase,phases);if(s.phase==='live')captureManualDraft(s);break;
-    case 'preview-scene':s.previewScene=oneOf(a.scene,scenes);break;
+    case 'save-custom-scene': {
+      const scene=validateCustomScene(a.scene,s), list=s.customScenes??=[];
+      const index=list.findIndex(item=>item.id===scene.id);
+      if(index<0){if(list.length>=50)throw new ValidationError('最多保存 50 个自定义场景');list.push(scene);}else list[index]=scene;
+      break;
+    }
+    case 'delete-custom-scene': {
+      const id=validateSceneId(a.id,s);
+      if(!id.startsWith('custom:'))throw new ValidationError('内置场景无法删除');
+      if(s.programScene===id)throw new ValidationError('请先切入其他节目场景，再删除此场景');
+      if(production.rundown.some(item=>item.scene===id))throw new ValidationError('请先从串联单移除此场景');
+      s.customScenes=s.customScenes?.filter(item=>item.id!==id);
+      if(s.previewScene===id)s.previewScene='standby';
+      break;
+    }
+    case 'preview-scene':s.previewScene=validateSceneId(a.scene,s);break;
     case 'take':{
-      const scene=a.scene===undefined?s.previewScene:oneOf(a.scene,scenes);
+      const scene=validateSceneId(a.scene===undefined?s.previewScene:a.scene,s);
       if(s.mode==='live'&&['live','teamfight','gold-ranking','economy'].includes(scene)&&(!s.players.length||s.awaitingNextGame||s.phase==='pregame'||s.phase==='draft'))throw new ValidationError('等待本局有效信号并完成进局核对后切入');
       takeProgram(s,scene);s.programScene=scene;delete production.playingClipId;
       if(['economy','gold-ranking','ranking'].includes(scene))production.analysisEndsAt=Date.now()+production.analysisSeconds*1000;else delete production.analysisEndsAt;
@@ -258,7 +277,7 @@ export function applyAction(current:BroadcastState,input:unknown):BroadcastState
     for(const player of s.players){const old=current.teams.find(t=>t.id===current.match[`${player.team}TeamId`])?.players.find(p=>p.name===player.name);const member=s.teams.find(t=>t.id===s.match[`${player.team}TeamId`])?.players.find(p=>old?.id?p.id===old.id:p.role===player.role);if(member)Object.assign(player,{name:member.name,role:member.role,portrait:member.portrait});}
   }
   if(type==='set-schedule')for(const match of s.schedule){const result=s.gameResults?.filter(r=>r.matchId===match.id&&r.winnerTeamId).sort((a,b)=>a.game-b.game).at(-1);if(result){if(![result.blueTeamId,result.redTeamId].includes(match.blueTeamId)||![result.blueTeamId,result.redTeamId].includes(match.redTeamId))throw new ValidationError('已归档对阵请新建赛程，结果修订使用纠正流程');match.blueScore=match.blueTeamId===result.blueTeamId?result.match.blueScore:result.match.redScore;match.redScore=match.redTeamId===result.redTeamId?result.match.redScore:result.match.blueScore;match.status=result.seriesComplete?'finished':'live';}}
-  if(['set-overlay','set-match','set-teams','set-schedule','set-settings','set-mode','set-draft','set-player-feed-control','select-player','next-game','load-match','correct-result'].includes(type)||type==='production'&&!['check','mark','confirm-picture','immediate','pause','resume','ack-alert'].includes(String(record(a.command).op)))production.configVersion++;
+  if(['save-custom-scene','delete-custom-scene','set-overlay','set-match','set-teams','set-schedule','set-settings','set-mode','set-draft','set-player-feed-control','select-player','next-game','load-match','correct-result'].includes(type)||type==='production'&&!['check','mark','confirm-picture','immediate','pause','resume','ack-alert'].includes(String(record(a.command).op)))production.configVersion++;
   if(type!=='production'&&type!=='set-settings')audit(s,type);
   s.revision=current.revision+1;return s;
 }

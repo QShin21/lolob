@@ -26,7 +26,7 @@ export class ControlSeats {
     // Before a UI has established seats, local CLI remains a supported maintenance entry point.
     if (!this.seats.size && token === undefined) return { id: 'local', role: 'director' as const, name: '主机导播' };
     if (!seat) throw new ValidationError('请重新连接操作席位');
-    const main = ['take', 'next-game', 'load-match', 'finalize-game', 'correct-result', 'set-mode', 'set-settings', 'output', 'engine', 'set-phase', 'obs-scene'].includes(type) || type === 'production' && ['immediate', 'pause', 'resume', 'remake', 'accept-final'].includes(String(command?.op));
+    const main = ['save-custom-scene', 'delete-custom-scene', 'take', 'next-game', 'load-match', 'finalize-game', 'correct-result', 'set-mode', 'set-settings', 'output', 'engine', 'set-phase', 'obs-scene'].includes(type) || type === 'production' && ['immediate', 'pause', 'resume', 'remake', 'accept-final'].includes(String(command?.op));
     if (main && (seat.role !== 'director' || seat.id !== this.owner)) throw new ValidationError('节目切入与局号推进由当前主导播控制席执行');
     if (seat.role === 'readonly') throw new ValidationError('当前席位为只读');
     if (seat.role === 'data' && !['set-teams','set-schedule','set-match','select-player','preview-scene','set-draft','set-overlay','set-player-feed-control','save-recording','delete-recording','production'].includes(type)) throw new ValidationError('资料席仅可准备赛事、素材与待播内容');

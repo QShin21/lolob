@@ -1,6 +1,8 @@
 import { HoldButton } from './ProductionDesk';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, Film, Radio, Settings2, Square, Trophy } from 'lucide-react';
+import { ArrowRight, Camera, Check, Film, Radio, Settings2, Square, Trophy } from 'lucide-react';
+import type { OutputAction } from '../../shared/obs-output';
+import type { ObsEngineStatus } from './EmbeddedObs';
 import type { BroadcastState, StateContext } from '../../shared/types';
 import { api } from '../lib';
 import { currentGameResult, gameResultAwaitingTerminalSample } from '../../shared/game-results';
@@ -8,7 +10,7 @@ import { MatchLifecycle } from './MatchLifecycle';
 import {checkValid} from '../../shared/production';
 
 export type WorkflowPage = 'studio' | 'draft' | 'data' | 'manage' | 'settings' | 'help' | 'wrap';
-type EngineOutput = { mode: 'embedded' | 'external'; connected: boolean; streamActive: boolean; recordActive: boolean; error?: string; performance?: { activeFps: number } };
+type EngineOutput = ObsEngineStatus;
 
 export function WorkflowRail({ state, page, onNavigate }: { state: BroadcastState; page: WorkflowPage; onNavigate: (page: WorkflowPage) => void }) {
   const matchReady = state.schedule.some(match => state.match.seriesId === state.mode + ':schedule:' + match.id);
@@ -45,21 +47,37 @@ export function StudioOutputDock({ notify, onSettings, streamReady }: Pick<State
     return () => { active = false; window.clearInterval(timer); document.removeEventListener('visibilitychange', refresh); };
   }, []);
   const canOperate = local && status?.connected && !error && !pending;
-  async function output(action: 'start-stream' | 'stop-stream' | 'start-record' | 'stop-record') {
+  async function output(action: OutputAction) {
     if (operation.current.pending) return;
     operation.current.pending = true; operation.current.generation++;
     setPending(true);
     try {
       const result = await api<EngineOutput>('/api/obs/engine/output', { method: 'POST', body: JSON.stringify({ action }) });
       setStatus(result); setError(result.error || '');
-      const active = action.endsWith('stream') ? result.streamActive : result.recordActive;
+      const active = action.endsWith('virtual-camera') ? result.virtualCamActive : action.endsWith('stream') ? result.streamActive : result.recordActive;
       if (active !== action.startsWith('start')) throw new Error('输出状态尚未确认，请在连接与输出核对');
-      notify(action === 'start-stream' ? '推流已开始' : action === 'stop-stream' ? '推流已停止' : action === 'start-record' ? '视频录制已开始' : '视频录制已停止');
+      const messages: Record<OutputAction, string> = { 'start-stream': '推流已开始', 'stop-stream': '推流已停止', 'start-record': '视频录制已开始', 'stop-record': '视频录制已停止', 'start-virtual-camera': '节目画面与完整混音已送出，请在直播伴侣核对音画并开播', 'stop-virtual-camera': '伴侣音画已停止，直播间请在伴侣中结束直播' };
+      notify(messages[action]);
     } catch (failure) { notify(failure instanceof Error ? failure.message : '输出操作失败','error'); }
     finally { operation.current.pending = false; operation.current.generation++; setPending(false); }
   }
   const confirmed = !!status?.connected && !error;
-  return <div className="studio-output-dock" aria-label="播出输出控制"><div className="output-indicators"><span className={confirmed && status?.streamActive ? 'on-air' : ''}><i />{!confirmed ? '推流待确认' : status?.streamActive ? '推流中' : '未推流'}</span><span className={confirmed && status?.recordActive ? 'recording' : ''}><i />{!confirmed ? '录制待确认' : status?.recordActive ? '录制中' : '未录制'}</span>{error && <span className="output-error" title={error}>{error}</span>}</div><div className="output-dock-actions"><button className="button small" disabled={pending} onClick={onSettings}><Settings2 size={13} />连接配置</button>{status?.streamActive?<HoldButton disabled={!canOperate} onExecute={()=>void output('stop-stream')}>按住停止推流</HoldButton>:<button className="button small primary" disabled={streamReady?!canOperate:pending} onClick={()=>streamReady?void output('start-stream'):onSettings()}><Radio size={13}/>{streamReady?'开始推流':'配置推流'}</button>}<button className={'button small ' + (status?.recordActive ? 'output-stop' : '')} disabled={!canOperate} onClick={() => void output(status?.recordActive ? 'stop-record' : 'start-record')}>{status?.recordActive ? <Square size={12} /> : <Film size={13} />}{status?.recordActive ? '停止录制' : '开始录制'}</button></div></div>;
+  const companion = status?.destination === 'douyin';
+  const cameraActive = status?.virtualCamActive === true || status?.companionAudio?.managing === true || status?.companionAudio?.active === true;
+  const cameraReady = status?.mode === 'embedded' && status?.virtualCamera?.driver.installed && !status.virtualCamera.requiresRestart && status?.virtualCamActive === false && !!status?.inputs.length && !!status?.companionAudio?.ready;
+  return <div className="studio-output-dock" aria-label="播出输出控制">
+    <div className="output-indicators">
+      <span className={confirmed && (companion ? cameraActive : status?.streamActive) ? 'on-air' : ''}><i />{companion ? !confirmed || status?.virtualCamActive == null ? '伴侣音画待确认' : cameraActive ? status?.companionAudio?.active && status?.virtualCamActive ? '伴侣音画已送出 · 伴侣中开播' : '伴侣音画异常 · 请核对输出'  : '伴侣音画未送出' : !confirmed ? '推流待确认' : status?.streamActive ? '推流中' : '未推流'}</span>
+      <span className={confirmed && status?.recordActive ? 'recording' : ''}><i />{!confirmed ? '录制待确认' : status?.recordActive ? '录制中' : '未录制'}</span>
+      {error && <span className="output-error" title={error}>{error}</span>}
+    </div>
+    <div className="output-dock-actions">
+      <button className="button small" disabled={pending} onClick={onSettings}><Settings2 size={13} />连接配置</button>
+      {companion ? cameraActive ? <HoldButton disabled={!canOperate} onExecute={() => void output('stop-virtual-camera')}>按住停止伴侣音画</HoldButton> : <button className="button small primary" disabled={cameraReady ? !canOperate : pending} onClick={() => cameraReady ? void output('start-virtual-camera') : onSettings()}><Camera size={13} />{cameraReady ? '启动伴侣音画' : '配置伴侣输出'}</button>
+        : status?.streamActive ? <HoldButton disabled={!canOperate} onExecute={() => void output('stop-stream')}>按住停止推流</HoldButton> : <button className="button small primary" disabled={streamReady ? !canOperate : pending} onClick={() => streamReady ? void output('start-stream') : onSettings()}><Radio size={13} />{streamReady ? '开始推流' : '配置推流'}</button>}
+      <button className={'button small ' + (status?.recordActive ? 'output-stop' : '')} disabled={!canOperate} onClick={() => void output(status?.recordActive ? 'stop-record' : 'start-record')}>{status?.recordActive ? <Square size={12} /> : <Film size={13} />}{status?.recordActive ? '停止录制' : '开始录制'}</button>
+    </div>
+  </div>;
 }
 
 export function WrapUp({ state, send, notify, onSettings, onRecords, onManage, onNextGame=onManage, onReport, streamReady }: StateContext & { onSettings: () => void; onRecords: () => void; onManage: () => void; onNextGame?:()=>void;onReport?:()=>void;streamReady: boolean }) {

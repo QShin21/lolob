@@ -1,0 +1,8 @@
+{
+  "sourceSha256": "aeab3bdaf1f8ce8b04dd3c5e9e7bc2bd91b5c5436589d5de461641db987c00b7",
+  "bridgeSha256": "0b8808f3d441b524a52d72c3c11b6fe94724e8eb8e1c6a79b8362b8ca3df5c7a",
+  "toolSha256": "14d07ab75da85ebd58c48f417e9761b14bf345503188497172945c3c463f79e8",
+  "obsSourceSha256": "ec81fb66b03e75ddb3076b576f62679c39262e0e9960cef3e17a40dc5d68e6b4",
+  "architecture": "x64",
+  "protocol": 1
+}

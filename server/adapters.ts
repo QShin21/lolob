@@ -1,3 +1,4 @@
+import { ObsCustomScenes } from './obs-custom-scenes';
 import { bundledChampions, bundledChampionVersion, localChampionAssets } from '../shared/champion-art';
 import https from 'node:https';
 import { randomUUID } from 'node:crypto';
@@ -105,8 +106,13 @@ export class ChampionCatalog {
 }
 export class Adapters {
   private productionOutput?:ObsProduction;
-  private get productionObs(){return this.productionOutput??=new ObsProduction(this.obs,()=>this.get(),work=>this.commit(work));}
+  private get productionObs(){return this.productionOutput??=new ObsProduction(this.obs,()=>this.get(),work=>this.commit(work),()=>this.engine?.companionAudio.managing??false);}
   private engine?:ObsEngine;
+  private customScenes?:ObsCustomScenes;
+  private customPreviewActive=false;
+  private customPreviousPreview?:string;
+  private customPreviousProgram?:string;
+  private customPreviewSync?:Promise<void>;
   private credentials:LcuCredentials|null=null;private obs=new ObsClient();private obsPassword='';private requested=new Set<'lcu'|'live'|'replay'|'obs'>();private polling=false;
   private lastReplayDiagnostic:ReplayDiagnostics|undefined;
   private clockIdentity='';
@@ -133,9 +139,9 @@ export class Adapters {
   }
   private sampleReplay(data:{paused:boolean;time:number;speed:number;length?:number},forceDiscontinuity=false){const at=Date.now();this.commit(state=>{state.connections.replay={status:'connected',detail:'Replay API 已连接 · 播放控制仅用于回放',updatedAt:new Date(at).toISOString()};if(state.mode!=='live'||currentGameResult(state)||state.awaitingNextGame)return;this.ensureClockSession(state);if(forceDiscontinuity){this.awaitingLiveAfterSeek=true;this.seekConfirmedAt=performance.now();}this.replaySampleMonotonic=performance.now();this.replayClock=this.clockSample(state,'replay',data.time,data.speed,data.paused||this.liveEnded||(typeof data.length==='number'&&Number.isFinite(data.length)&&data.time>=data.length),at,forceDiscontinuity);state.gameClock=this.replayClock;});}
   async spectatorFrame():Promise<Buffer>{return this.requireEngine().spectatorFrame();}
-  async initializeObsEngine(options:Omit<ObsEngineOptions,'onConnection'>){this.engine=new ObsEngine(this.obs,{...options,onConnection:(status,detail)=>{this.requested.add('obs');this.status('obs',status,detail);}});await this.engine.initialize();}
+  async initializeObsEngine(options:Omit<ObsEngineOptions,'onConnection'>){this.customScenes=new ObsCustomScenes((request,data)=>this.obs.call(request,data),options.dataDir);this.obs.on('Identified',()=>{this.customScenes?.reset();this.customPreviewActive=false;});this.engine=new ObsEngine(this.obs,{...options,onConnection:(status,detail)=>{this.requested.add('obs');this.status('obs',status,detail);}});await this.engine.initialize();}
   private status(target:'lcu'|'live'|'replay'|'obs',status:BroadcastState['connections']['lcu']['status'],detail:string){this.commit(s=>{const updatedAt=status==='connected'?new Date().toISOString():s.connections[target].updatedAt;s.connections[target]={status,detail,...(updatedAt?{updatedAt}:{})};});}
-  async connect(target:'lcu'|'live'|'replay'|'obs'){this.requested.add(target);this.status(target,'connecting','正在连接本地服务');try{if(target==='obs'){if(this.engine?.mode==='embedded'){await this.engine.start();this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});return;}await this.obs.disconnect().catch(()=>{});await this.obs.connect(this.get().settings.obsUrl,this.obsPassword,{rpcVersion:1,eventSubscriptions:131071});this.status('obs','connected','外部 OBS WebSocket 5.x 已连接');await this.syncPlayerFeeds().catch(()=>{});return;}
+  async connect(target:'lcu'|'live'|'replay'|'obs'){this.requested.add(target);this.status(target,'connecting','正在连接本地服务');try{if(target==='obs'){if(this.engine?.mode==='embedded'){await this.engine.start();this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});await this.restoreCustomProgram();return;}await this.obs.disconnect().catch(()=>{});await this.obs.connect(this.get().settings.obsUrl,this.obsPassword,{rpcVersion:1,eventSubscriptions:131071});this.status('obs','connected','外部 OBS WebSocket 5.x 已连接');await this.syncPlayerFeeds().catch(()=>{});return;}
       if(target==='lcu'){this.credentials=await discoverLcu(this.get().settings.lockfilePath,this.get().settings.gamePath);await this.pollLcu();return;}if(target==='live'){await this.pollLive();return;}await this.pollReplay();
     }catch(error){const reported=target==='replay'?await this.replayFailure(error):error;this.status(target,'error',reported instanceof Error?reported.message:'连接失败');throw reported;}}
   private async lcuGet(endpoint:string){if(!this.credentials)throw new Error('客户端认证信息不可用');return this.request(this.credentials.port,endpoint,{authorization:`Basic ${Buffer.from(`riot:${this.credentials.password}`).toString('base64')}`});}
@@ -189,12 +195,45 @@ export class Adapters {
   }
   private requireEngine(){if(!this.engine)throw new Error('输出引擎尚未初始化');return this.engine;}
   async obsEngineStatus(){const status=await this.requireEngine().status();const issues=status.performance?.issues??[];const s=this.get();if(JSON.stringify(s.production?.alerts?.filter(a=>a.category==='output'&&!a.resolvedAt).map(a=>a.text).sort()??[])!==JSON.stringify([...new Set(issues)].sort()))this.commit(s=>{updateAlerts(s,'output',issues);});return status;}
-  async obsEngineStart(){const status=await this.requireEngine().start();this.playerFeedsSignature='';this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});return status;}
+  async obsEngineStart(){const status=await this.requireEngine().start();this.playerFeedsSignature='';this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});await this.restoreCustomProgram();return status;}
   async obsEngineMode(input:unknown){return this.requireEngine().setMode(input);}
+  async obsEngineDestination(input:unknown){return this.requireEngine().setDestination(input);}
+  async obsEngineInstallVirtualCamera(){const status=await this.requireEngine().installVirtualCamera();if(status.connected){this.playerFeedsSignature='';this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});await this.restoreCustomProgram();}return status;}
   async obsEngineSetup(input:unknown){const before=(await this.requireEngine().status()).selection;const status=await this.requireEngine().setup(input);const after=status.selection;this.commit(s=>{const p=ensureProduction(s);if(before?.gameWindow!==after?.gameWindow)p.sourceEpoch=(p.sourceEpoch??0)+1;if(JSON.stringify([before?.micEnabled,before?.micDevice,before?.desktopDevice])!==JSON.stringify([after?.micEnabled,after?.micDevice,after?.desktopDevice]))p.audioEpoch=(p.audioEpoch??0)+1;});this.playerFeedsSignature='';this.playerFeedsRetry=undefined;this.cameraPreviewPrepared=false;await this.syncPlayerFeeds().catch(()=>{});return status;}
+  async obsEnginePrepareCompanion(){return this.requireEngine().prepareCompanion();}
+  async obsMusicImport(bytes:Buffer,name:string){const result=await this.requireEngine().importMusic(bytes,name);this.commit(s=>{const p=ensureProduction(s);p.audioEpoch=(p.audioEpoch??0)+1;});return result;}
+  async obsMusicControl(input:unknown){const result=await this.requireEngine().musicControl(input);this.commit(s=>{const p=ensureProduction(s);p.audioEpoch=(p.audioEpoch??0)+1;});return result;}
   async obsEnginePreview(){return this.requireEngine().preview();}
-  async obsEngineMonitor(input:unknown){const result=await this.requireEngine().monitor(input);this.playerFeedsSignature='';this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});if(record(input).kind==='preview')this.cameraPreviewPrepared=true;return result;}
-  async obsEngineLiveFrame(kind:'preview'|'program'){const frame=await this.requireEngine().liveFrame(kind);if(kind==='preview'&&!this.cameraPreviewPrepared){this.playerFeedsSignature='';this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});this.cameraPreviewPrepared=true;}return frame;}
+  async obsEngineMonitor(input:unknown){if(record(input).kind==='preview')await this.syncCustomPreview();const result=await this.requireEngine().monitor(input);this.playerFeedsSignature='';this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});if(record(input).kind==='preview')this.cameraPreviewPrepared=true;return result;}
+  async obsEngineLiveFrame(kind:'preview'|'program'){if(kind==='preview')await this.syncCustomPreview();const frame=await this.requireEngine().liveFrame(kind);if(kind==='preview'&&!this.cameraPreviewPrepared){this.playerFeedsSignature='';this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});this.cameraPreviewPrepared=true;}return frame;}
+  private async restoreCustomProgram(){
+    if(!this.get().programScene.startsWith('custom:'))return;
+    try{await this.productionApply();this.commit(s=>{const p=ensureProduction(s);p.application={version:p.program?.version??p.configVersion,status:'applied',at:new Date().toISOString(),detail:'自定义节目已恢复，请核对窗口与声音'};});}
+    catch(error){this.commit(s=>{const p=ensureProduction(s);p.application={version:p.program?.version??p.configVersion,status:'failed',at:new Date().toISOString(),detail:error instanceof Error?error.message:'自定义节目恢复失败，请核对来源后 TAKE'};});}
+  }
+  async customSourceChoices(){return this.requireEngine().exclusive(()=>this.customScenes!.choices());}
+  private async syncCustomPreview(){
+    if(this.customPreviewSync)return this.customPreviewSync;
+    this.customPreviewSync=this.prepareCustomPreview();
+    try{await this.customPreviewSync;}finally{this.customPreviewSync=undefined;}
+  }
+  private async prepareCustomPreview(){
+    const state=this.get(), custom=state.customScenes?.find(s=>s.id===state.previewScene),engine=this.requireEngine();
+    if(this.applyingProduction)return;
+    if(custom){await engine.exclusive(async()=>{
+      if(!this.customPreviewActive)this.customPreviousPreview=(await this.obs.call('GetStudioModeEnabled')).studioModeEnabled?(await this.obs.call('GetCurrentPreviewScene')).sceneName:(await this.obs.call('GetCurrentProgramScene')).sceneName;
+      if(!(await this.obs.call('GetStudioModeEnabled')).studioModeEnabled)await this.obs.call('SetStudioModeEnabled',{studioModeEnabled:true});
+      const name=await this.customScenes!.prepare(custom,state,'preview');
+      if((await this.obs.call('GetCurrentPreviewScene')).sceneName!==name)await this.obs.call('SetCurrentPreviewScene',{sceneName:name});
+      engine.setCustomPreview(name);this.customPreviewActive=true;
+      await this.customScenes!.cleanup().catch(()=>{});
+    });}else if(this.customPreviewActive){
+      if(engine.mode==='external'&&this.customPreviousPreview)await engine.exclusive(()=>this.obs.call('SetCurrentPreviewScene',{sceneName:this.customPreviousPreview!}));
+      engine.setCustomPreview(undefined);this.customPreviewActive=false;
+      // Native projectors do not request JPEG frames, so restore the built-in bus here too.
+      if(engine.mode==='embedded')await engine.monitor({kind:'preview',open:false});
+    }
+  }
   async obsEngineOutput(input:unknown){const op=record(input).action;const engine=this.requireEngine();const before=this.get();const status=await engine.output(input);await this.productionObs.recordingChanged(String(op),before,engine.recordingPath);return status;}
   private lastCameraHealthAt=0;
   async productionStatus(){
@@ -214,16 +253,27 @@ export class Adapters {
     for(const bus of status.audio)if('muted' in bus&&bus.available&&!bus.muted&&bus.meterAvailable){if((bus.peakDb??-96)> -1)issues.push(`${bus.name} 接近削波，请降低音量`);if((bus.silentSeconds??0)>=10)issues.push(`${bus.name} 连续 10 秒未取得有效声音，请回听确认`);}
     if(this.get().production?.application?.status==='failed')issues.push(this.get().production!.application!.detail);
     if(JSON.stringify(this.get().production?.alerts?.filter(a=>a.category==='sources'&&!a.resolvedAt).map(a=>a.text).sort()??[])!==JSON.stringify([...new Set(issues)].sort()))this.commit(s=>{updateAlerts(s,'sources',issues);});
-    return status;
+    return { ...status, music: await this.engine?.music.status(), companionAudio: this.engine?.mode === 'embedded' ? await this.engine.companionAudio.status(true) : undefined, audioManaged: this.engine?.companionAudio.managing ?? false };
   }
   async productionControl(input:unknown){return this.requireEngine().exclusive(()=>this.productionObs.control(input));}
   async productionApply(switchScene=true,source=this.get()){
     const engine=this.requireEngine(),p=source.production;if(!p)return;
     this.applyingProduction=true;
-    try{await engine.setPreviewCadence(p.dynamicPreview?30:1);const result=await this.syncPlayerFeeds(true,source);if(!result.applied)throw new Error(result.detail??'摄像头来源尚未应用');if(switchScene&&!p.playingClipId)await engine.exclusive(()=>this.productionObs.returnLive());await this.productionObs.recordingSegment(source);}
+    try{if(this.customPreviewSync)await this.customPreviewSync.catch(()=>{});await engine.setPreviewCadence(p.dynamicPreview?30:1);const result=await this.syncPlayerFeeds(true,source);if(!result.applied)throw new Error(result.detail??'摄像头来源尚未应用');if(switchScene&&!p.playingClipId)await engine.exclusive(async()=>{
+      const view=programState(source),custom=view.customScenes?.find(s=>s.id===source.programScene);
+      if(source.programScene.startsWith('custom:')){
+        if(!custom||!this.customScenes)throw new ValidationError('自定义场景不可用');
+        const previous=(await this.obs.call('GetCurrentProgramScene')).sceneName;
+        const name=await this.customScenes.prepare(custom,view,'program');
+        if(!previous.startsWith('RiftCast 自定义 '))this.customPreviousProgram=previous;
+        try{await this.productionObs.returnLive(name);}
+        catch(error){await this.obs.call('SetCurrentProgramScene',{sceneName:previous}).catch(()=>{});throw error;}
+      }else await this.productionObs.returnLive(engine.mode==='external'?this.customPreviousProgram:undefined);
+      await this.customScenes?.cleanup().catch(()=>{});
+    });await this.productionObs.recordingSegment(source);}
     finally{this.applyingProduction=false;}
   }
   private productionTickPending=false;
-  async productionTick(){if(this.productionTickPending||this.get().connections.obs.status!=='connected')return;this.productionTickPending=true;try{await this.requireEngine().exclusive(()=>this.productionObs.tick());}finally{this.productionTickPending=false;}}
+  async productionTick(){if(this.productionTickPending||this.get().connections.obs.status!=='connected')return;this.productionTickPending=true;try{await this.syncCustomPreview().catch(()=>{});if(!this.applyingProduction)await this.requireEngine().exclusive(()=>this.productionObs.tick());}finally{this.productionTickPending=false;}}
   async close(){if(this.engine)await this.engine.close();else await this.obs.disconnect().catch(()=>{});}
 }

@@ -16,4 +16,4 @@ OBS Studio 使用 GNU General Public License version 2 or later。OBS 的第三�
 
 项目源码中包含固定官方下载地址和许可副本。桌面首次启动、`npm run setup:obs` 会从 OBS Project 官方发布地址下载二进制，经大小及 SHA-256 校验后解压。离线拷贝已经准备好的项目时，应一并保留此声明、完整许可证及官方运行时内的许可文件。若制作并对外分发包含 OBS 二进制的安装包，应随包提供同版本完整对应源码，保留许可证及依赖声明，并遵守 COPYING 中的分发条款。
 
-源码中的下载清单位于 `scripts/obs-runtime.json`。运行时位于 `runtime/obs-studio`，完整 ZIP 缓存位于 `runtime/.cache`。安装过程不会搜索或更改 Windows 已安装的 OBS Studio。
+源码中的下载清单位于 `scripts/obs-runtime.json`。开发环境运行时位于 `runtime/obs-studio`，完整 ZIP 缓存位于 `runtime/.cache`。Windows Release 将官方运行时文件放在应用 `resources/obs-studio` 中，首次启动复制到 `%APPDATA%\RiftCast\runtime\obs-studio`，此目录保存可写配置。Release 随包提供经过上述 SHA-256 校验的同版本完整对应源码，位于应用 `resources/licenses/OBS-Studio-32.2.2-Sources.tar.gz`，并保留 OBS 及其依赖的许可证。通用安装包不包含本机 OBS 配置。安装过程不会搜索或更改 Windows 已安装的 OBS Studio。

@@ -22,6 +22,7 @@ function references(state: StateContext["state"], url: string) {
         names.push(`${side === "blue" ? "蓝" : "红"}方 ${i + 1} 号画面`);
     }),
   );
+  for (const scene of state.customScenes ?? []) if (scene.sources.some(s => s.kind === "image" && state.assets.find(a => a.id === s.assetId)?.url === url)) names.push(`场景：${scene.name}`);
   return names;
 }
 export function AssetLibrary({

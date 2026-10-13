@@ -19,7 +19,7 @@ export class ObsProduction {
   private preparedClip?: string;
   private liveSceneName?:string;
   private mutedForClip?: { name: string; muted: boolean }[];
-  constructor(private obs: ObsClient, private get: () => BroadcastState, private commit: (work: (s: BroadcastState) => void) => void) {
+  constructor(private obs: ObsClient, private get: () => BroadcastState, private commit: (work: (s: BroadcastState) => void) => void, private audioManaged: () => boolean = () => false) {
     obs.on('InputVolumeMeters', event => {
       const now = Date.now();
       for (const input of event.inputs) {
@@ -58,6 +58,7 @@ export class ObsProduction {
   async control(input: unknown) {
     const c = record(input), action = str(c.action, 40);
     if (action === 'audio') {
+      if (c.monitor !== undefined && this.audioManaged()) throw new ValidationError('伴侣混音正在送出，监听由 OB 自动管理；停止伴侣输出后可修改监听');
       const name = str(c.name, 80); if (!audioNames.includes(name)) throw new ValidationError('音频总线无效');
       if (c.db !== undefined) await this.obs.call('SetInputVolume', { inputName: name, inputVolumeDb: clamp(c.db, -60, 6) });
       if (c.muted !== undefined) { if (typeof c.muted !== 'boolean') throw new ValidationError('静音状态无效'); await this.obs.call('SetInputMute', { inputName: name, inputMuted: c.muted }); }
@@ -65,6 +66,7 @@ export class ObsProduction {
       if (c.syncOffset !== undefined) await this.obs.call('SetInputAudioSyncOffset', { inputName: name, inputAudioSyncOffset: Math.round(clamp(c.syncOffset, -10000, 10000)) });
       this.commit(s=>{const p=ensureProduction(s);p.audioEpoch=(p.audioEpoch??0)+1;});
     } else if (action === 'tracks') {
+      if (this.audioManaged()) throw new ValidationError('音轨配置请先停止伴侣输出');
       const [recording,stream]=await Promise.all([this.obs.call('GetRecordStatus'),this.obs.call('GetStreamStatus')]);
       if (recording.outputActive || stream.outputActive || stream.outputReconnecting) throw new ValidationError('音轨配置请在停播维护窗口应用');
       await this.obs.call('SetInputAudioTracks', { inputName: audioNames[0], inputAudioTracks: { '1': true, '2': true, '3': false, '4': false, '5': false, '6': false } });
@@ -145,10 +147,10 @@ export class ObsProduction {
     for (const item of items.sceneItems) if (item.sourceName === replayInput) await this.obs.call('SetSceneItemTransform', { sceneName: replayScene, sceneItemId: Number(item.sceneItemId), sceneItemTransform: { positionX: 0, positionY: 0, alignment: 5, boundsType: 'OBS_BOUNDS_SCALE_INNER', boundsWidth: 1920, boundsHeight: 1080 } });
     else if (item.sourceName === replayLabel) await this.obs.call('SetSceneItemTransform', { sceneName: replayScene, sceneItemId: Number(item.sceneItemId), sceneItemTransform: { positionX: 32, positionY: 32, alignment: 5 } });
     // Commentary must also be present in the media scene; it is separately muted by policy.
-    if (!items.sceneItems.some(i => i.sourceName === audioNames[1])) await this.obs.call('CreateSceneItem', { sceneName: replayScene, sourceName: audioNames[1], sceneItemEnabled: true });
+    for (const name of [audioNames[1], 'RiftCast 音乐', 'RiftCast 采访']) if (inputs.inputs.some(i => i.inputName === name) && !items.sceneItems.some(i => i.sourceName === name)) await this.obs.call('CreateSceneItem', { sceneName: replayScene, sourceName: name, sceneItemEnabled: true });
   }
-  async returnLive() {
-    const scenes=await this.obs.call('GetSceneList'),target=scenes.scenes.some(s=>s.sceneName===engineScene)?engineScene:this.liveSceneName??scenes.currentProgramSceneName;
+  async returnLive(targetName?:string) {
+    const scenes=await this.obs.call('GetSceneList'),target=targetName??(scenes.scenes.some(s=>s.sceneName===engineScene)?engineScene:this.liveSceneName??scenes.currentProgramSceneName);
     if(!target||[replayScene,emergencyScene].includes(target)||!scenes.scenes.some(s=>s.sceneName===target))throw new Error('比赛来源场景待确认，请检查 OBS 场景后重试');
     await this.obs.call('SetCurrentProgramScene', { sceneName: target });
     if((await this.obs.call('GetCurrentProgramScene')).sceneName!==target)throw new Error('当前比赛场景恢复尚未确认');

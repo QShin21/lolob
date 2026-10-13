@@ -8,8 +8,8 @@ const { pipeline } = require('node:stream/promises');
 const release = require('./obs-runtime.json');
 
 const projectRoot = path.resolve(__dirname, '..');
-const runtimeParent = path.join(projectRoot, 'runtime');
-const runtimeRoot = path.join(runtimeParent, 'obs-studio');
+const runtimeRoot = process.env.RIFTCAST_OBS_RUNTIME_DIR ? path.resolve(process.env.RIFTCAST_OBS_RUNTIME_DIR) : path.join(projectRoot, 'runtime', 'obs-studio');
+const runtimeParent = path.dirname(runtimeRoot);
 const markerName = '.riftcast-runtime.json';
 const essentialFiles = ['bin/64bit/obs64.exe', 'bin/64bit/obs.dll', 'obs-plugins/64bit/obs-websocket.dll'];
 let preparation;

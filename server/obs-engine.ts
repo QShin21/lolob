@@ -10,9 +10,15 @@ import { ObsPerformanceMonitor, type ObsPerformance } from './obs-performance';
 import { record, str, ValidationError } from './state';
 import { OBS_SNAPSHOT_INTERVAL_MS } from '../shared/obs-preview-policy';
 import { prepareEmergencyCollection } from './obs-emergency';
+import { VirtualCameraDriver } from './virtual-camera-driver';
+import { VirtualAudioDriver } from './virtual-audio-driver';
+import { CompanionAudio } from './companion-audio';
+import { ObsMusic } from './obs-music';
+import type { OutputDestination } from '../shared/obs-output';
 export { emergencyScene } from './obs-emergency';
 
 const runFile = promisify(execFile);
+class VirtualCameraUnavailableError extends Error {}
 export const engineScene = 'RiftCast 节目';
 export const enginePreviewScene = 'RiftCast 预监';
 const previewHudInput = 'RiftCast 预监 HUD';
@@ -22,7 +28,7 @@ const micInput = 'RiftCast 解说麦克风';
 const hudInput = 'RiftCast HUD';
 type Mode = 'embedded' | 'external';
 type Choice = { name: string; value: string };
-type Selection = { gameWindow: string; desktopDevice: string; micDevice: string; micEnabled: boolean; outputFps?: 30 | 60 };
+type Selection = { gameWindow: string; desktopDevice: string; micDevice: string; micEnabled: boolean; outputFps?: 30 | 60; destination?: OutputDestination };
 type InputSettings = NonNullable<OBSRequestTypes['CreateInput']['inputSettings']>;
 const isRunning = (child?: ChildProcess): child is ChildProcess => Boolean(child && child.exitCode === null && child.signalCode === null);
 const isLeagueWindow = (value: string) => /(?:^|:)League of Legends\.exe$/i.test(value);
@@ -62,17 +68,24 @@ export class ObsEngine {
   private error = '';
   private selection: Selection = { gameWindow: '', desktopDevice: 'default', micDevice: 'default', micEnabled: false };
   private capabilities = { gameWindows: [] as Choice[], audioOutputs: [] as Choice[], audioInputs: [] as Choice[] };
-  private get runtimeRoot() { return path.join(this.options.root, 'runtime', 'obs-studio'); }
+  private cameraDriver = new VirtualCameraDriver(() => this.runtimeRoot);
+  readonly companionAudio: CompanionAudio;
+  readonly music: ObsMusic;
+  private virtualCameraAvailable?: boolean;
+  private get runtimeRoot() { return process.env.RIFTCAST_OBS_RUNTIME_DIR ? path.resolve(process.env.RIFTCAST_OBS_RUNTIME_DIR) : path.join(this.options.root, 'runtime', 'obs-studio'); }
   private get selectionFile() { return path.join(this.options.dataDir, 'obs-engine.json'); }
   private get lockFile() { return path.join(this.runtimeRoot, '.riftcast-engine.lock'); }
   constructor(private obs: ObsClient, private options: ObsEngineOptions) {
-    obs.on('ConnectionClosed', () => { this.connectionGeneration++; this.connected = false; this.previewCache = undefined; this.liveProgramScene = undefined; this.livePreviewPrepared = false; this.videoSettings = undefined; this.performanceMonitor.reset(); });
+    this.companionAudio = new CompanionAudio(obs, new VirtualAudioDriver(options.root, options.dataDir), options.dataDir);
+    this.music = new ObsMusic(obs, options.dataDir);
+    obs.on('ConnectionClosed', () => { this.connectionGeneration++; this.virtualCameraAvailable = undefined; this.connected = false; this.customPreview = undefined; this.previewCache = undefined; this.liveProgramScene = undefined; this.livePreviewPrepared = false; this.videoSettings = undefined; this.performanceMonitor.reset(); });
     obs.on('Identified', () => { this.connectionGeneration++; this.connected = true; });
     obs.on('CurrentProgramSceneChanged', event => { this.previewCache = undefined; this.liveProgramScene = event.sceneName; });
     obs.on('StudioModeStateChanged', event => { if (!event.studioModeEnabled) this.livePreviewPrepared = false; });
     obs.on('CurrentPreviewSceneChanged', event => { if (event.sceneName !== enginePreviewScene) this.livePreviewPrepared = false; });
     obs.on('StreamStateChanged', event => { this.outputActive = event.outputActive || this.outputActive; this.previewCache = undefined; });
     obs.on('RecordStateChanged', () => { this.previewCache = undefined; });
+    obs.on('VirtualcamStateChanged', () => { this.previewCache = undefined; });
   }
   async initialize() {
     try {
@@ -82,7 +95,9 @@ export class ObsEngine {
       for (const key of ['gameWindow', 'desktopDevice', 'micDevice'] as const) if (typeof selection[key] === 'string') this.selection[key] = str(selection[key], 1024);
       if (typeof selection.micEnabled === 'boolean') this.selection.micEnabled = selection.micEnabled;
       if (selection.outputFps === 30 || selection.outputFps === 60) this.selection.outputFps = selection.outputFps;
+      if (selection.destination === 'rtmp' || selection.destination === 'douyin') this.selection.destination = selection.destination;
     } catch { /* First run uses an isolated engine with muted microphone. */ }
+    if (this.mode === 'external') this.selection.destination = 'rtmp';
     try { this.version = str(record(JSON.parse(await readFile(path.join(this.runtimeRoot, '.riftcast-runtime.json'), 'utf8'))).version, 40); } catch { /* Preparation has not run yet. */ }
   }
   private async save() {
@@ -94,7 +109,10 @@ export class ObsEngine {
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       return await Promise.race([this.obs.call(request, data), new Promise<never>((_resolve, reject) => { timer = setTimeout(() => reject(new Error()), 8000); })]);
-    } catch { throw new Error(`OBS 操作未完成（${request}），请检查引擎连接`); }
+    } catch (error) {
+      if (request === 'GetVirtualCamStatus' && error !== null && typeof error === 'object' && 'code' in error && error.code === 604) throw new VirtualCameraUnavailableError('虚拟摄像头组件尚未加载');
+      throw new Error('OBS 操作未完成（' + request + '），请检查引擎连接');
+    }
     finally { if (timer) clearTimeout(timer); }
   }
   async exclusive<T>(work: () => Promise<T>): Promise<T> {
@@ -110,17 +128,78 @@ export class ObsEngine {
     const [stream, recording] = await Promise.all([this.call('GetStreamStatus'), this.call('GetRecordStatus')]);
     if (typeof stream.outputActive !== 'boolean' || typeof stream.outputReconnecting !== 'boolean' || typeof recording.outputActive !== 'boolean') throw new Error('无法确认输出是否已停止，请重新连接引擎');
     if (stream.outputActive || stream.outputReconnecting || recording.outputActive) throw new ValidationError('请先在工作台停止推流和录制，再修改输出引擎');
+    if (await this.virtualCameraState()) throw new ValidationError('请先停止伴侣画面输出，再修改来源或输出方式');
+    if (this.companionAudio.managing) throw new ValidationError('请先停止伴侣混音输出，再修改输出引擎');
+  }
+  private async virtualCameraState(): Promise<boolean | null> {
+    try {
+      const state = await this.call('GetVirtualCamStatus');
+      if (typeof state.outputActive !== 'boolean') throw new Error('虚拟摄像头状态无效');
+      this.virtualCameraAvailable = true;
+      return state.outputActive;
+    } catch (error) {
+      if (error instanceof VirtualCameraUnavailableError) { this.virtualCameraAvailable = false; return false; }
+      if (this.mode === 'embedded') throw new Error('无法确认虚拟摄像头状态，请刷新引擎连接后重试');
+      return null; // Older external OBS may not provide a virtual camera.
+    }
+  }
+  async setDestination(input: unknown) {
+    const destination = record(input).destination;
+    if (destination !== 'rtmp' && destination !== 'douyin') throw new ValidationError('直播输出方式无效');
+    if (destination === 'douyin' && this.mode !== 'embedded') throw new ValidationError('抖音直播伴侣输出请使用内置 OBS 引擎');
+    await this.exclusive(async () => {
+      if (this.connected) await this.requireStopped();
+      else if (isRunning(this.child)) throw new ValidationError('引擎状态未确认，请重新连接后切换输出方式');
+      this.selection.destination = destination;
+      await this.save();
+    });
+    return this.status();
+  }
+  async installVirtualCamera() {
+    if (this.mode !== 'embedded') throw new ValidationError('请先选择内置 OBS 引擎');
+    let restart = false;
+    await this.exclusive(async () => {
+      if (this.connected) await this.requireStopped();
+      else if (isRunning(this.child)) throw new ValidationError('引擎状态未确认，请重新连接后安装摄像头');
+      const before = await this.cameraDriver.status(true);
+      await this.cameraDriver.install();
+      restart = isRunning(this.child) && (!before.installed || this.virtualCameraAvailable === false);
+      if (restart) { await this.obs.disconnect().catch(() => {}); await this.stopOwnedProcess(); }
+    });
+    return restart ? this.start() : this.status();
+  }
+  async prepareCompanion() {
+    if (this.mode !== 'embedded' || this.selection.destination !== 'douyin') throw new ValidationError('请先选择抖音直播伴侣输出');
+    let restart = false;
+    await this.exclusive(async () => {
+      if (this.connected) await this.requireStopped();
+      else if (isRunning(this.child)) throw new ValidationError('引擎状态未确认，请重新连接后准备音画');
+      const camera = await this.cameraDriver.status(true);
+      await this.cameraDriver.install();
+      await this.companionAudio.driver.install();
+      restart = isRunning(this.child) && (!camera.installed || this.virtualCameraAvailable === false);
+      if (restart) { await this.obs.disconnect().catch(() => {}); await this.stopOwnedProcess(); }
+    });
+    if (restart) await this.start();
+    if (this.connected && (await this.companionAudio.driver.status()).installed) await this.exclusive(() => this.companionAudio.prepare());
+    return this.status();
   }
   async status() {
     let available = false;
     try { await access(path.join(this.runtimeRoot, 'bin', '64bit', 'obs64.exe')); available = true; } catch { /* Available after runtime preparation. */ }
-    const base = { mode: this.mode, available, running: this.mode === 'external' ? this.connected : isRunning(this.child), connected: this.connected, version: this.version, sceneName: engineScene, streamActive: false, recordActive: false, inputs: [] as { inputName: string; inputKind: string; inputMuted?: boolean }[], capabilities: this.capabilities, selection: this.selection, performance: undefined as ObsPerformance | undefined, ...(this.error ? { error: this.error } : {}) };
-    if (!this.connected || this.starting) return base;
+    const driver = await this.cameraDriver.status();
+    const base = { mode: this.mode, destination: this.selection.destination ?? 'rtmp', available, running: this.mode === 'external' ? this.connected : isRunning(this.child), connected: this.connected, version: this.version, sceneName: engineScene, streamActive: false, recordActive: false, virtualCamActive: null as boolean | null, virtualCamera: { supported: this.mode === 'embedded', driver, requiresRestart: false, error: '' }, inputs: [] as { inputName: string; inputKind: string; inputMuted?: boolean }[], capabilities: this.capabilities, selection: this.selection, performance: undefined as ObsPerformance | undefined, ...(this.error ? { error: this.error } : {}) };
+    const companionAudio = this.mode === 'embedded' ? await this.companionAudio.status(this.connected && !this.starting) : { supported: false, available: false, installed: false, ready: false, active: false, sampleRate: 48000, channels: 2, track: 1 };
+    const result = { ...base, companionAudio };
+    if (!this.connected || this.starting) return result;
     try {
       const [stream, recording, sources, scenes] = await Promise.all([this.call('GetStreamStatus'), this.call('GetRecordStatus'), this.call('GetInputList'), this.call('GetSceneList')]);
       base.streamActive = stream.outputActive || stream.outputReconnecting;
       base.recordActive = recording.outputActive;
-      this.outputActive = base.streamActive || base.recordActive;
+      try { base.virtualCamActive = await this.virtualCameraState(); }
+      catch (error) { base.virtualCamera.error = error instanceof Error ? error.message : '虚拟摄像头状态读取失败'; }
+      base.virtualCamera.requiresRestart = driver.installed && this.virtualCameraAvailable === false;
+      this.outputActive = base.streamActive || base.recordActive || base.virtualCamActive === true;
       base.sceneName = scenes.currentProgramSceneName;
       base.inputs = sources.inputs.map(input => ({ inputName: String(input.inputName), inputKind: String(input.inputKind), ...(input.inputName === micInput ? { inputMuted: !this.selection.micEnabled } : {}) }));
       // Diagnostics are optional: an older external OBS must retain its output controls.
@@ -135,7 +214,18 @@ export class ObsEngine {
         if (typeof stats.activeFps === 'number') base.performance = this.performanceMonitor.sample(stats, stream, this.outputActive, this.videoSettings.fps, this.videoSettings.encoder);
       } catch { /* Optional statistics never mark a healthy connection as disconnected. */ }
     } catch { base.connected = false; base.error = '输出引擎状态读取失败，请重新连接'; }
-    return base;
+    Object.assign(result, base);
+    return result;
+  }
+  async importMusic(bytes: Buffer, name: string) {
+    if (!this.connected || this.mode !== 'embedded') throw new ValidationError('请先启动内置 OBS 引擎');
+    return this.exclusive(async () => { await this.requireStopped(); return this.music.import(bytes, name); });
+  }
+  async musicControl(input: unknown) {
+    if (!this.connected || this.mode !== 'embedded') throw new ValidationError('请先启动内置 OBS 引擎');
+    const action = record(input).action;
+    if (action !== 'play' && action !== 'pause' && action !== 'stop') throw new ValidationError('音乐操作无效');
+    return this.exclusive(() => this.music.control(action));
   }
   async start() {
     if (this.closing) throw new Error('输出引擎正在关闭');
@@ -199,7 +289,9 @@ export class ObsEngine {
       }
       if (!this.connected) throw new Error('内置 OBS 连接超时，请检查运行时日志后重试');
       await this.waitReady(child);
+      await this.companionAudio.recover();
       await this.configureSources({});
+      await this.music.restore();
       if (this.closing || !isRunning(child)) throw new Error('内置 OBS 启动已取消');
       this.beginWindowRefresh();
       this.options.onConnection('connected', `内置 OBS ${this.version} · 游戏画面与 HUD 已配置`);
@@ -295,10 +387,39 @@ export class ObsEngine {
     await initial(path.join(scenes, 'RiftCast.json'), JSON.stringify({ name: 'RiftCast', current_scene: engineScene, current_program_scene: engineScene, scene_order: [{ name: engineScene }], sources: [{ name: engineScene, id: 'scene', settings: { items: [] } }], groups: [], quick_transitions: [] }));
     await this.updateIni(profileFile,{SimpleOutput:{RecRB:'true',RecRBTime:'60',RecRBSize:'512',RecFormat2:'mkv'}});
     await prepareEmergencyCollection(path.join(scenes,'RiftCast.json'),this.options.dataDir);
+    await this.prepareVirtualCameraConfig(path.join(scenes, 'RiftCast.json'));
+    await this.prepareAudioBridgeConfig(path.join(scenes, 'RiftCast.json'));
     // Never pass authentication in command-line arguments or send it to the renderer.
     const pluginFile = path.join(plugin, 'config.json');
     await writeFile(`${pluginFile}.tmp`, JSON.stringify({ first_load: false, server_enabled: true, server_port: port, alerts_enabled: false, auth_required: true, server_password: password }), { encoding: 'utf8', mode: 0o600 });
     await rename(`${pluginFile}.tmp`, pluginFile);
+  }
+  private async prepareVirtualCameraConfig(file: string) {
+    // OBS 32.2 stores the output selection in its scene collection: ProgramView = 3.
+    // Prepare only before spawning the owned OBS. Never edit the live collection.
+    const contents = await readFile(file, 'utf8');
+    const collection = record(JSON.parse(contents));
+    if (record(collection['virtual-camera'] ?? {}).type2 === 3) return;
+    try { await writeFile(file + '.before-virtual-camera', contents, { encoding: 'utf8', flag: 'wx' }); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error; }
+    collection['virtual-camera'] = { type2: 3 };
+    await writeFile(file + '.tmp', JSON.stringify(collection, null, 2), 'utf8');
+    await rename(file + '.tmp', file);
+  }
+  private async prepareAudioBridgeConfig(file: string) {
+    const library = path.join(this.runtimeRoot, 'bin', '64bit', 'riftcast-audio-bridge.dll');
+    const script = path.join(this.runtimeRoot, 'data', 'riftcast', 'riftcast-audio.lua');
+    // Test fixtures without the native runtime still exercise all RTMP paths.
+    try { await Promise.all([access(library), access(script)]); } catch { return; }
+    const contents = await readFile(file, 'utf8'), collection = record(JSON.parse(contents));
+    const modules = record(collection.modules ?? {});
+    const previous = Array.isArray(modules['scripts-tool']) ? modules['scripts-tool'] as Record<string, unknown>[] : [];
+    const scripts = previous.filter(value => typeof value.path !== 'string' || path.basename(value.path.replaceAll('\\', '/')) !== 'riftcast-audio.lua');
+    scripts.push({ path: script.replaceAll('\\', '/'), settings: { library: library.replaceAll('\\', '/') } });
+    modules['scripts-tool'] = scripts; collection.modules = modules;
+    try { await writeFile(file + '.before-audio-bridge', contents, { encoding: 'utf8', flag: 'wx' }); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error; }
+    await writeFile(file + '.tmp', JSON.stringify(collection, null, 2), 'utf8'); await rename(file + '.tmp', file);
   }
   private async preferredEncoder(): Promise<string> {
     // OBS validates this selection against its loaded encoders at startup and falls back to x264.
@@ -339,6 +460,7 @@ export class ObsEngine {
       await this.obs.disconnect().catch(() => {});
       await this.stopOwnedProcess();
       this.mode = mode;
+      if (mode === 'external') this.selection.destination = 'rtmp';
       this.error = '';
       this.options.onConnection('disconnected', mode === 'embedded' ? '内置 OBS 等待启动' : '外部 OBS 等待连接');
       await this.save();
@@ -465,12 +587,14 @@ export class ObsEngine {
     if (this.mode !== 'embedded' || !isRunning(this.child) || !this.connected || this.closing) throw new ValidationError('连续视频监视器需要已连接的内置 OBS 引擎');
     return this.exclusive(async () => {
       const generation = this.connectionGeneration;
-      if (kind === 'preview' && !this.livePreviewPrepared) await this.prepareLivePreview(generation);
+      if (kind === 'preview' && !this.customPreview && !this.livePreviewPrepared) await this.prepareLivePreview(generation);
       if (open !== false) await this.monitorCall(generation, 'OpenVideoMixProjector', { videoMixType: kind === 'program' ? 'OBS_WEBSOCKET_VIDEO_MIX_TYPE_PROGRAM' : 'OBS_WEBSOCKET_VIDEO_MIX_TYPE_PREVIEW', monitorIndex: -1 });
       return { projectorTitle: kind === 'program' ? '投影 - 输出' : '投影 - 预览', projectorTitles: kind === 'program' ? ['投影 - 输出', 'Projector - Program'] : ['投影 - 预览', 'Projector - Preview'], obsProcessId: this.child!.pid, fps: this.videoSettings?.fps ?? this.selection.outputFps ?? 60 };
     });
   }
   /** Continuous monitor frames, independent of the low-frequency diagnostic snapshot cache. */
+  private customPreview?:string;
+  setCustomPreview(name:string|undefined){this.customPreview=name;if(!name)this.livePreviewPrepared=false;}
   async liveFrame(kind: 'preview' | 'program'): Promise<Buffer> {
     // OBS screenshots read back GPU pixels. Serialize both monitors to bound that load.
     const pending = this.liveCapture.catch(() => {}).then(async () => {
@@ -478,7 +602,7 @@ export class ObsEngine {
       if (this.busy || this.starting || this.stopping) throw new ValidationError('引擎正在应用设置，实时预览稍后自动恢复');
       const generation = this.connectionGeneration;
       let sourceName: string;
-      if (kind === 'preview' && this.mode === 'embedded') {
+      if(kind==='preview'&&this.customPreview){sourceName=this.customPreview;} else if (kind === 'preview' && this.mode === 'embedded') {
         if (!this.livePreviewPrepared) {
           this.livePreviewPreparing ??= this.prepareLivePreview(generation);
           try { await this.livePreviewPreparing; } finally { this.livePreviewPreparing = undefined; }
@@ -567,24 +691,51 @@ export class ObsEngine {
     if (!this.connected) throw new ValidationError('输出引擎尚未连接');
     const action = record(input).action;
     await this.exclusive(async () => {
-      if (action === 'start-stream') { await this.call('StartStream'); await this.waitOutput('stream', true); }
+      if (action === 'start-stream') {
+        if (this.selection.destination === 'douyin') throw new ValidationError('当前为直播伴侣输出，请启动伴侣画面后在抖音直播伴侣开播');
+        await this.call('StartStream'); await this.waitOutput('stream', true);
+      }
       else if (action === 'stop-stream') { await this.call('StopStream'); await this.waitOutput('stream', false); }
       else if (action === 'start-record') { await this.call('StartRecord'); await this.waitOutput('record', true); }
       else if (action === 'stop-record') { const result=await this.call('StopRecord');this.recordingPath=result.outputPath; await this.waitOutput('record', false); }
+      else if (action === 'start-virtual-camera') {
+        if (this.mode !== 'embedded' || this.selection.destination !== 'douyin') throw new ValidationError('请在连接与输出中选择抖音直播伴侣输出');
+        const driver = await this.cameraDriver.status(true);
+        if (!driver.installed) throw new ValidationError(driver.error || '请先安装虚拟摄像头，重新打开直播伴侣后再启动画面输出');
+        await this.virtualCameraState();
+        if (this.virtualCameraAvailable === false) throw new ValidationError('虚拟摄像头组件尚未加载，请点击重新加载摄像头后重试');
+        const { inputs } = await this.call('GetInputList');
+        if (!inputs.some(item => item.inputName === hudInput)) throw new ValidationError('请先应用内置引擎的游戏画面与音频设置');
+        const cameraWasActive = await this.virtualCameraState();
+        try {
+          await this.companionAudio.start();
+          if (!cameraWasActive) await this.call('StartVirtualCam');
+          await this.waitOutput('virtual-camera', true);
+        } catch (error) {
+          if (!cameraWasActive) { await this.call('StopVirtualCam').catch(() => {}); await this.companionAudio.stop().catch(() => {}); }
+          throw error;
+        }
+      }
+      else if (action === 'stop-virtual-camera') {
+        if (this.mode !== 'embedded') throw new ValidationError('伴侣画面输出请使用内置 OBS 引擎');
+        if (await this.virtualCameraState()) await this.call('StopVirtualCam');
+        await this.waitOutput('virtual-camera', false);
+        await this.companionAudio.stop();
+      }
       else throw new ValidationError('输出操作无效');
     });
     return this.status();
   }
-  private async waitOutput(kind: 'stream' | 'record', active: boolean) {
+  private async waitOutput(kind: 'stream' | 'record' | 'virtual-camera', active: boolean) {
     const deadline = Date.now() + 12000;
     while (Date.now() < deadline) {
-      const state = kind === 'stream' ? await this.call('GetStreamStatus') : await this.call('GetRecordStatus');
+      const state = kind === 'stream' ? await this.call('GetStreamStatus') : kind === 'record' ? await this.call('GetRecordStatus') : await this.call('GetVirtualCamStatus');
       const reconnecting = kind === 'stream' && 'outputReconnecting' in state && state.outputReconnecting === true;
       if (typeof state.outputActive !== 'boolean') throw new Error('输出引擎未返回有效状态');
       if (active ? state.outputActive : !state.outputActive && !reconnecting) return;
       await new Promise(resolve => setTimeout(resolve, 150));
     }
-    throw new Error(active ? '输出尚未启动，请检查推流地址、编码器或录制路径后重试' : '输出尚未停止，请在引擎窗口确认后重试');
+    throw new Error(kind === 'virtual-camera' ? '虚拟摄像头状态尚未确认，请关闭其他 OBS 的虚拟摄像头后重试' : active ? '输出尚未启动，请检查推流地址、编码器或录制路径后重试' : '输出尚未停止，请在引擎窗口确认后重试');
   }
   private async stopOwnedProcess() {
     if (this.stopping) return this.stopping;
@@ -630,6 +781,9 @@ export class ObsEngine {
       if (stream?.outputActive || stream?.outputReconnecting) { await this.call('StopStream').catch(() => {}); await this.waitOutput('stream', false).catch(() => {}); }
       const recording = await this.call('GetRecordStatus').catch(() => null);
       if (recording?.outputActive) { await this.call('StopRecord').catch(() => {}); await this.waitOutput('record', false).catch(() => {}); }
+      const camera = await this.virtualCameraState().catch(() => null);
+      if (camera) { await this.call('StopVirtualCam').catch(() => {}); await this.waitOutput('virtual-camera', false).catch(() => {}); }
+      if (this.companionAudio.managing) await this.companionAudio.stop().catch(() => {});
     }
     await this.obs.disconnect().catch(() => {});
     await this.stopOwnedProcess();

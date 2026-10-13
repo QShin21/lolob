@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Monitor, Pause, RefreshCw, WifiOff } from 'lucide-react';
 import { OBS_SNAPSHOT_INTERVAL_MS, usesNativeObsPreview, type ObsPreviewPurpose } from '../../shared/obs-preview-policy';
+import { nativePreviewBounds, sameNativeBounds, type NativeBounds } from './native-preview-layout';
 import './obs-live-preview.css';
 
 type PreviewPhase = 'waiting' | 'loading' | 'live' | 'paused' | 'error';
@@ -197,7 +198,6 @@ type DesktopPreviewBridge = {
   embed?: (kind: Props['kind'], bounds: NativeBounds) => Promise<{ fps: number; transport: 'native' }>;
   position?: (kind: Props['kind'], bounds: NativeBounds) => Promise<void>;
 };
-type NativeBounds = { x: number; y: number; width: number; height: number; viewportWidth: number; viewportHeight: number; devicePixelRatio: number };
 declare global { interface Window { riftcastPreview?: DesktopPreviewBridge } }
 
 // Keep native window acquisition and disposal ordered across both monitors.
@@ -238,74 +238,108 @@ function NativePreview({ kind, connected, enabled = true, className = '', onStat
     const element = surface.current!;
     let stopped = false;
     let embedded = false;
+    let running = false;
+    let dirty = false;
+    let reconnect = false;
+    let lastBounds: NativeBounds | undefined;
     let request = 0;
-    let retry: ReturnType<typeof setTimeout> | undefined;
     let attempts = 0;
-    const bounds = (): NativeBounds | undefined => {
-      const rect = element.getBoundingClientRect();
-      const available = { x: Math.max(0, rect.x), y: Math.max(0, rect.y), right: Math.min(innerWidth, rect.right), bottom: Math.min(innerHeight, rect.bottom) };
-      const width = Math.min(available.right - available.x, (available.bottom - available.y) * 16 / 9);
-      const height = width * 9 / 16;
-      if (width < 64 || height < 36) return;
-      return { x: available.x + (available.right - available.x - width) / 2, y: available.y + (available.bottom - available.y - height) / 2, width, height, viewportWidth: innerWidth, viewportHeight: innerHeight, devicePixelRatio };
+    let retryAt = 0;
+    const pause = () => setStatus(previous => previous.phase === 'paused' ? previous : {
+      ...previous, phase: 'paused', fps: 0, message: '画面被遮挡或移出视区，预览已暂停',
+    });
+    const release = async () => {
+      embedded = false;
+      lastBounds = undefined;
+      await bridge.release(kind);
     };
-    const connect = () => {
+    const synchronize = () => {
+      if (stopped) return;
+      if (running) { dirty = true; return; }
+      running = true;
+      dirty = false;
       void serializeCapture(async () => {
         if (stopped) return;
-        const rect = bounds();
-        if (!rect) { retry = setTimeout(connect, 250); return; }
-        setStatus(previous => ({ ...previous, phase: 'loading', message: '正在连接 OBS 原生画面', fps: 0 }));
         try {
-          await bridge.embed!(kind, rect);
-          if (stopped) { await bridge.release(kind); return; }
-          embedded = true;
+          const rect = nativePreviewBounds(element);
+          if (!rect) {
+            if (embedded) await release();
+            pause();
+            return;
+          }
+          if (reconnect && embedded) await release();
+          reconnect = false;
+          if (!embedded) {
+            if (Date.now() < retryAt) return;
+            setStatus(previous => ({ ...previous, phase: 'loading', message: '正在连接 OBS 原生画面', fps: 0 }));
+            await bridge.embed!(kind, rect);
+            embedded = true;
+            lastBounds = rect;
+          } else if (!sameNativeBounds(lastBounds, rect)) {
+            await bridge.position!(kind, rect);
+            lastBounds = rect;
+          }
+          // A dialog, scroll or navigation may occur while OBS opens/moves its
+          // window. Recheck after IPC before retaining the native display.
+          const current = nativePreviewBounds(element);
+          if (stopped || !current) {
+            await release();
+            if (!stopped) pause();
+            return;
+          }
+          if (!sameNativeBounds(lastBounds, current)) dirty = true;
           attempts = 0;
-          const fps = await nativeFps().catch(() => 0);
-          if (!stopped) setStatus({ phase: 'live', transport: 'native', message: 'OBS 原生合成画面', frames: 0, fps, updatedAt: Date.now() });
+          retryAt = 0;
+          setStatus(previous => previous.phase === 'live' ? previous : {
+            phase: 'live', transport: 'native', message: 'OBS 原生合成画面', frames: 0, fps: 0, updatedAt: Date.now(),
+          });
         } catch {
+          // Failed acquisition/positioning must not leave a stale child window.
+          await release().catch(() => {});
           if (stopped) return;
+          retryAt = Date.now() + Math.min(1000 * 2 ** attempts++, 10000);
           setStatus(previous => ({ ...previous, phase: 'error', fps: 0, message: 'OBS 原生画面暂不可用，正在重新连接' }));
-          retry = setTimeout(connect, Math.min(1000 * 2 ** attempts++, 10000));
         }
+      }).finally(() => {
+        running = false;
+        if (dirty && !stopped) reposition();
       });
     };
     const reposition = () => {
       cancelAnimationFrame(request);
-      request = requestAnimationFrame(() => {
-        const rect = bounds();
-        if (!embedded || stopped) return;
-        if (!rect) {
-          embedded = false;
-          void serializeCapture(() => bridge.release(kind)).then(() => { if (!stopped) connect(); });
-          return;
-        }
-        void bridge.position!(kind, rect).catch(() => {
-          if (stopped || !embedded) return;
-          embedded = false;
-          connect();
-        });
-      });
+      request = requestAnimationFrame(synchronize);
     };
     const observer = new ResizeObserver(reposition);
     observer.observe(element);
+    const mutations = new MutationObserver(records => {
+      // Ignore our status text/FPS updates; watch dialogs and ancestor/page
+      // visibility even when they do not change this surface's dimensions.
+      if (records.some(record => !element.parentElement?.contains(record.target))) reposition();
+    });
+    mutations.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['open', 'hidden', 'class', 'style', 'aria-modal', 'popover'] });
     window.addEventListener('resize', reposition);
     window.addEventListener('scroll', reposition, true);
-    connect();
+    document.addEventListener('toggle', reposition, true);
+    synchronize();
+    // CSS transitions and ancestor layout shifts can move the surface without
+    // firing resize/scroll. Keep geometry in sync without issuing unchanged IPC.
+    const layoutTimer = window.setInterval(reposition, 250);
     const timer = window.setInterval(() => {
       if (!embedded || stopped) return;
-      void nativeFps().then(fps => { if (!stopped) setStatus(previous => ({ ...previous, fps, updatedAt: Date.now() })); }).catch(() => {
-        if (stopped) return;
-        embedded = false;
+      void nativeFps().then(fps => { if (!stopped && embedded) setStatus(previous => previous.phase === 'live' ? { ...previous, fps, updatedAt: Date.now() } : previous); }).catch(() => {
+        if (stopped || !embedded) return;
+        reconnect = true;
         setStatus(previous => ({ ...previous, phase: 'error', fps: 0, message: '正在恢复 OBS 原生画面连接' }));
-        connect();
+        reposition();
       });
     }, 1000);
     return () => {
       stopped = true;
-      clearTimeout(retry); clearInterval(timer); cancelAnimationFrame(request);
-      observer.disconnect();
+      clearInterval(layoutTimer); clearInterval(timer); cancelAnimationFrame(request);
+      observer.disconnect(); mutations.disconnect();
       window.removeEventListener('resize', reposition);
       window.removeEventListener('scroll', reposition, true);
+      document.removeEventListener('toggle', reposition, true);
       void serializeCapture(() => bridge.release(kind).catch(() => {}));
     };
   }, [kind, connected, enabled, visible]);

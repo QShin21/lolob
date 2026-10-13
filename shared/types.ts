@@ -1,6 +1,15 @@
 import type { ProductionState, ProductionCommand } from './production-types';
 export type Phase = 'pregame' | 'draft' | 'live' | 'postgame';
-export type Scene = 'standby' | 'draft' | 'lineup' | 'live' | 'economy' | 'ranking' | 'schedule' | 'postgame' | 'interview' | 'teamfight' | 'gold-ranking';
+export type BuiltinScene = 'standby' | 'draft' | 'lineup' | 'live' | 'economy' | 'ranking' | 'schedule' | 'postgame' | 'interview' | 'teamfight' | 'gold-ranking';
+export type Scene = BuiltinScene | `custom:${string}`;
+export interface CustomSceneSource {
+  id: string; name: string; kind: 'image' | 'window' | 'obs';
+  assetId?: string; window?: string; inputName?: string;
+  x: number; y: number; width: number; height: number;
+  fit: 'contain' | 'cover' | 'stretch'; visible: boolean;
+}
+export interface CustomScene { id: `custom:${string}`; name: string; background: string; sources: CustomSceneSource[] }
+export interface CustomSourceChoices { windows: { name: string; value: string }[]; inputs: { name: string; kind: string }[] }
 export type SourceMode = 'demo' | 'live';
 export type Side = 'blue' | 'red';
 export interface Champion { id: string; key: number; name: string; title: string; image: string; splash: string; tags: string[] }
@@ -29,6 +38,7 @@ export type PlayerFeedPair = Record<Side, PlayerFeedSettings>;
 export interface PlayerFeedControl { mode: 'manual' | 'auto'; activeIndex: number; nextSwitchAt?: number }
 export interface OverlaySettings { preset: BroadcastPreset; scoreboard: boolean; players: boolean; objectives: boolean; ticker: boolean; goldDiff: boolean; sponsor: string; sponsorLogo?: string; tickerText: string; accent: string; scale: number; countdownEnd: number | null; nativeHud?: 'auto' | 'mask' | 'off'; patchVersion?: string; bottomTitle?: string; playerFeeds?: PlayerFeedPair; playerFeedPairs?: PlayerFeedPair[]; playerFeedControl?: PlayerFeedControl; scheduleView?: { page: number; filter: 'all' | 'upcoming' | 'day'; day: string }; interview?: { name: string; team: string; role: string; topic: string; dock: 'left' | 'right' } }
 export interface BroadcastState {
+  customScenes?: CustomScene[];
   production?: ProductionState;
   revision: number; mode: SourceMode; phase: Phase; previewScene: Scene; programScene: Scene;
   match: { title: string; subtitle: string; game: number; format: string; blueTeamId: string; redTeamId: string; blueScore: number; redScore: number; seriesId?: string };
@@ -44,6 +54,8 @@ export interface Asset { id: string; name: string; url: string; type: string; cr
 export interface Recording { id: string; title: string; createdAt: string; observedAt?: string; sourceGameTime?: number; duration: number; mode: SourceMode; players: Player[]; stats: BroadcastState['stats']; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed; result?: { resultId: string; seriesId: string; game: number; attempt: number; winner: Side | null; winnerTeamId?: string; version: number; terminalComplete: boolean; seriesComplete: boolean; blueScore: number; redScore: number; valid?: boolean; invalidReason?: string } }
 export interface GameResult { id: string; key: string; seriesId: string; matchId?: string; game: number; blueTeamId: string; redTeamId: string; winner: Side | null; winnerTeamId?: string; endedAt: string; source: 'live' | 'lcu' | 'manual'; sourceGameId?: string; snapshot: Recording; match: BroadcastState['match']; teams: Team[]; draft: DraftState; seriesComplete: boolean; terminalSampleAccepted?: boolean; terminalSampleComplete?: boolean; selectedPlayerId?: string | null }
 export type BroadcastAction = (
+  | { type: 'save-custom-scene'; scene: CustomScene }
+  | { type: 'delete-custom-scene'; id: string }
   | { type: 'production'; command: ProductionCommand }
   | { type: 'correct-result'; resultId: string; winner: Side; reason: string }
   | { type: 'set-mode'; mode: SourceMode }

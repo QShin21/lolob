@@ -11,6 +11,7 @@ export function pendingContent(state: BroadcastState): string[] {
   if (state.previewScene !== state.programScene) items.push("场景");
   if (!same(state.match, onAir.match)) items.push("比赛身份 / 比分");
   if (!same(state.teams, onAir.teams)) items.push("战队 / 名单");
+  if (!same(state.customScenes ?? [], onAir.customScenes ?? [])) items.push("自定义场景");
   if (!same(state.schedule, onAir.schedule)) items.push("赛程");
   const {
     ticker,
@@ -87,6 +88,7 @@ export function sceneLabel(
   scene: Scene,
   fallback: string,
 ): string {
+  if (scene.startsWith("custom:")) return state.customScenes?.find(s => s.id === scene)?.name ?? "自定义场景";
   if (scene !== "ranking") return fallback;
   const player = state.players.find((p) => p.id === state.selectedPlayerId);
   return player ? `个人数据 · ${player.name}` : "十人数据榜";

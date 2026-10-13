@@ -3,7 +3,7 @@ import { sceneLabel } from "../../shared/presentation";
 import { Maximize2 } from "lucide-react";
 import type { BroadcastState, Champion } from "../../shared/types";
 import { programState } from "../../shared/production";
-import { sceneInfo, outputUrl } from "../lib";
+import { sceneDetails, outputUrl } from "../lib";
 import { ObsLivePreview, type ObsPreviewStatus } from "./ObsLivePreview";
 import { BroadcastCanvas } from "./BroadcastCanvas";
 export function MonitorPane({
@@ -35,7 +35,7 @@ export function MonitorPane({
           {sceneLabel(
             kind === "program" ? programState(state) : state,
             scene,
-            sceneInfo[scene].name,
+            sceneDetails(kind === "program" ? programState(state) : state,scene).name,
           )}
         </span>
         <a
@@ -56,7 +56,7 @@ export function MonitorPane({
               scene={scene}
             />
             <span className="layout-only-label">
-              HUD 排版示意 · 未合成游戏画面
+              排版示意 · 窗口与游戏画面请查看实时监视
             </span>
           </>
         ) : (
@@ -73,7 +73,7 @@ export function MonitorPane({
           className="text-button"
           onClick={() => setLayoutOnly(!layoutOnly)}
         >
-          {layoutOnly ? "返回实时监视" : "查看 HUD 排版"}
+          {layoutOnly ? "返回实时监视" : "查看场景排版"}
         </button>
         <span>
           <span
@@ -83,8 +83,8 @@ export function MonitorPane({
             ? kind === "program"
               ? "节目合成画面"
               : previewStatus.transport === "native"
-                ? "动态预监 · 共用游戏来源"
-                : "每秒采样 · 共用游戏来源"
+                ? "动态预监 · OBS 合成"
+                : "每秒采样 · OBS 合成"
             : previewStatus?.phase === "paused"
               ? "预览已暂停"
               : "等待实时画面"}

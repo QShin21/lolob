@@ -1,3 +1,4 @@
+import { validateSceneId } from './custom-scenes';
 import { randomUUID } from 'node:crypto';
 import type { BroadcastState, Side } from '../shared/types';
 import type { ProductionCommand } from '../shared/production-types';
@@ -140,7 +141,7 @@ export function applyProduction(s: BroadcastState, raw: unknown, actor = '主机
     }
     case 'rundown':
       if (!Array.isArray(c.items) || c.items.length > 50) throw new ValidationError('待播队列最多五十项');
-      p.rundown = c.items.map(item => { const v = record(item); if (!['standby','draft','lineup','live','economy','ranking','schedule','postgame','interview','teamfight','gold-ranking'].includes(String(v.scene)) || !['pending','ready','aired'].includes(String(v.status))) throw new ValidationError('待播项目无效'); return { id: str(v.id, 80), scene: v.scene as typeof item.scene, title: str(v.title, 150), seconds: numeric(v.seconds, 0, 3600), status: v.status as typeof item.status }; }); break;
+      p.rundown = c.items.map(item => { const v = record(item); if (!['pending','ready','aired'].includes(String(v.status))) throw new ValidationError('待播项目无效'); return { id: str(v.id, 80), scene: validateSceneId(v.scene, s), title: str(v.title, 150), seconds: numeric(v.seconds, 0, 3600), status: v.status as typeof item.status }; }); break;
     default: throw new ValidationError('制作操作无效');
   }
   p.marks = p.marks.slice(-1000); p.objectives = p.objectives.slice(-200); p.draftUndo = p.draftUndo.slice(-30);

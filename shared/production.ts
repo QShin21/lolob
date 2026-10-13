@@ -26,7 +26,7 @@ export function telemetry(s: BroadcastState): Telemetry {
 }
 export function captureProgram(s: BroadcastState): ProgramContent {
   const p = ensureProduction(s);
-  return structuredClone({ version: p.configVersion, key: productionKey(s), takenAt: new Date().toISOString(), mode: s.mode, match: s.match, teams: s.teams, overlay: s.overlay, selectedPlayerId: s.selectedPlayerId, draft: s.draft, telemetry: telemetry(s), draftManual: p.draftMode !== 'auto', assignments: p.assignments, versions: p.versions, rules: p.rules, attempt: p.attempt, schedule: s.schedule, draftHistory: s.draftHistory });
+  return structuredClone({ version: p.configVersion, key: productionKey(s), takenAt: new Date().toISOString(), customScenes: s.customScenes ?? [], mode: s.mode, match: s.match, teams: s.teams, overlay: s.overlay, selectedPlayerId: s.selectedPlayerId, draft: s.draft, telemetry: telemetry(s), draftManual: p.draftMode !== 'auto', assignments: p.assignments, versions: p.versions, rules: p.rules, attempt: p.attempt, schedule: s.schedule, draftHistory: s.draftHistory });
 }
 /** Configuration is copied at TAKE; same-game telemetry keeps advancing independently. */
 export function programState(s: BroadcastState): BroadcastState {
@@ -37,7 +37,7 @@ export function programState(s: BroadcastState): BroadcastState {
   const result=c.key===productionKey(s)?recorded:undefined;
   const current=result?frozenGameState(s,result):s;
   const same = c.key === productionKey(s) && (!!result || s.mode==='demo' || s.players.length>0&&s.phase!=='pregame');
-  const view: BroadcastState = { ...current, ...(same ? {} : c.telemetry), mode: c.mode, match: c.match, teams: c.teams, overlay: c.overlay, selectedPlayerId: c.selectedPlayerId, schedule: c.schedule ?? s.schedule, draftHistory: c.draftHistory,
+  const view: BroadcastState = { ...current, customScenes: c.customScenes ?? [], ...(same ? {} : c.telemetry), mode: c.mode, match: c.match, teams: c.teams, overlay: c.overlay, selectedPlayerId: c.selectedPlayerId, schedule: c.schedule ?? s.schedule, draftHistory: c.draftHistory,
     production: { ...ensureProduction(s), assignments: c.assignments ?? [], versions: c.versions ?? ensureProduction(s).versions, rules: c.rules ?? ensureProduction(s).rules, attempt: c.attempt ?? 1 }, draft: same && !c.draftManual ? current.draft : c.draft };
   if(recorded){view.finishedGameId=recorded.id;view.reportGameId=recorded.id;}
   if (same) view.players = applyIdentity(view, current.players).map(player => {

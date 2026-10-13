@@ -1,3 +1,4 @@
+import { sceneDetails } from '../lib';
 import { useMemoryState } from "../useMemoryState";
 import { TaskTabs, TakeControl, EmptyState } from "./ConsoleUI";
 import {
@@ -36,6 +37,9 @@ type AudioBus = {
 };
 type ProductionStatus = {
   audio: AudioBus[];
+  music?: { available: boolean; name?: string; playing: boolean };
+  companionAudio?: import('../../shared/obs-output').CompanionAudioStatus;
+  audioManaged?: boolean;
   disk: { directory?: string; freeBytes?: number; detail: string };
   recording: { outputActive: boolean; outputDuration: number } | null;
   bufferActive: boolean | null;
@@ -84,6 +88,9 @@ export function ProductionBar(ctx: StateContext) {
     connected: boolean;
     streamActive: boolean;
     recordActive: boolean;
+    destination?: 'rtmp' | 'douyin';
+    virtualCamActive?: boolean | null;
+    companionAudio?: import("../../shared/obs-output").CompanionAudioStatus;
   } | null>(null);
   useEffect(() => {
     let stopped = false,
@@ -96,6 +103,9 @@ export function ProductionBar(ctx: StateContext) {
           connected: boolean;
           streamActive: boolean;
           recordActive: boolean;
+          destination?: 'rtmp' | 'douyin';
+          virtualCamActive?: boolean | null;
+    companionAudio?: import("../../shared/obs-output").CompanionAudioStatus;
         }>("/api/obs/engine");
         if (!stopped) setOutput(result);
       } catch {
@@ -134,7 +144,7 @@ export function ProductionBar(ctx: StateContext) {
             : sceneLabel(
                 pgm,
                 state.programScene,
-                sceneInfo[state.programScene].name,
+                sceneDetails(state,state.programScene).name,
               )}
         </strong>
         <small>
@@ -151,8 +161,9 @@ export function ProductionBar(ctx: StateContext) {
         <small className="global-output-state">
           OBS{" "}
           {state.connections.obs.status === "connected" ? "已连接" : "待连接"} ·{" "}
-          {output?.connected
-            ? output.streamActive
+          {output?.destination === 'douyin'
+            ? !output.connected || output.virtualCamActive == null ? '伴侣音画待确认' : output.virtualCamActive ? output.companionAudio?.active ? '伴侣音画已送出' : '混音异常 · 请核对'  : '伴侣音画未送出'
+            : output?.connected ? output.streamActive
               ? "推流中"
               : "未推流"
             : "推流待确认"}{" "}
@@ -170,7 +181,7 @@ export function ProductionBar(ctx: StateContext) {
           {sceneLabel(
             state,
             state.previewScene,
-            sceneInfo[state.previewScene].name,
+            sceneDetails(state,state.previewScene).name,
           )}
         </strong>
         <details>
@@ -512,6 +523,8 @@ function AudioTask(ctx: TaskContext) {
   return (
     <div className="production-task">
       <h3>现场音频</h3>
+      {status?.companionAudio?.active && <p className="muted">完整混音已送到直播伴侣 · 48 kHz 双声道 · 音量、静音和回放策略即时生效。</p>}
+      <MusicControls ctx={ctx} />
       <label className="toggle-setting">
         <span>显示采访、音乐和回放通道</span>
         <input
@@ -537,6 +550,7 @@ function AudioTask(ctx: TaskContext) {
               key={bus.name}
               bus={bus}
               busy={busy || !ctx.canOutput}
+              monitorManaged={status?.audioManaged ?? false}
               obs={obs}
             />
           ))}
@@ -556,10 +570,12 @@ function AudioStrip({
   bus,
   busy,
   obs,
+  monitorManaged,
 }: {
   bus: AudioBus;
   busy: boolean;
   obs: TaskContext["obs"];
+  monitorManaged: boolean;
 }) {
   const [gain, setGain] = useState(bus.db ?? 0),
     editing = useRef(false);
@@ -639,7 +655,7 @@ function AudioStrip({
         <p>音量与静音立即作用于节目；峰值保持约 3.5 秒。</p>
         <select
           aria-label={`${bus.name} 监听`}
-          disabled={!bus.available || busy}
+          disabled={!bus.available || busy || monitorManaged}
           value={bus.monitor ?? "OBS_MONITORING_TYPE_NONE"}
           onChange={(e) =>
             obs({ action: "audio", name: bus.name, monitor: e.target.value })
@@ -668,11 +684,32 @@ function AudioStrip({
           }}
         />
         <small>ms · 监听请使用独立耳机，避免返送重复采集。</small>
+        {monitorManaged && <small>伴侣输出期间，监听由 OB 自动管理；停止后恢复原设置。</small>}
       </details>
     </div>
   );
 }
 
+function MusicControls({ ctx }: { ctx: TaskContext }) {
+  const music = ctx.status?.music;
+  const [uploading, setUploading] = useState(false);
+  async function upload(file?: File) {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const body = new FormData(); body.append('file', file);
+      await ctx.run(() => api('/api/obs/music', { method: 'POST', body }), '音乐已添加，当前暂停并静音；点击播放后送入节目混音');
+    } finally { setUploading(false); }
+  }
+  return <div className="music-controls">
+    <strong>节目音乐</strong>
+    <p className="muted">{music?.name || '选择本地音乐，自动加入游戏、自定义节目和回放场景。'}{music?.available ? music.playing ? ' · 播放中' : ' · 已暂停或静音' : ''}</p>
+    <label className="button small"><span>{uploading ? '正在添加…' : '添加 / 更换音乐'}</span><input aria-label="节目音乐文件" type="file" accept=".mp3,.wav,.ogg,.flac" disabled={ctx.busy || uploading || !ctx.canOutput} onChange={event => { void upload(event.target.files?.[0]); event.target.value = ''; }} /></label>
+    <button className="button small" disabled={ctx.busy || !ctx.canOutput || !music?.available} onClick={() => void ctx.run(() => api('/api/obs/music/control', { method: 'POST', body: JSON.stringify({ action: music?.playing ? 'pause' : 'play' }) }), music?.playing ? '节目音乐已暂停' : '节目音乐已播放')}>{music?.playing ? '暂停音乐' : '播放音乐'}</button>
+    <button className="button small" disabled={ctx.busy || !ctx.canOutput || !music?.available} onClick={() => void ctx.run(() => api('/api/obs/music/control', { method: 'POST', body: JSON.stringify({ action: 'stop' }) }), '节目音乐已停止')}>停止音乐</button>
+    <small className="muted">支持 32 MB 以内的 MP3 / WAV / OGG / FLAC；添加和更换请在停播窗口操作。音乐音量在下方音乐通道调整。</small>
+  </div>;
+}
 function PreparationTask(ctx: TaskContext) {
   const { state, send, notify, status, busy, command, obs, run } = ctx,
     p = state.production!,
@@ -1296,6 +1333,7 @@ function RundownTask(ctx: TaskContext) {
               {info.name}
             </option>
           ))}
+          {(state.customScenes ?? []).map(scene => <option value={scene.id} key={scene.id}>{scene.name}</option>)}
         </select>
         <button
           className="button"
@@ -1307,7 +1345,7 @@ function RundownTask(ctx: TaskContext) {
                 {
                   id: crypto.randomUUID(),
                   scene: rundownScene,
-                  title: sceneInfo[rundownScene].name,
+                  title: sceneDetails(state,rundownScene).name,
                   seconds: 15,
                   status: "pending",
                 },

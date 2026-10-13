@@ -1,3 +1,4 @@
+import { sceneDetails } from './lib';
 import { Notification, TakeControl } from './components/ConsoleUI';
 import { MonitorPane } from './components/MonitorPane';
 import { SceneLibrary } from './components/SceneLibrary';
@@ -49,17 +50,17 @@ export default function App() {
   const output=location.pathname.startsWith('/overlay');const remote=location.pathname.startsWith('/remote');
   useEffect(()=>{
     if(output||remote||!state?.production)return;
-    const handler=(e:KeyboardEvent)=>{if(e.repeat||e.target instanceof Element&&e.target.closest('input,textarea,select,[contenteditable]'))return;const key=[e.ctrlKey?'Control':'',e.altKey?'Alt':'',e.shiftKey?'Shift':'',e.key==='Enter'?'Enter':e.key.toUpperCase()].filter(Boolean).join('+');const binding=Object.entries(state.production!.hotkeys).find(([,value])=>value===key)?.[0];if(!binding)return;e.preventDefault();if(binding==='take'){void send({type:'take'}).catch(()=>{});return;}if(binding==='emergency'||binding==='live'){void api('/api/obs/production',{method:'POST',body:JSON.stringify({action:binding==='emergency'?'emergency':'return-live'})}).catch(e=>notify(e.message,'error'));return;}const action=binding==='analysis'?'analysis-off':binding==='feeds'?'feeds-off':'undo';void send({type:'production',command:{op:'immediate',action}}).catch(()=>{});};window.addEventListener('keydown',handler);return()=>window.removeEventListener('keydown',handler);
+    const handler=(e:KeyboardEvent)=>{if(e.repeat||e.target instanceof Element&&e.target.closest('input,textarea,select,[contenteditable],dialog'))return;const key=[e.ctrlKey?'Control':'',e.altKey?'Alt':'',e.shiftKey?'Shift':'',e.key==='Enter'?'Enter':e.key.toUpperCase()].filter(Boolean).join('+');const binding=Object.entries(state.production!.hotkeys).find(([,value])=>value===key)?.[0];if(!binding)return;e.preventDefault();if(binding==='take'){void send({type:'take'}).catch(()=>{});return;}if(binding==='emergency'||binding==='live'){void api('/api/obs/production',{method:'POST',body:JSON.stringify({action:binding==='emergency'?'emergency':'return-live'})}).catch(e=>notify(e.message,'error'));return;}const action=binding==='analysis'?'analysis-off':binding==='feeds'?'feeds-off':'undo';void send({type:'production',command:{op:'immediate',action}}).catch(()=>{});};window.addEventListener('keydown',handler);return()=>window.removeEventListener('keydown',handler);
   },[state?.production?.hotkeys,output,remote,send,notify]);
   useEffect(()=>{document.body.classList.toggle('overlay-body',output);document.documentElement.classList.toggle('overlay-document',output);return()=>{document.body.classList.remove('overlay-body');document.documentElement.classList.remove('overlay-document');};},[output]);
   useEffect(()=>{
-    if(output||remote)return;
+    if(output||remote||!state)return;
     const handler=(e:KeyboardEvent)=>{
       const target=e.target instanceof Element?e.target:null;
-      if(target?.closest('input,textarea,select,[contenteditable]')||e.ctrlKey||e.metaKey||e.altKey)return;
+      if(target?.closest('input,textarea,select,[contenteditable],dialog')||e.ctrlKey||e.metaKey||e.altKey)return;
       if(page!=='studio')return;
       if(e.repeat){if(e.key==='Enter'&&target?.closest('.scene-card,.take-button'))e.preventDefault();return;}
-      const scene=scenes.find(s=>sceneInfo[s].shortcut.toLowerCase()===e.key.toLowerCase());
+      const scene=scenes.find(s=>sceneDetails(state,s).shortcut.toLowerCase()===e.key.toLowerCase());
       if(scene){e.preventDefault();void send({type:'preview-scene',scene}).catch(()=>{});}
       // A selected scene card retains focus. Enter must take the current preview
       // even after another shortcut changes it, without activating the old card.
@@ -109,12 +110,12 @@ function Studio({state,champions,send,notify,seat,connected,onSettings,onManage,
   <section className="studio-stage" aria-label="节目、预监与快捷切入">
     <div className="program-stack"><MonitorPane kind="program" purpose="program" {...{state,champions}}/><StudioOutputDock {...{notify,onSettings,streamReady}}/></div>
     <div className="studio-preview-column"><MonitorPane kind="preview" purpose={state.production?.dynamicPreview?'dynamic':'monitor'} {...{state,champions}}/>
-      <div className="take-bar"><div className="take-route"><span className="route-preview"><i/>待切入 <strong>{sceneInfo[state.previewScene].name}</strong></span></div><TakeControl {...{state,send,seat,connected}}/></div>
+      <div className="take-bar"><div className="take-route"><span className="route-preview"><i/>待切入 <strong>{sceneDetails(state,state.previewScene).name}</strong></span></div><TakeControl {...{state,send,seat,connected}}/></div>
       <section className="quick-scenes scenes-panel"><div className="quick-scenes-heading"><Clapperboard size={13}/><span>常用切入</span><small>点击选择预监</small></div><div className="scene-grid">{quickScenes.map(card)}</div></section>
     </div>
     <aside className="studio-task-dock"><ProductionDesk {...{state,champions,send,notify,seat,connected}}/></aside>
   </section>
-  <SceneLibrary {...{state,sampledState,champions}} onSelect={selectScene}/>
+  <SceneLibrary {...{state,sampledState,champions,send,notify,seat}} onSelect={selectScene}/>
   <div className="studio-operation-note"><span><kbd>1–9</kbd> / <kbd>T</kbd> / <kbd>G</kbd> 选择预监 <ArrowRight size={12}/> <kbd>Enter</kbd> 切入节目</span><span>预监每秒更新 · 场景卡显示 HUD 包装</span></div>
 
   <details className="studio-details" open={detailsOpen} onToggle={event=>setDetailsOpen(event.currentTarget.open)}><summary>画面包装与对局详情<ChevronDown size={15}/></summary>{detailsOpen&&<><BroadcastLook {...{state,champions,send,notify}}/><div className="studio-grid"><div className="studio-main">

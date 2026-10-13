@@ -4,6 +4,7 @@ export type CheckId = 'identity' | 'game' | 'data' | 'audio' | 'disk' | 'program
 export type SeatRole = 'readonly' | 'data' | 'subtitle' | 'replay' | 'director';
 export type Telemetry = Pick<BroadcastState, 'players' | 'stats' | 'events' | 'economy' | 'economyFeed' | 'gameTime' | 'gameClock' | 'paused' | 'phase'>;
 export interface ProgramContent {
+  customScenes?: BroadcastState['customScenes'];
   version: number; key: string; takenAt: string;
   mode: BroadcastState['mode']; match: BroadcastState['match']; teams: BroadcastState['teams'];
   overlay: OverlaySettings; selectedPlayerId: string | null; draft: DraftState;

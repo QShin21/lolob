@@ -1,5 +1,5 @@
-import type { BroadcastAction, BroadcastState, Champion, Player, Scene, Side } from '../shared/types';
-export const sceneInfo: Record<Scene, { name: string; description: string; shortcut: string }> = {
+import type { BuiltinScene, BroadcastAction, BroadcastState, Champion, Player, Scene, Side } from '../shared/types';
+export const sceneInfo: Record<BuiltinScene, { name: string; description: string; shortcut: string }> = {
   standby: { name: '赛前倒计时', description: '赛事开场 · 倒计时', shortcut: '1' },
   draft: { name: 'BP 选人', description: '英雄选择 · 禁用列表', shortcut: '2' },
   lineup: { name: '首发对位', description: '选手阵容 · 英雄展示', shortcut: '3' },
@@ -32,4 +32,8 @@ export function outputUrl(preview=false) {
   if(preview)url.searchParams.set('preview','1');
   if(token)url.searchParams.set('token',token);
   return url.href;
+}
+
+export function sceneDetails(state: BroadcastState, scene: Scene) {
+  return scene.startsWith("custom:") ? { name: state.customScenes?.find(s => s.id === scene)?.name ?? "自定义场景", description: "自定义素材组合", shortcut: "" } : sceneInfo[scene as BuiltinScene];
 }

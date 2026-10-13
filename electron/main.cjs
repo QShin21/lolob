@@ -5,7 +5,11 @@ const path = require('node:path');
 const http = require('node:http');
 
 const projectRoot = path.resolve(__dirname, '..');
-const dev = process.env.RIFTCAST_DEV === '1';
+const dev = !app.isPackaged && process.env.RIFTCAST_DEV === '1';
+if (app.isPackaged) {
+  app.setName('RiftCast');
+  app.setPath('userData', process.env.RIFTCAST_USER_DATA_DIR || path.join(app.getPath('appData'), 'RiftCast'));
+}
 const port = Number(process.env.PORT || 3888);
 const serviceOrigin = `http://127.0.0.1:${port}`;
 const rendererOrigin = dev ? 'http://127.0.0.1:5173' : serviceOrigin;
@@ -341,6 +345,7 @@ function health() {
 async function ensureService() {
   const existing = await health();
   if (existing.ours) {
+    if (app.isPackaged) throw new Error('已有 RiftCast 数据服务正在运行。请先关闭原导播窗口或启动脚本，再打开 Release 版，以使用本版程序和赛事数据。');
     if (process.env.ENABLE_LAN === '1' && !existing.lanEnabled) {
       throw new Error('已有 RiftCast 服务仅允许本机访问。请先关闭原服务，再用 -Lan 重新启动以开启局域网。');
     }
@@ -348,13 +353,14 @@ async function ensureService() {
     return;
   }
   if (existing.available) throw new Error(`端口 ${port} 已被其他服务占用，请先释放端口或用 PORT 指定其他端口。`);
-  if (!fs.existsSync(path.join(projectRoot, 'node_modules', 'tsx'))) {
+  if (!app.isPackaged && !fs.existsSync(path.join(projectRoot, 'node_modules', 'tsx'))) {
     throw new Error('缺少项目依赖。请在项目目录运行 npm install。');
   }
   // Electron becomes a Node runtime only with ELECTRON_RUN_AS_NODE=1.
-  serviceProcess = spawn(process.execPath, ['--import', 'tsx', path.join(projectRoot, 'server', 'index.ts')], {
+  const serviceArguments = app.isPackaged ? [path.join(projectRoot, 'server', 'index.mjs')] : ['--import', 'tsx', path.join(projectRoot, 'server', 'index.ts')];
+  serviceProcess = spawn(process.execPath, serviceArguments, {
     cwd: projectRoot,
-    env: { ...process.env, ELECTRON_RUN_AS_NODE: '1', NODE_ENV: 'production', PORT: String(port), RIFTCAST_OBS_AUTOSTART: '1' },
+    env: { ...process.env, ELECTRON_RUN_AS_NODE: '1', NODE_ENV: 'production', PORT: String(port), RIFTCAST_OBS_AUTOSTART: process.env.RIFTCAST_OBS_AUTOSTART ?? '1' },
     stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
     windowsHide: true,
   });
@@ -466,9 +472,9 @@ function createWindow() {
     if (exitApproved || quitting || !ownsService) return;
     event.preventDefault();
     void engineStatus().then(async (status) => {
-      if (!status || (status.mode === 'embedded' && (status.streamActive || status.recordActive || (status.running && !status.connected)))) {
+      if (!status || (status.mode === 'embedded' && (status.streamActive || status.recordActive || status.virtualCamActive === true || status.companionAudio?.managing || status.companionAudio?.active || (status.running && (!status.connected || status.virtualCamActive === null))))) {
         const answer = await dialog.showMessageBox(mainWindow, {
-          type: 'question', title: '确认退出导播', message: status?.connected ? '退出导播软件会停止当前推流和录制。' : '引擎状态暂时无法确认。退出会关闭本软件启动的 OBS 并停止其输出。',
+          type: 'question', title: '确认退出导播', message: status?.connected ? '退出会停止推流、伴侣音画输出和录制。抖音直播间请先在直播伴侣中结束直播。' : '引擎状态暂时无法确认。退出会关闭本软件启动的 OBS 并停止其输出。',
           buttons: ['返回导播', '停止输出并退出'], defaultId: 0, cancelId: 0,
         });
         if (answer.response !== 1) return;
@@ -498,6 +504,7 @@ function createWindow() {
       { label: `RiftCast ${app.getVersion()} · 使用指南与快捷键`, click: () => mainWindow.webContents.executeJavaScript("location.hash='help'") },
       { label: '显示模式说明', click: () => dialog.showMessageBox(mainWindow,{type:'info',title:'节目与预监显示',message:'节目使用 OBS 原生投影；普通监视使用每秒快照。',detail:'原生动态预监在制作台镜头设置中启用。HUD 排版示意用于检查文字布局。'}) },
       { label: '打开启动日志', click: () => shell.openPath(logPath).catch((error) => log(error.message)) },
+      { label: '打开赛事数据目录', click: () => shell.openPath(process.env.RIFTCAST_DATA_DIR || path.join(projectRoot, 'data')).catch((error) => log(error.message)) },
       { label: 'Riot 接口文档', click: () => openExternal('https://developer.riotgames.com/docs/lol') },
       { label: 'OBS 开源许可与来源', click: () => shell.openPath(path.join(projectRoot, 'THIRD_PARTY_OBS.md')).catch((error) => log(error.message)) },
     ] },
@@ -539,7 +546,17 @@ else {
     try {
       if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT 需要是 1 至 65535 的整数。');
       if (!dev && !fs.existsSync(path.join(projectRoot, 'dist', 'index.html'))) {
-        throw new Error('缺少已构建的界面，请先在项目目录运行 npm run build。');
+        throw new Error(app.isPackaged ? 'Release 程序文件不完整，请重新安装 RiftCast。' : '缺少已构建的界面，请先在项目目录运行 npm run build。');
+      }
+      if (app.isPackaged) {
+        const prepared = require('./release-runtime.cjs').prepareReleaseRuntime({
+          resourcesRoot: process.resourcesPath, userData: app.getPath('userData'),
+          dataDir: process.env.RIFTCAST_DATA_DIR, runtimeRoot: process.env.RIFTCAST_OBS_RUNTIME_DIR,
+          importFrom: process.env.RIFTCAST_IMPORT_FROM, onProgress: log,
+        });
+        process.env.RIFTCAST_DATA_DIR = prepared.dataDir;
+        process.env.RIFTCAST_OBS_RUNTIME_DIR = prepared.runtimeRoot;
+        log(`Release ${app.getVersion()} · 已使用独立的赛事数据与内置引擎目录。`);
       }
       await require('../scripts/ensure-obs.cjs').ensureObs({ onProgress: log });
       await ensureService();

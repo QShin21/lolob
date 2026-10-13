@@ -1,3 +1,4 @@
+import { CustomSceneLayout } from './CustomSceneEditor';
 import {economySegments} from '../../shared/presentation';
 import {schedulePage} from '../../shared/schedule-view';
 import { championArtwork } from '../../shared/champion-art';
@@ -71,6 +72,7 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  const [now,setNow]=useState(Date.now());const {version,items}=useItemCatalog(scene==='teamfight'?[]:champions,state.production?.versions.resources);
  useEffect(()=>{if(scene!=='standby'&&scene!=='live')return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[scene]);
  // The game's A view supplies the teamfight HUD. Keep the OBS layer fully transparent.
+ if(scene.startsWith('custom:')){const custom=state.customScenes?.find(s=>s.id===scene);return <div className={`broadcast-container cast-container ${output?'is-output':''}`}><div className="broadcast-canvas cast-canvas">{custom&&<CustomSceneLayout scene={custom} state={state} placeholders={!output}/>}</div></div>;}
  if(scene==='teamfight')return <div className={`broadcast-container cast-container skin-arena ${output?'is-output':''}`}><div className="broadcast-canvas cast-canvas cast-scene-teamfight transparent cast-transparent" aria-label="游戏原生团战视角">{!output&&<CapturePreview scene={scene}/>}</div></div>;
  const liveScene=['live','gold-ranking','economy','ranking'].includes(scene);
  const overlayScene=['draft','live','gold-ranking','economy','ranking','interview'].includes(scene),selected=state.players.some(p=>p.id===state.selectedPlayerId);
