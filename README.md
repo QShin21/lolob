@@ -18,7 +18,7 @@ ARENA 将工作台、场景卡和节目输出纳入同一视觉系统。工作�
 
 场景库支持新建自定义场景：上传图片、添加应用窗口或引用已有 OBS 来源，调整图层位置、尺寸和顺序，保存后通过预监与 TAKE 播出。操作及验证范围见 [自定义场景](docs/自定义场景.md)。
 
-日常使用双击 `release/0.5.0/RiftCast-0.5.0-Setup-x64.exe` 安装，再打开桌面 **RiftCast 导播**。免安装版为同目录的 `RiftCast-0.5.0-Windows-x64.zip`，完整解压后双击 `RiftCast.exe`。Release 需要 64 位 Windows，首次启动从随包运行时准备内置 OBS。赛事数据、素材与配置保存在 `%APPDATA%\RiftCast`，升级和卸载保留这些内容。通用安装包不带本机赛事资料和输出凭据。
+日常使用双击 `release/0.7.0/RiftCast-0.7.0-Setup-x64.exe` 安装，再打开桌面 **RiftCast 导播**。免安装版为同目录的 `RiftCast-0.7.0-Windows-x64.zip`，完整解压后双击 `RiftCast.exe`。Release 需要 64 位 Windows，首次启动从随包运行时准备内置 OBS。赛事数据、素材与配置保存在 `%APPDATA%\RiftCast`，升级和卸载保留这些内容。通用安装包不带本机赛事资料和输出凭据。
 
 以下脚本用于源码开发。源码环境需要 Node.js 22.12 及以上版本，推荐 Node.js 24。英雄联盟用于真实接入；演示模式可以单独运行。
 

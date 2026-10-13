@@ -79,18 +79,16 @@ export function MonitorPane({
           <span
             className={`status-dot ${live ? (kind === "program" ? "red" : "green") : "gray"}`}
           />{" "}
-          {live
-            ? kind === "program"
-              ? "节目合成画面"
-              : previewStatus.transport === "native"
-                ? "动态预监 · OBS 合成"
-                : "每秒采样 · OBS 合成"
+          {layoutOnly ? "排版示意 · 非 OBS 合成" : live
+            ? previewStatus.transport === "native"
+                ? "原生动态 · OBS 合成"
+                : "周期采样 · OBS 合成"
             : previewStatus?.phase === "paused"
               ? "预览已暂停"
               : "等待实时画面"}
         </span>
         <span>
-          {live && previewStatus.fps > 0
+          {!layoutOnly && live && previewStatus.fps > 0
             ? `${previewStatus.fps.toFixed(1)} fps · `
             : ""}
           16:9

@@ -1,0 +1,24 @@
+/* Operator tokens do not enter /overlay. Dark is the existing unsaved preference. */
+.app-shell,.remote-page,.loading-screen:not(.output-loading){
+  --ui-bg:#11151b;--ui-surface:#181e26;--ui-raised:#222a34;--ui-border:#36414e;
+  --ui-text:#eff3f7;--ui-muted:#adb8c7;--ui-accent:#70d7c2;--ui-hover:#27343d;
+  --ui-selected:#203c45;--ui-selection-border:#83b8dd;--ui-focus:#b4d7ff;
+  --ui-pgm:#ff8a8f;--ui-pvw:#7ad7ae;--ui-error:#ff9e9e;--ui-warning:#f0c37f;
+  --ui-warning-bg:#362c1b;--ui-danger-bg:#392329;--ui-info:#98c9ef;--ui-info-bg:#1b3146;--ui-success-bg:#1c3731;
+  --ui-radius:6px;--ui-shadow:none;
+  --bg:var(--ui-bg);--panel:var(--ui-surface);--panel-soft:var(--ui-raised);--surface:var(--ui-bg);--border:var(--ui-border);--line:var(--ui-border);
+  --text:var(--ui-text);--muted:var(--ui-muted);--text-muted:var(--ui-muted);--accent:var(--ui-accent);--blue:#84c9f3;--red:#f69aa9;--program:var(--ui-pgm);--preview:var(--ui-pvw);
+  font-family:'Segoe UI','Microsoft YaHei','PingFang SC',sans-serif;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums;color:var(--ui-text);color-scheme:dark;
+}
+:root[data-ui-theme=light] :is(.app-shell,.remote-page,.loading-screen:not(.output-loading)){
+  --ui-bg:#f2f4f6;--ui-surface:#fff;--ui-raised:#e8edf2;--ui-border:#b8c4d0;
+  --ui-text:#17212c;--ui-muted:#536273;--ui-accent:#146e61;--ui-hover:#e7eef3;
+  --ui-selected:#e0edf5;--ui-selection-border:#3e7098;--ui-focus:#145e99;
+  --ui-pgm:#b72f42;--ui-pvw:#176d47;--ui-error:#ae2639;--ui-warning:#855a17;
+  --ui-warning-bg:#fff3db;--ui-danger-bg:#fff0ef;--ui-info:#1d6792;--ui-info-bg:#e8f3fa;--ui-success-bg:#e4f2eb;
+  --blue:#126a9c;--red:#b83d43;color-scheme:light;
+}
+/* The media palette is fixed for both UI themes. Never filter/recolor broadcast images. */
+:is(.app-shell,.remote-page) :is(.broadcast-container,.broadcast-canvas,.obs-live-preview,.embedded-obs-preview,.interview-safe-preview,.ocr-frame,.live-bottom-feed-preview,.economy-roi-map){
+  --bg:#0b1119;--panel:#121b25;--panel-soft:#17222e;--surface:#0d151e;--border:#273442;--line:#273442;--text:#f0f3ef;--muted:#8e9dac;--text-muted:#8e9dac;--accent:#96efd4;--blue:#71d5ee;--red:#ff8f83;--program:#ff8f83;--preview:#96efd4;color-scheme:dark;
+}

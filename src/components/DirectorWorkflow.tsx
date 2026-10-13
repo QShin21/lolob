@@ -12,19 +12,6 @@ import {checkValid} from '../../shared/production';
 export type WorkflowPage = 'studio' | 'draft' | 'data' | 'manage' | 'settings' | 'help' | 'wrap';
 type EngineOutput = ObsEngineStatus;
 
-export function WorkflowRail({ state, page, onNavigate }: { state: BroadcastState; page: WorkflowPage; onNavigate: (page: WorkflowPage) => void }) {
-  const matchReady = state.schedule.some(match => state.match.seriesId === state.mode + ':schedule:' + match.id);
-  const engineReady = state.connections.obs.status === 'connected';
-  const result=currentGameResult(state);
-  const steps = [
-    { page: 'manage' as const, title: '赛事准备', detail: matchReady ? '已载入比赛' : '建赛 · 阵容 · 载入', ready: matchReady },
-    { page: 'settings' as const, title: '连接检查', detail: engineReady ? '引擎已连接 · 核对输出' : '游戏 · 声音 · 推流地址', ready: engineReady },
-    { page: 'studio' as const, title: '预监切入', detail: '选场景 → Enter 播出', ready: false },
-    { page: 'wrap' as const, title: '局间与收尾', detail: result ? `第 ${result.game} 局已保存 · 下一局` : '自动保存 · 最终报告 · 下一局', ready: !!result },
-  ];
-  return <nav className="workflow-rail" aria-label="转播流程">{steps.map((step, index) => <button key={step.page} data-workflow-step={step.page} aria-current={page === step.page ? 'step' : undefined} className={page === step.page ? 'current' : step.ready ? 'ready' : ''} onClick={() => onNavigate(step.page)}><span className="workflow-number">{step.ready ? <Check size={12} /> : index + 1}</span><span><strong>{step.title}</strong><small>{step.detail}</small></span>{index < steps.length - 1 && <ArrowRight className="workflow-arrow" size={13} />}</button>)}</nav>;
-}
-
 export function StudioOutputDock({ notify, onSettings, streamReady }: Pick<StateContext, 'notify'> & { onSettings: () => void; streamReady: boolean }) {
   const [status, setStatus] = useState<EngineOutput | null>(null);
   const [error, setError] = useState('');

@@ -54,8 +54,8 @@ export function SceneLibrary(props: {
         ? allScenes
         : group === 'custom' ? custom.map(s => s.id) : phases[group];
   return (
-    <section className="scene-library panel" aria-label="场景库">
-      <div className="scene-library-heading">
+    <section className="scene-bank" aria-label="场景库">
+      <div className="scene-bank-heading">
         <h2>场景库</h2>
         <TaskTabs
           items={groups}
@@ -63,16 +63,16 @@ export function SceneLibrary(props: {
           onChange={setGroup}
           label="场景阶段"
         />
-        <small>选择预监后，核对并切入</small>
-        <button className="button small primary" disabled={!canEdit} onClick={() => setEditor('new')}><Plus size={15} />新建自定义场景</button>
+
+        <button className="button small primary" disabled={!canEdit || custom.length >= 50} title={custom.length >= 50 ? '最多 50 个自定义场景' : !canEdit ? '由当前主导播编辑' : '新建自定义场景'} onClick={() => setEditor('new')}><Plus size={15} />新建场景</button>
       </div>
       {editor && <CustomSceneEditor {...props} initial={editor === 'new' ? undefined : editor} onClose={() => setEditor(null)} />}
       {deleting && <div className="custom-delete-prompt" role="alert"><span>删除「{deleting.name}」？已上传素材会保留。</span><button className="button small" disabled={busy} onClick={() => setDeleting(null)}>取消</button><button className="button small" disabled={busy} onClick={async () => { setBusy(true); try { await props.send({ type: 'delete-custom-scene', id: deleting.id }); setDeleting(null); props.notify('自定义场景已删除'); } catch { /* send reports failure */ } finally { setBusy(false); } }}>确认删除</button></div>}
-      <div className="scene-library-grid">
+      <div className="scene-bank-grid">
         {scenes.map((scene, index) => (
-          <div className="scene-library-item" key={scene}>
+          <div className="scene-bank-item" key={scene}>
             <SceneCard {...props} scene={scene} />
-            <div className="scene-library-tools">
+            <div className="scene-bank-tools">
               <button
                 aria-label={`${favorites.includes(scene) ? "取消常用" : "设为常用"} ${sceneDetails(props.state,scene).name}`}
                 aria-pressed={favorites.includes(scene)}

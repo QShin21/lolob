@@ -1,22 +1,4 @@
 /* Console tokens are scoped away from the 1920 x 1080 broadcast canvas. */
-.app-shell,
-.remote-page {
-  --ui-bg: #101a1d;
-  --ui-surface: #18272b;
-  --ui-raised: #203338;
-  --ui-border: #3a5358;
-  --ui-text: #edf5f3;
-  --ui-muted: #b2c6c4;
-  --ui-accent: #b7ed83;
-  --ui-pvw: #67dcb5;
-  --ui-pgm: #ff7e86;
-  --ui-error: #ffa7a7;
-  --ui-radius: 10px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--ui-text);
-  font-variant-numeric: tabular-nums;
-}
 [hidden] {
   display: none !important;
 }
@@ -26,7 +8,7 @@
 }
 .app-shell :is(button, a, input, select, textarea, summary):focus-visible,
 .remote-page :is(button, a, input, select, textarea, summary):focus-visible {
-  outline: 3px solid #b7ed83;
+  outline: 3px solid var(--ui-focus);
   outline-offset: 3px;
 }
 .app-shell :is(input, select, textarea),
@@ -34,7 +16,7 @@
   min-height: 36px;
   max-width: 100%;
   color: var(--ui-text);
-  background: #112025;
+  background: var(--ui-bg);
   border: 1px solid var(--ui-border);
   border-radius: 6px;
   padding: 7px 10px;
@@ -49,7 +31,6 @@
 .remote-page .muted {
   color: var(--ui-muted);
 }
-.app-shell .button,
 .remote-page .button {
   min-height: 36px;
   padding: 7px 12px;
@@ -74,62 +55,6 @@
   opacity: 0.52;
   cursor: not-allowed;
 }
-.app-shell main {
-  max-width: none;
-  padding: 20px 24px;
-}
-.app-shell .page-heading {
-  margin-bottom: 14px;
-  align-items: center;
-}
-.app-shell .page-heading h1 {
-  font-size: 25px;
-  margin: 0;
-}
-.app-shell .page-heading p,
-.app-shell .page-heading .eyebrow {
-  display: none;
-}
-.app-shell .topbar {
-  height: 48px;
-  min-height: 48px;
-}
-.app-shell .workflow-rail {
-  margin-bottom: 10px;
-}
-.app-shell .workflow-rail button {
-  padding: 8px 12px;
-}
-.app-shell .workflow-rail small {
-  font-size: 12px;
-}
-.app-shell .production-bar {
-  position: sticky;
-  top: 0;
-  z-index: 35;
-  display: grid;
-  grid-template-columns: minmax(160px, 1fr) minmax(150px, 0.85fr) auto auto;
-  gap: 14px;
-  margin: 0 0 12px;
-  padding: 12px 14px;
-  border-color: var(--ui-border);
-  background: #14272c;
-  box-shadow: 0 5px 18px #050d0e55;
-}
-.production-bar > div {
-  min-width: 0;
-}
-.production-bar strong {
-  font-size: 14px;
-  overflow-wrap: anywhere;
-}
-.production-bar small,
-.production-bar summary,
-.production-bar p {
-  font-size: 12px;
-  color: var(--ui-muted);
-  margin: 0;
-}
 .application-status {
   font-size: 12px;
   color: #ffd38a;
@@ -141,159 +66,11 @@
 .application-status.confirmed {
   color: #8ae2bb;
 }
-.pending-content details[open] {
-  position: relative;
-}
-.pending-content details[open] p {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 280px;
-  padding: 12px;
-  background: #203338;
-  border: 1px solid #52746d;
-  box-shadow: 0 5px 18px #0008;
-}
-.production-bar .emergency-actions {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 6px;
-  max-width: 285px;
-}
-.emergency-actions details {
-  position: relative;
-}
-.emergency-actions summary {
-  padding: 8px;
-  cursor: pointer;
-}
-.emergency-actions details > div {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  width: 230px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: #203338;
-  border: 1px solid #52746d;
-  box-shadow: 0 5px 18px #0008;
-}
-.take-control {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  max-width: 300px;
-}
-.take-control > small {
-  font-size: 12px;
-  color: #dec696;
-  line-height: 1.3;
-}
-.app-shell .take-button,
-.remote-page .take-button {
-  min-height: 42px;
-  font-size: 15px;
-  padding: 8px 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-.take-button kbd {
-  font-size: 11px;
-  white-space: nowrap;
-}
-.app-shell .studio-match-lifecycle {
-  margin: 4px 0 10px;
-}
-.studio-match-lifecycle > summary {
-  font-size: 13px;
-  cursor: pointer;
-}
-.app-shell .match-bar {
-  padding: 10px 14px;
-  min-height: 52px;
-  margin-bottom: 8px;
-}
-.match-bar .match-identity strong {
-  font-size: 15px;
-}
-.match-identity span {
-  font-size: 12px;
-}
-.app-shell .phase-bar {
-  margin-bottom: 12px;
-  min-height: 36px;
-}
-.app-shell .phases button {
-  font-size: 13px;
-  padding: 7px 10px;
-}
-.app-shell .studio-stage {
-  display: grid;
-  grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.8fr) minmax(
-      290px,
-      0.85fr
-    );
-  gap: 14px;
-  align-items: start;
-}
-.app-shell .program-stack,
-.app-shell .studio-preview-column {
-  min-width: 0;
-}
-.app-shell .studio-task-dock {
-  min-width: 0;
-  max-height: 620px;
-}
-.app-shell .studio-task-dock .production-desk {
-  margin: 0;
-  height: 100%;
-  max-height: 620px;
-  overflow: hidden;
-}
-.app-shell .studio-preview-column .quick-scenes {
-  margin-top: 10px;
-}
-.app-shell .quick-scenes .scene-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.app-shell .quick-scenes .scene-thumbnail {
-  display: none;
-}
-.app-shell .scene-card .scene-caption {
-  min-height: 38px;
-}
-.app-shell .monitor-footer {
-  font-size: 12px;
-  padding: 7px 9px;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.monitor-surface {
-  position: relative;
-}
-.layout-only-label {
-  position: absolute;
-  inset: 0 0 auto;
-  padding: 6px;
-  background: #302712e8;
-  color: #ffe6a3;
-  font-size: 12px;
-  z-index: 5;
-  text-align: center;
-}
 .text-button {
   background: none;
   border: 0;
   color: #b7ed83;
   cursor: pointer;
-  font-size: 12px;
-}
-.app-shell .monitor-label {
   font-size: 12px;
 }
 .app-shell .studio-output-dock {
@@ -302,10 +79,6 @@
 }
 .app-shell .studio-output-dock .button {
   font-size: 12px;
-}
-.app-shell .studio-operation-note {
-  font-size: 12px;
-  flex-wrap: wrap;
 }
 .task-tabs {
   display: flex;
@@ -325,8 +98,8 @@
   font-size: 13px;
 }
 .task-tabs button[aria-selected="true"] {
-  background: #344e43;
-  color: #d4f5bd;
+  background: var(--ui-selected);
+  color: var(--ui-text);
   font-weight: 700;
 }
 .production-desk {
@@ -381,33 +154,6 @@
 .production-health-details[open] {
   max-height: 190px;
   overflow: auto;
-}
-.production-audio > div {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px;
-  padding: 12px 0;
-  border-top: 1px solid var(--ui-border);
-  font-size: 13px;
-}
-.production-audio strong,
-.production-audio span {
-  width: auto;
-}
-.production-audio meter {
-  grid-column: 1/-1;
-  width: 100%;
-  height: 14px;
-}
-.production-audio input[type="range"] {
-  width: 100%;
-}
-.production-audio .audio-gain {
-  grid-column: 1/-1;
-  color: var(--ui-muted);
-}
-.production-audio select {
-  max-width: 175px;
 }
 .production-checks > div {
   grid-template-columns: 1fr auto;
@@ -522,68 +268,6 @@
   to {
     transform: scaleX(1);
   }
-}
-.scene-library {
-  margin: 14px 0;
-  padding: 10px;
-}
-.scene-library-heading {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-.scene-library-heading h2 {
-  font-size: 16px;
-  margin: 0;
-}
-.scene-library-heading .task-tabs {
-  border: 0;
-  padding: 0;
-}
-.scene-library-heading small {
-  font-size: 12px;
-  color: var(--ui-muted);
-}
-.scene-library-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
-  padding-top: 10px;
-}
-.scene-library-item {
-  position: relative;
-  min-width: 0;
-}
-.scene-library-item .scene-card {
-  width: 100%;
-}
-.scene-library-tools {
-  position: absolute;
-  right: 3px;
-  top: 3px;
-  display: flex;
-  gap: 3px;
-}
-.scene-library-tools button {
-  background: #162729e8;
-  color: #d5edb8;
-  border: 0;
-  min-width: 26px;
-  min-height: 26px;
-  border-radius: 3px;
-  cursor: pointer;
-}
-.scene-library .scene-caption {
-  padding-right: 28px;
-}
-.scene-caption strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 13px;
-}
-.scene-library .scene-thumbnail {
-  aspect-ratio: 16/9;
 }
 .toast {
   max-width: min(620px, calc(100vw - 32px));
@@ -722,38 +406,11 @@
 .settings-page .embedded-obs-panel {
   margin-bottom: 16px;
 }
-.settings-page .embedded-obs-steps {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-.embedded-obs-steps li[role="button"] {
-  cursor: pointer;
-}
 .embedded-obs-panel.section-output .embedded-obs-preview-column {
   display: none;
 }
-.embedded-obs-panel.section-output .embedded-obs-setup-grid {
-  grid-template-columns: 1fr;
-}
 .embedded-obs-panel.section-output .embedded-obs-content {
   display: block;
-}
-.embedded-obs-panel.section-output
-  .embedded-obs-configuration:not(.embedded-obs-destination) {
-  display: none;
-}
-.embedded-obs-panel.section-video .embedded-obs-destination,
-.embedded-obs-panel.section-audio .embedded-obs-destination {
-  display: none;
-}
-.embedded-obs-panel.section-video .embedded-obs-setup-grid,
-.embedded-obs-panel.section-audio .embedded-obs-setup-grid {
-  grid-template-columns: 1fr;
-}
-.settings-workflow-heading h2 {
-  font-size: 19px;
-}
-.settings-workflow-heading p {
-  font-size: 13px;
 }
 .settings-form .field {
   font-size: 14px;
@@ -950,15 +607,6 @@
 .player-feed-pair-buttons {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
-.studio-task-dock .player-feed-pair-buttons {
-  grid-template-columns: 1fr;
-}
-.studio-task-dock .player-feed-pair-buttons > button {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 3px;
-  text-align: left;
-}
 .player-feed-pair-buttons span {
   overflow-wrap: anywhere;
 }
@@ -1091,9 +739,6 @@
 .remote-page h1 {
   font-size: 23px;
 }
-.remote-page .monitor-pane {
-  margin: 14px 0;
-}
 .remote-page .remote-scene-grid {
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
@@ -1110,13 +755,6 @@
   background: #14272cf5;
   border-top: 1px solid #53716b;
   z-index: 30;
-}
-.remote-bottom .take-control {
-  max-width: 780px;
-  margin: auto;
-}
-.remote-bottom .take-button {
-  width: 100%;
 }
 .remote-page .task-content {
   max-height: none;
@@ -1135,124 +773,13 @@
   color: #bad0c8;
 }
 @media (max-height: 850px) {
-  .app-shell .scene-thumbnail {
-    display: none;
-  }
-  .scene-library-grid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-  .scene-library-tools {
-    top: 7px;
-  }
-  .app-shell .studio-task-dock,
-  .app-shell .studio-task-dock .production-desk {
-    max-height: 380px;
-  }
-  .studio-task-dock .task-content {
-    max-height: 235px;
-  }
-  .app-shell .match-bar .match-icon,
-  .app-shell .match-bar .match-time {
-    display: none;
-  }
-  .app-shell .page-heading {
-    margin-bottom: 8px;
-  }
-  .app-shell .workflow-rail small {
-    display: none;
-  }
-  .app-shell .production-bar {
-    padding: 9px 12px;
-  }
-  .app-shell main {
-    padding-top: 12px;
-  }
-  .app-shell .studio-match-lifecycle {
-    margin-bottom: 7px;
-  }
-  .app-shell .quick-scenes-heading {
-    padding: 7px;
-  }
   .app-shell .studio-output-dock .output-error {
     display: none;
   }
 }
-@media (max-width: 1599px) {
-  .app-shell .sidebar {
-    width: 70px;
-    padding: 20px 8px;
-  }
-  .app-shell .sidebar .sidebar-brand {
-    justify-content: center;
-  }
-  .sidebar .brand-edition {
-    display: none;
-  }
-  .app-shell
-    .sidebar
-    :is(
-      .workspace-label,
-      .sidebar-session,
-      .sidebar-divider,
-      .nav-item > span,
-      .sidebar-bottom,
-      .sidebar-brand .brand-wordmark
-    ) {
-    display: none;
-  }
-  .app-shell .sidebar .nav-item {
-    justify-content: center;
-    padding: 12px;
-    min-height: 46px;
-    margin: 5px 0;
-  }
-  .app-shell .main-shell {
-    margin-left: 70px;
-    width: calc(100% - 70px);
-  }
-  .app-shell .studio-stage {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.8fr) 310px;
-    gap: 10px;
-  }
-  .app-shell main {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  .app-shell .production-bar {
-    gap: 10px;
-    grid-template-columns: minmax(160px, 1fr) minmax(140px, 0.8fr) auto 185px;
-  }
-  .app-shell .take-button kbd {
-    display: none;
-  }
-}
 @media (max-width: 1199px) {
-  .app-shell .studio-stage {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-  }
-  .app-shell .studio-task-dock {
-    grid-column: 1/-1;
-    max-height: none;
-  }
-  .app-shell .studio-task-dock .production-desk {
-    max-height: 500px;
-  }
-  .studio-task-dock .task-content {
-    max-height: 300px;
-  }
-  .app-shell .production-bar {
-    grid-template-columns: 1fr 1fr auto;
-  }
-  .production-bar .emergency-actions {
-    grid-column: 1/-1;
-    max-width: none;
-    display: flex;
-  }
-  .scene-library-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
   .settings-section-nav,
-  .management-tabs {
+.management-tabs {
     top: 160px;
   }
   .wrap-steps {
@@ -1260,64 +787,9 @@
   }
 }
 @media (max-width: 760px) {
-  .app-shell .sidebar {
-    width: 54px;
-    padding: 10px 3px;
-  }
-  .app-shell .main-shell {
-    margin-left: 54px;
-    width: calc(100% - 54px);
-  }
-  .app-shell main {
-    padding: 10px;
-  }
-  .app-shell .topbar {
-    padding: 10px;
-  }
-  .app-shell .topbar-right {
-    display: none;
-  }
-  .app-shell .production-bar {
-    position: relative;
-    grid-template-columns: 1fr;
-  }
-  .app-shell .production-bar .emergency-actions {
-    grid-column: auto;
-  }
-  .app-shell .production-bar .take-control {
-    max-width: none;
-  }
-  .app-shell .studio-stage {
-    grid-template-columns: 1fr;
-  }
-  .app-shell .studio-task-dock {
-    grid-column: auto;
-  }
-  .app-shell .page-heading {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .app-shell .heading-actions .button {
-    font-size: 12px;
-  }
-  .app-shell .workflow-rail {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .scene-library-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .app-shell .phase-bar {
-    flex-wrap: wrap;
-  }
-  .app-shell .phases {
-    flex-wrap: wrap;
-  }
-  .app-shell .match-bar {
-    flex-wrap: wrap;
-  }
   .draft-edit-grid,
-  .draft-diff-grid,
-  .assignment-grid {
+.draft-diff-grid,
+.assignment-grid {
     grid-template-columns: 1fr !important;
   }
   .draft-current-action {
@@ -1325,7 +797,7 @@
     gap: 8px;
   }
   .settings-section-nav,
-  .management-tabs {
+.management-tabs {
     position: static;
   }
   .wrap-steps {
@@ -1334,14 +806,11 @@
   .app-shell .player-data .panel-head {
     flex-wrap: wrap;
   }
-  .remote-page .production-audio > div {
-    grid-template-columns: 1fr auto;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   *,
-  *::before,
-  *::after {
+*::before,
+*::after {
     scroll-behavior: auto !important;
     transition: none !important;
     animation-duration: 0.01ms !important;
@@ -1410,7 +879,7 @@
   display: flex;
   align-items: center;
   gap: 3px;
-  border-bottom: 1px solid #3a5358;
+  border-bottom: 1px solid var(--ui-border);
   padding: 4px;
 }
 .production-task-nav > .task-tabs {
@@ -1432,79 +901,16 @@
   font-size: 12px !important;
   flex-shrink: 0;
 }
-.production-audio .audio-advanced {
-  grid-column: 1/-1;
-  padding: 5px 0;
-  border: 0;
-  background: none;
-}
-.production-audio .audio-advanced summary {
-  font-size: 12px;
-  font-weight: 400;
-  color: #bacfc8;
-}
-.production-audio .audio-advanced small {
-  display: block;
-  font-size: 12px;
-}
-.production-audio .audio-advanced input {
-  margin: 8px;
-}
 .production-task .toggle-setting {
   gap: 12px;
   font-size: 12px;
 }
-.app-shell .sidebar .brand > div:last-child {
-  max-width: 150px;
-}
-.scene-card {
-  min-width: 0;
-}
-.app-shell .production-bar .onair-identity strong {
-  font-size: 14px;
-}
-.app-shell.page-studio .phases button {
-  font-size: 13px;
-}
-.app-shell.page-studio .match-identity strong {
-  font-size: 14px;
-}
-@media (max-width: 1599px) {
-  .app-shell .sidebar .brand > div:last-child {
-    display: none;
-  }
-  .app-shell .sidebar .brand {
-    justify-content: center;
-    gap: 0;
-  }
-  .app-shell .sidebar-brand {
-    padding: 0;
-    margin: 6px 0 20px;
-  }
-}
 @media (max-height: 850px) {
-  .studio-task-dock .task-content {
-    max-height: 290px;
-  }
   .production-task {
     padding: 10px;
   }
   .production-task > h3 {
     margin-bottom: 7px;
-  }
-  .production-audio > div {
-    gap: 5px;
-    padding: 7px 0;
-  }
-  .production-audio .audio-gain {
-    font-size: 12px;
-  }
-  .app-shell .studio-task-dock,
-  .app-shell .studio-task-dock .production-desk {
-    max-height: 400px;
-  }
-  .app-shell .page-studio .match-bar {
-    min-height: 40px;
   }
 }
 
@@ -1537,15 +943,6 @@
   align-items: center;
   justify-content: space-between;
   margin: 4px 0;
-}
-.production-audio > div {
-  margin: 4px 0;
-}
-.app-shell .audio-advanced {
-  margin: 0;
-}
-.app-shell .sidebar .nav-item[aria-current="page"] {
-  border-left: 3px solid #b7ed83;
 }
 
 .task-fieldset {

@@ -10,7 +10,9 @@ import { PlayerFeedSwitcher } from "./PlayerFeedSwitcher";
 import { GraphicControls } from "./GraphicControls";
 import type { GameResult, Side } from "../../shared/types";
 import type { ReplayClip } from "../../shared/production-types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { OutputSignals, ProgramAudioStatus } from "./OutputSignals";
+import type { ObsEngineStatus } from "./EmbeddedObs";
 import type { Scene, StateContext } from "../../shared/types";
 import type { CheckId, ProductionCommand } from "../../shared/production-types";
 import {
@@ -37,7 +39,7 @@ type AudioBus = {
 };
 type ProductionStatus = {
   audio: AudioBus[];
-  music?: { available: boolean; name?: string; playing: boolean };
+  music?: { available: boolean; name?: string; playing: boolean; state?: string };
   companionAudio?: import('../../shared/obs-output').CompanionAudioStatus;
   audioManaged?: boolean;
   disk: { directory?: string; freeBytes?: number; detail: string };
@@ -54,6 +56,7 @@ type ProductionStatus = {
 };
 type EngineHealth = {
   connected: boolean;
+  streamActive?: boolean; recordActive?: boolean; virtualCamActive?: boolean | null; companionAudio?: import('../../shared/obs-output').CompanionAudioStatus;
   selection?: { gameWindow: string; micEnabled: boolean };
   performance?: {
     activeFps: number;
@@ -79,177 +82,40 @@ const checks: [CheckId, string][] = [
   ["platform", "平台接收端人工回看"],
 ];
 
-export function ProductionBar(ctx: StateContext) {
-  const { state, send, notify } = ctx,
-    p = state.production,
-    pgm = programState(state),
-    pending = pendingContent(state);
-  const [output, setOutput] = useState<{
-    connected: boolean;
-    streamActive: boolean;
-    recordActive: boolean;
-    destination?: 'rtmp' | 'douyin';
-    virtualCamActive?: boolean | null;
-    companionAudio?: import("../../shared/obs-output").CompanionAudioStatus;
-  } | null>(null);
-  useEffect(() => {
-    let stopped = false,
-      fetching = false;
-    const refresh = async () => {
-      if (document.hidden || fetching) return;
-      fetching = true;
-      try {
-        const result = await api<{
-          connected: boolean;
-          streamActive: boolean;
-          recordActive: boolean;
-          destination?: 'rtmp' | 'douyin';
-          virtualCamActive?: boolean | null;
-    companionAudio?: import("../../shared/obs-output").CompanionAudioStatus;
-        }>("/api/obs/engine");
-        if (!stopped) setOutput(result);
-      } catch {
-        if (!stopped) setOutput(null);
-      } finally {
-        fetching = false;
-      }
-    };
-    void refresh();
-    const timer = setInterval(() => void refresh(), 3000);
-    return () => {
-      stopped = true;
-      clearInterval(timer);
-    };
-  }, []);
-  const run = (command: ProductionCommand) =>
-    void send({ type: "production", command }).catch(() => {});
-  const engine = async (action: string) => {
-    try {
-      await api("/api/obs/production", {
-        method: "POST",
-        body: JSON.stringify({ action }),
-      });
-      notify("OBS 已确认操作", "success");
-    } catch (e) {
-      notify(e instanceof Error ? e.message : "操作未完成", "error");
-    }
-  };
-  return (
-    <section className="production-bar" aria-label="固定播出与应急控制">
-      <div className="onair-identity">
-        <strong>
-          PGM ·{" "}
-          {p?.playingClipId
-            ? "独立回放"
-            : sceneLabel(
-                pgm,
-                state.programScene,
-                sceneDetails(state,state.programScene).name,
-              )}
-        </strong>
-        <small>
-          {getTeam(pgm, "blue")?.tag} {pgm.match.blueScore}:{pgm.match.redScore}{" "}
-          {getTeam(pgm, "red")?.tag} · G{pgm.match.game} ·{" "}
-          {p?.control?.name ?? "等待席位"}
-        </small>
-        <span
-          className={`application-status ${p?.application?.status ?? ""}`}
-          role="status"
-        >
-          {applicationLabel(state)}
-        </span>
-        <small className="global-output-state">
-          OBS{" "}
-          {state.connections.obs.status === "connected" ? "已连接" : "待连接"} ·{" "}
-          {output?.destination === 'douyin'
-            ? !output.connected || output.virtualCamActive == null ? '伴侣音画待确认' : output.virtualCamActive ? output.companionAudio?.active ? '伴侣音画已送出' : '混音异常 · 请核对'  : '伴侣音画未送出'
-            : output?.connected ? output.streamActive
-              ? "推流中"
-              : "未推流"
-            : "推流待确认"}{" "}
-          ·{" "}
-          {output?.connected
-            ? output.recordActive
-              ? "录制中"
-              : "未录制"
-            : "录制待确认"}
-        </small>
-      </div>
-      <div className="pending-content">
-        <strong>
-          PVW ·{" "}
-          {sceneLabel(
-            state,
-            state.previewScene,
-            sceneDetails(state,state.previewScene).name,
-          )}
-        </strong>
-        <details>
-          <summary>
-            {pending.length ? `${pending.length} 类待播改动` : "与节目内容一致"}{" "}
-            ·{" "}
-            {p?.persistence?.status === "failed"
-              ? "磁盘保存失败"
-              : p?.persistence?.status === "saving"
-                ? "保存中"
-                : "已保存配置"}
-          </summary>
-          <p>
-            {pending.join("、") || "实时采样持续同步"} · 待播 v
-            {p?.configVersion} / 节目 v{p?.program?.version}
-          </p>
-        </details>
-      </div>
-      <TakeControl {...ctx} compact />
-      <div className="emergency-actions">
-        <button
-          className="button small"
-          onClick={() => void engine("return-live")}
-        >
-          回到比赛
-        </button>
-        <button
-          className="button small danger"
-          onClick={() => void engine("emergency")}
-        >
-          技术暂停
-        </button>
-        <details>
-          <summary>应急 / 核对</summary>
-          <div>
-            <button
-              className="button small"
-              onClick={() => run({ op: "immediate", action: "analysis-off" })}
-            >
-              关闭分析
-            </button>
-            <button
-              className="button small"
-              onClick={() => run({ op: "immediate", action: "feeds-off" })}
-            >
-              关闭选手画面
-            </button>
-            <button
-              className="button small"
-              disabled={!p?.previousProgram}
-              title={!p?.previousProgram ? "尚无上一版节目" : ""}
-              onClick={() => run({ op: "immediate", action: "undo" })}
-            >
-              撤回切换
-            </button>
-            <button
-              className="button small"
-              disabled={p?.application?.status !== "applied"}
-              onClick={() => run({ op: "confirm-picture" })}
-            >
-              确认节目画面
-            </button>
-            <small>游戏前台备用：Ctrl+Alt+Shift+P</small>
-          </div>
-        </details>
-      </div>
-    </section>
-  );
+export function ProductionBar(ctx: StateContext & { showTake?: boolean }) {
+  const {state,send,notify}=ctx, p=state.production, pgm=programState(state), pending=pendingContent(state);
+  const [output,setOutput]=useState<ObsEngineStatus|null>(null);
+  const [busy,setBusy]=useState(false), operation=useRef(false), moreId=useId();
+  useEffect(()=>{
+    let stopped=false,fetching=false;
+    const refresh=async()=>{if(document.hidden||fetching)return;fetching=true;try{const next=await api<ObsEngineStatus>('/api/obs/engine');if(!stopped)setOutput(next);}catch{if(!stopped)setOutput(null);}finally{fetching=false;}};
+    void refresh();const timer=setInterval(()=>void refresh(),3000);return()=>{stopped=true;clearInterval(timer);};
+  },[]);
+  const allowed=ctx.connected!==false&&(!ctx.seat||(ctx.seat.role==='director'&&(!p?.control||p.control.owner===ctx.seat.id)));
+  const host=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
+  const act=async(work:()=>Promise<unknown>)=>{if(operation.current)return;operation.current=true;setBusy(true);try{await work();}catch(e){notify(e instanceof Error?e.message:'操作未完成','error');}finally{operation.current=false;setBusy(false);}};
+  const engine=(action:string)=>void act(async()=>{await api('/api/obs/production',{method:'POST',body:JSON.stringify({action})});notify('OBS 已确认操作','success');});
+  const run=(command:ProductionCommand)=>void act(()=>send({type:'production',command}));
+  return <section className="broadcast-status" aria-label="固定播出与应急控制">
+    <div className="broadcast-identity"><span className="bus-tag pgm">PGM</span><div><strong title={sceneDetails(pgm,state.programScene).name}>{p?.playingClipId?'独立回放':sceneLabel(pgm,state.programScene,sceneDetails(pgm,state.programScene).name)}</strong><small className={'broadcast-receipt '+(p?.application?.status??'')}>{applicationLabel(state)}</small></div></div>
+    <div className="broadcast-pending"><span className="bus-tag pvw">PVW</span><div><strong title={sceneDetails(state,state.previewScene).name}>{sceneLabel(state,state.previewScene,sceneDetails(state,state.previewScene).name)}</strong><small title={pending.join('、')}>{p?.persistence?.status==='failed'?'磁盘保存失败':p?.persistence?.status==='saving'?'正在保存':`${pending.length} 类已保存待播`} · v{p?.configVersion}</small></div></div>
+    <OutputSignals status={output}/>
+    <div className="broadcast-actions">
+      {ctx.showTake&&<TakeControl {...ctx} compact/>}
+      <button className="button small" disabled={!allowed||!host||busy} onClick={()=>engine('return-live')}>回到比赛</button>
+      <button className="button small danger" disabled={!allowed||!host||busy} onClick={()=>engine('emergency')}>技术暂停</button>
+      <button className="button small" popoverTarget={moreId}>核对 / 应急</button>
+    </div>
+    <div id={moreId} popover="auto" className="broadcast-popover">
+      <h3>节目核对与控制</h3><p>当前控制者：{p?.control?.name??'等待席位'} · 节目 v{p?.program?.version??'—'}</p>
+      <p>{pending.join('、')||'与节目内容一致；同局实时采样持续同步'}</p>
+      <button className="button" disabled={!allowed||busy||p?.application?.status!=='applied'} onClick={()=>run({op:'confirm-picture'})}>确认本版节目画面与声音</button>
+      <button className="button" disabled={!allowed||busy} onClick={()=>run({op:'immediate',action:'analysis-off'})}>关闭节目分析</button>
+      <button className="button" disabled={!allowed||busy} onClick={()=>run({op:'immediate',action:'feeds-off'})}>关闭选手画面</button>
+      <button className="button" disabled={!allowed||busy||!p?.previousProgram} onClick={()=>run({op:'immediate',action:'undo'})}>撤回上次切换</button>
+      <small>OBS 应用与人工核对分别记录；平台接收仍需在平台核对。</small>
+    </div>
+  </section>;
 }
 
 type TaskId =
@@ -277,6 +143,7 @@ const taskItems: { id: TaskId; label: string }[] = [
 ];
 type TaskContext = StateContext & {
   status: ProductionStatus | null;
+  engine: EngineHealth | null;
   busy: boolean;
   host: boolean;
   canOutput: boolean;
@@ -319,8 +186,8 @@ export function ProductionDesk(
         api<EngineHealth>("/api/obs/engine"),
       ]);
       if (!stopped) {
-        if (prod.status === "fulfilled") setStatus(prod.value);
-        if (health.status === "fulfilled") setEngine(health.value);
+        setStatus(prod.status === "fulfilled" ? prod.value : null);
+        setEngine(health.status === "fulfilled" ? health.value : null);
       }
       fetching = false;
     };
@@ -366,6 +233,7 @@ export function ProductionDesk(
   const taskContext: TaskContext = {
     ...ctx,
     status,
+    engine,
     busy,
     run,
     command,
@@ -515,55 +383,18 @@ export function ProductionDesk(
   );
 }
 function AudioTask(ctx: TaskContext) {
-  const { state, send, notify, status, busy, command, obs, run } = ctx,
-    p = state.production!,
-    currentKey = productionKey(state),
-    clipKey = productionKey(programState(state));
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <div className="production-task">
-      <h3>现场音频</h3>
-      {status?.companionAudio?.active && <p className="muted">完整混音已送到直播伴侣 · 48 kHz 双声道 · 音量、静音和回放策略即时生效。</p>}
-      <MusicControls ctx={ctx} />
-      <label className="toggle-setting">
-        <span>显示采访、音乐和回放通道</span>
-        <input
-          type="checkbox"
-          checked={expanded}
-          onChange={(e) => setExpanded(e.target.checked)}
-        />
-      </label>
-      <div className="production-audio">
-        {(
-          status?.audio ??
-          [
-            "RiftCast 桌面音频",
-            "RiftCast 解说麦克风",
-            "RiftCast 采访",
-            "RiftCast 音乐",
-            "RiftCast 回放片段",
-          ].map((name) => ({ name, available: false }) as AudioBus)
-        )
-          .filter((_, index) => expanded || index < 2)
-          .map((bus) => (
-            <AudioStrip
-              key={bus.name}
-              bus={bus}
-              busy={busy || !ctx.canOutput}
-              monitorManaged={status?.audioManaged ?? false}
-              obs={obs}
-            />
-          ))}
-      </div>
-      <button
-        className="button small"
-        disabled={busy}
-        onClick={() => obs({ action: "tracks" })}
-      >
-        停播配置成品 / 游戏 / 解说三轨录制
-      </button>
-    </div>
-  );
+  const {status,busy,obs}=ctx;
+  const [expanded,setExpanded]=useState(false);
+  const buses=status?.audio??['RiftCast 桌面音频','RiftCast 解说麦克风','RiftCast 采访','RiftCast 音乐','RiftCast 回放片段'].map(name=>({name,available:false}) as AudioBus);
+  const audio=status?.companionAudio;
+  return <div className="mixer-workspace">
+    <div className="mixer-heading"><h3>节目混音</h3><span>增益与静音即时生效</span></div>
+    <ProgramAudioStatus audio={audio}/>
+    <div className="mixer-channels">{buses.filter(bus=>expanded||/桌面|解说|音乐/.test(bus.name)).map(bus=><AudioStrip key={bus.name} bus={bus} busy={busy||!ctx.canOutput} monitorManaged={status?.audioManaged??false} obs={obs}/>)}</div>
+    <button className="mixer-expand" onClick={()=>setExpanded(!expanded)}>{expanded?'收起采访与回放通道':'展开采访与回放通道'}</button>
+    <MusicControls ctx={ctx}/>
+    <details className="mixer-recording"><summary>录制音轨</summary><p>{status?.audioManaged?'伴侣送出正在托管音轨和监听；停止并恢复后才能更改。':'在停播窗口配置成品、游戏和解说三轨录制。'}</p><button className="button small" disabled={busy||!ctx.canOutput||!!status?.audioManaged||!!ctx.engine?.streamActive||!!ctx.engine?.recordActive||!!ctx.engine?.virtualCamActive} onClick={()=>obs({action:'tracks'})}>配置三轨录制</button></details>
+  </div>;
 }
 
 function AudioStrip({
@@ -588,7 +419,7 @@ function AudioStrip({
     obs({ action: "audio", name: bus.name, db: value });
   };
   return (
-    <div>
+    <div className="mixer-channel" data-muted={bus.muted}>
       <strong>{bus.name.replace("RiftCast ", "")}</strong>
       <span>
         {!bus.available
@@ -600,17 +431,17 @@ function AudioStrip({
       <span className="audio-gain">
         {editing.current ? "目标增益" : "增益"}{" "}
         {bus.available ? gain.toFixed(1) : "—"} dB ·{" "}
-        {bus.muted ? "静音" : "输出"}
+        {!bus.available ? "未接入" : bus.muted === undefined ? "静音状态待确认" : bus.muted ? "静音" : "未静音"}
         {bus.heldPeakDb !== undefined
           ? ` · 峰值保持 ${bus.heldPeakDb.toFixed(1)} dB`
           : ""}
       </span>
-      <meter
+      {bus.meterAvailable && bus.peakDb !== undefined ? <meter
         min={-60}
         max={0}
         value={bus.peakDb ?? -60}
         aria-label={`${bus.name} 电平`}
-      />
+      /> : <span className="mixer-no-signal">电平未提供</span>}
       <input
         type="range"
         aria-label={`${bus.name} 音量`}
@@ -691,24 +522,24 @@ function AudioStrip({
 }
 
 function MusicControls({ ctx }: { ctx: TaskContext }) {
-  const music = ctx.status?.music;
-  const [uploading, setUploading] = useState(false);
-  async function upload(file?: File) {
-    if (!file) return;
+  const music=ctx.status?.music;
+  const [uploading,setUploading]=useState(false);
+  const outputs=[ctx.engine?.streamActive?'RTMP':null,ctx.engine?.recordActive?'录制':null,ctx.engine?.virtualCamActive?'伴侣视频':null,ctx.engine?.companionAudio?.active||ctx.engine?.companionAudio?.managing?'伴侣音频':null].filter(Boolean);
+  const mediaState=music?.state, mediaPlaying=mediaState==='OBS_MEDIA_STATE_PLAYING';
+  const mediaLabel=!music?.available?'来源未接入':mediaState==='OBS_MEDIA_STATE_PAUSED'?'已暂停':mediaState==='OBS_MEDIA_STATE_STOPPED'?'已停止':mediaState==='OBS_MEDIA_STATE_ENDED'?'播放结束':mediaState==='OBS_MEDIA_STATE_PLAYING'?music.playing?'正在播放':'播放中但已静音':'媒体状态待确认';
+  async function upload(file?:File){
+    if(!file)return;
+    if(file.size>32*1024*1024){ctx.notify('音乐文件不能超过 32 MB','error');return;}
     setUploading(true);
-    try {
-      const body = new FormData(); body.append('file', file);
-      await ctx.run(() => api('/api/obs/music', { method: 'POST', body }), '音乐已添加，当前暂停并静音；点击播放后送入节目混音');
-    } finally { setUploading(false); }
+    try{const body=new FormData();body.append('file',file);await ctx.run(()=>api('/api/obs/music',{method:'POST',body}),'音乐已保存；新来源暂停、静音，初始增益 -18 dB');}finally{setUploading(false);}
   }
-  return <div className="music-controls">
-    <strong>节目音乐</strong>
-    <p className="muted">{music?.name || '选择本地音乐，自动加入游戏、自定义节目和回放场景。'}{music?.available ? music.playing ? ' · 播放中' : ' · 已暂停或静音' : ''}</p>
-    <label className="button small"><span>{uploading ? '正在添加…' : '添加 / 更换音乐'}</span><input aria-label="节目音乐文件" type="file" accept=".mp3,.wav,.ogg,.flac" disabled={ctx.busy || uploading || !ctx.canOutput} onChange={event => { void upload(event.target.files?.[0]); event.target.value = ''; }} /></label>
-    <button className="button small" disabled={ctx.busy || !ctx.canOutput || !music?.available} onClick={() => void ctx.run(() => api('/api/obs/music/control', { method: 'POST', body: JSON.stringify({ action: music?.playing ? 'pause' : 'play' }) }), music?.playing ? '节目音乐已暂停' : '节目音乐已播放')}>{music?.playing ? '暂停音乐' : '播放音乐'}</button>
-    <button className="button small" disabled={ctx.busy || !ctx.canOutput || !music?.available} onClick={() => void ctx.run(() => api('/api/obs/music/control', { method: 'POST', body: JSON.stringify({ action: 'stop' }) }), '节目音乐已停止')}>停止音乐</button>
-    <small className="muted">支持 32 MB 以内的 MP3 / WAV / OGG / FLAC；添加和更换请在停播窗口操作。音乐音量在下方音乐通道调整。</small>
-  </div>;
+  return <section className="mixer-music" aria-label="节目音乐控制">
+    <header><strong>节目音乐</strong><span>{mediaLabel}</span></header>
+    <p title={music?.name}>{music?.name||'尚未添加本地音乐'}</p>
+    <div className="mixer-music-transport"><button className="button small" disabled={ctx.busy||!ctx.canOutput||!music?.available} onClick={()=>void ctx.run(()=>api('/api/obs/music/control',{method:'POST',body:JSON.stringify({action:mediaPlaying?'pause':'play'})}),mediaPlaying?'节目音乐已暂停':'节目音乐已播放')}>{mediaPlaying?'暂停音乐':'播放音乐'}</button><button className="button small" disabled={ctx.busy||!ctx.canOutput||!music?.available} onClick={()=>void ctx.run(()=>api('/api/obs/music/control',{method:'POST',body:JSON.stringify({action:'stop'})}),'节目音乐已停止')}>停止音乐</button></div>
+    <details><summary>添加 / 更换音乐</summary><p>{outputs.length?`请先停止：${outputs.join('、')}。`:'仅在停播窗口更换。新来源默认暂停、静音，增益 -18 dB。'}</p><input aria-label="节目音乐文件" type="file" accept=".mp3,.wav,.ogg,.flac" disabled={ctx.busy||uploading||!ctx.canOutput||!ctx.engine?.connected||outputs.length>0} onChange={e=>{void upload(e.target.files?.[0]);e.target.value='';}}/><small>MP3 / WAV / OGG / FLAC · ≤ 32 MB</small></details>
+    <small>播放进入真实 Program 混音，包含游戏、自定义节目与回放；并非预听。</small>
+  </section>;
 }
 function PreparationTask(ctx: TaskContext) {
   const { state, send, notify, status, busy, command, obs, run } = ctx,
