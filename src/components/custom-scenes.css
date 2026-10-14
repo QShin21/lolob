@@ -199,6 +199,10 @@
 .custom-composite-guide>header { display: flex; align-items: center; gap: 10px; padding: 18px 20px; border-bottom: 1px solid var(--ui-border); flex: none; }
 .custom-composite-guide>header>button { margin-left: auto; }
 .custom-composite-guide>div { flex: 1; min-height: 0; overflow: auto; padding: 24px; }
+.custom-composition-facts { margin: 16px 0; padding: 8px 0; border-block: 1px solid var(--ui-border); }
+.custom-composition-facts > div { display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 12px; padding: 6px 0; font-size: 13px; }
+.custom-composition-facts dt { color: var(--ui-muted); }
+.custom-composition-facts dd { margin: 0; overflow-wrap: anywhere; }
 .custom-composite-guide p { max-width: 52em; color: var(--ui-muted); font-size: 13px; line-height: 1.8; }
 .custom-composite-guide ol { display: flex; flex-direction: column; gap: 22px; margin: 24px 0; padding-left: 24px; }
 .custom-composite-guide li { padding-left: 8px; font-size: 14px; }
@@ -232,6 +236,7 @@
 .custom-source-placeholder small { font-size: 10px; color: #c4d4d8; }
 .custom-delete-prompt { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--ui-border); font-size: 13px; }
 .custom-delete-prompt span { margin-right: auto; }
+.custom-delete-prompt small { display: block; color: var(--ui-muted); margin-top: 3px; }
 
 @media (max-height: 760px) {
   .custom-scene-dialog { height: calc(100dvh - 20px); }

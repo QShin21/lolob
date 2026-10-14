@@ -1,0 +1,16 @@
+import { useState } from 'react';
+import type { BroadcastState } from '../../shared/types';
+import { economySegments } from '../../shared/presentation';
+import { time } from '../lib';
+
+export function economySource(state:BroadcastState) {
+  if(state.mode==='demo')return '演示数据';
+  return ({api:'客户端 API',ocr:'观战 HUD 读数',manual:'人工校准',none:'等待经济数据源'} as const)[state.economyFeed?.source||'none'];
+}
+export function EconomyChart({state,compact=false,interactive=false}:{state:BroadcastState;compact?:boolean;interactive?:boolean}) {
+  const [hover,setHover]=useState<number|null>(null),points=state.economy.filter(p=>[p.time,p.blue,p.red].every(Number.isFinite));
+  const max=Math.max(2000,...points.map(p=>Math.abs(p.blue-p.red)))*1.2,end=Math.max(1,state.gameTime,...points.map(p=>p.time)),last=points.at(-1);
+  const x=(t:number)=>40+t/end*710,y=(d:number)=>105-d/max*80,segments=economySegments(points);
+  const point=hover===null?undefined:points.reduce<typeof last>((nearest,p)=>!nearest||Math.abs(p.time-hover)<Math.abs(nearest.time-hover)?p:nearest,undefined);
+  return <div className={`economy-chart ${compact?'compact':''}`}><svg viewBox="0 0 800 240" role="img" aria-label="双方经济差曲线，蓝色为蓝方领先，红色为红方领先，采样中断留空" onPointerMove={interactive?e=>{const rect=e.currentTarget.getBoundingClientRect();setHover(Math.max(0,Math.min(end,((e.clientX-rect.left)/rect.width*800-40)/710*end)));}:undefined} onPointerLeave={()=>setHover(null)}>{[25,65,105,145,185].map((line,i)=><g key={line}><line x1="40" x2="755" y1={line} y2={line} stroke="currentColor" strokeOpacity={i===2?'.4':'.12'} strokeDasharray={i===2?'0':'3 5'}/><text x="3" y={line+4} fill="currentColor" opacity=".8" fontSize="13">{i===2?'0':`${i<2?'+':'−'}${Math.round(max*(Math.abs(2-i)/2)/1000)}k`}</text></g>)}{segments.map((segment,i)=>{const color=segment.side==='blue'?'var(--cast-blue, #36a9e7)':'var(--cast-red, #eb5264)';return <g key={i}><polygon points={`${x(segment.from.time)},105 ${x(segment.from.time)},${y(segment.from.blue-segment.from.red)} ${x(segment.to.time)},${y(segment.to.blue-segment.to.red)} ${x(segment.to.time)},105`} fill={color} opacity=".14"/><line x1={x(segment.from.time)} y1={y(segment.from.blue-segment.from.red)} x2={x(segment.to.time)} y2={y(segment.to.blue-segment.to.red)} stroke={color} strokeWidth="3"/></g>;})}{points.length===1&&<circle cx={x(points[0].time)} cy={y(points[0].blue-points[0].red)} r="4" fill="#83d4d5"/>}{[0,.25,.5,.75,1].map(t=><text key={t} x={x(end*t)} y="221" textAnchor="middle" fill="currentColor" opacity=".8" fontSize="13">{time(end*t)}</text>)}{interactive&&state.events.filter(e=>/dragon|baron|tower|herald/i.test(e.type)).slice(-30).map(e=><circle key={e.id} cx={x(e.time)} cy="198" r="4" fill={e.team==='red'?'#ed8390':'#8bcfef'}><title>{time(e.time)} · {e.text}</title></circle>)}{point&&<line x1={x(point.time)} x2={x(point.time)} y1="20" y2="190" stroke="#eff5de" strokeDasharray="3 3"/>}</svg>{point&&<div className="chart-tooltip">{time(point.time)} · 蓝 {point.blue.toLocaleString()} / 红 {point.red.toLocaleString()} · 差 {point.blue-point.red}</div>}{!points.length&&<div className="chart-unavailable">经济曲线等待数据</div>}{points.length===1&&<div className="chart-one-point">已采集 1 个点，等待后续采样</div>}<div className="chart-sample-note">{last?`最新样本 ${time(last.time)} · ${interactive?'中断超过 30 秒或时间回退时断开曲线':'空白区间暂无连续采样'}`:'尚无有效样本'}</div></div>;
+}

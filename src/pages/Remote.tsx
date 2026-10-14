@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   Check,
   ChevronRight,
@@ -21,6 +21,8 @@ import {
   sceneLabel,
 } from "../../shared/presentation";
 import { getTeam, sceneDetails, sceneInfo } from "../lib";
+import { useRemoteViewport } from './useRemoteViewport';
+import { customSceneFacts } from '../components/custom-scene-status';
 import "./remote-workbench.css";
 
 const roleNames = {
@@ -63,6 +65,7 @@ export function Remote(
   },
 ) {
   const { state, seat, displaySeat, seatRecovery, connected, toast, dismissNotice } = ctx;
+  const viewport = useRemoteViewport();
   const [monitor, setMonitor] = useState<"program" | "preview">("program"),
     [seatIssue, setSeatIssue] = useState("");
   const seatIdentity = useRef(seat?.id);
@@ -91,14 +94,15 @@ export function Remote(
     !seatIssue;
   const controller =
     state.production?.control?.name || "尚未连接的主导播控制席";
-  const canPrepare =
-    !!seat && !seatIssue && (role === "data" || role === "director");
+  const hasPreparationTask = role === "data" || role === "director";
   const pending = pendingContent(state),
     identity = roleTasks[role];
   const local = ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
   const scene = monitor === "program" ? state.programScene : state.previewScene;
+  const custom = displayState.customScenes?.find(item => item.id === scene);
+  const customFacts = custom && customSceneFacts(custom, displayState);
   return (
-    <main className={`remote-workbench ${owner ? "has-control" : ""}`}>
+    <main className={`remote-workbench ${owner ? "has-control" : ""} ${viewport.editing ? 'is-editing' : ''}`} data-keyboard={viewport.keyboardInset > 0 ? 'open' : 'closed'} style={{ '--remote-keyboard-inset': `${viewport.keyboardInset}px` } as CSSProperties}>
       <header className="remote-identity">
         <div className="remote-brand-line">
           <strong>RiftCast</strong>
@@ -254,6 +258,7 @@ export function Remote(
               "应用未完成，请由当前控制者检查主机 OBS 后重试。"}
           </p>
         )}
+        {custom && customFacts && <details className="remote-composition-facts"><summary>自定义构图与来源核对</summary><dl><div><dt>当前画面配置</dt><dd>{monitor === 'program' ? '已切入的节目快照' : '已保存待播'}</dd></div><div><dt>可见来源</dt><dd>图片 {customFacts.images} / 窗口 {customFacts.windows} / 共享 OBS {customFacts.sharedInputs}</dd></div><div><dt>隐藏图层</dt><dd>{customFacts.hidden}</dd></div></dl><p>{customFacts.missingImages.length ? `${customFacts.missingImages.length} 张可见图片缺少素材记录。` : '图片文件及捕获来源在 TAKE 前核验。'}窗口与共享输入需在主机核对实际画面；共享输入内容和音频可受 OBS 外部修改影响。</p></details>}
       </section>
       {!owner && (
         <div className="remote-handoff">
@@ -273,7 +278,7 @@ export function Remote(
           <h2>{identity.title}</h2>
           <p>{identity.detail}</p>
         </header>
-        {canPrepare && <RemoteScenes ctx={ctx} />}
+        {hasPreparationTask && <fieldset className="remote-task-fields" disabled={!connected || !!seatIssue || !seat}><RemoteScenes ctx={ctx} /></fieldset>}
         <fieldset
           className="remote-task-fields"
           disabled={!connected || !!seatIssue || !seat}
@@ -338,6 +343,7 @@ export function Remote(
           </div>
         )}
       </section>
+      <details className="remote-composition-facts remote-overlay-check"><summary>字幕、暂停与回放核对</summary><dl><div><dt>节目字幕配置</dt><dd>{onAir.overlay.ticker ? onAir.overlay.tickerText || '内容为空' : '已撤下'}{state.programScene === 'teamfight' ? '；团战不绘制包装' : state.programScene.startsWith('custom:') ? '；自定义输出按 OBS 构图核对' : ''}</dd></div><div><dt>制作暂停记录</dt><dd>{state.production?.pause ? `${state.production.pause.reason}（${state.production.pause.actor}）` : '无暂停记录'}</dd></div><div><dt>引擎回放记录</dt><dd>{state.production?.playingClipId ? state.production.clips.find(clip => clip.id === state.production?.playingClipId)?.title || '片段待核对' : '未记录活动片段'}</dd></div></dl><p>这些是当前配置和引擎记录。实际画面、声音及平台接收由当前导播核对。</p></details>
       {owner && (
         <footer className="remote-take-dock">
           <div>

@@ -1,0 +1,50 @@
+{
+  "completed": true,
+  "base": "b5bc70f4ee5dffe6538d8e2a2e455f4c5acfae6b",
+  "scope": "Astra short implementation review, not Sol acceptance; isolated real HTTP/WS with synthetic data/faults; no physical devices",
+  "dataDir": "/tmp/lolob-astra-save-tlZ7iJ",
+  "checks": [
+    "Two synchronous native clicks plus classification switch: exactly one POST and one saved snapshot",
+    "Actual server commit followed by aborted HTTP receipt: retry reuses exact ID/version/payload and retains exactly one snapshot",
+    "Known first 409 retains editable title; explicit retry starts a new transaction and saves once"
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "type": "save-recording",
+      "title": "Astra 同回合两次保存",
+      "requestId": "302b5eb8-ab18-4d48-95ef-f96df0ada685",
+      "expectedConfigVersion": 1
+    },
+    {
+      "type": "save-recording",
+      "title": "Astra 丢失回执原事务",
+      "requestId": "bef3f52a-d112-48d8-9bd5-3caca41f32f9",
+      "expectedConfigVersion": 1
+    },
+    {
+      "type": "save-recording",
+      "title": "Astra 丢失回执原事务",
+      "requestId": "bef3f52a-d112-48d8-9bd5-3caca41f32f9",
+      "expectedConfigVersion": 1
+    },
+    {
+      "type": "save-recording",
+      "title": "Astra 已知冲突保留标题",
+      "requestId": "f0c5d6c5-73e3-48ce-a002-1be800cc36fc",
+      "expectedConfigVersion": 1
+    },
+    {
+      "type": "save-recording",
+      "title": "Astra 已知冲突保留标题",
+      "requestId": "648bf4dc-7db6-4102-966c-b5c9ebe81049",
+      "expectedConfigVersion": 1
+    }
+  ],
+  "source": {
+    "src/pages/ManagementRecords.tsx": "26adef0351c1bf59c6c922e24b4f1d590c915ab833f01f92a14775f096de408c",
+    "src/pages/Management.tsx": "f7733df4b997c28f7dbcc26dfc0b8a44776fed62a46fa8fe6969b247e12c0990",
+    "src/useBroadcast.ts": "2b1c4dea7a8e94139dff99fc960d78e65e4343646828a8b1653b6930a97212b1",
+    "src/lib.ts": "cbb4e77c48fca05af2913afe38f86a2554030f4bbf106db4c01b17e671e42c60"
+  }
+}

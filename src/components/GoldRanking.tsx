@@ -52,8 +52,8 @@ export function GoldRankingOverlay({
   return (
     <section ref={root} className="cast-gold-ranking" aria-label="十人经济排行">
       <header>
-        <span>GOLD RANKING</span>
         <strong>十人经济排行</strong>
+        <span>全场累计金币</span>
         <small>
           累计金币 · {Math.floor(state.gameTime / 60)}:
           {String(Math.floor(state.gameTime % 60)).padStart(2, "0")}
@@ -86,7 +86,7 @@ export function GoldRankingOverlay({
                     </span>
                     <span className="cast-gold-hero">
                       {champion ? (
-                        <img src={champion.image} alt={champion.name} />
+                        <img src={champion.image} alt={champion.name} onError={e => { e.currentTarget.style.visibility = 'hidden'; }} onLoad={e => { e.currentTarget.style.visibility = 'visible'; }} />
                       ) : (
                         <span>—</span>
                       )}

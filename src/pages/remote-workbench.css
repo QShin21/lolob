@@ -68,6 +68,7 @@
   border: 1px solid var(--ui-border);
   border-radius: 5px;
   font-size: 16px;
+  scroll-margin-block: 70px 150px;
 }
 .remote-workbench input[type="checkbox"] {
   min-height: 18px;
@@ -619,6 +620,16 @@
   font-size: 12px;
   margin-top: 12px;
 }
+.remote-composition-facts { border-top: 1px solid var(--ui-border); font-size: 12px; }
+.remote-composition-facts > summary { min-height: 44px; padding: 10px 12px; color: var(--ui-muted); cursor: pointer; }
+.remote-composition-facts dl { margin: 0 12px; }
+.remote-composition-facts dl > div { display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 8px; padding: 8px 0; border-top: 1px solid var(--ui-border); }
+.remote-composition-facts dt { color: var(--ui-muted); }
+.remote-composition-facts dd { margin: 0; }
+.remote-composition-facts > p { padding: 8px 12px 12px; color: var(--ui-muted); }
+.remote-workbench.is-editing .remote-take-dock { position: static; margin-top: 12px; }
+.remote-workbench[data-keyboard="open"] { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+.remote-workbench[data-keyboard="open"] .remote-monitor { max-height: 180px; overflow: auto; }
 .remote-take-dock {
   position: sticky;
   bottom: 0;

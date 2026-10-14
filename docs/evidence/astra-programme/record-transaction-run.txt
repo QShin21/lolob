@@ -1,0 +1,1 @@
+{"completed":true,"checks":["Two synchronous native clicks plus classification switch: exactly one POST and one saved snapshot","Actual server commit followed by aborted HTTP receipt: retry reuses exact ID/version/payload and retains exactly one snapshot","Known first 409 retains editable title; explicit retry starts a new transaction and saves once"],"errors":[],"posts":5}

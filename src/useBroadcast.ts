@@ -148,9 +148,17 @@ export function useBroadcast() {
       };
       active.onerror = () => { if (!stopped && socket === active) setError('本地服务连接中断，正在重连'); };
     };
+    const resume = () => {
+      if (document.visibilityState === 'visible' && transportOpen.current && !output)
+        void verify().catch(() => {});
+    };
+    const pageResume = (event: PageTransitionEvent) => { if (event.persisted) resume(); };
+    document.addEventListener('visibilitychange', resume);
+    window.addEventListener('pageshow', pageResume);
     connect();
     return () => {
       stopped = true; verification.current++; verifiedSeat.current = undefined; transportOpen.current = false;
+      document.removeEventListener('visibilitychange', resume); window.removeEventListener('pageshow', pageResume);
       clearTimeout(retry); socket?.close(); if (toastTimer.current) clearTimeout(toastTimer.current);
     };
   }, [accept, invalidateSeat, notify]);

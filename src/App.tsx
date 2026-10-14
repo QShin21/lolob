@@ -61,7 +61,10 @@ export default function App() {
     return () => { document.body.classList.remove('overlay-body'); document.documentElement.classList.remove('overlay-document'); };
   }, [output]);
   useDirectorKeys({ ...broadcast, state: state ?? undefined }, page === 'studio', !output && !remote);
-  if (!state) return <div className={`loading-screen ${output ? 'output-loading' : ''}`}><Brand/><h2>{error ? '本地服务尚未连接' : '正在连接导播工作站'}</h2><p>{error || '载入赛事、素材与节目状态'}</p>{error && <button className="button primary" onClick={() => location.reload()}>重新连接</button>}</div>;
+  // Before any snapshot exists, the browser source stays empty. Never expose
+  // workstation branding, connection controls, or demo state to the audience.
+  if (!state && output) return null;
+  if (!state) return <div className="loading-screen"><Brand/><h2>{error ? '本地服务尚未连接' : '正在连接导播工作站'}</h2><p>{error || '载入赛事、素材与节目状态'}</p>{error && <button className="button primary" onClick={() => location.reload()}>重新连接</button>}</div>;
   const ctx = { state, champions, connected, send, notify, seat }, onAir = programState(state);
   if (output) {
     const preview = new URLSearchParams(location.search).get('preview') === '1';

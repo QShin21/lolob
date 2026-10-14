@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { BroadcastState, Champion, Scene, CustomScene, StateContext } from "../../shared/types";
 import { sceneDetails, sceneInfo } from "../lib";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { CustomSceneEditor } from "./CustomSceneEditor";
 import { TaskTabs } from "./ConsoleUI";
 import { SceneCard } from "./SceneCard";
+import { customSceneFacts } from './custom-scene-status';
 const groups = [
   { id: "all", label: "全部" },
   { id: "favorites", label: "常用" },
@@ -27,6 +28,8 @@ export function SceneLibrary(props: {
   const [editor, setEditor] = useState<CustomScene | 'new' | null>(null);
   const [deleting, setDeleting] = useState<CustomScene | null>(null);
   const [busy, setBusy] = useState(false);
+  const deletingActive = useRef(false);
+  const [deleteError, setDeleteError] = useState('');
   const canEdit = props.connected !== false && !!props.seat && props.seat.role === 'director' && props.state.production?.control?.owner === props.seat.id;
   const [query, setQuery] = useState('');
   const [group, setGroup] = useState<(typeof groups)[number]["id"]>("all");
@@ -55,6 +58,7 @@ export function SceneLibrary(props: {
         ? allScenes
         : group === 'custom' ? custom.map(s => s.id) : phases[group];
   const visibleScenes = scenes.filter(scene => sceneDetails(props.state, scene).name.toLowerCase().includes(query.trim().toLowerCase()));
+  const deleteReason = deleting ? customSceneFacts(deleting, props.state).deleteReason : '';
   return (
     <section className="scene-bank" aria-label="场景库">
       <div className="scene-bank-heading">
@@ -70,7 +74,7 @@ export function SceneLibrary(props: {
         <button className="button small primary" disabled={!canEdit || custom.length >= 50} title={custom.length >= 50 ? '最多 50 个自定义场景' : !canEdit ? '由当前主导播编辑' : '新建自定义场景'} onClick={() => setEditor('new')}><Plus size={15} />新建场景</button>
       </div>
       {editor && <CustomSceneEditor {...props} initial={editor === 'new' ? undefined : editor} onClose={() => setEditor(null)} />}
-      {deleting && <div className="custom-delete-prompt" role="alert"><span>删除「{deleting.name}」？已上传素材会保留。</span><button className="button small" disabled={busy} onClick={() => setDeleting(null)}>取消</button><button className="button small" disabled={busy} onClick={async () => { setBusy(true); try { await props.send({ type: 'delete-custom-scene', id: deleting.id }); setDeleting(null); props.notify('自定义场景已删除'); } catch { /* send reports failure */ } finally { setBusy(false); } }}>确认删除</button></div>}
+      {deleting && <div className="custom-delete-prompt" role="alert"><span><strong>{deleteReason || `删除「${deleting.name}」？`}</strong><small>已上传素材和借用的 OBS 输入都会保留。</small>{deleteError && <small>{deleteError}</small>}</span><button className="button small" disabled={busy} onClick={() => setDeleting(null)}>取消</button><button className="button small" disabled={busy || !canEdit || !!deleteReason} onClick={async () => { if (deletingActive.current || deleteReason || !canEdit) return; deletingActive.current = true; setBusy(true); setDeleteError(''); try { await props.send({ type: 'delete-custom-scene', id: deleting.id }); setDeleting(null); props.notify('自定义场景已删除'); } catch (e) { setDeleteError(e instanceof Error ? e.message : '删除未完成，请核对引用与权限后重试'); } finally { deletingActive.current = false; setBusy(false); } }}>确认删除</button></div>}
       <div className="scene-bank-grid">
         {visibleScenes.map((scene, index) => (
           <div className="scene-bank-item" key={scene}>
@@ -106,7 +110,7 @@ export function SceneLibrary(props: {
                   ←
                 </button>
               )}
-              {scene.startsWith('custom:') && <><button className="custom-scene-edit" disabled={!canEdit} title="编辑场景" aria-label={`编辑 ${sceneDetails(props.state,scene).name}`} onClick={() => setEditor(custom.find(s => s.id === scene)!)}><Pencil size={13}/></button><button disabled={!canEdit || props.state.programScene === scene} title={props.state.programScene === scene ? '请先切入其他节目场景' : '删除场景'} aria-label={`删除 ${sceneDetails(props.state,scene).name}`} onClick={() => setDeleting(custom.find(s => s.id === scene)!)}><Trash2 size={13}/></button></>}
+              {scene.startsWith('custom:') && <><button className="custom-scene-edit" disabled={!canEdit} title="编辑场景" aria-label={`编辑 ${sceneDetails(props.state,scene).name}`} onClick={() => setEditor(custom.find(s => s.id === scene)!)}><Pencil size={13}/></button><button disabled={!canEdit} title={customSceneFacts(custom.find(s => s.id === scene)!, props.state).deleteReason || '删除场景'} aria-label={`删除 ${sceneDetails(props.state,scene).name}`} onClick={() => { setDeleteError(''); setDeleting(custom.find(s => s.id === scene)!); }}><Trash2 size={13}/></button></>}
             </div>
           </div>
         ))}

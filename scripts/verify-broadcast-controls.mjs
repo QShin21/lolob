@@ -359,7 +359,8 @@ try {
           .evaluateAll((images) =>
             images.map((image) => getComputedStyle(image).objectFit),
           )
-      ).every((fit) => fit === "fill"),
+      ).every((fit) => fit === "cover"),
+      "Programme artwork must preserve its natural proportions while filling the new portrait frame",
     );
     if (start === 0)
       await page

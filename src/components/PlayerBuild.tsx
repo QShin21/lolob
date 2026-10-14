@@ -49,14 +49,11 @@ export function PlayerBuild({ state: sourceState, champions, output = false, bus
     ['等级', numberText(player.level)], ['补刀', playerCs(player)], [player.gold==null?'装备目录价值':'累计经济', gold(player.gold??equipmentValue)],
   ];
   if (output) return <section className={`player-build pb-output pb-${player.team}`} aria-label={`${player.name}选手装备分析`}>
-    <header className="pb-focus-header"><strong>PLAYER FOCUS <span>{result?`第 ${result.game} 局${gameResultAwaitingTerminalSample(result)?'已保存数据':'冻结数据'}`:'选手装备'}</span></strong><span>{team?.tag || (player.team === 'blue' ? 'BLUE' : 'RED')} <i>/</i> {player.role || '—'}</span><time><GameTime state={state}/></time></header>
-    <div className="pb-focus-body">
-      <div className={`pb-focus-portrait ${portrait ? 'has-portrait' : ''}`}><BuildImage src={portrait || champion?.image} alt={portrait ? `${player.name}选手照片` : `${player.championName || '英雄'}头像`} kind="portrait" />{portrait && <BuildImage src={champion?.image} alt={player.championName || '英雄头像'} className="pb-focus-champion" />}</div>
-      <div className="pb-focus-name"><strong>{player.name}</strong><span>{player.championName || champion?.name || '—'}</span><small>{team?.name || '—'}</small></div>
-      <div className="pb-focus-stats">{stats.map(([label, value]) => <div key={label}><small>{label}</small><strong>{value}</strong></div>)}</div>
-      <div className="pb-focus-equipment"><div className="pb-focus-caption"><strong>ITEM BUILD</strong><span>六装备 / 饰品</span></div><EquipmentStrip ids={slots} version={catalog.version} catalog={catalog.items} /></div>
+    <header className="pb-focus-header"><strong>焦点选手</strong><span>{result ? `第 ${result.game} 局${gameResultAwaitingTerminalSample(result) ? '已保存观测' : '冻结数据'}` : '本局选手数据'}</span><time><GameTime state={state}/></time></header>
+    <div className="pb-focus-layout">
+      <aside className="pb-focus-person"><div className={`pb-focus-portrait ${portrait ? 'has-portrait' : ''}`}><BuildImage src={portrait || champion?.image} alt={portrait ? `${player.name}选手照片` : `${player.championName || '英雄'}头像`} kind="portrait" />{portrait && <BuildImage src={champion?.image} alt={player.championName || '英雄头像'} className="pb-focus-champion" />}</div><div className="pb-focus-name"><small>{team?.tag || (player.team === 'blue' ? '蓝方' : '红方')} · {player.role || '分路待确认'}</small><strong>{player.name}</strong><span>{player.championName || champion?.name || '英雄待定'}</span></div></aside>
+      <div className="pb-focus-detail"><div className="pb-focus-stats">{stats.map(([label,value]) => <div key={label}><small>{label}</small><strong>{value}</strong></div>)}</div><div className="pb-focus-equipment"><div className="pb-focus-caption"><strong>装备</strong><span>六装备 / 饰品</span></div><EquipmentStrip ids={slots} version={catalog.version} catalog={catalog.items}/></div><div className="pb-focus-footer"><span>符文</span><strong>{runes.join(' / ') || '客户端未提供'}</strong></div></div>
     </div>
-    <footer className="pb-focus-footer"><span>RUNES <i>/</i> 符文</span><strong title={!runes.length ? 'API 未提供符文' : undefined}>{runes.join(' / ') || '—'}</strong><small>{result?`${gameResultAwaitingTerminalSample(result)?'ARCHIVED':'FINAL'} GAME ${result.game}`:state.mode === 'demo' ? 'DEMO DATA' : 'LIVE CLIENT DATA'}</small></footer>
   </section>;
   return <section className={`player-build panel pb-panel pb-${player.team}`} aria-label={`${player.name}选手装备与符文`}>
     <header className="panel-head"><div><small>PLAYER LOADOUT</small><h2>{result?`第 ${result.game} 局${gameResultAwaitingTerminalSample(result)?'已保存':'最终'}选手装备与符文`:'选手装备与符文'}</h2></div><span><GameTime state={state}/></span></header>

@@ -1,0 +1,197 @@
+/* Fixed 1920 x 1080 compositions, scaled by canvas, never by phone viewport. */
+.arena-opener { position:absolute; inset:24% 4% 15%; display:grid; grid-template-columns:30% minmax(0,1fr); gap:4cqw; }
+.arena-start { background:var(--cast-paper); color:var(--cast-ink); padding:2.6cqw; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; }
+.arena-start > span { font-size:1.35cqw; }
+.arena-start > strong { margin:1.3cqw 0 2cqw; line-height:1.05; }
+.arena-countdown-number { font-size:5.2cqw; letter-spacing:-.22cqw; }
+.arena-countdown-message { font-size:3.2cqw; max-width:7em; }
+.arena-start > p { font-size:1.15cqw; line-height:1.7; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.arena-start > div { display:flex; gap:1cqw; margin-top:auto; padding-top:1.6cqw; border-top:1px solid #10192340; width:100%; font-size:1.5cqw; }
+.arena-start > div b { margin-left:auto; }
+.arena-opponents { display:grid; grid-template-rows:1fr 1fr; gap:2cqw; }
+.arena-opponent { display:grid; grid-template-columns:1.4cqw 8cqw minmax(0,1fr) 5.5cqw; gap:1.5cqw; align-items:center; border-bottom:1px solid var(--cast-line); padding-bottom:1.5cqw; }
+.arena-opponent > small { writing-mode:vertical-rl; font-size:1.15cqw; color:var(--cast-side); letter-spacing:.6cqw; }
+.arena-opponent .cast-team-mark { width:8cqw; height:9cqw; }
+.arena-opponent .cast-team-mark > b { font-size:3.4cqw; }
+.arena-opponent .arena-team-name strong { font-size:5cqw; letter-spacing:-.12cqw; }
+.arena-opponent .arena-team-name > span { font-size:1.3cqw; }
+.arena-opponent-score { font-size:5.5cqw; line-height:1; text-align:right; }
+.arena-opponent-score small { display:block; margin-top:.8cqw; font-size:.95cqw; font-weight:400; color:var(--cast-muted); }
+
+/* BP history stays bounded even in the fifth game. */
+.cast-draft { position:absolute; left:2%; right:2%; bottom:2%; z-index:2; }
+.arena-draft-history, .arena-draft-tray { display:grid; grid-template-columns:minmax(0,1fr) 11cqw minmax(0,1fr); }
+.arena-draft-history { margin-bottom:.4cqw; align-items:end; }
+.cast-ban-history { min-width:0; padding:.55cqw .7cqw; background:#101923f5; border-top:2px solid var(--cast-side); }
+.arena-history-heading { display:flex; align-items:center; gap:.65cqw; margin-bottom:.45cqw; color:var(--cast-muted); font-size:.8cqw; }
+.arena-history-heading strong { font-size:.95cqw; color:var(--cast-side); max-width:10cqw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.arena-history-games { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.6cqw; }
+.cast-history-game { min-width:0; }
+.cast-history-game > span { display:flex; justify-content:space-between; font-size:.85cqw; color:var(--cast-paper); margin-bottom:.3cqw; }
+.cast-history-game > span > small { font-size:.65cqw; color:var(--cast-muted); }
+.cast-history-game > div { display:flex; gap:.12cqw; }
+.cast-history-game .champion-image { width:1.48cqw; height:1.48cqw; position:relative; }
+.cast-history-game:not(.is-pending):not(.is-standard) .champion-image:after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,transparent 48%,#f4e5cdb0 49% 51%,transparent 52%); }
+.cast-history-game.is-pending { opacity:.6; }
+.cast-draft-team { min-width:0; position:relative; border-top:.22cqw solid var(--cast-side); background:var(--cast-ink); }
+.arena-draft-team-heading { display:flex; align-items:center; height:3.2cqw; gap:.5cqw; padding:.4cqw .6cqw; }
+.arena-draft-team-heading .cast-team-mark { width:2cqw; height:2cqw; }
+.arena-draft-team-heading .cast-team-mark > b { font-size:.9cqw; }
+.arena-draft-team-heading > strong { font-size:1.5cqw; max-width:7cqw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.arena-draft-team-heading > span { color:var(--cast-side); font-size:.85cqw; }
+.cast-bans { margin-left:auto; display:flex; align-items:center; gap:.18cqw; }
+.cast-bans > small { color:var(--cast-muted); font-size:.75cqw; margin-right:.3cqw; }
+.cast-bans .champion-image { height:1.65cqw; width:1.65cqw; filter:saturate(.3); }
+.cast-draft-cards { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.18cqw; height:13.7cqw; }
+.cast-draft-card { position:relative; overflow:hidden; min-width:0; }
+.cast-draft-card > .champion-image { position:absolute; inset:0; }
+.cast-draft-card .champion-image > img { object-fit:cover; object-position:center 20%; }
+.cast-draft-card > .champion-image:after { content:''; position:absolute; inset:30% 0 0; background:linear-gradient(transparent,#101923e8 68%,#101923); }
+.cast-draft-card.active-slot { outline:.14cqw solid var(--cast-side); outline-offset:-.14cqw; }
+.cast-pick-order { position:absolute; top:.5cqw; left:.45cqw; background:#101923dc; padding:.15cqw .25cqw; color:var(--cast-side); font-size:.95cqw; }
+.arena-pick-state { position:absolute; top:2cqw; left:.45cqw; font-size:.7cqw; color:var(--cast-paper); background:#101923dc; padding:.15cqw .2cqw; }
+.arena-pick-identity { position:absolute; inset:auto .45cqw .55cqw; display:flex; flex-direction:column; gap:.35cqw; }
+.cast-draft-role { font-size:.8cqw; color:var(--cast-side); }
+.cast-draft-player { font-size:1.05cqw; line-height:1.3; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.cast-draft-champion { font-size:.9cqw; color:var(--cast-muted); }
+.cast-draft-preselect { font-size:.75cqw; padding:.25cqw .6cqw; height:1.5cqw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-top:1px dashed var(--cast-line); }
+.cast-draft-center { background:var(--cast-panel); display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:1cqw .6cqw; text-align:center; border-top:.22cqw solid var(--cast-side); }
+.cast-draft-center .arena-mark { font-size:.65cqw; }
+.cast-draft-center .arena-mark b { font-size:1.15cqw; }
+.cast-draft-center .arena-match-strip { gap:.35cqw; }
+.cast-draft-center .arena-match-strip > span { font-size:.8cqw; max-width:2.7cqw; }
+.cast-draft-center .arena-match-strip > b { font-size:1.3cqw; }
+.cast-draft-center .arena-match-strip > small { font-size:.65cqw; }
+.cast-draft-center > small { font-size:.85cqw; color:var(--cast-muted); }
+.cast-draft-timer { display:flex; flex-direction:column; align-items:center; gap:.15cqw; }
+.cast-draft-timer > strong { font-size:4.2cqw; line-height:1.1; }
+.cast-draft-timer > small { font-size:1cqw; }
+.cast-draft-timer > span { font-size:.95cqw; color:var(--cast-side); max-width:9cqw; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+
+.arena-lineup-identity { position:absolute; inset:20% 4% auto; display:grid; grid-template-columns:1fr auto 1fr; gap:3cqw; height:10%; }
+.arena-lineup-identity > div:not(.arena-match-strip) { display:flex; align-items:center; gap:1.2cqw; min-width:0; }
+.arena-lineup-identity > .red { justify-content:flex-end; text-align:right; }
+.arena-lineup-identity .cast-team-mark { width:3.5cqw; height:3.5cqw; }
+.arena-lineup-identity .arena-team-name > strong { font-size:2.5cqw; }
+.arena-lineup-identity .arena-match-strip { align-content:center; gap:.25cqw .75cqw; }
+.arena-lineup-matchups { position:absolute; inset:34% 4% 12%; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:1.25cqw; }
+.arena-lineup-pair { min-width:0; min-height:0; display:grid; grid-template-rows:minmax(0,1fr) minmax(0,1.15fr); }
+.arena-lineup-half { min-height:0; min-width:0; display:flex; flex-direction:column; }
+.arena-lineup-half article { display:flex; flex-direction:column; min-height:0; flex:1 1 0; overflow:hidden; border-top:.16cqw solid var(--cast-side); background:var(--cast-panel); }
+.cast-lineup-photo { min-height:0; flex:1; position:relative; overflow:hidden; }
+.cast-lineup-photo > img, .cast-lineup-photo > .champion-image { width:100%; height:100%; }
+.cast-lineup-photo img { object-fit:cover; object-position:center 28%; }
+.arena-lineup-player { padding:.6cqw .65cqw; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.4cqw; align-items:baseline; }
+.arena-lineup-player > strong { font-size:1.25cqw; line-height:1.3; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.arena-lineup-player > small { font-size:.85cqw; color:var(--cast-muted); max-width:5cqw; }
+.arena-matchup-role { text-align:center; color:var(--cast-muted); height:2.2cqw; display:grid; place-items:center; font-size:1.05cqw; flex:none; }
+
+.cast-analysis { position:absolute; left:16%; right:16%; bottom:1.5%; background:var(--cast-ink); color:var(--cast-paper); z-index:2; border:1px solid var(--cast-line); }
+.arena-analysis-heading { height:3.5cqw; padding:.65cqw 1.3cqw; display:flex; gap:1cqw; align-items:center; border-bottom:1px solid var(--cast-line); }
+.arena-analysis-heading > h2 { font-size:1.6cqw; }
+.arena-analysis-heading > span { color:var(--cast-muted); font-size:.9cqw; }
+.arena-analysis-heading > b { margin-left:auto; font-size:1.5cqw; }
+.cast-analysis > footer { padding:.6cqw 1.3cqw; display:flex; justify-content:space-between; gap:1cqw; border-top:1px solid var(--cast-line); font-size:.9cqw; color:var(--cast-muted); }
+.arena-economy-body { display:grid; grid-template-columns:17cqw minmax(0,1fr); }
+.arena-economy-summary { padding:1.5cqw 1.3cqw; display:flex; flex-direction:column; gap:.7cqw; background:var(--cast-panel); }
+.arena-economy-summary > small { font-size:1.1cqw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.arena-economy-summary > strong { font-size:3.3cqw; color:var(--cast-side,var(--cast-paper)); }
+.arena-economy-summary dl { margin-top:auto; }
+.arena-economy-summary dl > div { display:flex; gap:.5cqw; justify-content:space-between; margin-top:.7cqw; }
+.arena-economy-summary dt { color:var(--cast-side); font-size:1.1cqw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.arena-economy-summary dd { font-size:1.3cqw; white-space:nowrap; }
+.arena-economy-plot { min-width:0; padding:1cqw 1cqw .8cqw; }
+.arena-economy-axis { display:flex; gap:.8cqw; font-size:.85cqw; color:var(--cast-muted); padding:0 .3cqw; }
+.arena-economy-axis > span:first-child { color:var(--cast-blue); }
+.arena-economy-axis > span:nth-child(2) { color:var(--cast-red); }
+.arena-economy-axis > span:last-child { margin-left:auto; }
+.cast-economy .economy-chart { position:relative; height:auto; color:var(--cast-muted); }
+.cast-economy .economy-chart > svg { width:100%; height:17cqw; display:block; }
+.cast-economy .economy-chart text { font-size:17px; }
+.cast-economy .chart-sample-note { font:.85cqw var(--cast-font); color:var(--cast-muted); padding:0 .5cqw; }
+.cast-economy .chart-unavailable { color:var(--cast-muted); font-size:1.1cqw; }
+.cast-economy .chart-one-point { position:absolute; bottom:2cqw; left:0; right:0; color:var(--cast-muted); text-align:center; font-size:.9cqw; }
+.arena-performance-columns { display:grid; grid-template-columns:1fr 1fr; gap:1.4cqw; padding:.6cqw 1.1cqw; }
+.arena-performance-column { min-width:0; }
+.arena-performance-heading { display:flex; justify-content:space-between; color:var(--cast-muted); font-size:.85cqw; padding:.4cqw 0; }
+.cast-performance-row { display:grid; grid-template-columns:1.3cqw 2.8cqw minmax(0,1fr) 9.5cqw; gap:.5cqw; height:4.4cqw; align-items:center; border-top:1px solid var(--cast-line); }
+.arena-rank { color:var(--cast-side,var(--cast-muted)); font-size:1.2cqw; text-align:center; }
+.cast-performance-row > .champion-image { width:2.8cqw; height:2.8cqw; }
+.arena-performance-player { min-width:0; }
+.arena-performance-player > strong { display:block; font-size:1.05cqw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.arena-performance-player > small { display:block; font-size:.7cqw; color:var(--cast-side); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.arena-performance-player > div { display:flex; gap:.5cqw; margin-top:.3cqw; color:var(--cast-muted); font-size:.7cqw; white-space:nowrap; }
+.arena-performance-data { display:flex; flex-direction:column; align-items:flex-end; gap:.4cqw; }
+.arena-performance-data > b { font-size:1.35cqw; }
+.arena-performance-data .cast-equipment > span { width:1.15cqw; height:1.15cqw; }
+
+.arena-schedule-body { position:absolute; inset:23% 4% 15%; display:grid; grid-template-columns:19cqw minmax(0,1fr); gap:3cqw; }
+.arena-schedule-day { display:flex; flex-direction:column; align-items:flex-start; border-right:1px solid var(--cast-line); padding-right:2cqw; }
+.arena-schedule-day > span { color:var(--cast-muted); font-size:1.15cqw; }
+.arena-schedule-day > strong { font-size:3.5cqw; line-height:1.15; margin:1cqw 0; overflow-wrap:anywhere; }
+.arena-schedule-day > p { font-size:1.15cqw; color:var(--cast-muted); }
+.cast-schedule-pagination { margin-top:auto; }
+.cast-schedule-pagination b { display:block; font-size:4.5cqw; line-height:1.2; }
+.cast-schedule-pagination b > small { font-size:2.1cqw; color:var(--cast-muted); }
+.cast-schedule-pagination > span { font-size:1.05cqw; }
+.arena-schedule-day > small { margin-top:1.3cqw; color:var(--cast-muted); font-size:1cqw; }
+.cast-schedule-list { display:grid; grid-template-rows:repeat(4,minmax(0,1fr)); min-width:0; }
+.cast-schedule-row { display:grid; grid-template-columns:5.5cqw minmax(0,1fr) 6.6cqw minmax(0,1fr) 4cqw; gap:.75cqw; align-items:center; border-bottom:1px solid var(--cast-line); padding:.8cqw 0; }
+.cast-schedule-row.live { border-left:.2cqw solid var(--cast-accent); margin-left:-.75cqw; padding-left:.55cqw; background:#1b2e38; }
+.arena-schedule-time { display:flex; flex-direction:column; gap:.4cqw; }
+.arena-schedule-time time { font-size:1.35cqw; }
+.arena-schedule-time small { color:var(--cast-muted); font-size:.9cqw; }
+.arena-schedule-team { display:flex; align-items:center; gap:.7cqw; min-width:0; }
+.arena-schedule-team.red { justify-content:flex-end; text-align:right; }
+.arena-schedule-team .cast-team-mark { width:2.7cqw; height:2.7cqw; }
+.arena-schedule-team .cast-team-mark > b { font-size:1.2cqw; }
+.arena-schedule-team .arena-team-name strong { font-size:1.7cqw; }
+.arena-schedule-team .arena-team-name > span { font-size:.9cqw; }
+.arena-schedule-score { text-align:center; }
+.arena-schedule-score b { display:block; font-size:2cqw; white-space:nowrap; }
+.arena-schedule-score small { color:var(--cast-muted); font-size:.9cqw; }
+.arena-match-status { font-size:.95cqw; color:var(--cast-muted); text-align:right; }
+.cast-schedule-row.live .arena-match-status { color:var(--cast-accent); }
+.cast-empty { padding:3cqw 0; color:var(--cast-muted); font-size:1.6cqw; }
+
+.arena-report-body { position:absolute; inset:22% 4% 14%; display:grid; grid-template-columns:23cqw minmax(0,1fr); gap:2.4cqw; }
+.arena-result { background:var(--cast-panel); border-top:.22cqw solid var(--cast-side,var(--cast-line)); padding:1.5cqw 1.8cqw; display:flex; flex-direction:column; align-items:center; text-align:center; min-width:0; }
+.arena-result > small { color:var(--cast-muted); font-size:1.05cqw; }
+.arena-result .cast-team-mark { width:6cqw; height:6cqw; margin:1cqw 0; }
+.arena-result > h3 { font-size:3.6cqw; color:var(--cast-side,var(--cast-paper)); max-width:100%; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
+.arena-result > p { font-size:1.1cqw; color:var(--cast-muted); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+.arena-result-series { display:flex; gap:.8cqw; align-items:center; justify-content:center; margin-top:1.4cqw; }
+.arena-result-series > b { font-size:2.7cqw; white-space:nowrap; }
+.arena-result-series > span { font-size:1.05cqw; max-width:4.2cqw; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.arena-result-status { display:flex; flex-direction:column; gap:.5cqw; border-top:1px solid var(--cast-line); margin-top:auto; padding-top:1.1cqw; width:100%; font-size:1cqw; }
+.arena-result-status > strong { color:var(--cast-accent); }
+.arena-result-status > span { color:var(--cast-muted); }
+.arena-report-data { min-width:0; display:flex; flex-direction:column; }
+.cast-team-comparison { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.9cqw; margin-bottom:1.4cqw; }
+.cast-team-comparison > div { padding:.7cqw .5cqw; background:var(--cast-panel); text-align:center; }
+.cast-team-comparison small { font-size:.9cqw; color:var(--cast-muted); }
+.cast-team-comparison > div > div { display:flex; justify-content:center; align-items:baseline; gap:.4cqw; padding-top:.4cqw; }
+.cast-team-comparison b { color:var(--cast-side); font-size:1.45cqw; }
+.cast-team-comparison span { color:var(--cast-muted); font-size:.9cqw; }
+.cast-report-teams { display:grid; grid-template-columns:1fr 1fr; gap:1.4cqw; flex:1; min-height:0; }
+.cast-report-teams > section { min-width:0; display:flex; flex-direction:column; border-top:.18cqw solid var(--cast-side); }
+.cast-report-teams header, .arena-report-player { display:grid; grid-template-columns:minmax(0,1fr) 4.1cqw 2cqw 3.3cqw; gap:.45cqw; align-items:center; border-bottom:1px solid var(--cast-line); }
+.cast-report-teams header { height:2.5cqw; flex:none; font-size:.7cqw; color:var(--cast-muted); }
+.cast-report-teams header strong { font-size:1.3cqw; color:var(--cast-side); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.arena-report-player { flex:1; min-height:0; font-size:.95cqw; }
+.arena-report-player > b { font-size:1.05cqw; }
+.arena-report-identity { display:flex; align-items:center; min-width:0; gap:.6cqw; }
+.arena-report-identity > .champion-image { height:2.6cqw; width:2.6cqw; }
+.arena-report-identity > span { min-width:0; }
+.arena-report-identity strong { display:block; font-size:1.05cqw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.3cqw; }
+.arena-report-identity .cast-equipment > span { width:.9cqw; height:.9cqw; }
+.arena-report-source { padding-top:.8cqw; color:var(--cast-muted); font-size:.85cqw; }
+
+.cast-interview { position:absolute; left:5%; bottom:13%; width:67%; display:grid; grid-template-columns:13cqw minmax(0,1fr); background:var(--cast-ink); border-left:.35cqw solid var(--cast-accent); z-index:2; }
+.cast-interview.dock-right { left:auto; right:5%; }
+.arena-interview-identity { display:flex; flex-direction:column; justify-content:space-between; padding:1.4cqw; background:var(--cast-panel); }
+.arena-interview-identity > span:last-child { font-size:.9cqw; color:var(--cast-muted); }
+.cast-interview-name { min-width:0; padding:1.2cqw 1.8cqw; display:flex; flex-direction:column; gap:.55cqw; }
+.cast-interview-name > small { font-size:1.15cqw; color:var(--cast-accent); overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.cast-interview-name > strong { font-size:2.9cqw; line-height:1.2; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.cast-interview-name > span { font-size:1.15cqw; color:var(--cast-muted); white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }

@@ -54,7 +54,7 @@ export function CustomSceneSourcePicker({
       <div><h3 id="custom-source-panel-title">{replacing ? `更换${sourceTitle}` : '添加来源'}</h3><p>{replacing ? '保留图层名称、位置、尺寸与显示设置。' : '选择来源，添加到最上层后继续构图。'}</p></div>
       <button type="button" className="custom-icon-button" aria-label="关闭来源面板" disabled={busy} onClick={onClose}><X size={18}/></button>
     </header>
-    {!replacing && <div className="custom-source-kinds" role="group" aria-label="来源类型">{sourceKinds.map(({ kind: value, label, icon: Icon }) => <button type="button" key={value} aria-pressed={value === kind} onClick={() => onKind(value)} disabled={disabled}><Icon size={17}/>{label}</button>)}</div>}
+    <div className="custom-source-kinds" role="group" aria-label="来源类型">{sourceKinds.map(({ kind: value, label, icon: Icon }) => <button type="button" key={value} aria-pressed={value === kind} onClick={() => onKind(value)} disabled={disabled}><Icon size={17}/>{label}</button>)}</div>
     <div className="custom-source-panel-tools">
       <label className="custom-source-search"><Search size={16}/><input ref={search} aria-label={`搜索${sourceTitle}`} placeholder={`搜索${sourceTitle}`} value={query} onChange={event => setQuery(event.target.value)}/></label>
       {kind === 'image'
