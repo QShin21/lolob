@@ -59,7 +59,7 @@ try {
       ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href
       : "playwright"
   );
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, ...(process.env.RIFTCAST_CHROMIUM_PATH ? { executablePath: process.env.RIFTCAST_CHROMIUM_PATH } : {}) });
   const context = await browser.newContext({
     viewport: { width: 1920, height: 1080 },
     locale: "zh-CN",
@@ -120,7 +120,7 @@ try {
   await overlay.getByText(seed.match.title, { exact: true }).first().waitFor();
   tests.push("pending title and ticker preserve on-air content");
   const take = page
-    .getByRole("region", { name: "固定播出与应急控制" })
+    .getByRole("region", { name: "本次切入" })
     .getByRole("button", { name: "切入节目" });
   assert.equal(await take.isEnabled(), false);
   await page
@@ -167,8 +167,9 @@ try {
   assert.equal((await state()).production.configVersion, openedVersion + 1);
   tests.push("stale team editor is rejected without overwriting new settings");
   await page.getByRole("button", { name: "BP 与阵容", exact: true }).click();
+  await page.getByRole("tab", { name: "接管与客户端差异", exact: true }).click();
   await page
-    .getByRole("heading", { name: "赛事规则、BP 接管与最终归属" })
+    .getByRole("heading", { name: "接管与客户端核对" })
     .waitFor();
   await page
     .getByRole("button", { name: "人工接管", exact: true })
@@ -178,8 +179,9 @@ try {
     async () => (await state()).production.draftMode === "manual",
     "manual BP",
   );
-  await page.getByText("全局 BP 历史与规则核对", { exact: true }).click();
-  const hold = page.getByRole("button", { name: "按住新系列赛", exact: true });
+  await page.getByRole("tab", { name: "规则与历史", exact: true }).click();
+  await page.getByText("推进局号与新系列赛", { exact: true }).click();
+  const hold = page.getByRole("button", { name: "按住开启新系列赛", exact: true });
   await hold.click();
   assert.equal((await state()).match.seriesId, seed.match.seriesId);
   const box = await hold.boundingBox();
@@ -231,18 +233,18 @@ try {
   );
   assert.equal(overflow, false);
   tests.push("1366 pixel console fits without document horizontal overflow");
-  await page.evaluate(() => window.scrollTo(0, 1100));
+  await page.locator('.director-tasks .task-content').evaluate(element => { element.scrollTop = 1100; });
   const pinned = await page
     .getByRole("region", { name: "固定播出与应急控制" })
     .boundingBox();
   assert.ok(
-    pinned && pinned.y >= -2 && pinned.y < 150,
+    pinned && pinned.y >= 0 && pinned.y + pinned.height <= 768,
     "production controls remain visible while scrolling",
   );
 
   // Form state and conflict recovery use the actual HTTP service and config versions.
   await page.getByRole("button", { name: "BP 与阵容", exact: true }).click();
-  await page.getByText(/确认最终归属 ·/).click();
+  await page.getByRole("tab", { name: /^最终归属/ }).click();
   await page
     .getByRole("combobox", { name: /交换英雄/ })
     .first()
@@ -281,7 +283,7 @@ try {
     const bar = await page
       .getByRole("region", { name: "固定播出与应急控制" })
       .boundingBox();
-    assert.ok(bar.y < 160);
+    assert.ok(bar && bar.y >= 0 && bar.y + bar.height <= page.viewportSize().height, 'the complete safety bar stays inside the viewport');
     await page.screenshot({
       path: path.join(evidence, "studio-" + width + ".png"),
       fullPage: true,
@@ -298,7 +300,7 @@ try {
     ["help", "使用指南"],
   ]) {
     await page
-      .locator(".sidebar")
+      .locator(".control-rail")
       .getByRole("button", { name, exact: true })
       .click();
     await page
@@ -319,12 +321,13 @@ try {
     "settings, management, data and help render without page overflow",
   );
   await page
-    .locator(".sidebar")
+    .locator(".control-rail")
     .getByRole("button", { name: "连接与输出", exact: true })
     .click();
-  const settingsTabs = page.getByRole("tablist", { name: "设置分类" });
-  if (await settingsTabs.count())
-    for (const tab of await settingsTabs.getByRole("tab").all()) {
+  const settingsTabs = page.getByRole("tablist", { name: "连接与输出任务" });
+  await settingsTabs.waitFor();
+  assert.equal(await settingsTabs.getByRole('tab').count(), 8);
+  for (const tab of await settingsTabs.getByRole("tab").all()) {
       await tab.click();
       assert.equal(
         await page.evaluate(
@@ -382,10 +385,8 @@ try {
   mobile.on("pageerror", (e) => errors.push(e.message));
   await mobile.goto(base + "/remote");
   await mobile.getByRole("heading", { name: "资料席", exact: true }).waitFor();
-  assert.equal(
-    await mobile.locator(".remote-bottom button").isEnabled(),
-    false,
-  );
+  assert.equal(await mobile.getByRole('button', { name: '切入节目', exact: true }).count(), 0, 'a data seat has no executable TAKE');
+  assert.ok(await mobile.locator('.remote-controller').isVisible());
   assert.equal(
     await mobile.evaluate(
       () => document.documentElement.scrollWidth > innerWidth + 2,
@@ -420,10 +421,8 @@ try {
     seatPage.on("pageerror", (e) => errors.push(e.message));
     await seatPage.goto(base + "/remote?seat=" + encodeURIComponent(token));
     await seatPage.getByRole("heading", { name: label, exact: true }).waitFor();
-    assert.equal(
-      await seatPage.locator(".remote-bottom button").isEnabled(),
-      false,
-    );
+    assert.equal(await seatPage.getByRole('button', { name: '切入节目', exact: true }).count(), 0, `${role} has no executable TAKE`);
+    assert.ok(await seatPage.locator('.remote-controller').isVisible());
     assert.equal(
       await seatPage.evaluate(
         () => document.documentElement.scrollWidth > innerWidth + 2,
@@ -445,7 +444,7 @@ try {
     await seatPage.close();
   }
   tests.push(
-    "readonly, subtitle and replay seats retain role-specific controls and a fixed restricted TAKE bar",
+    "readonly, subtitle and replay seats retain role-specific controls, identify the controller and expose no TAKE",
   );
   await mobileContext.close();
   assert.deepEqual(errors, []);

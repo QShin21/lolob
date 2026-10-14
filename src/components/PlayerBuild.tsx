@@ -30,8 +30,10 @@ function EquipmentStrip({ ids, version, catalog }: { ids: number[]; version: str
   })}</div>;
 }
 
-export function PlayerBuild({ state: sourceState, champions, output = false }: { state: BroadcastState; champions: Champion[]; output?: boolean }) {
-  const result=currentGameResult(sourceState),state=frozenGameState(sourceState);
+export function PlayerBuild({ state: sourceState, champions, output = false, bus = 'preview' }: { state: BroadcastState; champions: Champion[]; output?: boolean; bus?: 'program' | 'preview' }) {
+  // The program bus has already resolved its accepted/held identities. Re-reading
+  // the archive here would replace that view with a newer, unaccepted roster.
+  const result=currentGameResult(sourceState),state=bus==='program'?sourceState:frozenGameState(sourceState);
   const player = state.players.find(p => p.id === state.selectedPlayerId);
   const catalog = useItemCatalog(champions);
   if (!player) return null;

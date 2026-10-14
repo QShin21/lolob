@@ -1,4 +1,5 @@
 import type { BroadcastState, ControlSeat, EconomyPoint, Scene } from "./types";
+import { playerIdentity, programState } from "./production";
 
 /** Compare editorial content only. Telemetry and configuration counters are not pending edits. */
 export function pendingContent(state: BroadcastState): string[] {
@@ -44,10 +45,17 @@ export function pendingContent(state: BroadcastState): string[] {
     items.push("选手画面");
   if (!same(look, oldLook)) items.push("包装");
   if (state.selectedPlayerId !== onAir.selectedPlayerId) items.push("焦点选手");
-  if (p && ((p.program?.draftManual !== (p.draftMode !== "auto")) ||
-    ((p.draftMode !== "auto" || p.programDraftHold || p.program?.draftManual) && !same(state.draft, onAir.draft))))
+  const visible = programState(state);
+  // A held automatic source still needs a TAKE to resume, even if its next
+  // sample equals the last TAKE or the held picture. Compare the actual PGM.
+  const sourceChanged = !!p && onAir.draftManual !== (p.draftMode !== "auto");
+  const draftHeld = !!p?.programDraftHold;
+  if (p && (sourceChanged || (p.draftMode === "auto" && draftHeld) ||
+    ((p.draftMode !== "auto" || onAir.draftManual || draftHeld) && !same(state.draft, visible.draft))))
     items.push("BP");
-  if (!same(p?.assignments, onAir.assignments)) items.push("英雄归属");
+  const roster = (players: BroadcastState['players']) => players.map(playerIdentity).sort((a, b) => a.id.localeCompare(b.id));
+  if (!same(p?.assignments, onAir.assignments) || (p?.draftMode === "auto" && !!p.programRosterHold) ||
+    ((p?.programRosterHold || draftHeld || sourceChanged) && !same(roster(state.players), roster(visible.players)))) items.push("英雄归属");
   if (!same(p?.rules, onAir.rules)) items.push("赛事规则");
   return items;
 }

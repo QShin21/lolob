@@ -23,9 +23,11 @@ export interface VideoRecord {
   recordingId?: string; startVideoSeconds?: number; endVideoSeconds?: number; playable?: boolean;
 }
 export interface ProductionState {
-  configVersion: number; program?: ProgramContent; previousProgram?: { content: ProgramContent; scene: Scene; draftHold?: DraftState };
+  configVersion: number; program?: ProgramContent; previousProgram?: { content: ProgramContent; scene: Scene; draftHold?: DraftState; rosterHold?: Player[] };
   /** Last on-air automatic BP at manual handoff; separate from the last TAKE's configuration. */
   programDraftHold?: DraftState;
+  /** Visible roster at an editorial handoff. Identity/membership is held; same-player telemetry still advances. */
+  programRosterHold?: Player[];
   checks: Partial<Record<CheckId, { fingerprint: string; actor: string; at: string; note: string }>>;
   scores: Record<string, number>; baseScores: Record<string, number>;
   rules: { mode: 'standard' | 'fearless' | 'custom'; scope: 'all' | 'team'; exceptionGames: number[]; remakeHistory: 'discard' | 'retain' };

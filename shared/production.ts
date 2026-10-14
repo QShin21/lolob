@@ -28,6 +28,17 @@ export function captureProgram(s: BroadcastState): ProgramContent {
   const p = ensureProduction(s);
   return structuredClone({ version: p.configVersion, key: productionKey(s), takenAt: new Date().toISOString(), customScenes: s.customScenes ?? [], mode: s.mode, match: s.match, teams: s.teams, overlay: s.overlay, selectedPlayerId: s.selectedPlayerId, draft: s.draft, telemetry: telemetry(s), draftManual: p.draftMode !== 'auto', assignments: p.assignments, versions: p.versions, rules: p.rules, attempt: p.attempt, schedule: s.schedule, draftHistory: s.draftHistory });
 }
+/** Fields which identify an on-air person/hero, rather than a live statistics sample. */
+export function playerIdentity(player: Player) {
+  const { id, name, portrait, team, role, championId, championName } = player;
+  return { id, name, portrait, team, role, championId, championName };
+}
+function heldRoster(roster: Player[], samples: Player[]): Player[] {
+  // Never pair by array position, lane or champion: a pending replacement/swap may
+  // use the same slot. Missing IDs retain their last sample and its freshness metadata.
+  const byId = new Map(samples.map(player => [player.id, player]));
+  return roster.map(player => ({ ...(byId.get(player.id) ?? player), ...playerIdentity(player) }));
+}
 /** Configuration is copied at TAKE; same-game telemetry keeps advancing independently. */
 export function programState(s: BroadcastState): BroadcastState {
   const c = s.production?.program;
@@ -43,7 +54,12 @@ export function programState(s: BroadcastState): BroadcastState {
     // handoff holds the last visible BP until TAKE, including when auto is staged again.
     draft: c.draftManual ? c.draft : s.production?.programDraftHold ?? (same && s.production?.draftMode === 'auto' ? current.draft : c.draft) };
   if(recorded){view.finishedGameId=recorded.id;view.reportGameId=recorded.id;}
-  if (same) view.players = applyIdentity(view, current.players).map(player => {
+  const p = ensureProduction(s);
+  // Older saved holds only contain BP. Do not infer a roster from pick order or
+  // expose a staged roster; their last accepted player snapshot is the safe fallback.
+  const roster = p.programRosterHold ?? (p.programDraftHold || c.draftManual !== (p.draftMode !== 'auto') ? c.telemetry.players : undefined);
+  if (roster) view.players = heldRoster(roster, view.players);
+  else if (same) view.players = applyIdentity(view, current.players).map(player => {
     const previous = c.telemetry.players.find(p => p.id === player.id);
     const assignment = c.assignments?.find(a => a.locked && a.playerId === player.id);
     const staged = s.production?.assignments.find(a => a.locked && a.playerId===player.id);
@@ -66,12 +82,22 @@ export function preserveProgram(s: BroadcastState): void {
 export function holdProgramDraft(s: BroadcastState): void {
   const p = ensureProduction(s);
   if (!p.program) p.program = captureProgram(s);
-  if (!p.program.draftManual && !p.programDraftHold) p.programDraftHold = structuredClone(programState(s).draft);
+  // Capture both from the same visible view before either hold changes resolution.
+  const visible = programState(s);
+  if (!p.programRosterHold) p.programRosterHold = structuredClone(visible.players);
+  if (!p.program.draftManual && !p.programDraftHold) p.programDraftHold = structuredClone(visible.draft);
+}
+/** Manual hero/lane assignments have the same roster boundary without pausing automatic BP. */
+export function holdProgramRoster(s: BroadcastState): void {
+  const p = ensureProduction(s);
+  if (!p.program) p.program = captureProgram(s);
+  if (!p.programRosterHold) p.programRosterHold = structuredClone(programState(s).players);
 }
 /** Undo restores the picture seen before the switch, not a later pending BP edit. */
 export function previousProgram(s: BroadcastState): NonNullable<ProductionState['previousProgram']> {
   preserveProgram(s);
-  return { content: structuredClone(ensureProduction(s).program!), scene: s.programScene, draftHold: structuredClone(programState(s).draft) };
+  const visible = programState(s);
+  return { content: structuredClone(ensureProduction(s).program!), scene: s.programScene, draftHold: structuredClone(visible.draft), rosterHold: structuredClone(visible.players) };
 }
 export function takeProgram(s: BroadcastState, scene=s.programScene): void {
   const p = ensureProduction(s);
@@ -79,6 +105,7 @@ export function takeProgram(s: BroadcastState, scene=s.programScene): void {
   const report=['postgame','ranking'].includes(scene)?currentGameResult(s)??reportGameResult(s):undefined;
   p.program = captureProgram(report?frozenGameState(s,report):s);
   delete p.programDraftHold;
+  delete p.programRosterHold;
   requestApplication(s);
 }
 export function requestApplication(s: BroadcastState): void {
@@ -90,7 +117,7 @@ export function publishProgram(s: BroadcastState, candidate: BroadcastState): vo
   const current=ensureProduction(s), next=ensureProduction(candidate);
   if(productionKey(s)!==productionKey(candidate))throw new Error('切入期间比赛身份已变化，请重新核对后 TAKE');
   s.programScene=candidate.programScene;
-  for(const key of ['program','programDraftHold','previousProgram','playingClipId','analysisEndsAt','feedHold','entry','application'] as const){
+  for(const key of ['program','programDraftHold','programRosterHold','previousProgram','playingClipId','analysisEndsAt','feedHold','entry','application'] as const){
     if(next[key]===undefined)delete (current as unknown as Record<string,unknown>)[key];
     else (current as unknown as Record<string,unknown>)[key]=structuredClone(next[key]);
   }

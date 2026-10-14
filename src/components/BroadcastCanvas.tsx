@@ -88,7 +88,7 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  {liveScene&&state.overlay.scoreboard&&<LiveTop state={state}/>}
  {scene==='gold-ranking'&&<GoldRankingOverlay state={state} champions={champions}/>}
  {scene==='economy'&&<EconomyOverlay state={state}/>}
- {scene==='ranking'&&(selected?<PlayerBuild state={state} champions={champions} output/>:<Performance state={state} champions={champions} items={items} version={version}/>)}
+ {scene==='ranking'&&(selected?<PlayerBuild state={state} champions={champions} bus={bus} output/>:<Performance state={state} champions={champions} items={items} version={version}/>)}
  {scene==='schedule'&&<Schedule state={state}/>}
  {scene==='postgame'&&<Postgame state={state} champions={champions} items={items} version={version}/>}
  {scene==='interview'&&<Interview state={state}/>}

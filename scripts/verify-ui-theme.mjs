@@ -40,8 +40,8 @@ const ready = async page => {
   await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
 };
 const appearance = async page => {
-  await page.locator('.sidebar').getByRole('button', { name: '连接与输出', exact: true }).click();
-  await page.getByRole('tab', { name: '外观', exact: true }).click();
+  await page.locator('.control-rail').getByRole('button', { name: '连接与输出', exact: true }).click();
+  await page.getByRole('tab', { name: /工作台外观/ }).click();
   await page.getByRole('heading', { name: '系统外观', exact: true }).waitFor();
 };
 const selectTheme = async (page, value) => {
@@ -66,7 +66,7 @@ try {
   tests.push('health version matches package version');
   const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE
     ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, ...(process.env.RIFTCAST_CHROMIUM_PATH ? { executablePath: process.env.RIFTCAST_CHROMIUM_PATH } : {}) });
   const createContext = async () => {
     const context = await browser.newContext({ viewport: { width: 1920, height: 1080 }, locale: 'zh-CN' });
     await context.route('**/*', route => {
@@ -119,7 +119,7 @@ try {
     if (!response.ok) throw new Error((await response.json()).error);
     return response.json();
   }, body);
-  for (const kind of ['program', 'preview']) await studio.locator(`.monitor-pane.${kind}`).getByRole('button', { name: '查看 HUD 排版', exact: true }).click();
+  for (const kind of ['program', 'preview']) await studio.locator(`.monitor-pane.${kind}`).getByRole('button', { name: '查看场景排版', exact: true }).click();
   const overlay = await context.newPage();
   await overlay.goto(base + '/overlay');
   await overlay.locator('.broadcast-canvas').waitFor();
@@ -146,7 +146,7 @@ try {
   tests.push(`all ${scenes.length} scenes preserve every canvas descendant and pseudo-element color, background, border, fill and stroke across themes`);
 
   for (const [name, label] of [['studio', '导播工作台'], ['draft', 'BP 与阵容'], ['data', '实时数据'], ['manage', '赛事与素材'], ['settings', '连接与输出'], ['help', '使用指南']]) {
-    await studio.locator('.sidebar').getByRole('button', { name: label, exact: true }).click();
+    await studio.locator('.control-rail').getByRole('button', { name: label, exact: true }).click();
     await studio.getByText('正在载入页面…', { exact: true }).waitFor({ state: 'hidden' });
     for (const width of [1920, 1366, 1080]) {
       await studio.setViewportSize({ width, height: width === 1920 ? 1080 : 768 });
@@ -158,7 +158,7 @@ try {
   const remote = await context.newPage();
   await remote.setViewportSize({ width: 390, height: 844 });
   await remote.goto(base + '/remote');
-  await remote.locator('.remote-page').waitFor();
+  await remote.locator('.remote-workbench').waitFor();
   assert.equal(await theme(remote), 'light');
   assert.equal(await remote.evaluate(() => document.documentElement.scrollWidth > innerWidth + 2), false, 'remote fits 390px');
   const dismiss = remote.getByRole('button', { name: '关闭通知', exact: true });

@@ -30,7 +30,11 @@ const { chromium } = await import(
     ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href
     : "playwright"
 );
+const { ControlSeats } = await tsImport('../server/control-seats.ts', import.meta.url);
+const fixtureSeats = new ControlSeats();
+const fixtureDirector = fixtureSeats.issue({ role: 'director', name: '隔离组件核对席' }, true);
 let state = createSeed();
+state.production.control = { owner: fixtureDirector.id, name: fixtureDirector.name };
 state.paused = true;
 state.overlay.nativeHud = "off";
 state.previewScene = "live";
@@ -57,11 +61,11 @@ const entryPath = path
   .replaceAll("\\", "/");
 const entry = `import React,{useEffect,useState} from 'react';import{createRoot}from'react-dom/client';
 import{BroadcastCanvas}from'/src/components/BroadcastCanvas.tsx';import{LiveBottomControls}from'/src/components/LiveBottomControls.tsx';import{PlayerFeedSwitcher}from'/src/components/PlayerFeedSwitcher.tsx';import{GoldRankingControls}from'/src/components/GoldRanking.tsx';import{championArtwork}from'/shared/champion-art.ts';import'/src/styles.css';import'/src/responsive.css';import'/src/director.css';import'/src/console-system.css';import'/src/audience-system.css';
-const initial=await fetch('/fixture/state').then(r=>r.json()),champions=await fetch('/fixture/champions').then(r=>r.json());
+const initial=await fetch('/fixture/state').then(r=>r.json()),champions=await fetch('/fixture/champions').then(r=>r.json()),seat=await fetch('/fixture/seat').then(r=>r.json());
 function Fixture(){const[state,setState]=useState(initial),[scene,setScene]=useState(null),[gallery,setGallery]=useState(null);
 useEffect(()=>{const timer=setInterval(()=>fetch('/fixture/state').then(r=>r.json()).then(setState),100);return()=>clearInterval(timer)},[]);
 const send=async(action)=>{const response=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(action)});const result=await response.json();if(!response.ok)throw Error(result.error);setState(result)};
-window.broadcastFixture={setState,setScene,setGallery};const ctx={state,champions,send,notify:()=>{}};
+window.broadcastFixture={setState,setScene,setGallery};const ctx={state,champions,send,notify:()=>{},seat,connected:true};
 return gallery?<div className="fixture-gallery">{champions.slice(gallery.start,gallery.end).map(c=><article key={c.id}><strong>{c.id} · {c.name}</strong><div><img src={championArtwork(c,'draft')} alt={c.name+' BP'}/><img src={championArtwork(c,'lineup')} alt={c.name+' 首发'}/></div></article>)}</div>:<><div className="fixture-stage"><BroadcastCanvas state={state} champions={champions} scene={scene||state.programScene} output/></div><div className="app-shell fixture-settings"><div id="director-switcher"><PlayerFeedSwitcher {...ctx}/></div><LiveBottomControls {...ctx}/><GoldRankingControls {...ctx}/></div></>};createRoot(document.getElementById('root')).render(<Fixture/>);`;
 const vite = await createServer({
   root,
@@ -86,6 +90,10 @@ const server = http.createServer(async (req, res) => {
   try {
     if (req.url === "/fixture/state") {
       json(res, state);
+      return;
+    }
+    if (req.url === "/fixture/seat") {
+      json(res, fixtureSeats.verify(fixtureDirector.token));
       return;
     }
     if (req.url === "/fixture/champions") {
@@ -145,7 +153,7 @@ let browser;
 try {
   await mkdir(evidence, { recursive: true });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, ...(process.env.RIFTCAST_CHROMIUM_PATH ? { executablePath: process.env.RIFTCAST_CHROMIUM_PATH } : {}) });
   const page = await browser.newPage({
     viewport: { width: 1920, height: 1080 },
   });

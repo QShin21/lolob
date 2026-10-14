@@ -229,6 +229,7 @@ export function Remote(
                 </span>
               </div>
               <BroadcastCanvas
+                bus={monitor}
                 state={displayState}
                 champions={ctx.champions}
                 scene={scene}

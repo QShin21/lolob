@@ -51,6 +51,7 @@ export function MonitorPane({
         {layoutOnly ? (
           <>
             <BroadcastCanvas
+              bus={kind}
               state={kind === "program" ? programState(state) : state}
               champions={champions}
               scene={scene}

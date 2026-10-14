@@ -2,7 +2,7 @@ import { validateSceneId } from './custom-scenes';
 import { randomUUID } from 'node:crypto';
 import type { BroadcastState, Side } from '../shared/types';
 import type { ProductionCommand } from '../shared/production-types';
-import { captureProgram, checkFingerprint, checkValid, ensureProduction, holdProgramDraft, preserveProgram, previousProgram, productionKey, requestApplication, returnToGame, dataHealth } from '../shared/production';
+import { captureProgram, checkFingerprint, checkValid, ensureProduction, holdProgramDraft, holdProgramRoster, preserveProgram, previousProgram, productionKey, requestApplication, returnToGame, dataHealth } from '../shared/production';
 import { currentGameResult } from '../shared/game-results';
 import { syncResultRecording } from './game-results';
 import { record, str, ValidationError, fallbackChampions } from './state';
@@ -70,6 +70,7 @@ export function applyProduction(s: BroadcastState, raw: unknown, actor = '主机
         seen.add(id); champions.add(championId); lanes.add(`${a.team}:${role}`);
         return { playerId: id, championId, role, team: player.team, locked: a.locked };
       });
+      if (JSON.stringify(assignments) !== JSON.stringify(p.assignments)) holdProgramRoster(s);
       p.assignments = assignments;
       for (const a of assignments) if (a.locked) Object.assign(s.players.find(player => player.id === a.playerId)!, { championId: a.championId, championName: fallbackChampions().find(v=>v.id===a.championId||String(v.key)===a.championId)?.name??a.championId, role: a.role });
       break;
@@ -128,7 +129,7 @@ export function applyProduction(s: BroadcastState, raw: unknown, actor = '主机
       if (c.action === 'live' || c.action === 'analysis-off') returnToGame(s);
       else if (c.action === 'feeds-off') { p.program.overlay.playerFeedPairs = Array.from({ length: 5 }, () => ({ blue: { mode: 'off', imageUrl: '', cameraDeviceId: '', label: '' }, red: { mode: 'off', imageUrl: '', cameraDeviceId: '', label: '' } })); p.feedHold = true; }
       else if (c.action === 'ticker') { p.program.overlay.ticker = !!c.text?.trim(); p.program.overlay.tickerText = str(c.text ?? '', 500); }
-      else if (c.action === 'undo') { if (!p.previousProgram) throw new ValidationError('没有可撤回的人工切换'); const previous = p.previousProgram; p.previousProgram = previousProgram(s); p.program = previous.content; p.programDraftHold = previous.draftHold ?? structuredClone(previous.content.draft); s.programScene = previous.scene; delete p.playingClipId; }
+      else if (c.action === 'undo') { if (!p.previousProgram) throw new ValidationError('没有可撤回的人工切换'); const previous = p.previousProgram; p.previousProgram = previousProgram(s); p.program = previous.content; p.programDraftHold = previous.draftHold ?? structuredClone(previous.content.draft); p.programRosterHold = structuredClone(previous.rosterHold ?? previous.content.telemetry.players); s.programScene = previous.scene; delete p.playingClipId; }
       else throw new ValidationError('应急操作无效');
       if (!['live','analysis-off'].includes(c.action)) requestApplication(s);
       break;
