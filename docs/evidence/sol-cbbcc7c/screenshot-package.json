@@ -1,0 +1,150 @@
+{
+  "path": "RiftCast-前端重构-Sol独立验收-28张合成截图-cbbcc7c.zip",
+  "bytes": 6645355,
+  "sha256": "69b539aa8ddd3a996411872c9feaf068490b36e1ab922c8a5bd1ea96d1fd2e03",
+  "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+  "environment": "Linux Chromium; 合成数据、模拟引擎和输入；实际隔离 HTTP/WS/React。不是实际 OBS、音轨或观众端验收。",
+  "screenshots": [
+    {
+      "name": "standby-1920.png",
+      "sha256": "8e83e79ccb62a15d7d8294161d171a4a161525472e2f99172dd2947b37d291fd",
+      "bytes": 80622
+    },
+    {
+      "name": "draft-1920.png",
+      "sha256": "f1d1e495f139b002c8f1c8ab5446f200089a5b8d47f944f5493a8a8a60d5bc3b",
+      "bytes": 696689
+    },
+    {
+      "name": "lineup-1920.png",
+      "sha256": "a936f9b86b88dbc92f59211cebba6efb42aa48315d876617cbb184ff70d08484",
+      "bytes": 1118004
+    },
+    {
+      "name": "live-1920.png",
+      "sha256": "9115004a8113bd1c63c791ca20d81fcf0aef2e243873d2f0469e5c71eb6df0ec",
+      "bytes": 142420
+    },
+    {
+      "name": "teamfight-1920.png",
+      "sha256": "2bf6e8c9f833830c070716942384d1a2e5d850e50ed83ef790ed74911cc20c88",
+      "bytes": 8513
+    },
+    {
+      "name": "gold-ranking-1920.png",
+      "sha256": "360f8645f43a64c1558a2f46a4c8a9bec1261176e0e13bd0799cce5540bece3c",
+      "bytes": 155859
+    },
+    {
+      "name": "economy-1920.png",
+      "sha256": "77b440f64df1c6db9b7a35a28923afc72db066421442464fbbc9d7f8649b4c40",
+      "bytes": 82524
+    },
+    {
+      "name": "ranking-1920.png",
+      "sha256": "2b137b23583bcab8084473db2838d953c5c26b9a202e11755ad01670b4f527c3",
+      "bytes": 187028
+    },
+    {
+      "name": "schedule-1920.png",
+      "sha256": "f2684f75a800a216c7c6cbd6583638eaddb956e0fd8fb801838b7f0d75d41bf3",
+      "bytes": 94403
+    },
+    {
+      "name": "postgame-1920.png",
+      "sha256": "fc28a535431090899560baf8c4daed3ac55c1603c0f01a599401810dabe5b8f7",
+      "bytes": 182821
+    },
+    {
+      "name": "interview-1920.png",
+      "sha256": "11d5db4d9f3eceee8a4f6082dd61d49c25838bc3a1423768708d5397971c0d10",
+      "bytes": 33122
+    },
+    {
+      "name": "draft-1280.png",
+      "sha256": "4c52742ced2e8829a22cdcbdee521d4b847debe3447bcb04d180547be8c39ad2",
+      "bytes": 362509
+    },
+    {
+      "name": "lineup-1280.png",
+      "sha256": "9efd380981095ea7f11e324f8c1f0e86b33b8fe6b1b3ca1f3fe84009ddf59642",
+      "bytes": 591972
+    },
+    {
+      "name": "live-1280.png",
+      "sha256": "12f797ae7582849351e7fe37e97a9063a86c6e16111689674175ecf013ac8790",
+      "bytes": 78318
+    },
+    {
+      "name": "economy-1280.png",
+      "sha256": "6041a50c221290fef8feb2ed529ed398e6a2583f6a6cfb8f39524a1e85f701a1",
+      "bytes": 50185
+    },
+    {
+      "name": "postgame-1280.png",
+      "sha256": "e51657f789a17afa1af811da5213a6225d0d65347c80a69a812e28c5d04a7acf",
+      "bytes": 103531
+    },
+    {
+      "name": "draft-stress.png",
+      "sha256": "f11920d962ed1a0e541e320fcf5bb427debde4d102eac02ac3b160e9226c5414",
+      "bytes": 764099
+    },
+    {
+      "name": "lineup-stress.png",
+      "sha256": "29d6976356c2cb12edc611e544e39d88dc3563b6dc5020be980dc4b95ed8f0b2",
+      "bytes": 1010919
+    },
+    {
+      "name": "schedule-stress.png",
+      "sha256": "3a248fd838e154aa339795e7affb269e852ba42f29135892b4089ff7e984b680",
+      "bytes": 144966
+    },
+    {
+      "name": "interview-stress.png",
+      "sha256": "c66227aa0dac73d6cb38b68835dc5c13a82c17f520ce146a39f1cd9e21804261",
+      "bytes": 67873
+    },
+    {
+      "name": "custom-cross-kind-local.png",
+      "sha256": "786b826511b2e6245b3b4832e44f46d2b830e2462169aa37a8479e79516bb991",
+      "bytes": 101438
+    },
+    {
+      "name": "custom-reference-blocked.png",
+      "sha256": "7d73b700e07d9e525b1d501c8857f31af39a0af23d4e84e473e0f81ec8e3eb84",
+      "bytes": 206733
+    },
+    {
+      "name": "custom-shared-input-missing.png",
+      "sha256": "6c4b10e3e3bcd6edfc020dd474bb905792676406fca61e5ea31e09c6d5b71015",
+      "bytes": 103829
+    },
+    {
+      "name": "remote-readonly.png",
+      "sha256": "fa7485e01f1ce8796cd08fe43670d8005fcb907a7490c7bf082035617b55f424",
+      "bytes": 88067
+    },
+    {
+      "name": "remote-data.png",
+      "sha256": "75ae09c715d0fafcbba07511997b9db32d471e8be5484d832d12ffa56dca8560",
+      "bytes": 89693
+    },
+    {
+      "name": "remote-subtitle.png",
+      "sha256": "e9eff1b1b824a97511f50e84c55b3bf832d4a55f79219d205781f8ae6f8e5215",
+      "bytes": 84595
+    },
+    {
+      "name": "remote-replay.png",
+      "sha256": "a27d1594e720b6c4d2ba9a013b6ab7ac1ba6392e588485599311b3d6369cc778",
+      "bytes": 85311
+    },
+    {
+      "name": "remote-director.png",
+      "sha256": "256fd39cf6744bbe10e61d72cf24d9ac3942991605a03d0956bc79112e59bb05",
+      "bytes": 89443
+    }
+  ],
+  "count": 28
+}

@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+  "boundary": "Real isolated renderer; deliberately unavailable HTTP snapshot and closed WS; no actual source/OBS",
+  "checks": [
+    "No workstation UI before first output state",
+    "Every output pixel transparent",
+    "No seat issuance or business POST"
+  ],
+  "requests": [
+    {
+      "path": "/overlay",
+      "method": "GET"
+    },
+    {
+      "path": "/assets/index-CwoxqS2X.js",
+      "method": "GET"
+    },
+    {
+      "path": "/assets/index-BBQP8wPj.css",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/champions",
+      "method": "GET"
+    }
+  ]
+}

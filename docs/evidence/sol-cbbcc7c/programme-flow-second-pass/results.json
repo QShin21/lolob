@@ -1,0 +1,704 @@
+{
+  "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+  "environment": "Linux Chromium; real isolated HTTP/WS/ControlSeats/render; synthetic state, source choices, preparation and faults; no OBS/device/platform evidence",
+  "work": "/tmp/lolob-sol-programme-u1p2u0",
+  "results": [
+    {
+      "id": "scene-standby-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-draft-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-lineup-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-live-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-teamfight-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-gold-ranking-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-economy-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-ranking-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-schedule-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-postgame-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-interview-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-standby-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-draft-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-lineup-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-live-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-teamfight-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-gold-ranking-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-economy-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-ranking-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-schedule-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-postgame-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-interview-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-standby-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-draft-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-lineup-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-live-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-teamfight-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-gold-ranking-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-economy-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-ranking-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-schedule-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-postgame-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-interview-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "countdown-three-real-states",
+      "status": "pass"
+    },
+    {
+      "id": "stress-draft",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "stress-lineup",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "stress-schedule",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "stress-interview",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "stress-postgame",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "schedule-pagination-filter-and-staging",
+      "status": "pass"
+    },
+    {
+      "id": "economy-cross-zero-gap-and-none",
+      "status": "pass"
+    },
+    {
+      "id": "empty-live-statistics-all-positions",
+      "status": "pass",
+      "data": {
+        "emptyTakeBlocked": true,
+        "layout": "explicit synthetic on-air snapshot for signal loss; not an accepted empty TAKE"
+      }
+    },
+    {
+      "id": "focus-and-frozen-result-stay-in-program",
+      "status": "pass"
+    },
+    {
+      "id": "custom-replace-three-kinds-and-fit",
+      "status": "pass"
+    },
+    {
+      "id": "custom-snapshot-reference-protection",
+      "status": "fail",
+      "error": "待播项目无效\n\n400 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: 待播项目无效\n\n400 !== 200\n\n    at action (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:38:197)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:72:516\n    at async check (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:51)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:72:2"
+    },
+    {
+      "id": "shared-reference-guide-and-absent-choice",
+      "status": "pass"
+    },
+    {
+      "id": "missing-source-preparation-keeps-program",
+      "status": "pass"
+    },
+    {
+      "id": "delete-unused-retains-upload",
+      "status": "pass"
+    },
+    {
+      "id": "records-synchronous-and-pointer-duplicates",
+      "status": "pass"
+    },
+    {
+      "id": "records-lost-receipt-idempotent-exact-payload",
+      "status": "pass"
+    },
+    {
+      "id": "records-uncertain-then-rejected-manual-review",
+      "status": "pass"
+    },
+    {
+      "id": "records-known-first-rejection-new-transaction",
+      "status": "pass"
+    },
+    {
+      "id": "records-next-game-does-not-resend-old-save",
+      "status": "fail",
+      "error": "本系列赛已结束，请从赛程载入下一场比赛\n\n400 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: 本系列赛已结束，请从赛程载入下一场比赛\n\n400 !== 200\n\n    at action (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:38:197)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:83:156\n    at async check (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:51)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:83:2"
+    },
+    {
+      "id": "mobile-readonly-keyboard-and-fit",
+      "status": "pass"
+    },
+    {
+      "id": "mobile-data-keyboard-and-fit",
+      "status": "pass"
+    },
+    {
+      "id": "mobile-subtitle-keyboard-and-fit",
+      "status": "pass"
+    },
+    {
+      "id": "mobile-replay-keyboard-and-fit",
+      "status": "pass"
+    },
+    {
+      "id": "mobile-director-keyboard-and-fit",
+      "status": "pass"
+    },
+    {
+      "id": "mobile-foreground-and-bfcache-verification",
+      "status": "pass",
+      "data": {
+        "scriptedVisibilityEvent": true,
+        "scriptedPersistedEvent": true,
+        "actualPhone": false
+      }
+    },
+    {
+      "id": "mobile-disconnect-recovers-draft",
+      "status": "fail",
+      "error": "socket disconnect disables submit",
+      "stack": "Error: socket disconnect disables submit\n    at until (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:21:98)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:86:229\n    at async check (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:51)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:86:2"
+    },
+    {
+      "id": "mobile-actual-acl-and-source-enumeration-boundary",
+      "status": "pass",
+      "data": {
+        "loopbackRealSeats": true,
+        "remoteAddressRestriction": "Read-only source audit and existing HTTP tests; no LAN listener opened"
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-custom-scene",
+      "scene": {
+        "id": "custom:sol-extra",
+        "name": "SOL 独立跨类型换源",
+        "background": "#172536",
+        "sources": [
+          {
+            "id": "base-image",
+            "name": "合成底图",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080,
+            "fit": "contain",
+            "visible": true,
+            "assetId": "sol-image"
+          },
+          {
+            "id": "borrowed",
+            "name": "共享输入引用",
+            "kind": "obs",
+            "x": 200,
+            "y": 240,
+            "width": 600,
+            "height": 360,
+            "fit": "stretch",
+            "visible": false,
+            "inputName": "SOL Borrowed Input"
+          },
+          {
+            "id": "original",
+            "name": "原图层名称",
+            "kind": "image",
+            "x": -120,
+            "y": 220,
+            "width": 2100,
+            "height": 420,
+            "fit": "stretch",
+            "visible": true,
+            "assetId": "sol-image"
+          }
+        ]
+      },
+      "expectedConfigVersion": 13,
+      "requestId": "5f9fe55d-2244-41e1-a91f-e7d82b220d2d"
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "delete-custom-scene",
+      "id": "custom:sol-unused",
+      "expectedConfigVersion": 14,
+      "requestId": "7b57c446-2542-4c46-a1dd-daf86c3cd03c"
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 同事件两次 click",
+      "requestId": "e304794b-b361-4c60-bb27-9aedfea52e3b",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 原生鼠标双击",
+      "requestId": "cf4f2a9b-c418-4aa7-837b-ca49543e6782",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 真实已提交但回执丢失",
+      "requestId": "e9b5cc1e-dc00-4b3f-92f7-cf64ab10b52c",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 真实已提交但回执丢失",
+      "requestId": "e9b5cc1e-dc00-4b3f-92f7-cf64ab10b52c",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 不确定后的拒绝仍需核对",
+      "requestId": "a850f6a9-c458-4f69-8eb8-535a9d25ebbf",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 不确定后的拒绝仍需核对",
+      "requestId": "a850f6a9-c458-4f69-8eb8-535a9d25ebbf",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 首次明确拒绝",
+      "requestId": "f276231b-8110-4130-97b4-1b0025970154",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 首次明确拒绝",
+      "requestId": "d615b3e5-fa9b-4b12-9fe5-be664876cdaf",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/action",
+      "method": "POST",
+      "type": "save-recording",
+      "title": "Sol 换局前未知结果",
+      "requestId": "89570505-9bda-4cc0-a7d4-3434f89ac059",
+      "expectedConfigVersion": 15
+    },
+    {
+      "path": "/api/control/seat",
+      "method": "GET"
+    },
+    {
+      "path": "/api/control/seat",
+      "method": "GET"
+    },
+    {
+      "path": "/api/control/seat",
+      "method": "GET"
+    },
+    {
+      "path": "/api/control/seat",
+      "method": "GET"
+    },
+    {
+      "path": "/api/control/seat",
+      "method": "GET"
+    },
+    {
+      "path": "/api/control/seat",
+      "method": "GET"
+    },
+    {
+      "path": "/api/control/seat",
+      "method": "GET"
+    }
+  ],
+  "shots": [
+    "standby-1920.png",
+    "draft-1920.png",
+    "lineup-1920.png",
+    "live-1920.png",
+    "teamfight-1920.png",
+    "gold-ranking-1920.png",
+    "economy-1920.png",
+    "ranking-1920.png",
+    "schedule-1920.png",
+    "postgame-1920.png",
+    "interview-1920.png",
+    "standby-1280.png",
+    "draft-1280.png",
+    "lineup-1280.png",
+    "live-1280.png",
+    "teamfight-1280.png",
+    "gold-ranking-1280.png",
+    "economy-1280.png",
+    "ranking-1280.png",
+    "schedule-1280.png",
+    "postgame-1280.png",
+    "interview-1280.png",
+    "standby-640.png",
+    "draft-640.png",
+    "lineup-640.png",
+    "live-640.png",
+    "teamfight-640.png",
+    "gold-ranking-640.png",
+    "economy-640.png",
+    "ranking-640.png",
+    "schedule-640.png",
+    "postgame-640.png",
+    "interview-640.png",
+    "draft-stress.png",
+    "lineup-stress.png",
+    "schedule-stress.png",
+    "interview-stress.png",
+    "postgame-stress.png",
+    "schedule-page-3.png",
+    "economy-gap.png",
+    "postgame-empty.png",
+    "postgame-frozen.png",
+    "custom-cross-kind-local.png",
+    "failure-custom-snapshot-reference-protection.png",
+    "custom-shared-input-missing.png",
+    "record-lost-receipt.png",
+    "failure-records-next-game-does-not-resend-old-save.png",
+    "remote-readonly.png",
+    "remote-data.png",
+    "remote-subtitle.png",
+    "remote-replay.png",
+    "remote-director.png",
+    "failure-mobile-disconnect-recovers-draft.png"
+  ]
+}

@@ -1,0 +1,1 @@
+PASS output bootstrap: 3 assertions

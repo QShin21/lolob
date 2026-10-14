@@ -1,0 +1,60 @@
+[
+  {
+    "name": "production",
+    "command": "npm run verify:production",
+    "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+    "report": "production-report.json",
+    "status": "passed",
+    "runAt": null,
+    "boundary": "actual formal script, Linux system Chromium; physical writes blocked; native mocked IPC only",
+    "exit_code": 0,
+    "groups": 16,
+    "report_sha256": "a7190a29ad16bdf9b316b5aec8dad538e8af845e80cda6b0d66cbc6fd8696caf"
+  },
+  {
+    "name": "theme",
+    "command": "npm run verify:ui-theme",
+    "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+    "report": "theme-report.json",
+    "status": "passed",
+    "runAt": null,
+    "boundary": "actual formal script, Linux system Chromium; physical writes blocked; native mocked IPC only",
+    "exit_code": 0,
+    "groups": 7,
+    "report_sha256": "5f677bbb8963c50b797e52499d4c588da00ee04d124a97933c0133f642064e32"
+  },
+  {
+    "name": "native-browser",
+    "command": "node scripts/verify-native-preview-visibility.mjs",
+    "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+    "report": "native-browser-report.json",
+    "status": "passed",
+    "runAt": "2026-10-14T10:45:44.207Z",
+    "boundary": "actual formal script, Linux system Chromium; physical writes blocked; native mocked IPC only",
+    "exit_code": 0,
+    "groups": 11,
+    "report_sha256": "3116839728d08e2046869f5c29c6eeb6dbc4291880c721629174d1b9815fbacd"
+  },
+  {
+    "name": "broadcast",
+    "command": "npm run verify:broadcast-controls",
+    "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+    "report": "broadcast-report.json",
+    "status": "passed",
+    "boundary": "formal script against current source, system Chromium; synthetic devices/IPC only",
+    "exit_code": 0,
+    "groups": 7,
+    "report_sha256": "8f9987d3e5eff0c5c0c0e65c93c8f5149caab3b7732a392dbc25385912d9821e"
+  },
+  {
+    "name": "safety",
+    "command": "npm run verify:frontend-safety",
+    "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+    "report": "safety-report.json",
+    "status": "passed",
+    "boundary": "formal script against current source, system Chromium; synthetic devices/IPC only",
+    "exit_code": 0,
+    "groups": 15,
+    "report_sha256": "b601df01fb74eca41cce0a9aab38fc200caea327e6ba0ba3ea76b97215fcf617"
+  }
+]

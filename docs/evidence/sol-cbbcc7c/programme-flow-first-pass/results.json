@@ -1,0 +1,488 @@
+{
+  "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+  "environment": "Linux Chromium; real isolated HTTP/WS/ControlSeats/render; synthetic state, source choices, preparation and faults; no OBS/device/platform evidence",
+  "work": "/tmp/lolob-sol-programme-u0IxQx",
+  "results": [
+    {
+      "id": "scene-standby-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-draft-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-lineup-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-live-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-teamfight-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-gold-ranking-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-economy-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-ranking-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-schedule-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-postgame-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-interview-1920",
+      "status": "pass",
+      "data": {
+        "width": 1920,
+        "height": 1080,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-standby-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-draft-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-lineup-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-live-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-teamfight-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-gold-ranking-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-economy-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-ranking-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-schedule-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-postgame-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-interview-1280",
+      "status": "pass",
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-standby-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-draft-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-lineup-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-live-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-teamfight-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-gold-ranking-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-economy-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-ranking-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-schedule-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-postgame-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "scene-interview-640",
+      "status": "pass",
+      "data": {
+        "width": 640,
+        "height": 360,
+        "themeIsolated": true,
+        "engine": "synthetic"
+      }
+    },
+    {
+      "id": "countdown-three-real-states",
+      "status": "fail",
+      "error": "The input did not match the regular expression /等待比赛开始/. Input:\n\n'距离开场\\n00:06\\n\\n半决赛 · 演示数据\\n\\nBO3\\n第 2 局'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /等待比赛开始/. Input:\n\n'距离开场\\n00:06\\n\\n半决赛 · 演示数据\\n\\nBO3\\n第 2 局'\n\n    at file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:61:240\n    at async check (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:51)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:61:2"
+    },
+    {
+      "id": "stress-draft",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "stress-lineup",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "stress-schedule",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "stress-interview",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "stress-postgame",
+      "status": "pass",
+      "data": {
+        "longContent": true,
+        "missingImageFallback": true
+      }
+    },
+    {
+      "id": "schedule-pagination-filter-and-staging",
+      "status": "pass"
+    },
+    {
+      "id": "economy-cross-zero-gap-and-none",
+      "status": "pass"
+    },
+    {
+      "id": "empty-live-statistics-all-positions",
+      "status": "fail",
+      "error": "等待本局有效信号并完成进局核对后切入\n\n400 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: 等待本局有效信号并完成进局核对后切入\n\n400 !== 200\n\n    at action (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:38:197)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async take (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:47:28)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:67:381\n    at async check (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:51)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:67:2"
+    },
+    {
+      "id": "focus-and-frozen-result-stay-in-program",
+      "status": "fail",
+      "error": "文本长度须在 150 字以内\n\n400 !== 200\n",
+      "stack": "AssertionError [ERR_ASSERTION]: 文本长度须在 150 字以内\n\n400 !== 200\n\n    at action (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:38:197)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:69:66\n    at async check (file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:51)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:69:2"
+    },
+    {
+      "id": "custom-replace-three-kinds-and-fit",
+      "status": "fail",
+      "error": "locator.evaluate: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.custom-edit-layer.is-selected img')\u001b[22m\n",
+      "stack": "locator.evaluate: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.custom-edit-layer.is-selected img')\u001b[22m\n\n    at /workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:71:234\n    at async check (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:51)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:70:2"
+    },
+    {
+      "id": "custom-snapshot-reference-protection",
+      "status": "fail",
+      "error": "locator.click: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '导播工作台', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"导播工作台\" aria-label=\"导播工作台\" aria-current=\"page\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+      "stack": "locator.click: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '导播工作台', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"导播工作台\" aria-label=\"导播工作台\" aria-current=\"page\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at nav (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:46:97)\n    at /workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:72:116\n    at async check (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:51)\n    at async file:///workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:72:2"
+    },
+    {
+      "id": "shared-reference-guide-and-absent-choice",
+      "status": "fail",
+      "error": "locator.click: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '导播工作台', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"导播工作台\" aria-label=\"导播工作台\" aria-current=\"page\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    6 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n",
+      "stack": "locator.click: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '导播工作台', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"导播工作台\" aria-label=\"导播工作台\" aria-current=\"page\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    6 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"custom-pane-heading\">…</div> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\n    at nav (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:46:97)\n    at edit (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:49:29)\n    at /workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:73:73\n    at check (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:57)\n    at /workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:73:8"
+    },
+    {
+      "id": "missing-source-preparation-keeps-program",
+      "status": "pass"
+    },
+    {
+      "id": "delete-unused-retains-upload",
+      "status": "fail",
+      "error": "locator.click: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '删除 SOL 可删备用', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"删除场景\" aria-label=\"删除 SOL 可删备用\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div title=\"合成底图\" class=\"custom-canvas-hit\"></div> from <dialog open=\"\" class=\"custom-scene-dialog\" aria-labelledby=\"custom-scene-title\">…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div title=\"合成底图\" class=\"custom-canvas-hit\"></div> from <dialog open=\"\" class=\"custom-scene-dialog\" aria-labelledby=\"custom-scene-title\">…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    11 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div title=\"合成底图\" class=\"custom-canvas-hit\"></div> from <dialog open=\"\" class=\"custom-scene-dialog\" aria-labelledby=\"custom-scene-title\">…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n",
+      "stack": "locator.click: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '删除 SOL 可删备用', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"删除场景\" aria-label=\"删除 SOL 可删备用\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div title=\"合成底图\" class=\"custom-canvas-hit\"></div> from <dialog open=\"\" class=\"custom-scene-dialog\" aria-labelledby=\"custom-scene-title\">…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div title=\"合成底图\" class=\"custom-canvas-hit\"></div> from <dialog open=\"\" class=\"custom-scene-dialog\" aria-labelledby=\"custom-scene-title\">…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    11 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div title=\"合成底图\" class=\"custom-canvas-hit\"></div> from <dialog open=\"\" class=\"custom-scene-dialog\" aria-labelledby=\"custom-scene-title\">…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\n    at /workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:75:118\n    at check (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:24:57)\n    at /workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:75:8"
+    },
+    {
+      "id": "harness-fatal",
+      "status": "harness-error",
+      "error": "locator.click: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '赛事与素材', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"赛事与素材\" aria-label=\"赛事与素材\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <img alt=\"\" src=\"/uploads/sol.png\"/> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <img alt=\"\" src=\"/uploads/sol.png\"/> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <img alt=\"\" src=\"/uploads/sol.png\"/> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+      "stack": "locator.click: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '赛事与素材', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button title=\"赛事与素材\" aria-label=\"赛事与素材\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <img alt=\"\" src=\"/uploads/sol.png\"/> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <img alt=\"\" src=\"/uploads/sol.png\"/> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <img alt=\"\" src=\"/uploads/sol.png\"/> from <div class=\"control-body\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at nav (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:46:97)\n    at records (/workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:76:32)\n    at /workspace/lolob/docs/evidence/sol-cbbcc7c/programme-flow.mjs:76:103"
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "standby-1920.png",
+    "draft-1920.png",
+    "lineup-1920.png",
+    "live-1920.png",
+    "teamfight-1920.png",
+    "gold-ranking-1920.png",
+    "economy-1920.png",
+    "ranking-1920.png",
+    "schedule-1920.png",
+    "postgame-1920.png",
+    "interview-1920.png",
+    "standby-1280.png",
+    "draft-1280.png",
+    "lineup-1280.png",
+    "live-1280.png",
+    "teamfight-1280.png",
+    "gold-ranking-1280.png",
+    "economy-1280.png",
+    "ranking-1280.png",
+    "schedule-1280.png",
+    "postgame-1280.png",
+    "interview-1280.png",
+    "standby-640.png",
+    "draft-640.png",
+    "lineup-640.png",
+    "live-640.png",
+    "teamfight-640.png",
+    "gold-ranking-640.png",
+    "economy-640.png",
+    "ranking-640.png",
+    "schedule-640.png",
+    "postgame-640.png",
+    "interview-640.png",
+    "failure-countdown-three-real-states.png",
+    "draft-stress.png",
+    "lineup-stress.png",
+    "schedule-stress.png",
+    "interview-stress.png",
+    "postgame-stress.png",
+    "schedule-page-3.png",
+    "economy-gap.png",
+    "failure-empty-live-statistics-all-positions.png",
+    "failure-focus-and-frozen-result-stay-in-program.png",
+    "failure-custom-replace-three-kinds-and-fit.png",
+    "failure-custom-snapshot-reference-protection.png",
+    "failure-shared-reference-guide-and-absent-choice.png",
+    "failure-delete-unused-retains-upload.png"
+  ]
+}

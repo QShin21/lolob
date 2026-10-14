@@ -1,0 +1,2 @@
+10:45:37 AM [vite] (client) Re-optimizing dependencies because vite config has changed
+Native preview visibility: 11 checks passed. /workspace/lolob/verification-output/native-preview-visibility/browser

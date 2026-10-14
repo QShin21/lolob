@@ -1,0 +1,199 @@
+{
+  "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+  "dirty": "",
+  "version": "0.7.0",
+  "work": "/tmp/riftcast-frontend-safety-UKc3IZ",
+  "results": [
+    {
+      "id": "escape-empty",
+      "passed": true
+    },
+    {
+      "id": "escape-nonempty",
+      "passed": true
+    },
+    {
+      "id": "bp-save-only-keeps-rendered-program",
+      "passed": true
+    },
+    {
+      "id": "bp-explicit-same-scene-take-publishes",
+      "passed": true
+    },
+    {
+      "id": "transport-reconnect-validates-before-enabling",
+      "passed": true
+    },
+    {
+      "id": "restart-rejects-old-seat-without-submission",
+      "passed": true
+    },
+    {
+      "id": "explicit-recovery-keeps-draft-and-does-not-take",
+      "passed": true
+    },
+    {
+      "id": "toast-take-hit-dark-1366x736",
+      "passed": true,
+      "detail": {
+        "enabled": true,
+        "footerTop": 674,
+        "toastBottom": 662,
+        "bottom": 724.5,
+        "hits": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "scrollable": true
+      }
+    },
+    {
+      "id": "toast-take-hit-dark-1366x768",
+      "passed": true,
+      "detail": {
+        "enabled": true,
+        "footerTop": 706,
+        "toastBottom": 694,
+        "bottom": 756.5,
+        "hits": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "scrollable": true
+      }
+    },
+    {
+      "id": "toast-take-hit-dark-1440x868",
+      "passed": true,
+      "detail": {
+        "enabled": true,
+        "footerTop": 806,
+        "toastBottom": 794,
+        "bottom": 856.5,
+        "hits": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "scrollable": true
+      }
+    },
+    {
+      "id": "toast-take-hit-dark-1920x1048",
+      "passed": true,
+      "detail": {
+        "enabled": true,
+        "footerTop": 986,
+        "toastBottom": 974,
+        "bottom": 1036.5,
+        "hits": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "scrollable": true
+      }
+    },
+    {
+      "id": "toast-take-hit-light-1366x736",
+      "passed": true,
+      "detail": {
+        "enabled": true,
+        "footerTop": 674,
+        "toastBottom": 662,
+        "bottom": 724.5,
+        "hits": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "scrollable": true
+      }
+    },
+    {
+      "id": "toast-take-hit-light-1366x768",
+      "passed": true,
+      "detail": {
+        "enabled": true,
+        "footerTop": 706,
+        "toastBottom": 694,
+        "bottom": 756.5,
+        "hits": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "scrollable": true
+      }
+    },
+    {
+      "id": "toast-take-hit-light-1440x868",
+      "passed": true,
+      "detail": {
+        "enabled": true,
+        "footerTop": 806,
+        "toastBottom": 794,
+        "bottom": 856.5,
+        "hits": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "scrollable": true
+      }
+    },
+    {
+      "id": "toast-take-hit-light-1920x1048",
+      "passed": true,
+      "detail": {
+        "enabled": true,
+        "footerTop": 986,
+        "toastBottom": 974,
+        "bottom": 1036.5,
+        "hits": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "scrollable": true
+      }
+    }
+  ],
+  "errors": [],
+  "services": [
+    {
+      "base": "http://127.0.0.1:40429",
+      "dir": "/tmp/riftcast-frontend-safety-UKc3IZ/http-JtbfyP",
+      "mock": false
+    },
+    {
+      "base": "http://127.0.0.1:40429",
+      "dir": "/tmp/riftcast-frontend-safety-UKc3IZ/http-JtbfyP",
+      "mock": false
+    },
+    {
+      "base": "http://127.0.0.1:35207",
+      "dir": "/tmp/riftcast-frontend-safety-UKc3IZ/synthetic-PlPGP8",
+      "mock": true
+    }
+  ],
+  "limits": "Linux/browser geometry if run on Linux. No real OBS, stream, devices, Windows/native window or audience acceptance."
+}

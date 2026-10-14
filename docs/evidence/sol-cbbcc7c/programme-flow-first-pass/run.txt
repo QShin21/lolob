@@ -1,0 +1,74 @@
+PASS scene-standby-1920
+PASS scene-draft-1920
+PASS scene-lineup-1920
+PASS scene-live-1920
+PASS scene-teamfight-1920
+PASS scene-gold-ranking-1920
+PASS scene-economy-1920
+PASS scene-ranking-1920
+PASS scene-schedule-1920
+PASS scene-postgame-1920
+PASS scene-interview-1920
+PASS scene-standby-1280
+PASS scene-draft-1280
+PASS scene-lineup-1280
+PASS scene-live-1280
+PASS scene-teamfight-1280
+PASS scene-gold-ranking-1280
+PASS scene-economy-1280
+PASS scene-ranking-1280
+PASS scene-schedule-1280
+PASS scene-postgame-1280
+PASS scene-interview-1280
+PASS scene-standby-640
+PASS scene-draft-640
+PASS scene-lineup-640
+PASS scene-live-640
+PASS scene-teamfight-640
+PASS scene-gold-ranking-640
+PASS scene-economy-640
+PASS scene-ranking-640
+PASS scene-schedule-640
+PASS scene-postgame-640
+PASS scene-interview-640
+FAIL countdown-three-real-states: The input did not match the regular expression /等待比赛开始/. Input:
+PASS stress-draft
+PASS stress-lineup
+PASS stress-schedule
+PASS stress-interview
+PASS stress-postgame
+PASS schedule-pagination-filter-and-staging
+PASS economy-cross-zero-gap-and-none
+FAIL empty-live-statistics-all-positions: 等待本局有效信号并完成进局核对后切入
+FAIL focus-and-frozen-result-stay-in-program: 文本长度须在 150 字以内
+FAIL custom-replace-three-kinds-and-fit: locator.evaluate: Timeout 6500ms exceeded.
+FAIL custom-snapshot-reference-protection: locator.click: Timeout 6500ms exceeded.
+FAIL shared-reference-guide-and-absent-choice: locator.click: Timeout 6500ms exceeded.
+PASS missing-source-preparation-keeps-program
+FAIL delete-unused-retains-upload: locator.click: Timeout 6500ms exceeded.
+HARNESS ERROR locator.click: Timeout 6500ms exceeded.
+Call log:
+[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '赛事与素材', exact: true })[22m
+[2m    - locator resolved to <button title="赛事与素材" aria-label="赛事与素材">…</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <img alt="" src="/uploads/sol.png"/> from <div class="control-body">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <img alt="" src="/uploads/sol.png"/> from <div class="control-body">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    12 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <img alt="" src="/uploads/sol.png"/> from <div class="control-body">…</div> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m

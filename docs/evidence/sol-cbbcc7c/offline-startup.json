@@ -1,0 +1,13 @@
+{
+  "testedSource": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+  "health": {
+    "service": "riftcast-director",
+    "version": "0.7.0",
+    "status": "ok",
+    "mode": "demo",
+    "lanEnabled": false
+  },
+  "port": 45163,
+  "isolatedDataDir": "/tmp/lolob-sol-cbbcc7c-cbDgmt/offline",
+  "engine": "not connected / autostart disabled"
+}

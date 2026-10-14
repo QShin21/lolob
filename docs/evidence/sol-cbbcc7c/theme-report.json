@@ -1,0 +1,71 @@
+{
+  "version": "0.7.0",
+  "tests": [
+    "health version matches package version",
+    "default dark, immediate light/dark changes, reload persistence, same-origin tab sync, zero broadcast actions",
+    "all 11 scenes preserve every canvas descendant and pseudo-element color, background, border, fill and stroke across themes",
+    "six main pages fit 1920, 1366 and 1080 pixel viewports in light theme",
+    "remote console restores light theme and fits a 390 pixel viewport",
+    "invalid stored theme falls back to dark",
+    "blocked storage is disclosed on first load and both themes remain switchable"
+  ],
+  "errors": [],
+  "comparisons": [
+    {
+      "scene": "standby",
+      "studioElements": 86,
+      "outputElements": 43
+    },
+    {
+      "scene": "draft",
+      "studioElements": 436,
+      "outputElements": 215
+    },
+    {
+      "scene": "lineup",
+      "studioElements": 250,
+      "outputElements": 125
+    },
+    {
+      "scene": "live",
+      "studioElements": 1204,
+      "outputElements": 599
+    },
+    {
+      "scene": "economy",
+      "studioElements": 258,
+      "outputElements": 126
+    },
+    {
+      "scene": "ranking",
+      "studioElements": 718,
+      "outputElements": 356
+    },
+    {
+      "scene": "schedule",
+      "studioElements": 174,
+      "outputElements": 87
+    },
+    {
+      "scene": "postgame",
+      "studioElements": 594,
+      "outputElements": 297
+    },
+    {
+      "scene": "interview",
+      "studioElements": 32,
+      "outputElements": 13
+    },
+    {
+      "scene": "teamfight",
+      "studioElements": 8,
+      "outputElements": 1
+    },
+    {
+      "scene": "gold-ranking",
+      "studioElements": 408,
+      "outputElements": 201
+    }
+  ],
+  "boundary": "Built Chromium UI with an isolated paused demo service and offline resources. No operator data, OBS, Riot game, physical media, streaming platform or live production was exercised."
+}

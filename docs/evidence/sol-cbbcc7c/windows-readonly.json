@@ -1,0 +1,37 @@
+{
+  "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+  "repo": "QShin21/lolob",
+  "visibility": "public",
+  "default_branch": "main",
+  "local_workflow_directory_exists": false,
+  "remote_workflow_count": 0,
+  "remote_recent_runs": [],
+  "current_integration_repo_permissions": {
+    "admin": true,
+    "maintain": true,
+    "pull": true,
+    "push": true,
+    "triage": true
+  },
+  "actions_settings_read": "HTTP 403 Resource not accessible by integration",
+  "billing_usage_read": "HTTP 403 Resource not accessible by integration",
+  "remote_releases": [
+    {
+      "tag_name": "v0.4.1",
+      "assets": []
+    },
+    {
+      "tag_name": "v0.4.0",
+      "assets": []
+    },
+    {
+      "tag_name": "v0.3.0",
+      "assets": []
+    }
+  ],
+  "required_platform": "Windows x64",
+  "build_command": "npm run release:win",
+  "actual_build_executed": false,
+  "release_created": false,
+  "billing_or_actions_settings_changed": false
+}

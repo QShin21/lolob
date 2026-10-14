@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "runAt": "2026-10-14T10:45:44.207Z",
+  "desktop": false,
+  "checks": [
+    "fully visible program acquires exactly one projector",
+    "actual CustomSceneEditor opening/scrolling releases program; closing restores it",
+    "partial and complete page scroll release without squeezing; scrolling back restores",
+    "clipping ancestor releases native surface",
+    "occluding control releases native surface and removal restores it",
+    "preserved hidden page releases and restores projector",
+    "explicit pause releases and resume restores projector",
+    "modal also suspends and restores optional native dynamic preview",
+    "ancestor layout shifts reposition, unchanged geometry avoids redundant IPC",
+    "dialog during pending embed releases late window and restores after close",
+    "dialog during pending position releases late window and restores after close"
+  ],
+  "errors": [],
+  "obsVersion": null,
+  "boundary": "Browser component regression with mocked desktop IPC, including delayed embed/position. No OBS or native pixels."
+}

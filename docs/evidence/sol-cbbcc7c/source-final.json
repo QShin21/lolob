@@ -1,0 +1,22 @@
+{
+  "source": "cbbcc7cb308bb1af20f4f7b4e12c2b417c6aea5f",
+  "source_files": 236,
+  "hashes_all_match": true,
+  "implementation_diff": "",
+  "formal_commands": [
+    "npm test",
+    "npm run build",
+    "npm run verify:production",
+    "npm run verify:ui-theme",
+    "npm run verify:broadcast-controls",
+    "npm run verify:frontend-safety",
+    "node scripts/verify-native-preview-visibility.mjs"
+  ],
+  "not_run": [
+    "verify:custom-scenes (真实 OBS)",
+    "verify-native-preview-visibility --desktop (Windows)",
+    "release:win (Windows x64 构建)",
+    "verify:release (真实 OBS/设备)",
+    "真实手机 IME / Windows DPI / LoL / 音轨 / 伴侣 / 平台接收"
+  ]
+}
