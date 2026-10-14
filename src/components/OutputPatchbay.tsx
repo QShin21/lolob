@@ -1,45 +1,210 @@
+import { useEffect, useState } from 'react';
+import { ArrowRight, Camera, Check, Monitor, Radio, Volume2 } from 'lucide-react';
 import type { ObsEngineStatus } from './EmbeddedObs';
 import type { OutputAction, OutputDestination } from '../../shared/obs-output';
 import { HoldButton } from './ProductionDesk';
 import { OutputSignals, ProgramAudioStatus } from './OutputSignals';
-import { ArrowRight, Camera, Radio, Volume2 } from 'lucide-react';
 import './output-patchbay.css';
+
 const fact = (value: boolean | undefined) => value === undefined ? '待查询' : value ? '是' : '否';
 type Props = {
-  status: ObsEngineStatus | null; connected: boolean; busy: boolean; local: boolean; activeOutput: boolean; canConfigure: boolean; canOutput: boolean;
-  destination: OutputDestination; destinationApplied: boolean; destinationReady: boolean; sourcesLoaded: boolean; dirty: boolean; pending: string | null;
-  server: string; streamKey: string; setServer: (value: string) => void; setStreamKey: (value: string) => void;
-  selectDestination: (value: OutputDestination) => void; applyDestination: () => void; output: (action: OutputAction) => void; prepare: () => void; installCamera: () => void; onOpenStudio?: () => void;
+  status: ObsEngineStatus | null;
+  connected: boolean;
+  busy: boolean;
+  local: boolean;
+  activeOutput: boolean;
+  canConfigure: boolean;
+  canOutput: boolean;
+  controlReason?: string;
+  destination: OutputDestination;
+  destinationApplied: boolean;
+  sourcesLoaded: boolean;
+  dirty: boolean;
+  pending: string | null;
+  receipt?: string;
+  server: string;
+  streamKey: string;
+  setServer: (value: string) => void;
+  setStreamKey: (value: string) => void;
+  selectDestination: (value: OutputDestination) => void;
+  applyDestination: () => void;
+  output: (action: OutputAction) => void;
+  prepare: () => void;
+  installCamera: () => void;
+  onOpenStudio?: () => void;
+  onSection?: (section: 'video' | 'audio' | 'output') => void;
 };
+
 export function OutputPatchbay(p: Props) {
-  const { status, connected, busy, local, activeOutput, canConfigure, canOutput, destination, destinationReady, sourcesLoaded, dirty } = p;
-  const audio = status?.companionAudio, camera = status?.virtualCamera;
+  const { status, connected, busy, local, activeOutput, canConfigure, canOutput } = p;
+  // Inspecting a route is local UI. Changing the engine destination remains an explicit guarded request.
+  const [route, setRoute] = useState<OutputDestination>(p.destination);
+  useEffect(() => setRoute(p.destination), [p.destination]);
+  const audio = status?.companionAudio;
+  const camera = status?.virtualCamera;
+  const companion = route === 'douyin';
+  const configured = route === p.destination;
+  const cameraKnown = status?.virtualCamActive != null;
   const companionActive = !!status?.virtualCamActive || !!audio?.active || !!audio?.managing;
+  const companionReady = !!camera?.driver.installed && !camera.requiresRestart && !!audio?.ready;
+  const destinationReady = configured && (companion ? companionReady : p.destinationApplied);
+  const selectionLocked = !local || !!p.controlReason || busy || !status || activeOutput
+    || status.mode === 'embedded' && !cameraKnown;
+  const selectedActive = companion ? companionActive : !!status?.streamActive;
+  const startReason = !local ? '请在导播主机的 localhost 工作台操作。'
+    : p.controlReason || (!connected ? '先连接 OBS 引擎。'
+      : busy ? '等待当前操作完成。'
+      : !configured ? '将此路径设为下一次输出后，再准备启动。'
+      : !p.sourcesLoaded ? '先在画面设置中应用游戏与音频来源。'
+      : p.dirty ? '画面与音频来源有未应用修改。'
+      : companion && !cameraKnown ? '虚拟摄像头状态未知，请刷新引擎状态。'
+      : companion && camera?.requiresRestart ? '摄像头已注册，等待在停播窗口重新加载引擎。'
+      : companion && audio?.needsRestart ? '音频设备等待 Windows 重启后加载。'
+      : !destinationReady ? companion ? '设备尚未就绪，请展开设备准备查看原因。' : '先应用本次 RTMP 服务器和推流码。'
+      : '');
+  const canStart = canOutput && !startReason && !selectedActive;
+  const setupBlocked = !local || !!p.controlReason || busy || activeOutput || status?.mode !== 'embedded';
+  const sample = (value: number | undefined) => value === undefined || !Number.isFinite(value) ? '未提供' : value.toLocaleString('zh-CN');
+
   return <div className="output-patchbay">
-    <header className="patchbay-heading"><div><h2>节目送出</h2><p>当前选择决定下一次启动的路径，各路运行状态独立保留。</p></div><OutputSignals status={connected ? status : null}/></header>
-    <div className="patchbay-selector" aria-label="选择输出路径">{([{ id: 'rtmp', title: 'RTMP', detail: '推流地址 / 本次凭据', icon: Radio }, { id: 'douyin', title: '抖音直播伴侣', detail: '虚拟视频 / Program 混音', icon: Camera }] as const).map(item => <button key={item.id} aria-pressed={destination === item.id} disabled={!local || busy || !status || activeOutput || status.virtualCamActive === null || item.id === 'douyin' && status.mode !== 'embedded'} onClick={() => p.selectDestination(item.id)}><item.icon size={19}/><span><strong>{item.title}</strong><small>{item.detail}</small></span></button>)}</div>
-    <div className="patchbay-grid">
-      <section className="signal-routing" aria-label="节目音画路径">
-        <h3>信号路径 <span>仅发送 Program</span></h3>
-        <div className="signal-route"><b>PGM<span>正式节目</span></b><ArrowRight size={18}/><div><strong>{destination === 'douyin' ? 'OBS Virtual Camera' : 'OBS 编码器'}</strong><small>{destination === 'douyin' ? '视频 · 独立摄像头输出' : '画面与节目混音'}</small></div><ArrowRight size={18}/><div><strong>{destination === 'douyin' ? '伴侣摄像头' : 'RTMP 平台'}</strong><small>{destination === 'douyin' ? '在伴侣选择设备' : '核对平台接收画面'}</small></div></div>
-        {destination === 'douyin' && <div className="signal-route audio"><b>音轨 1<span>最终混音</span></b><ArrowRight size={18}/><div><strong>CABLE Input</strong><small>48 kHz · 双声道送出</small></div><ArrowRight size={18}/><div><strong>CABLE Output</strong><small>伴侣麦克风接收端</small></div></div>}
-        <ProgramAudioStatus audio={audio}/>
-        {destination === 'douyin' ? <>
-          <details className="patchbay-device-setup" open={!audio?.ready || !camera?.driver.installed}><summary>设备准备与恢复</summary>
-            <div className="device-facts"><div><strong>虚拟摄像头</strong><span>系统支持 <b>{fact(camera?.supported)}</b></span><span>组件可用 <b>{fact(camera?.driver.available)}</b></span><span>已注册 <b>{fact(camera?.driver.installed)}</b></span><span>需重新加载 <b>{fact(camera?.requiresRestart)}</b></span></div><div><strong>Program 音频桥</strong>{([['系统支持', audio?.supported], ['组件可用', audio?.available], ['驱动已安装', audio?.installed], ['端点就绪', audio?.ready], ['桥接活动', audio?.active], ['路由托管中', audio?.managing], ['需要重启', audio?.needsRestart]] as const).map(([label, value]) => <span key={label}>{label}<b>{fact(value)}</b></span>)}</div></div>
-            {(camera?.error || camera?.driver.error || audio?.error) && <p className="patchbay-error" role="alert">{camera?.error || camera?.driver.error} {audio?.error}</p>}
-            <p>首次准备可能安装摄像头与 VB-CABLE，需要 Windows 管理员授权；音频驱动安装后可能需要重启。有效组件会复用。</p>
-            <div className="patchbay-buttons"><button className="button small" disabled={!local || busy || activeOutput || !camera?.driver.available} onClick={p.installCamera}>准备虚拟摄像头</button><button className="button small" disabled={!local || busy || activeOutput || !status?.available || audio?.needsRestart} onClick={p.prepare}><Volume2 size={14}/>{p.pending === 'prepare-companion' ? '正在准备…' : '自动准备完整音画'}</button></div>
-            <small>VB-CABLE 来源：<a href="https://vb-audio.com/Cable/" target="_blank" rel="noreferrer">VB-Audio</a> · <a href="https://vb-audio.com/Services/licensing.htm" target="_blank" rel="noreferrer">许可说明</a>。取消授权或恢复失败时保留记录，按具体错误处理。</small>
-          </details>
-        </> : <div className="rtmp-credentials"><h3>本次推流凭据</h3><label>RTMP 服务器<input aria-label="RTMP 服务器" type="url" maxLength={2048} value={p.server} disabled={!canConfigure} onChange={e => p.setServer(e.target.value)} placeholder="rtmp://主机/应用" spellCheck={false}/></label><label>推流码<input aria-label="推流码" type="password" autoComplete="new-password" maxLength={1024} value={p.streamKey} disabled={!canConfigure} onChange={e => p.setStreamKey(e.target.value)} placeholder="从直播应用复制本次推流码"/></label><div className="patchbay-buttons"><button className="button" disabled={!canConfigure || !p.server.trim() || !p.streamKey.trim()} onClick={p.applyDestination}>应用推流配置</button><span>{p.destinationApplied ? '本次凭据已应用' : '等待应用本次凭据'}</span></div><small>凭据只用于本次引擎配置，成功后清空输入；不会保存到浏览器。</small></div>}
-      </section>
-      <section className="patchbay-launch" aria-label="启动与接收核对">
-        <h3>送出与核对</h3>
-        <ol><li><b>01</b><div><strong>核对正式节目</strong><p>确认画面、游戏声、解说与音乐。TAKE 应用后再核对本版节目。</p><button className="button small" onClick={p.onOpenStudio}>返回导播台 →</button></div></li><li><b>02</b><div><strong>{destination === 'douyin' ? '启动伴侣音画' : '启动 RTMP 推流'}</strong><p>{!connected ? '先连接 OBS 引擎。' : !sourcesLoaded ? '先准备游戏与音频来源。' : dirty ? '来源有待应用修改。' : '启动会影响正式输出。'}</p>{destination === 'douyin' ? !companionActive && <button className="button primary" disabled={!canOutput || !destinationReady || !sourcesLoaded || dirty || status?.virtualCamActive !== false} onClick={() => p.output('start-virtual-camera')}>启动伴侣音画</button> : !status?.streamActive && <button className="button primary" disabled={!canOutput || !p.destinationApplied || !sourcesLoaded || dirty} onClick={() => p.output('start-stream')}>开始 RTMP 推流</button>}</div></li><li><b>03</b><div><strong>在接收端人工核对</strong>{destination === 'douyin' ? <p>摄像头选 <b>OBS Virtual Camera</b>；麦克风选 <b>{audio?.capture?.name || 'CABLE Output (VB-Audio Virtual Cable)'}</b>，音量 100%。按接入策略关闭重复系统声、原麦克风与降噪/自动增益，试听再在伴侣开播。</p> : <p>在平台预览与直播间检查画面、声音和延迟；引擎回执不代表平台已收流。</p>}<span className="manual-check-label">外部平台开播状态：待人工核对</span></div></li></ol>
-        <div className="patchbay-stop"><h3>独立输出控制</h3>{status?.streamActive && <HoldButton disabled={!canOutput} onExecute={() => p.output('stop-stream')}>按住停止 RTMP</HoldButton>}{companionActive && <><p>先在伴侣结束直播，再停止 RiftCast 音画送出。</p><HoldButton disabled={!canOutput} onExecute={() => p.output('stop-virtual-camera')}>{audio?.managing && !audio.active ? '按住重试停止并恢复音频' : '按住停止伴侣音画'}</HoldButton></>}<button className="button" disabled={!canOutput || !status?.recordActive && (!sourcesLoaded || dirty)} onClick={() => p.output(status?.recordActive ? 'stop-record' : 'start-record')}>{status?.recordActive ? '停止本机录制' : '开始本机录制'}</button></div>
-      </section>
+    <section className="patchbay-running" aria-label="实际运行状态与独立停止">
+      <div className="patchbay-running-summary"><div className="patchbay-running-heading"><h3>当前实际运行</h3><span>{connected ? '来自 OBS 与节目音频桥' : '状态未确认，请刷新连接'}</span></div>
+      <OutputSignals status={connected ? status : null} /></div>
+      <div className="patchbay-stop-actions">
+        {!!status?.streamActive && <HoldButton disabled={!canOutput} onExecute={() => p.output('stop-stream')}>按住停止 RTMP</HoldButton>}
+        {companionActive && <HoldButton disabled={!canOutput} onExecute={() => p.output('stop-virtual-camera')}>{audio?.managing && !audio.active ? '按住重试停止并恢复音频' : '按住停止伴侣音画'}</HoldButton>}
+        <button className="button" disabled={!canOutput || !status?.recordActive && (!p.sourcesLoaded || p.dirty)} onClick={() => p.output(status?.recordActive ? 'stop-record' : 'start-record')}>
+          {status?.recordActive ? '停止本机录制' : '开始本机录制'}
+        </button>
+        <span>{companionActive ? '收尾时先在伴侣结束直播，再停止此处音画。' : '录制、RTMP 和伴侣音画分别控制。'}</span>
+      </div>
+      {p.receipt && <p className="patchbay-receipt" role="status"><Check size={15} /><span><b>最近操作回执</b>{p.receipt}</span></p>}
+      {audio?.managing && !audio.active && <p className="patchbay-warning" role="alert">音频桥未活动，但路由仍由 RiftCast 托管。请重试停止并恢复；恢复失败的记录会保留。</p>}
+    </section>
+
+    <div className="patchbay-path-choice">
+      <div className="patchbay-path-tabs" role="group" aria-label="查看输出路径">
+        <button aria-pressed={!companion} onClick={() => setRoute('rtmp')}><Radio size={17} /><span>RTMP 推流</span></button>
+        <button aria-pressed={companion} onClick={() => setRoute('douyin')}><Camera size={17} /><span>抖音直播伴侣</span></button>
+      </div>
+      <div className="patchbay-destination">
+        <span>引擎已配置<strong>{status ? p.destination === 'douyin' ? '抖音直播伴侣' : 'RTMP' : '待查询'}</strong></span>
+        {!configured && <button className="button small" disabled={selectionLocked || companion && status?.mode !== 'embedded'} onClick={() => p.selectDestination(route)}>
+          {p.pending === 'output-destination' ? '正在应用…' : '设为下一次输出'}
+        </button>}
+      </div>
+      {!configured && <p className="patchbay-route-note">
+        {activeOutput ? '当前仅查看此路径；停止活动输出与录制后可更改引擎配置。' : companion && status?.mode === 'external' ? '伴侣音画需要内置 OBS；当前仅查看路径。' : '当前仅查看此路径；设置引擎目标不会启动送出。'}
+      </p>}
     </div>
-    {audio && <details className="patchbay-diagnostics"><summary>音频桥真实采样与路由诊断</summary><dl>{[['送出端点', audio.render?.name], ['接收端点', audio.capture?.name], ['样本年龄 ms', audio.signalAgeMs], ['接收帧', audio.receivedFrames], ['渲染帧', audio.renderedFrames], ['丢帧', audio.droppedFrames], ['欠载', audio.underruns]].map(([name, value]) => <div key={name}><dt>{name}</dt><dd>{value ?? '未提供'}</dd></div>)}</dl><p>电平和设备存在只证明对应环节；伴侣实际接收和观众声音需要人工试听。</p></details>}
+
+    <section className="patchbay-route-map" aria-label={companion ? 'Program 到直播伴侣的音画路径' : 'Program 到 RTMP 的音画路径'}>
+      <div className="patchbay-program-source">
+        <Monitor size={24} />
+        <strong>PGM</strong>
+        <span>正式节目</span>
+        <small title={status?.sceneName}>{connected ? status?.sceneName || '场景名称未提供' : '等待引擎连接'}</small>
+        {p.onOpenStudio && <button onClick={p.onOpenStudio}>核对节目画面</button>}
+      </div>
+      <div className="patchbay-route-lines">
+        <div className="patchbay-route-labels" aria-hidden="true"><span>Program 信号</span><span>送出设备</span><span>接收端</span></div>
+        <div className="patchbay-route-line">
+          <div className="patchbay-route-origin"><Camera size={17} /><strong>视频</strong><small>当前正式节目</small></div>
+          <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
+          <div className="patchbay-route-node"><strong>{companion ? 'OBS Virtual Camera' : 'OBS 视频编码'}</strong><small>{companion ? !connected || !cameraKnown ? '运行状态待确认' : status?.virtualCamActive ? '视频正在送出' : '摄像头已停止' : '随 RTMP 推流启动'}</small></div>
+          <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
+          <div className="patchbay-route-node"><strong>{companion ? '伴侣摄像头' : 'RTMP 接收地址'}</strong><small>{companion ? '手动选择 OBS Virtual Camera' : '平台接收情况待人工核对'}</small></div>
+        </div>
+        <div className="patchbay-route-line">
+          <div className="patchbay-route-origin"><Volume2 size={17} /><strong>音轨 1</strong><small>最终 Program 混音</small></div>
+          <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
+          <div className="patchbay-route-node"><strong>{companion ? 'CABLE Input' : 'OBS 节目音频编码'}</strong><small>{companion ? '48 kHz / 双声道' : '与正式节目画面一同发送'}</small>{companion && <span title={audio?.render?.name}>{audio?.render?.name || '送出端点尚未识别'}</span>}</div>
+          <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
+          <div className="patchbay-route-node"><strong>{companion ? 'CABLE Output' : 'RTMP 平台音频'}</strong><small>{companion ? '在伴侣麦克风中选择' : '在平台预览中试听'}</small>{companion && <span title={audio?.capture?.name}>{audio?.capture?.name || '接收端点尚未识别'}</span>}</div>
+        </div>
+      </div>
+    </section>
+
+    <section className="patchbay-start-strip" aria-label="启动选定输出">
+      <div><strong>{companion ? '启动伴侣音画' : '开始 RTMP 推流'}</strong><p>{selectedActive ? companion ? '已有伴侣链路活动；停止与恢复入口在上方运行栏。' : 'RTMP 正在运行。' : startReason || '启动会将当前正式节目的画面与声音送出。'}</p></div>
+      <button className="button" onClick={() => p.onSection?.('audio')} disabled={!p.onSection}>核对混音与音乐</button>
+      <button className="button primary" disabled={!canStart} onClick={() => p.output(companion ? 'start-virtual-camera' : 'start-stream')}>
+        <PlayMark />{busy && (p.pending === 'start-virtual-camera' || p.pending === 'start-stream') ? '等待引擎回执…' : companion ? '启动伴侣音画' : '开始 RTMP 推流'}
+      </button>
+    </section>
+
+    <div className="patchbay-check-and-meter">
+      <div className="patchbay-receiver-check">
+        <h3>在接收端核对</h3>
+        <p>{companion ? '伴侣摄像头选择 OBS Virtual Camera，麦克风选择 CABLE Output。使用基础双声道端点，避免选择额外的 16ch 端点。' : '打开直播平台预览，核对当前比赛画面、游戏声、解说和音乐，再检查直播间。'}</p>
+        {companion && <p>麦克风音量设为 100%；按接入策略关闭重复系统声、原麦克风及降噪 / 自动增益，试听后由操作者在伴侣开播。</p>}
+        <span className="patchbay-manual-status">平台开播 / 接收状态：待人工核对</span>
+      </div>
+      <ProgramAudioStatus audio={connected ? audio : undefined} />
+    </div>
+
+    {companion ? <details className="patchbay-device-preparation" open={!companionReady || !!audio?.error || !!camera?.error || !!camera?.driver.error}>
+      <summary><strong>设备准备与恢复</strong><span>{companionReady ? '设备已就绪，可按需检查' : '查看未就绪原因与准备入口'}</span></summary>
+      <div className="patchbay-device-grid">
+        <section><h4>OBS Virtual Camera</h4><dl>
+          <Fact label="当前引擎支持" value={camera?.supported} />
+          <Fact label="安装组件可用" value={camera?.driver.available} />
+          <Fact label="驱动已注册" value={camera?.driver.installed} />
+          <Fact label="运行状态可查询" value={connected ? cameraKnown : undefined} />
+          <Fact label="正在送出视频" value={connected && cameraKnown ? !!status?.virtualCamActive : undefined} />
+          <Fact label="需要重新加载引擎" value={camera?.requiresRestart} />
+        </dl>{(camera?.error || camera?.driver.error) && <p className="patchbay-error" role="alert">{camera.error || camera.driver.error}</p>}</section>
+        <section><h4>Program 音频桥</h4><dl>
+          <Fact label="当前引擎支持" value={audio?.supported} />
+          <Fact label="混音组件已加载" value={audio?.available} />
+          <Fact label="音频驱动已安装" value={audio?.installed} />
+          <Fact label="端点与组件就绪" value={audio?.ready} />
+          <Fact label="音频桥正在活动" value={connected ? audio?.active : undefined} />
+          <Fact label="仍在托管路由" value={audio?.managing} />
+          <Fact label="需要重启 Windows" value={audio?.needsRestart} />
+        </dl>{audio?.error && <p className="patchbay-error" role="alert">{audio.error}</p>}</section>
+      </div>
+      <div className="patchbay-prepare-controls">
+        <div><strong>首次准备可能要求 Windows 管理员授权</strong><p>检查或安装虚拟摄像头和基础版 VB-CABLE，复用有效组件；音频驱动安装后可能需要重启。准备不会在伴侣中开播。</p></div>
+        <div className="patchbay-buttons">
+          <button className="button" disabled={setupBlocked || !status?.available || !!audio?.needsRestart} onClick={p.prepare}>
+            <Volume2 size={15} />{p.pending === 'prepare-companion' ? '正在准备…' : '准备完整音画设备'}
+          </button>
+          <button className="button small" disabled={setupBlocked || !camera?.driver.available} onClick={p.installCamera}>仅准备虚拟摄像头</button>
+        </div>
+        <p className="patchbay-setup-limit">{activeOutput ? '活动输出或录制期间不能准备设备。' : audio?.needsRestart ? '先保存工作并由操作者重启 Windows，再刷新设备状态。' : !local ? '设备准备仅允许在导播主机操作。' : p.controlReason || '取消授权、驱动待加载或恢复失败时，按上方具体错误处理。'}</p>
+        <small>VB-CABLE：<a href="https://vb-audio.com/Cable/" target="_blank" rel="noreferrer">VB-Audio 官方来源</a> / <a href="https://vb-audio.com/Services/licensing.htm" target="_blank" rel="noreferrer">许可说明</a>。原游戏输出与真实麦克风须保持正确，避免形成反馈回路。</small>
+      </div>
+    </details> : <section className="patchbay-credentials" aria-label="本次 RTMP 推流配置">
+      <div className="patchbay-credentials-heading"><h3>本次推流凭据</h3><span>{p.destinationApplied && configured ? '引擎已确认应用' : '等待应用本次凭据'}</span></div>
+      <div className="patchbay-credential-fields">
+        <label>RTMP 服务器<input aria-label="RTMP 服务器" type="url" maxLength={2048} value={p.server} disabled={!canConfigure || !configured} onChange={e => p.setServer(e.target.value)} placeholder="rtmp://主机/应用" autoComplete="off" spellCheck={false} /></label>
+        <label>推流码<input aria-label="推流码" type="password" autoComplete="new-password" maxLength={1024} value={p.streamKey} disabled={!canConfigure || !configured} onChange={e => p.setStreamKey(e.target.value)} placeholder="从直播应用复制本次推流码" /></label>
+        <button className="button" disabled={!canConfigure || !configured || !p.server.trim() || !p.streamKey.trim()} onClick={p.applyDestination}>{p.pending === 'destination' ? '正在应用…' : '应用推流配置'}</button>
+      </div>
+      <p>凭据仅用于本次引擎配置；应用成功后清空推流码，不保存到浏览器。活动输出或录制期间不能更改。</p>
+    </section>}
+
+    <details className="patchbay-diagnostics">
+      <summary>音频桥采样与端点诊断</summary>
+      <dl>
+        <div><dt>送出端点</dt><dd>{audio?.render?.name || '未提供'}</dd></div>
+        <div><dt>接收端点</dt><dd>{audio?.capture?.name || '未提供'}</dd></div>
+        <div><dt>采样率 / 声道 / 音轨</dt><dd>{audio ? audio.sampleRate + ' Hz / ' + audio.channels + ' / ' + audio.track : '未提供'}</dd></div>
+        <div><dt>样本年龄</dt><dd>{audio?.signalAgeMs === undefined ? '未提供' : sample(audio.signalAgeMs) + ' ms'}</dd></div>
+        <div><dt>接收帧</dt><dd>{sample(audio?.receivedFrames)}</dd></div>
+        <div><dt>渲染帧</dt><dd>{sample(audio?.renderedFrames)}</dd></div>
+        <div><dt>丢帧</dt><dd>{sample(audio?.droppedFrames)}</dd></div>
+        <div><dt>欠载</dt><dd>{sample(audio?.underruns)}</dd></div>
+      </dl>
+      <p>端点存在、电平采样、桥接活动分别证明对应环节；伴侣与观众端声音仍需人工试听。</p>
+    </details>
   </div>;
+}
+
+function Fact({ label, value }: { label: string; value: boolean | undefined }) {
+  return <div><dt>{label}</dt><dd>{fact(value)}</dd></div>;
+}
+function PlayMark() {
+  return <span className="patchbay-play-mark" aria-hidden="true">▶</span>;
 }

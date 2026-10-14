@@ -1,0 +1,50 @@
+{
+  "label": "working-mix",
+  "environment": "Linux / system Chromium / isolated offline HTTP / synthetic seed",
+  "sourceRoot": "/workspace/lolob",
+  "viewportTitlebarNote": "1366x736 approximates a 32px Windows titlebar; not a Windows or DPI test",
+  "screenshots": [
+    "working-mix-studio-disconnected-1366x736.png",
+    "working-mix-studio-layout-1366x736.png",
+    "working-mix-studio-layout-1440x900.png",
+    "working-mix-studio-layout-1920x1080.png"
+  ],
+  "errors": [],
+  "geometry": [
+    {
+      "viewport": {
+        "width": 1366,
+        "height": 736
+      },
+      "windows": [
+        {
+          "x": 77,
+          "y": 137,
+          "width": 454,
+          "height": 255.375,
+          "ratio": 1.7777777777777777
+        },
+        {
+          "x": 545,
+          "y": 137,
+          "width": 454,
+          "height": 255.375,
+          "ratio": 1.7777777777777777
+        }
+      ],
+      "take": [
+        {
+          "x": 816.84375,
+          "y": 442.171875,
+          "bottom": 480.171875
+        }
+      ],
+      "bodyScroll": {
+        "width": 1366,
+        "height": 736
+      }
+    }
+  ],
+  "obs": "not started",
+  "output": "not started"
+}

@@ -14,10 +14,10 @@ export function OutputSignals({ status }: { status: SignalStatus | null }) {
   return <div className="output-signals" aria-label="各路实际输出状态">{signals.map(signal => <span key={signal.name} data-active={!!signal.active}><i/><b>{signal.name}</b><small>{signal.text}</small></span>)}</div>;
 }
 export function ProgramAudioStatus({ audio }: { audio?: CompanionAudioStatus }) {
-  const fresh = audio?.active && audio.peakDb !== undefined && audio.signalAgeMs !== undefined && audio.signalAgeMs < 2000;
+  const fresh = audio?.active && audio.peakDb !== undefined && audio.signalAgeMs !== undefined && audio.signalAgeMs >= 0 && audio.signalAgeMs < 2000 && Number.isFinite(audio.peakDb);
   return <section className="program-audio-bus" aria-label="Program 最终混音">
     <div><strong>PROGRAM <span>总混音</span></strong><b>{fresh ? `${audio.peakDb!.toFixed(1)} dB` : '电平待采样'}</b></div>
-    {fresh ? <meter min={-60} max={0} value={audio.peakDb!} aria-label="Program 最终混音电平"/> : <div className="signal-unavailable">{audio?.error || '暂无最终混音测量；单通道电平见下方'}</div>}
-    <small>音轨 {audio?.track ?? 1} · {audio ? `${audio.sampleRate / 1000} kHz / ${audio.channels} 声道` : '48 kHz / 双声道'} · {audio?.active ? '桥接活动' : audio?.managing ? '仍托管中，请完成恢复' : '桥接未启动'}</small>
+    {fresh ? <meter min={-60} max={0} value={audio.peakDb!} aria-label="Program 最终混音电平"/> : audio?.error ? <div className="signal-unavailable" role="alert">{audio.error}</div> : null}
+    <small>音轨 {audio?.track ?? 1} · {audio ? `${audio.sampleRate / 1000} kHz / ${audio.channels} 声道` : '48 kHz / 双声道'} · {!audio ? '桥接状态待确认' : audio.active ? '桥接活动' : audio?.managing ? '仍托管中，请完成恢复' : '桥接未启动'}</small>
   </section>;
 }

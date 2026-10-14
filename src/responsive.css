@@ -25,7 +25,6 @@
 @media(max-width:850px){
   .app-shell .studio-aside{grid-template-columns:1fr}
   .app-shell .roster-columns,
-.app-shell .draft-edit-grid,
 .app-shell .settings-columns,
 .app-shell .help-grid{grid-template-columns:1fr}
   .app-shell .pb-content{gap:18px}
@@ -50,6 +49,5 @@
 .app-shell .inline-buttons{flex-wrap:wrap}
   .app-shell .pb-content{flex-direction:column;padding:16px}.app-shell .pb-profile{width:100%}.app-shell .pb-profile>.pb-image{width:100px;height:100px}.app-shell .pb-stats{gap:8px}.app-shell .pb-stats strong{font-size:20px}.app-shell .pb-items{gap:6px}
   .app-shell .help-card{padding:22px}.app-shell .help-limits{grid-column:auto;padding:22px}
-  .remote-page{padding:18px 14px}.remote-page .monitor-row{grid-template-columns:1fr}.remote-page .remote-scene-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){.app-shell *{scroll-behavior:auto;transition:none!important}.app-shell .spinning{animation:none}}

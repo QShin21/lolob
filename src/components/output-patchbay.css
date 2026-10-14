@@ -1,5 +1,151 @@
-/* Output path setup and mixer status share the console tokens, never the program palette. */
-.engine-connection-heading{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--ui-border);font-size:13px}.engine-connection-heading>span{color:var(--ui-accent)}.engine-connection-heading>small{margin-left:auto;color:var(--ui-muted);font-size:12px}.output-patchbay{color:var(--ui-text)}.patchbay-heading{display:flex;align-items:center;gap:24px;padding:18px 22px;border-bottom:1px solid var(--ui-border)}.patchbay-heading h2{font-size:20px;margin:0 0 5px}.patchbay-heading p{font-size:13px;color:var(--ui-muted);margin:0}.patchbay-heading .output-signals{margin-left:auto;gap:22px}.patchbay-heading .output-signals b{font-size:12px}.patchbay-heading .output-signals small{font-size:12px}.patchbay-selector{display:flex;gap:12px;padding:16px 22px;background:var(--ui-bg);border-bottom:1px solid var(--ui-border)}.patchbay-selector>button{display:flex;align-items:center;gap:12px;text-align:left;flex:1;max-width:360px;border:1px solid var(--ui-border);border-radius:4px;background:var(--ui-surface);padding:12px 16px}.patchbay-selector>button[aria-pressed=true]{border-color:var(--ui-selection-border);background:var(--ui-selected)}.patchbay-selector>button>span{display:flex;flex-direction:column;gap:3px}.patchbay-selector strong{font-size:14px}.patchbay-selector small{font-size:12px;color:var(--ui-muted)}.patchbay-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr)}.signal-routing{padding:22px;border-right:1px solid var(--ui-border)}.signal-routing>h3,.patchbay-launch>h3{font-size:15px;margin-bottom:16px;display:flex;justify-content:space-between}.signal-routing>h3 span{font-size:12px;font-weight:400;color:var(--ui-muted)}.signal-route{display:grid;grid-template-columns:86px 20px minmax(0,1fr) 20px minmax(0,1fr);align-items:center;gap:12px;margin-bottom:14px;padding:16px 0;border-bottom:1px solid var(--ui-border)}.signal-route>b{font-size:17px;color:var(--ui-pgm)}.signal-route>b>span{display:block;font-size:12px;font-weight:400;color:var(--ui-muted)}.signal-route>div{display:flex;flex-direction:column;gap:4px;min-width:0}.signal-route strong{font-size:14px;overflow-wrap:anywhere}.signal-route small{font-size:12px;color:var(--ui-muted)}.signal-route>svg{color:var(--ui-muted)}.signal-route.audio>b{color:var(--ui-info)}.signal-routing .program-audio-bus{margin:16px 0}.patchbay-device-setup{border-top:1px solid var(--ui-border);padding-top:14px;margin-top:18px}.patchbay-device-setup summary,.patchbay-diagnostics summary{cursor:pointer;font-size:14px;font-weight:600}.patchbay-device-setup p{font-size:13px;line-height:1.7;color:var(--ui-muted);margin:12px 0}.patchbay-device-setup>small{font-size:12px;line-height:1.6;color:var(--ui-muted);display:block;margin-top:12px}.patchbay-device-setup a{color:var(--ui-info);text-decoration:underline}.device-facts{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:16px 0}.device-facts>div{display:flex;flex-direction:column;gap:8px}.device-facts strong{font-size:13px;margin-bottom:5px}.device-facts span{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--ui-muted);border-bottom:1px solid var(--ui-border);padding-bottom:6px}.device-facts b{font-weight:500;color:var(--ui-text)}.patchbay-device-setup .patchbay-error{color:var(--ui-error);padding:10px;background:var(--ui-danger-bg)}.patchbay-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.patchbay-buttons>span{font-size:12px;color:var(--ui-muted)}.rtmp-credentials{border-top:1px solid var(--ui-border);padding-top:18px;margin-top:18px;display:grid;gap:14px}.rtmp-credentials label{display:flex;flex-direction:column;gap:7px;font-size:13px}.rtmp-credentials input{width:100%}.rtmp-credentials>small{font-size:12px;color:var(--ui-muted)}.patchbay-launch{padding:22px;background:var(--ui-surface)}.patchbay-launch ol{list-style:none;padding:0;margin:0}.patchbay-launch li{display:flex;gap:14px;padding-bottom:22px}.patchbay-launch li>b{font-size:14px;color:var(--ui-muted);padding-top:1px}.patchbay-launch li>div{min-width:0;flex:1}.patchbay-launch li strong{font-size:14px}.patchbay-launch p{font-size:13px;line-height:1.8;color:var(--ui-muted);margin:7px 0 12px}.manual-check-label{display:block;font-size:12px;color:var(--ui-warning);background:var(--ui-warning-bg);padding:8px;border-radius:3px}.patchbay-stop{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--ui-border);padding-top:16px}.patchbay-stop h3{font-size:13px}.patchbay-stop p{margin:0;font-size:12px}.patchbay-diagnostics{padding:16px 22px;border-top:1px solid var(--ui-border)}.patchbay-diagnostics dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 0}.patchbay-diagnostics dt{font-size:12px;color:var(--ui-muted)}.patchbay-diagnostics dd{font-size:13px;margin:4px 0;overflow-wrap:anywhere}.patchbay-diagnostics p{font-size:12px;color:var(--ui-muted)}
-@media(max-width:1200px){.patchbay-grid{grid-template-columns:minmax(0,1.4fr) minmax(270px,1fr)}.patchbay-heading{align-items:flex-start}.patchbay-heading .output-signals{gap:12px}.signal-route{grid-template-columns:72px 16px minmax(0,1fr) 16px minmax(0,1fr);gap:8px}.signal-route strong{font-size:13px}.signal-routing,.patchbay-launch{padding:18px}}
-@media(max-width:850px){.patchbay-grid{grid-template-columns:1fr}.signal-routing{border-right:0;border-bottom:1px solid var(--ui-border)}.patchbay-heading{flex-wrap:wrap}.patchbay-heading .output-signals{margin-left:0}.patchbay-selector{padding:12px;gap:8px}.patchbay-selector>button{padding:10px}.patchbay-diagnostics dl{grid-template-columns:1fr 1fr}}
-@media(max-width:550px){.signal-route{grid-template-columns:1fr;gap:6px}.signal-route>svg{transform:rotate(90deg)}.signal-route>div{padding-left:12px}.device-facts{gap:14px}.patchbay-selector>button svg{display:none}.patchbay-diagnostics dl{grid-template-columns:1fr}}
+/* Program routing owns its layout; all operator colors come from the shared UI palette. */
+.output-patchbay { color: var(--ui-text); min-width: 0; }
+.patchbay-path-choice { display: flex; align-items: center; gap: 10px 16px; padding: 12px 20px; border-bottom: 1px solid var(--ui-border); flex-wrap: wrap; }
+.patchbay-path-tabs { display: flex; gap: 4px; padding: 3px; border: 1px solid var(--ui-border); border-radius: 5px; background: var(--ui-bg); }
+.patchbay-path-tabs button { display: flex; align-items: center; gap: 8px; padding: 9px 12px; color: var(--ui-muted); border: 1px solid transparent; border-radius: 3px; font-size: 14px; }
+.patchbay-path-tabs button[aria-pressed="true"] { background: var(--ui-selected); border-color: var(--ui-selection-border); color: var(--ui-text); }
+.patchbay-path-tabs button:hover { color: var(--ui-text); }
+.patchbay-destination { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.patchbay-destination > span { display: flex; flex-direction: column; gap: 2px; color: var(--ui-muted); font-size: 12px; }
+.patchbay-destination strong { color: var(--ui-text); font-size: 13px; font-weight: 600; }
+.patchbay-route-note { flex-basis: 100%; margin: 0; font-size: 12px; line-height: 1.5; color: var(--ui-warning); }
+.patchbay-route-map { display: grid; grid-template-columns: 138px minmax(0, 1fr); gap: 20px; padding: 20px; }
+.patchbay-program-source { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; min-width: 0; padding-right: 16px; border-right: 2px solid var(--ui-pgm); }
+.patchbay-program-source > svg { color: var(--ui-pgm); margin-bottom: 6px; }
+.patchbay-program-source > strong { color: var(--ui-pgm); font-size: 22px; line-height: 1.2; }
+.patchbay-program-source > span { font-size: 14px; font-weight: 600; }
+.patchbay-program-source > small { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; color: var(--ui-muted); font-size: 12px; overflow-wrap: anywhere; margin-top: 5px; }
+.patchbay-program-source > button { color: var(--ui-info); font-size: 12px; text-align: left; padding: 8px 0 0; }
+.patchbay-route-lines { min-width: 0; }
+.patchbay-route-labels { display: grid; grid-template-columns: minmax(96px, .72fr) minmax(0, 1.2fr) minmax(0, 1.2fr); gap: 36px; color: var(--ui-muted); font-size: 12px; padding-bottom: 8px; }
+.patchbay-route-line { display: grid; grid-template-columns: minmax(96px, .72fr) 16px minmax(0, 1.2fr) 16px minmax(0, 1.2fr); align-items: center; gap: 10px; min-height: 80px; border-top: 1px solid var(--ui-border); padding: 12px 0; }
+.patchbay-route-origin { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 4px 8px; align-items: center; min-width: 0; }
+.patchbay-route-origin > svg { color: var(--ui-muted); }
+.patchbay-route-origin > strong { font-size: 14px; font-weight: 600; }
+.patchbay-route-origin > small { grid-column: 2; font-size: 12px; color: var(--ui-muted); }
+.patchbay-route-arrow { color: var(--ui-muted); }
+.patchbay-route-node { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.patchbay-route-node > strong { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.patchbay-route-node > small, .patchbay-route-node > span { color: var(--ui-muted); font-size: 12px; overflow-wrap: anywhere; line-height: 1.5; }
+.patchbay-route-node > span { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.patchbay-start-strip { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: var(--ui-raised); border-block: 1px solid var(--ui-border); }
+.patchbay-start-strip > div { flex: 1; min-width: 0; }
+.patchbay-start-strip strong { font-size: 15px; }
+.patchbay-start-strip p { margin: 4px 0 0; font-size: 12px; color: var(--ui-muted); line-height: 1.6; }
+.patchbay-start-strip > .button { flex-shrink: 0; }
+.patchbay-play-mark { font-size: 11px; }
+.patchbay-running { position: sticky; top: 0; z-index: 2; padding: 12px 20px; border-bottom: 1px solid var(--ui-border); background: var(--ui-surface); }
+.patchbay-running-summary { display: flex; align-items: center; gap: 20px; margin-bottom: 10px; }
+.patchbay-running-heading { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+.patchbay-credentials-heading { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.patchbay-running-heading h3, .patchbay-credentials-heading h3, .patchbay-receiver-check h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.patchbay-running-heading > span, .patchbay-credentials-heading > span { font-size: 12px; color: var(--ui-muted); }
+.patchbay-running .output-signals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; min-width: 0; flex: 1; }
+.patchbay-running .output-signals > span { grid-template-columns: 6px minmax(0, 1fr); row-gap: 3px; padding-right: 12px; border-right: 1px solid var(--ui-border); }
+.patchbay-running .output-signals > span:last-child { border: 0; }
+.patchbay-running .output-signals b { font-size: 13px; }
+.patchbay-running .output-signals small { font-size: 12px; }
+.patchbay-stop-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.patchbay-stop-actions > span { font-size: 12px; color: var(--ui-muted); margin-left: auto; }
+.patchbay-receipt { display: flex; align-items: flex-start; gap: 8px; margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--ui-border); color: var(--ui-accent); font-size: 12px; line-height: 1.6; }
+.patchbay-receipt > svg { flex: none; margin-top: 2px; }
+.patchbay-receipt b { font-weight: 600; margin-right: 8px; }
+.patchbay-warning, .patchbay-error { margin: 12px 0 0; padding: 10px 12px; color: var(--ui-warning); background: var(--ui-warning-bg); border-left: 2px solid currentColor; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.patchbay-error { color: var(--ui-error); background: var(--ui-danger-bg); }
+.patchbay-check-and-meter { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(230px, 1fr); gap: 20px; padding: 18px 20px; border-bottom: 1px solid var(--ui-border); align-items: start; }
+.patchbay-receiver-check p { margin: 8px 0; font-size: 12px; color: var(--ui-muted); line-height: 1.7; }
+.patchbay-manual-status { display: inline-block; color: var(--ui-warning); font-size: 12px; }
+.patchbay-check-and-meter .program-audio-bus { margin: 0; padding: 14px; }
+.patchbay-device-preparation { border-bottom: 1px solid var(--ui-border); }
+.patchbay-device-preparation > summary, .patchbay-diagnostics > summary { padding: 16px 20px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.patchbay-device-preparation > summary > strong { font-weight: 600; }
+.patchbay-device-preparation > summary > span { font-size: 12px; font-weight: 400; color: var(--ui-muted); margin-left: 12px; }
+.patchbay-device-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding: 0 20px 18px; }
+.patchbay-device-grid h4 { margin: 0 0 12px; font-size: 14px; }
+.patchbay-device-grid dl { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.patchbay-device-grid dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--ui-border); padding-bottom: 6px; font-size: 12px; }
+.patchbay-device-grid dt { color: var(--ui-muted); }
+.patchbay-device-grid dd { margin: 0; flex-shrink: 0; }
+.patchbay-prepare-controls { padding: 16px 20px 18px; background: var(--ui-bg); border-top: 1px solid var(--ui-border); }
+.patchbay-prepare-controls strong { font-size: 13px; }
+.patchbay-prepare-controls p { font-size: 12px; color: var(--ui-muted); line-height: 1.7; margin: 6px 0 12px; max-width: 80ch; }
+.patchbay-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.patchbay-prepare-controls .patchbay-setup-limit { color: var(--ui-warning); margin-bottom: 8px; }
+.patchbay-prepare-controls > small { display: block; font-size: 12px; color: var(--ui-muted); line-height: 1.6; }
+.patchbay-prepare-controls a { color: var(--ui-info); text-decoration: underline; text-underline-offset: 2px; }
+.patchbay-credentials { padding: 18px 20px; border-bottom: 1px solid var(--ui-border); }
+.patchbay-credential-fields { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto; align-items: end; gap: 12px; }
+.patchbay-credential-fields label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; min-width: 0; }
+.patchbay-credential-fields input { width: 100%; min-width: 0; font-size: 13px; }
+.patchbay-credentials > p { margin: 10px 0 0; font-size: 12px; color: var(--ui-muted); line-height: 1.6; }
+.patchbay-diagnostics dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0 20px 16px; }
+.patchbay-diagnostics dt { color: var(--ui-muted); font-size: 12px; }
+.patchbay-diagnostics dd { margin: 4px 0 0; font-size: 13px; overflow-wrap: anywhere; }
+.patchbay-diagnostics > p { margin: 0; padding: 0 20px 18px; font-size: 12px; color: var(--ui-muted); }
+.output-patchbay :is(button, input, summary, a):focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 3px; }
+
+@media (max-height: 760px) and (min-width: 901px) {
+  .patchbay-running { padding: 10px 16px; }
+  .patchbay-running-summary { margin-bottom: 8px; }
+  .patchbay-running-heading > span { font-size: 11px; }
+  .patchbay-path-choice { padding: 8px 16px; gap: 6px 16px; }
+  .patchbay-path-tabs button { padding-block: 6px; }
+  .patchbay-route-map { grid-template-columns: 120px minmax(0, 1fr); padding: 12px 16px; gap: 18px; }
+  .patchbay-program-source > svg { display: none; }
+  .patchbay-program-source > strong { font-size: 20px; }
+  .patchbay-program-source > small { margin-top: 2px; }
+  .patchbay-program-source > button { padding-top: 4px; }
+  .patchbay-route-labels { padding-bottom: 5px; }
+  .patchbay-route-line { min-height: 60px; padding-block: 7px; }
+  .patchbay-route-node { gap: 2px; }
+  .patchbay-start-strip { padding: 10px 16px; }
+}
+
+@media (max-width: 1200px) {
+  .patchbay-route-map { grid-template-columns: 104px minmax(0, 1fr); gap: 14px; padding: 16px; }
+  .patchbay-route-line { grid-template-columns: minmax(72px, .65fr) 12px minmax(0, 1fr) 12px minmax(0, 1fr); gap: 8px; }
+  .patchbay-route-labels { grid-template-columns: minmax(72px, .65fr) minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+  .patchbay-route-origin { display: flex; flex-direction: column; align-items: flex-start; }
+  .patchbay-route-origin > svg { display: none; }
+  .patchbay-start-strip { flex-wrap: wrap; }
+  .patchbay-start-strip > div { flex-basis: 100%; }
+  .patchbay-start-strip > .button:first-of-type { margin-left: auto; }
+  .patchbay-credential-fields { grid-template-columns: 1fr 1fr; }
+  .patchbay-credential-fields > .button { justify-self: start; }
+}
+@media (max-width: 800px) {
+  .patchbay-running { position: static; }
+  .patchbay-running-summary { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .patchbay-running .output-signals { width: 100%; }
+  .patchbay-destination { margin-left: 0; }
+  .patchbay-check-and-meter { grid-template-columns: 1fr; gap: 14px; }
+  .patchbay-diagnostics dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .patchbay-stop-actions > span { width: 100%; margin-top: 4px; }
+}
+@media (max-width: 560px) {
+  .patchbay-path-choice { padding: 12px; }
+  .patchbay-path-tabs { width: 100%; }
+  .patchbay-path-tabs button { flex: 1; justify-content: center; padding: 10px 6px; font-size: 13px; }
+  .patchbay-route-map { display: block; padding: 12px; }
+  .patchbay-program-source { flex-direction: row; align-items: center; flex-wrap: wrap; border-right: 0; border-bottom: 2px solid var(--ui-pgm); padding: 0 0 10px; gap: 8px; margin-bottom: 12px; }
+  .patchbay-program-source > svg { margin: 0; width: 18px; height: 18px; }
+  .patchbay-program-source > strong { font-size: 18px; }
+  .patchbay-program-source > small { margin: 0; width: 100%; }
+  .patchbay-program-source > button { padding: 2px 0; }
+  .patchbay-route-labels { display: none; }
+  .patchbay-route-line { grid-template-columns: 1fr 16px 1fr; gap: 10px; }
+  .patchbay-route-origin { grid-column: 1 / -1; flex-direction: row; align-items: baseline; gap: 8px; }
+  .patchbay-route-arrow:first-of-type { display: none; }
+  .patchbay-route-node > span { font-size: 12px; }
+  .patchbay-start-strip, .patchbay-running, .patchbay-check-and-meter, .patchbay-credentials { padding: 14px 12px; }
+  .patchbay-start-strip > .button { flex: 1; min-height: 44px; }
+  .patchbay-start-strip > .button:first-of-type { margin: 0; }
+  .patchbay-running .output-signals { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .patchbay-running .output-signals > span:nth-child(2) { border: 0; }
+  .patchbay-device-grid { grid-template-columns: 1fr; padding: 0 12px 16px; gap: 20px; }
+  .patchbay-device-preparation > summary, .patchbay-diagnostics > summary { padding: 14px 12px; }
+  .patchbay-device-preparation > summary > span { display: block; margin: 5px 0 0 16px; }
+  .patchbay-prepare-controls { padding: 14px 12px; }
+  .patchbay-credential-fields { grid-template-columns: 1fr; }
+  .patchbay-diagnostics dl { padding-inline: 12px; }
+}

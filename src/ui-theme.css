@@ -1,6 +1,6 @@
 /* Operator appearance is local to the console. Broadcast media keeps its palette. */
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .management-tabs button:not(.active){color:var(--ui-muted)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .interview-safe-preview{color:#edf5f3}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .management-tabs button:not(.active){color:var(--ui-muted)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .interview-safe-preview{color:#edf5f3}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .appearance-panel{margin-bottom:18px}
 .theme-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;border:0;padding:22px;margin:0;min-width:0}
@@ -30,94 +30,83 @@
 :root[data-ui-theme="light"]:not(.overlay-document){color-scheme:light;background:#edf3f2;color:#203730}
 :root[data-ui-theme="light"]:not(.overlay-document) body:not(.overlay-body){background:#edf3f2;color:#203730}
 /* Reset inherited console tokens at media boundaries; never filter or recolor images. */
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.broadcast-container,.broadcast-canvas,.obs-live-preview,.embedded-obs-preview,.interview-safe-preview,.ocr-frame,.live-bottom-feed-preview,.economy-roi-map){
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.broadcast-container,.broadcast-canvas,.obs-live-preview,.embedded-obs-preview,.interview-safe-preview,.ocr-frame,.live-bottom-feed-preview,.economy-roi-map){
   --bg:#0b1119;--panel:#121b25;--panel-soft:#17222e;--surface:#0d151e;--border:#273442;--line:#273442;
   --text:#f0f3ef;--muted:#8e9dac;--text-muted:#8e9dac;--accent:#96efd4;--blue:#71d5ee;--red:#ff8f83;--program:#ff8f83;--preview:#96efd4;
   --ui-bg:#101a1d;--ui-surface:#18272b;--ui-raised:#203338;--ui-border:#3a5358;--ui-text:#edf5f3;--ui-muted:#b2c6c4;--ui-accent:#b7ed83;--ui-pvw:#67dcb5;--ui-pgm:#ff7e86;--ui-error:#ffa7a7;color-scheme:dark;
 }
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .broadcast-canvas{--blue:#86cfff;--red:#f296a8}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.panel,.production-desk,.production-desk details,.production-summary,.production-health,.director-look,.management-next-step,.help-card,.help-limits,.mode-panel,.team-directory-card,.save-recording-bar,.economy-details,.archived-game-preview){background:var(--ui-surface);border-color:var(--ui-border);box-shadow:var(--ui-shadow)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.brand small,.brand strong span,.eyebrow,.scene-shortcut-hint,.look-heading,.look-heading span){color:var(--ui-muted)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.panel-head h2,.mode-panel h2,.roster-row strong,.source-row strong,.team-directory-header h3,.help-card h2,.help-limits h2,.embedded-obs-heading h2,.embedded-obs-configuration h3,.embedded-obs-section-label h3){color:var(--ui-text)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.icon-button:hover){background:var(--ui-hover);color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.settings-divider){background:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.panel-head,.production-task-nav,.task-tabs,.source-row,.roster-row,.roster-table-head,.roster-team+.roster-team,.event-tabs,.production-checks>div,.production-clip,.production-rundown,.embedded-obs-content,.embedded-obs-sources,.embedded-obs-launch,.embedded-obs-destination){border-color:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(input,select,textarea){color:var(--ui-text);background:var(--ui-surface);border-color:#a7bdb5;accent-color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(input,textarea)::placeholder{color:#677e75;opacity:1}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(input,select,textarea):focus{border-color:var(--ui-accent);outline:2px solid #176b552b}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(button,a,input,select,textarea,summary):focus-visible{outline:3px solid var(--ui-accent);outline-offset:3px}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.field,.field>span,.field>label,.toggle-setting){color:var(--ui-text)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .button{background:var(--ui-surface);color:var(--ui-text);border-color:#a7bdb5;box-shadow:none}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .button:hover{background:var(--ui-hover);border-color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .button.primary{background:var(--ui-accent);border-color:var(--ui-accent);color:#fff}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .button.primary:hover{background:#10543f;border-color:#10543f}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.button.danger,.button.output-stop){color:var(--ui-error);background:var(--ui-danger-bg);border-color:#d8a6a3}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .button.danger:hover{background:#f8dcd7;border-color:var(--ui-error)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.task-tabs button[aria-selected="true"],.mode-switch button.active,.management-tabs button.active,.look-toggles button.enabled){background:var(--ui-selected);color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.draft-slots>button,.champion-picker-grid button,.player-feed-pair-buttons>button){background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.draft-slots>button:hover,.champion-picker-grid button:hover,.player-feed-pair-buttons>button:hover){background:var(--ui-hover);border-color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.draft-slots>button.selected,.player-feed-pair-buttons>button.selected,.team-directory-card.selected){background:var(--ui-selected);border-color:var(--ui-pvw);box-shadow:inset 0 0 0 1px #087b6126}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.save-bar,.editor-footer,.management-page .form-actions,.management-page .editor-actions,.remote-bottom){background:#f4f8f6f5;border-color:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.mode-switch,.management-tabs,.search-field,.look-toggles button,.connection-detail,.color-field,.output-link code,.lan-url-list>div){background:var(--surface);border-color:var(--ui-border);color:var(--ui-muted)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.chart-tooltip){background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text);box-shadow:var(--ui-shadow)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.request-error,.production-error,.feed-onair-summary,.subtitle-onair){background:var(--ui-danger-bg);color:var(--ui-error);border-color:#d49b9e}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.connection-alert,.diagnostic-outcome,.editor-draft-note){background:var(--ui-warning-bg);color:var(--ui-warning);border-color:#ceb477}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.match-lifecycle,.data-frozen-note,.draft-current-action,.tip-card,.embedded-obs-performance,.diagnostic-outcome.ready){background:var(--ui-success-bg);color:var(--ui-accent);border-color:#90b8a3}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.application-status,.connection-status.connecting,.output-indicators .recording,.output-indicators .output-error,.embedded-obs-performance-issue){color:var(--ui-warning)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.application-status.applied,.application-status.confirmed,.embedded-obs-success,.text-button){color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.application-status.failed,.match-lifecycle-error){color:var(--ui-error)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .toast{background:var(--ui-success-bg);border-color:#90b8a3;color:var(--ui-accent);box-shadow:0 8px 30px #20373026}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .broadcast-canvas{--blue:#86cfff;--red:#f296a8}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.panel,.production-summary,.production-health,.director-look,.management-next-step,.help-card,.help-limits,.mode-panel,.team-directory-card,.save-recording-bar,.economy-details,.archived-game-preview){background:var(--ui-surface);border-color:var(--ui-border);box-shadow:var(--ui-shadow)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.brand small,.brand strong span,.eyebrow,.scene-shortcut-hint,.look-heading,.look-heading span){color:var(--ui-muted)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.panel-head h2,.mode-panel h2,.roster-row strong,.source-row strong,.team-directory-header h3,.help-card h2,.help-limits h2){color:var(--ui-text)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.icon-button:hover){background:var(--ui-hover);color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.settings-divider){background:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.panel-head,.production-task-nav,.task-tabs,.source-row,.roster-row,.roster-table-head,.roster-team+.roster-team,.event-tabs,.production-checks>div,.production-clip,.production-rundown){border-color:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(input,select,textarea){color:var(--ui-text);background:var(--ui-surface);border-color:#a7bdb5;accent-color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(input,textarea)::placeholder{color:#677e75;opacity:1}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(input,select,textarea):focus{border-color:var(--ui-accent);outline:2px solid #176b552b}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(button,a,input,select,textarea,summary):focus-visible{outline:3px solid var(--ui-accent);outline-offset:3px}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.field,.field>span,.field>label,.toggle-setting){color:var(--ui-text)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .button{background:var(--ui-surface);color:var(--ui-text);border-color:#a7bdb5;box-shadow:none}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .button:hover{background:var(--ui-hover);border-color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .button.primary{background:var(--ui-accent);border-color:var(--ui-accent);color:#fff}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .button.primary:hover{background:#10543f;border-color:#10543f}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.button.danger,.button.output-stop){color:var(--ui-error);background:var(--ui-danger-bg);border-color:#d8a6a3}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .button.danger:hover{background:#f8dcd7;border-color:var(--ui-error)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.task-tabs button[aria-selected="true"],.mode-switch button.active,.management-tabs button.active,.look-toggles button.enabled){background:var(--ui-selected);color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.player-feed-pair-buttons>button){background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.player-feed-pair-buttons>button:hover){background:var(--ui-hover);border-color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.player-feed-pair-buttons>button.selected,.team-directory-card.selected){background:var(--ui-selected);border-color:var(--ui-pvw);box-shadow:inset 0 0 0 1px #087b6126}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.save-bar,.editor-footer,.management-page .form-actions,.management-page .editor-actions){background:#f4f8f6f5;border-color:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.mode-switch,.management-tabs,.search-field,.look-toggles button,.connection-detail,.color-field,.output-link code,.lan-url-list>div){background:var(--surface);border-color:var(--ui-border);color:var(--ui-muted)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.chart-tooltip){background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text);box-shadow:var(--ui-shadow)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.request-error,.production-error,.feed-onair-summary,.subtitle-onair){background:var(--ui-danger-bg);color:var(--ui-error);border-color:#d49b9e}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.connection-alert,.diagnostic-outcome,.editor-draft-note){background:var(--ui-warning-bg);color:var(--ui-warning);border-color:#ceb477}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.match-lifecycle,.data-frozen-note,.tip-card,.diagnostic-outcome.ready){background:var(--ui-success-bg);color:var(--ui-accent);border-color:#90b8a3}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.application-status,.connection-status.connecting,.output-indicators .recording,.output-indicators .output-error){color:var(--ui-warning)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.application-status.applied,.application-status.confirmed,.text-button){color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.application-status.failed,.match-lifecycle-error){color:var(--ui-error)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .toast{background:var(--ui-success-bg);border-color:#90b8a3;color:var(--ui-accent);box-shadow:0 8px 30px #20373026}
 /* Existing notification kinds use important declarations; keep overrides local. */
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .notice-error{background:var(--ui-danger-bg)!important;border-color:#cc9395!important;color:var(--ui-error)!important}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .notice-warning{background:var(--ui-warning-bg)!important;border-color:#ceb477!important;color:var(--ui-warning)!important}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.notice-info,.notice-loading){background:var(--ui-info-bg)!important;border-color:#91b7c8!important;color:var(--ui-info)!important}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .notice-success{background:var(--ui-success-bg)!important;border-color:#90b8a3!important;color:var(--ui-accent)!important}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .notice-error{background:var(--ui-danger-bg)!important;border-color:#cc9395!important;color:var(--ui-error)!important}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .notice-warning{background:var(--ui-warning-bg)!important;border-color:#ceb477!important;color:var(--ui-warning)!important}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.notice-info,.notice-loading){background:var(--ui-info-bg)!important;border-color:#91b7c8!important;color:var(--ui-info)!important}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .notice-success{background:var(--ui-success-bg)!important;border-color:#90b8a3!important;color:var(--ui-accent)!important}
 
 /* Secondary copy and headings are scoped to operator components. */
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(
   .look-identity strong,.look-heading strong,.look-toggles button.enabled,.roster-team-head>b,.objective-summary b,
   .connection-card h3,.team-roster-mini span,.schedule-table-row strong,.match-teams b,.recording-description strong,.save-recording-bar strong,
-  .asset-card strong,.asset-upload-empty strong,.champion-inspector h3,.data-summary strong,.champion-picker-grid span,.economy-details>summary,
-  .embedded-obs-performance-metrics b,.embedded-obs-sources>span
-){color:var(--ui-text)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.mode-pill,.look-identity,.look-identity-mark,.connection-icon,.source-icon.is-connected,.embedded-obs-status.connected,
-  .embedded-obs-steps li.complete,.embedded-obs-steps li.complete>b,.embedded-obs-section-label>span){color:var(--ui-accent);background:var(--ui-success-bg);border-color:#9abcac}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.mode-pill.demo,.live-bottom-unsaved,.embedded-obs-steps li.current,.embedded-obs-steps li.current>b){color:var(--ui-warning);background:var(--ui-warning-bg);border-color:#ceb477}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.tip-card>div,.tip-card>span,.look-toggles button.enabled>span,.diagnostic-config b,.embedded-obs-eyebrow,.embedded-obs-preview-meta button,.embedded-obs-performance-heading strong,.embedded-obs-output-state .active,.external-obs-advanced>summary,.embedded-obs-configuration h3>b,.match-lifecycle-status>svg,.data-frozen-note svg,.output-link>span,.lan-title,.asset-card a){color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.embedded-obs-output-state .recording,.live-bottom-error){color:var(--ui-error)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.embedded-obs-preview-column>.embedded-obs-note:not(.muted),.theme-save-status.warning){color:var(--ui-warning)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.badge,.event-count,.source-icon,.recording-icon,.management-tabs button small,.scene-shortcut-hint kbd){background:var(--ui-raised);color:var(--ui-muted);border-color:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.management-tabs button.active small){background:var(--ui-accent);color:#fff}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.connection-status.connected,.match-status.live,.event-tabs button.active){color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.live-bottom-edit-tabs button,.embedded-obs-status,.embedded-obs-steps li){background:var(--surface);color:var(--ui-muted);border-color:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.live-bottom-edit-tabs button.selected,.selected-player-actions){background:var(--ui-selected);color:var(--ui-accent);border-color:#7aaa96}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.remote-scene-grid .button,.remote-toggle){background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .remote-scene-grid .button.primary{background:var(--ui-selected);border-color:var(--ui-accent);color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .remote-scene-grid .button.primary>span{color:var(--ui-pgm)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .toggle-setting input[type=checkbox]{background:#cedbd5;border-color:#9ab1a5}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .toggle-setting input[type=checkbox]:after{background:#526b62}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .toggle-setting input[type=checkbox]:checked{background:var(--ui-accent);border-color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .toggle-setting input[type=checkbox]:checked:after{background:#fff}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .search-field input{background:transparent;color:var(--ui-text)!important}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.search-field>span,.look-identity span,.look-toggles button>span,.lan-url-list code,.output-link code){color:var(--ui-muted)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .search-field:focus-within{box-shadow:0 0 0 2px #176b552b;border-color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .embedded-obs-panel{border-color:var(--ui-border)!important}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .embedded-obs-stop{color:var(--ui-error)!important;background:var(--ui-danger-bg)!important;border-color:#d49b9e!important}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .demo-label{color:var(--ui-warning)!important;background:var(--ui-warning-bg)!important;border-color:#ceb477!important}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.team-directory-card:hover,.roster-row:hover,.roster-row.selected,.schedule-table-row:hover,.recording-row:hover){background:var(--ui-hover)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.schedule-table-heading,.player-data thead,.player-data th,.player-data th:first-child,.player-data td:first-child){background:var(--surface);color:var(--ui-muted);border-color:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .player-data td{color:var(--ui-text);border-color:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .player-data tbody tr:hover{background:var(--ui-hover)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .player-data tbody tr.selected{background:var(--ui-selected)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .player-data tbody tr.selected td:first-child{background:var(--ui-selected)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .data-summary{background:linear-gradient(120deg,#e9f4fa,#fff)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .data-summary.red{background:linear-gradient(120deg,#fff0ed,#fff)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.data-economy .economy-chart,.data-economy .chart-unavailable){color:var(--ui-muted)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.draft-source-note,.diagnostic-endpoints>div,.economy-source-status,.asset-card,.asset-inspector,.champion-inspector,.team-emblem,.match-teams b,.pb-panel .pb-runes>span,.pb-panel .pb-image){background:var(--surface);border-color:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.pb-panel .pb-runes>span,.help-card>div>span){color:var(--ui-muted)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) :is(.team-roster-mini,.schedule-table-row,.recording-row,.fearless-history-row,.pb-panel .pb-stats,.data-source-note,.diagnostic-endpoints,.asset-inspector,.external-obs-advanced[open]>summary,.economy-details[open]>summary,.embedded-obs-steps li>b,.embedded-obs-configuration h3>b){border-color:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .diagnostic-endpoints{background:var(--ui-border)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .embedded-obs-steps li.complete i{background:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .embedded-obs-status.connected i{background:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-page) .production-desk .holding{background:#f8dcd7}
+  .asset-card strong,.asset-upload-empty strong,.champion-inspector h3,.data-summary strong,.economy-details>summary){color:var(--ui-text)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.mode-pill,.look-identity,.look-identity-mark,.connection-icon,.source-icon.is-connected){color:var(--ui-accent);background:var(--ui-success-bg);border-color:#9abcac}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.mode-pill.demo,.live-bottom-unsaved){color:var(--ui-warning);background:var(--ui-warning-bg);border-color:#ceb477}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.tip-card>div,.tip-card>span,.look-toggles button.enabled>span,.diagnostic-config b,.external-obs-advanced>summary,.match-lifecycle-status>svg,.data-frozen-note svg,.output-link>span,.lan-title,.asset-card a){color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.live-bottom-error){color:var(--ui-error)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.badge,.event-count,.source-icon,.recording-icon,.management-tabs button small,.scene-shortcut-hint kbd){background:var(--ui-raised);color:var(--ui-muted);border-color:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.management-tabs button.active small){background:var(--ui-accent);color:#fff}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.connection-status.connected,.match-status.live,.event-tabs button.active){color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.live-bottom-edit-tabs button){background:var(--surface);color:var(--ui-muted);border-color:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.live-bottom-edit-tabs button.selected,.selected-player-actions){background:var(--ui-selected);color:var(--ui-accent);border-color:#7aaa96}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .toggle-setting input[type=checkbox]{background:#cedbd5;border-color:#9ab1a5}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .toggle-setting input[type=checkbox]:after{background:#526b62}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .toggle-setting input[type=checkbox]:checked{background:var(--ui-accent);border-color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .toggle-setting input[type=checkbox]:checked:after{background:#fff}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .search-field input{background:transparent;color:var(--ui-text)!important}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.search-field>span,.look-identity span,.look-toggles button>span,.lan-url-list code,.output-link code){color:var(--ui-muted)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .search-field:focus-within{box-shadow:0 0 0 2px #176b552b;border-color:var(--ui-accent)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .demo-label{color:var(--ui-warning)!important;background:var(--ui-warning-bg)!important;border-color:#ceb477!important}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.team-directory-card:hover,.roster-row:hover,.roster-row.selected,.schedule-table-row:hover,.recording-row:hover){background:var(--ui-hover)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.schedule-table-heading,.player-data thead,.player-data th,.player-data th:first-child,.player-data td:first-child){background:var(--surface);color:var(--ui-muted);border-color:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .player-data td{color:var(--ui-text);border-color:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .player-data tbody tr:hover{background:var(--ui-hover)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .player-data tbody tr.selected{background:var(--ui-selected)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .player-data tbody tr.selected td:first-child{background:var(--ui-selected)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .data-summary{background:linear-gradient(120deg,#e9f4fa,#fff)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .data-summary.red{background:linear-gradient(120deg,#fff0ed,#fff)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.data-economy .economy-chart,.data-economy .chart-unavailable){color:var(--ui-muted)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.draft-source-note,.diagnostic-endpoints>div,.economy-source-status,.asset-card,.asset-inspector,.champion-inspector,.team-emblem,.match-teams b,.pb-panel .pb-runes>span,.pb-panel .pb-image){background:var(--surface);border-color:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.pb-panel .pb-runes>span,.help-card>div>span){color:var(--ui-muted)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.team-roster-mini,.schedule-table-row,.recording-row,.pb-panel .pb-stats,.data-source-note,.diagnostic-endpoints,.asset-inspector,.external-obs-advanced[open]>summary,.economy-details[open]>summary){border-color:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .diagnostic-endpoints{background:var(--ui-border)}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .production-desk .holding{background:#f8dcd7}
 :root[data-ui-theme="light"] .loading-screen .loading-dot{border-color:#176b5526;border-top-color:var(--ui-accent)}

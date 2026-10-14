@@ -27,7 +27,20 @@ export function useBroadcast() {
     const accept = (next: BroadcastState) => setState(previous => !previous || next.revision >= previous.revision ? next : previous);
     api<BroadcastState>('/api/state').then(accept).catch(e => setError(e.message));
     const invitation=new URLSearchParams(location.search).get('seat');if(invitation)sessionStorage.setItem('riftcast-seat-token',invitation);
-    if(!location.pathname.startsWith('/overlay')&&!seatStarted.current){seatStarted.current=true;seatReady.current=api<{token:string;id:string;name:string;role:ControlSeat['role'];owner:boolean}>('/api/control/seat',{method:'POST',body:JSON.stringify({name:location.pathname.startsWith('/remote')?'移动资料席':'主机导播',role:location.pathname.startsWith('/remote')?'data':'director'})}).then(seat=>{sessionStorage.setItem('riftcast-seat-token',seat.token);setSeat({id:seat.id,name:seat.name,role:seat.role});sessionStorage.setItem('riftcast-seat-info',JSON.stringify({id:seat.id,name:seat.name,role:seat.role}));if(!seat.owner)notify(seat.role==='readonly'?'当前为只读席，可核对节目与预监':'当前席位可准备内容，节目切入由主导播控制席执行');}).catch(e=>{seatStarted.current=false;notify(e.message,'error');});}
+    if (!location.pathname.startsWith('/overlay') && !seatStarted.current) {
+      seatStarted.current = true;
+      seatReady.current = api<{ token: string; id: string; name: string; role: ControlSeat['role']; owner: boolean }>('/api/control/seat', {
+        method: 'POST', body: JSON.stringify({ name: location.pathname.startsWith('/remote') ? '移动资料席' : '主机导播', role: location.pathname.startsWith('/remote') ? 'data' : 'director' }),
+      }).then(async verified => {
+        sessionStorage.setItem('riftcast-seat-token', verified.token);
+        setSeat({ id: verified.id, name: verified.name, role: verified.role });
+        sessionStorage.setItem('riftcast-seat-info', JSON.stringify({ id: verified.id, name: verified.name, role: verified.role }));
+        if (!verified.owner) notify(verified.role === 'readonly' ? '当前为只读席，可核对节目与预监' : '当前席位可准备内容，节目切入由主导播控制席执行');
+        // Seat issuance can establish the owner after the initial HTTP/WebSocket snapshot.
+        // Read the authoritative state again instead of inferring ownership from the role.
+        accept(await api<BroadcastState>('/api/state'));
+      }).catch(e => { seatStarted.current = false; notify(e.message, 'error'); });
+    }
     api<{ champions: Champion[] }>('/api/champions').then(data => setChampions(data.champions)).catch(e => notify(`英雄素材暂不可用：${e.message}`,'warning'));
     const connect = () => {
       if (stopped) return;

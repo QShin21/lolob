@@ -75,9 +75,9 @@ export default function App() {
           <div className="control-title"><strong>RIFTCAST</strong><span>ARENA / {navigation.find(item => item.id === page)?.name}</span></div>
           <button className="control-match" title="正在节目中的比赛 · 打开赛事资料" onClick={() => navigate('manage')}><span>{onAir.match.title}</span><b>{getTeam(onAir, 'blue')?.tag} <em>{onAir.match.blueScore} : {onAir.match.redScore}</em> {getTeam(onAir, 'red')?.tag}</b><small>第 {onAir.match.game} 局</small></button>
           <span className="control-mode">{state.mode === 'demo' ? '演示数据' : '本地实况'}</span>
+          <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? '验证席位中'}</span>
           <span className={`control-sync ${connected ? '' : 'disconnected'}`}><Wifi size={14}/>{connected ? '已同步' : '同步中断'}</span>
         </header>
-        <ProductionBar {...ctx} showTake={page !== 'studio'}/>
         {!connected && <div className="control-disconnect" role="alert">{error || '同步中断，保留最后画面与本地草稿，正在重连。'}</div>}
         <main className="control-main">
           <Suspense fallback={<div className="page-loading" role="status">正在载入页面…</div>}>
@@ -90,6 +90,7 @@ export default function App() {
             {page === 'wrap' && <div className="control-page"><WrapUp {...ctx} streamReady={streamReady} onSettings={() => navigate('settings')} onManage={() => navigate('manage')} onRecords={records} onNextGame={() => navigate('draft')} onReport={() => navigate('studio')}/></div>}
           </Suspense>
         </main>
+        <ProductionBar {...ctx} showTake={page !== 'studio'}/>
       </div>
       <Notification notice={toast} dismiss={dismissNotice}/>
     </div>

@@ -1,6 +1,7 @@
 import { OutputPatchbay } from './OutputPatchbay';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowRight, Camera, Check, Film, Mic, Monitor, Play, Radio, RefreshCw, Save, Send, Square, Volume2 } from 'lucide-react';
+import { ArrowRight, Mic, Monitor, Play, RefreshCw, Save, Volume2 } from 'lucide-react';
+import { OutputSignals } from './OutputSignals';
 import type { OutputAction, OutputDestination, VirtualCameraDriverStatus, CompanionAudioStatus } from '../../shared/obs-output';
 import { api } from '../lib';
 import { ObsLivePreview, type ObsPreviewStatus } from './ObsLivePreview';
@@ -19,7 +20,7 @@ export type ObsEngineStatus = {
   performance?: { available: boolean; configuredFps: number; encoder: string; hardwareEncoding: boolean; activeFps: number; cpuUsage: number; renderTimeMs: number; sampleSeconds: number; rendering: { frames: number; percent: number }; encoding: { frames: number; percent: number }; network: { frames: number; percent: number; congestion: number; bitrateKbps: number; reconnecting: boolean }; issues: string[] };
 };
 type Props = {
-  section?:string;onSection?:(section:'video'|'audio'|'output')=>void;
+  section?: string; onSection?: (section: 'video' | 'audio' | 'output') => void; controlReason?: string;
   notify: (message: string,kind?:import('../../shared/types').NoticeKind) => void; onStatus: (status: ObsEngineStatus) => void;
   onOpenStudio?: () => void; onConnectExternal?: () => Promise<void>;
   outputReady?: boolean; onOutputReady?: (ready: boolean) => void; connectionBusy?: boolean;
@@ -27,10 +28,11 @@ type Props = {
 const messageOf = (error: unknown) => error instanceof Error ? error.message : '无法连接直播引擎，请重试';
 const isLocal = () => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
 
-export function EmbeddedObs({ section='video',onSection,notify, onStatus, onOpenStudio, onConnectExternal, outputReady = false, onOutputReady, connectionBusy = false }: Props) {
+export function EmbeddedObs({ section='video',onSection,controlReason='',notify, onStatus, onOpenStudio, onConnectExternal, outputReady = false, onOutputReady, connectionBusy = false }: Props) {
   const [status, setStatus] = useState<ObsEngineStatus | null>(null);
   const [statusError, setStatusError] = useState('');
   const [operationError, setOperationError] = useState('');
+  const [receipt, setReceipt] = useState('');
   const [pending, setPending] = useState<string | null>(null);
   const [previewStatus, setPreviewStatus] = useState<ObsPreviewStatus | null>(null);
   const [previewEnabled, setPreviewEnabled] = useState(true);
@@ -88,8 +90,8 @@ export function EmbeddedObs({ section='video',onSection,notify, onStatus, onOpen
   function finishOperation() { operationInProgress.current = false; setPending(null); }
 
   async function run(key: string, endpoint: string, body: Record<string, unknown>, message: string) {
-    if (!beginOperation(key)) return; setOperationError('');
-    try { publishStatus(await api<ObsEngineStatus>(endpoint, { method: 'POST', body: JSON.stringify(body) }), key === 'setup'); notify(message); }
+    if (!beginOperation(key)) return; setOperationError(''); setReceipt('');
+    try { publishStatus(await api<ObsEngineStatus>(endpoint, { method: 'POST', body: JSON.stringify(body) }), key === 'setup'); setReceipt(message); notify(message); }
     catch (error) { const text = messageOf(error); setOperationError(text); notify(text,'error'); }
     finally { finishOperation(); }
   }
@@ -119,22 +121,31 @@ export function EmbeddedObs({ section='video',onSection,notify, onStatus, onOpen
       const result = await api<{ applied: boolean }>('/api/obs/stream/settings', { method: 'POST', body: JSON.stringify({ server: server.trim(), key: streamKey.trim() }) });
       if (!result.applied) throw new Error('引擎未确认推流配置，请重新应用');
       setDestinationApplied(true); readinessCallback.current?.(true); setStreamKey('');
+      setReceipt('OBS 已确认本次 RTMP 凭据；推流尚需手动启动。');
       notify('推流接收地址已应用。返回导播台核对节目画面，再开始推流');
     } catch (error) { invalidateDestination(); setOperationError(messageOf(error)); }
     finally { finishOperation(); }
   }
   async function output(action: OutputAction) {
-    if (!beginOperation(action)) return; setOperationError('');
+    if (!beginOperation(action)) return; setOperationError(''); setReceipt('');
     try {
       const next = await api<ObsEngineStatus>('/api/obs/engine/output', { method: 'POST', body: JSON.stringify({ action }) });
       publishStatus(next);
       const started = action.startsWith('start');
       const confirmed = action.endsWith('virtual-camera')
-        ? started ? next.virtualCamActive === true && next.companionAudio?.active === true : next.virtualCamActive === false && !next.companionAudio?.active && !next.companionAudio?.managing
+        ? started ? next.virtualCamActive === true && next.companionAudio?.active === true : next.virtualCamActive === false && next.companionAudio?.active === false && next.companionAudio?.managing === false
         : (action.endsWith('stream') ? next.streamActive : next.recordActive) === started;
-      if (!confirmed || next.error) throw new Error(next.error || next.companionAudio?.error || '输出尚未完整确认，请核对各路状态');
-      notify(action.endsWith('virtual-camera') ? started ? '节目视频和最终混音已送出，请在伴侣核对后开播' : '伴侣音画已停止并退出托管；外部直播间请在伴侣结束' : `OBS 已确认${started ? '启动' : '停止'}${action.endsWith('stream') ? ' RTMP' : '本机录制'}`);
-    } catch(error) { const text=messageOf(error);setOperationError(text);notify(text,'error'); }
+      if (!next.connected || !confirmed || next.error || action.endsWith('virtual-camera') && next.companionAudio?.error) throw new Error(next.error || next.companionAudio?.error || '输出尚未完整确认，请核对各路状态');
+      const message = action.endsWith('virtual-camera')
+        ? started ? '节目视频和最终混音已送出，请在伴侣核对后开播' : '伴侣音画已停止并退出托管；外部直播间请在伴侣结束'
+        : 'OBS 已确认' + (started ? '启动' : '停止') + (action.endsWith('stream') ? ' RTMP' : '本机录制');
+      setReceipt(message); notify(message);
+    } catch (error) {
+      const text = messageOf(error); setOperationError(text); notify(text, 'error');
+      // A failed start/stop may have rolled back only part of the route. Refresh facts, never retry the write automatically.
+      try { publishStatus(await api<ObsEngineStatus>('/api/obs/engine')); }
+      catch (refreshError) { setStatusError(messageOf(refreshError)); invalidateDestination(); }
+    }
     finally { finishOperation(); }
   }
   function editSelection(work: () => void) { selectionDirty.current = true; work(); }
@@ -142,37 +153,92 @@ export function EmbeddedObs({ section='video',onSection,notify, onStatus, onOpen
   const connected = !!status?.connected && !statusError;
   const activeOutput = !!status?.streamActive || !!status?.recordActive || status?.virtualCamActive === true || status?.companionAudio?.managing === true || status?.companionAudio?.active === true;
   const destination = status?.destination ?? 'rtmp';
-  const companion = destination === 'douyin';
-  const camera = status?.virtualCamera;
-  const destinationReady = companion ? !!camera?.driver.installed && !camera?.requiresRestart && !!status?.companionAudio?.ready : destinationApplied;
-  const cameraStateKnown = mode !== 'embedded' || status?.virtualCamActive !== null;
+  const cameraStateKnown = mode !== 'embedded' || status?.virtualCamActive != null;
   const sourcesLoaded = connected && !!status?.inputs.length;
   const dirty = mode === 'embedded' && selectionDirty.current;
-  const canConfigure = connected && local && !busy && !activeOutput && cameraStateKnown;
-  const canOutput = connected && local && !busy;
+  const canConfigure = connected && local && !controlReason && !busy && !activeOutput && cameraStateKnown;
+  const canOutput = connected && local && !controlReason && !busy;
   const label = statusError ? '状态查询失败' : !status ? '正在读取引擎状态' : status.connected ? '引擎已连接' : status.running ? '正在连接引擎' : mode === 'external' ? '等待连接 OBS' : status.available ? '等待启动' : '内置引擎未就绪';
   const options = status?.capabilities; const performance = status?.performance;
   const encoderLabel = performance ? ({ nvenc: 'NVIDIA NVENC', amd: 'AMD 硬件编码', qsv: 'Intel QSV', x264: 'x264 软件编码' }[performance.encoder] ?? performance.encoder) : '';
 
-  return <section ref={surface} id="obs-setup" className={`panel embedded-obs-panel section-${section}`} aria-label="OBS 连接与输出配置">
-    <div className="engine-connection-heading"><strong>OBS 引擎</strong><span role="status">{label}</span><small>{status?.version ? `版本 ${status.version}` : '引擎版本待查询'}</small></div>
-    <div className="embedded-obs-toolbar"><div className="mode-switch" aria-label="选择直播引擎"><button className={mode === 'embedded' ? 'active' : ''} disabled={busy || !local || !status || !!statusError || activeOutput || mode === 'embedded'} onClick={() => void run('mode', '/api/obs/engine/mode', { mode: 'embedded' }, '已切换到内置 OBS 引擎')}><Monitor size={15} />内置 OBS</button><button className={mode === 'external' ? 'active' : ''} disabled={busy || !local || !status || !!statusError || activeOutput || mode === 'external'} onClick={() => void run('mode', '/api/obs/engine/mode', { mode: 'external' }, '已切换到外部 OBS 兼容模式')}>外部 OBS · 高级</button></div><div className="embedded-obs-engine-actions">{mode === 'embedded' && !connected && <button className="button primary small" disabled={busy || !local || !status?.available} onClick={() => void run('start', '/api/obs/engine/start', {}, '内置 OBS 引擎已启动并完成自动配置')}><Play size={14} />{pending === 'start' ? '正在准备…' : '1 · 启动内置引擎'}</button>}{mode === 'external' && !connected && onConnectExternal && <button className="button primary small" disabled={busy || !local} onClick={() => void connectExternal()}><Play size={14} />{pending === 'external-connect' ? '正在连接…' : '连接外部 OBS'}</button>}<button className="button small" disabled={busy} aria-label="刷新直播引擎状态" onClick={() => void refreshStatus()}><RefreshCw size={14} className={pending === 'refresh' ? 'spinning' : ''} />刷新状态</button></div></div>
-    {section === 'output' ? <OutputPatchbay {...{status, connected, busy, local, activeOutput, canConfigure, canOutput, destination, destinationApplied, destinationReady, sourcesLoaded, dirty, pending, server, streamKey, onOpenStudio}}
-      setServer={value=>{setServer(value);invalidateDestination();}} setStreamKey={value=>{setStreamKey(value);invalidateDestination();}}
-      selectDestination={destination=>void run('output-destination','/api/obs/engine/destination',{destination},'输出路径已保存')}
-      applyDestination={()=>void applyDestination()} output={action=>void output(action)}
-      prepare={()=>void run('prepare-companion','/api/obs/engine/companion/prepare',{},'设备准备请求已完成，请核对状态、错误与重启要求')}
-      installCamera={()=>void run('install-camera','/api/obs/engine/virtual-camera/install',{},'摄像头准备请求已完成，请核对设备状态')}/>
-      : <div className="embedded-obs-content">
-      <div className="embedded-obs-preview-column"><div className="embedded-obs-section-label"><h3>合成画面核对</h3><span>每秒 1 帧</span></div><div className="embedded-obs-preview"><ObsLivePreview kind="program" purpose="monitor" connected={connected} enabled={previewEnabled&&section==='video'} onStatus={setPreviewStatus} /></div><div className="embedded-obs-preview-meta"><span>{status?.sceneName || '等待场景'}</span><span>{previewStatus?.phase === 'live' ? '截图已更新 · 1 FPS' : previewStatus?.message || '等待合成画面'}</span><button type="button" onClick={() => setPreviewEnabled(enabled => !enabled)} disabled={!connected}>{previewEnabled ? '暂停截图' : '恢复截图'}</button></div><p className="muted embedded-obs-note">在比赛或回放中核对游戏捕获，并试听系统声音与麦克风。节目大画面在导播台原生显示。</p>
-        {!!status?.inputs.length && <details className="embedded-obs-sources"><summary>已加载来源 · {status.inputs.length}</summary>{status.inputs.map(input => <span key={input.inputName}><LayersIcon kind={input.inputKind} /><span>{input.inputName}</span>{input.inputMuted && <small>静音</small>}</span>)}</details>}
-        {performance?.available && <div className="embedded-obs-performance" aria-label="输出流畅性诊断"><div className="embedded-obs-performance-heading"><strong>{performance.activeFps.toFixed(1)} FPS</strong><span>{encoderLabel} · {performance.configuredFps} 帧目标</span></div><div className="embedded-obs-performance-metrics"><span>渲染丢帧 <b>{performance.rendering.percent.toFixed(2)}%</b></span><span>编码丢帧 <b>{performance.encoding.percent.toFixed(2)}%</b></span><span>网络丢帧 <b>{performance.network.percent.toFixed(2)}%</b></span>{status?.streamActive && <span>发送码率 <b>{Math.round(performance.network.bitrateKbps)} kbps</b></span>}</div><p className="muted">OBS 实际输出统计 · {performance.sampleSeconds > 0 ? `最近 ${performance.sampleSeconds.toFixed(1)} 秒` : '正在建立采样基线'}</p>{performance.issues.map(issue => <p className="embedded-obs-performance-issue" key={issue}>{issue}</p>)}</div>}
+  const sourceBlockReason = !local ? '来源配置仅允许在导播主机操作。'
+    : controlReason || (!connected ? '先连接 OBS 引擎，再选择来源。'
+      : activeOutput ? '停止 RTMP、伴侣音画和录制后，才能调整来源或切换引擎。'
+      : !cameraStateKnown ? '虚拟摄像头状态未知，请先刷新状态。' : '');
+
+  return <section ref={surface} id="obs-setup" className="engine-workspace" aria-label="OBS 连接与输出配置">
+    <header className="engine-statusbar">
+      <div className="engine-identity"><Monitor size={17} /><strong>{mode === 'embedded' ? '内置 OBS' : '外部 OBS'}</strong><span className={connected ? 'is-connected' : 'is-unavailable'} role="status">{label}</span></div>
+      <span className="engine-version">{status?.version ? '版本 ' + status.version : '版本待查询'}</span>
+      <div className="engine-status-actions">
+        {mode === 'embedded' && !connected && <button className="button primary small" disabled={busy || !local || !!controlReason || !status?.available} onClick={() => void run('start', '/api/obs/engine/start', {}, '引擎启动请求已处理，请核对连接与已加载来源')}><Play size={14} />{pending === 'start' ? '正在准备…' : '启动内置引擎'}</button>}
+        {mode === 'external' && !connected && onConnectExternal && <button className="button primary small" disabled={busy || !local || !!controlReason} onClick={() => void connectExternal()}><Play size={14} />{pending === 'external-connect' ? '正在连接…' : '连接外部 OBS'}</button>}
+        {section !== 'video' && onSection && <button className="button small" onClick={() => onSection('video')}>画面与引擎</button>}
+        <button className="button small" disabled={busy} aria-label="刷新直播引擎状态" onClick={() => void refreshStatus()}><RefreshCw size={14} className={pending === 'refresh' ? 'spinning' : ''} />刷新状态</button>
       </div>
-<div className="embedded-obs-configuration">
-        {mode === 'embedded' ? <><h3><b>2</b> 游戏画面与音频</h3><label className="field"><span><Monitor size={14} />游戏窗口</span><select aria-label="游戏窗口" value={gameWindow} disabled={!canConfigure} onChange={event => editSelection(() => setGameWindow(event.target.value))}><option value="">自动匹配英雄联盟</option>{options?.gameWindows.map(option => <option key={option.value} value={option.value}>{option.name}</option>)}</select></label><label className="field"><span><Volume2 size={14} />系统声音</span><select aria-label="系统声音" value={desktopDevice} disabled={!canConfigure} onChange={event => editSelection(() => setDesktopDevice(event.target.value))}><option value="default">系统默认输出设备</option>{options?.audioOutputs.filter(option => option.value !== 'default').map(option => <option key={option.value} value={option.value}>{option.name}</option>)}</select></label><label className="toggle-setting"><span>解说麦克风<small>启用后采集选定输入设备</small></span><input aria-label="解说麦克风" type="checkbox" checked={micEnabled} disabled={!canConfigure} onChange={event => editSelection(() => setMicEnabled(event.target.checked))} /></label>{micEnabled && <label className="field"><span><Mic size={14} />麦克风设备</span><select aria-label="麦克风设备" value={micDevice} disabled={!canConfigure} onChange={event => editSelection(() => setMicDevice(event.target.value))}><option value="default">系统默认输入设备</option>{options?.audioInputs.filter(option => option.value !== 'default').map(option => <option key={option.value} value={option.value}>{option.name}</option>)}</select></label>}<label className="field"><span>实际视频输出帧率</span><select aria-label="输出帧率" value={outputFps} disabled={!canConfigure} onChange={event => editSelection(() => setOutputFps(Number(event.target.value) as 30 | 60))}><option value={60}>60 帧 · 优先硬件编码</option><option value={30}>30 帧 · 降低显卡负荷</option></select><small className="muted">软件编码时引擎采用 30 帧，实际帧率见左侧统计。</small></label><button className={`button small ${dirty ? 'primary' : ''}`} disabled={!canConfigure} onClick={() => void run('setup', '/api/obs/engine/setup', { gameWindow, desktopDevice, micDevice, micEnabled, outputFps }, '游戏捕获与音频设置已应用')}><Save size={14} />{pending === 'setup' ? '正在应用…' : dirty ? '应用待保存的来源' : '应用画面与音频'}</button>{activeOutput && <p className="muted embedded-obs-note">停止直播输出和录制后，可调整来源或切换引擎。</p>}</> : <><h3><b>2</b> 外部 OBS 画面与音频</h3><p className="muted embedded-obs-note">在下方「外部 OBS 连接」中保存服务器设置、选择场景并添加 RiftCast HUD。在 OBS 同一场景准备游戏捕获、系统声音和解说音频。</p><a className="button small" href="#settings" onClick={()=>document.getElementById('external-obs-setup')?.scrollIntoView({block:'center'})}>打开外部 OBS 连接<ArrowRight size={14} /></a></>}
-      </div></div>}
-    {(statusError || status?.error || operationError) && <div className="embedded-obs-errors">{statusError && <p className="request-error" role="alert">{statusError}</p>}{status?.error && status.error !== statusError && <p className="request-error" role="alert">{status.error}</p>}{operationError && operationError !== status?.error && <p className="request-error" role="alert">{operationError}</p>}</div>}
-    {!local && <p className="muted embedded-obs-remote-note">请在导播主机的 localhost 工作台控制引擎与直播输出。</p>}
+    </header>
+    {(statusError || status?.error || operationError) && <div className="engine-errors">
+      {statusError && <p role="alert">{statusError}。当前输出状态未确认，请刷新连接后核对。</p>}
+      {status?.error && status.error !== statusError && <p role="alert">{status.error}</p>}
+      {operationError && operationError !== status?.error && <p role="alert">{operationError}</p>}
+    </div>}
+    {(!local || controlReason) && <p className="engine-access-note">{!local ? '请在导播主机的 localhost 工作台控制引擎与输出。' : controlReason}</p>}
+
+    {section === 'output' ? <OutputPatchbay
+      {...{ status, connected, busy, local, activeOutput, canConfigure, canOutput, controlReason, destination, destinationApplied, sourcesLoaded, dirty, pending, receipt, server, streamKey, onOpenStudio, onSection }}
+      setServer={value => { setServer(value); invalidateDestination(); }}
+      setStreamKey={value => { setStreamKey(value); invalidateDestination(); }}
+      selectDestination={value => void run('output-destination', '/api/obs/engine/destination', { destination: value }, '下一次输出路径已保存；当前输出状态请单独核对')}
+      applyDestination={() => void applyDestination()}
+      output={action => void output(action)}
+      prepare={() => void run('prepare-companion', '/api/obs/engine/companion/prepare', {}, '设备准备请求已完成，请核对状态、错误与重启要求')}
+      installCamera={() => void run('install-camera', '/api/obs/engine/virtual-camera/install', {}, '摄像头准备请求已完成，请核对驱动注册与重新加载要求')}
+    /> : <>
+      {section === 'video' && <div className="engine-mode-row">
+        <span>引擎模式</span>
+        <div role="group" aria-label="选择直播引擎">
+          <button aria-pressed={mode === 'embedded'} disabled={busy || !local || !!controlReason || !status || !!statusError || activeOutput || mode === 'embedded'} onClick={() => void run('mode', '/api/obs/engine/mode', { mode: 'embedded' }, '已切换到内置 OBS 引擎')}>内置 OBS</button>
+          <button aria-pressed={mode === 'external'} disabled={busy || !local || !!controlReason || !status || !!statusError || activeOutput || mode === 'external'} onClick={() => void run('mode', '/api/obs/engine/mode', { mode: 'external' }, '已切换到外部 OBS 兼容模式')}>外部 OBS</button>
+        </div>
+        <small>{activeOutput ? '活动输出期间锁定模式' : '切换模式不会自动开播'}</small>
+      </div>}
+      {section === 'audio' && <div className="engine-audio-route"><div><strong>声音来源到 Program 混音</strong><p>设备配置决定采集来源；下方通道增益、静音与音乐播放立即影响节目声音。</p></div><OutputSignals status={connected ? status : null} /></div>}
+      <div className={section === 'video' ? 'engine-source-layout' : 'engine-audio-settings'}>
+        {section === 'video' && <div className="engine-preview-column">
+          <div className="engine-section-heading"><h3>PGM 合成画面</h3><span>周期快照 / 每秒 1 帧</span></div>
+          <div className="engine-preview-surface embedded-obs-preview"><ObsLivePreview kind="program" purpose="monitor" connected={connected} enabled={previewEnabled && section === 'video'} onStatus={setPreviewStatus} /></div>
+          <div className="engine-preview-meta"><span>{status?.sceneName || '场景待查询'}</span><button type="button" onClick={() => setPreviewEnabled(value => !value)} disabled={!connected}>{previewEnabled ? '暂停截图' : '恢复截图'}</button></div>
+          <p className="engine-note">{previewStatus?.phase === 'live' ? '周期快照已更新；动态合成画面可在导播台核对。' : previewStatus?.message || '等待引擎合成画面。'}</p>
+          {!!status?.inputs.length && <details className="engine-loaded-sources"><summary>已加载来源（{status.inputs.length}）</summary>{status.inputs.map(input => <div key={input.inputName}><LayersIcon kind={input.inputKind} /><span>{input.inputName}</span>{input.inputMuted && <small>静音</small>}</div>)}</details>}
+        </div>}
+        <div className="engine-source-configuration">
+          {mode === 'embedded' ? <>
+            <div className="engine-section-heading"><h3>{section === 'audio' ? '采集设备' : '游戏画面与声音来源'}</h3><span>{dirty ? '有未应用修改' : '来源配置'}</span></div>
+            <div className="engine-source-fields">
+              {section === 'video' && <label className="field"><span><Monitor size={14} />游戏窗口</span><select aria-label="游戏窗口" value={gameWindow} disabled={!canConfigure} onChange={event => editSelection(() => setGameWindow(event.target.value))}><option value="">自动匹配英雄联盟</option>{options?.gameWindows.map(option => <option key={option.value} value={option.value}>{option.name}</option>)}</select></label>}
+              <label className="field"><span><Volume2 size={14} />系统声音</span><select aria-label="系统声音" value={desktopDevice} disabled={!canConfigure} onChange={event => editSelection(() => setDesktopDevice(event.target.value))}><option value="default">系统默认输出设备</option>{options?.audioOutputs.filter(option => option.value !== 'default').map(option => <option key={option.value} value={option.value}>{option.name}</option>)}</select><small>保留原游戏输出，避免采集 CABLE 混音形成反馈。</small></label>
+              <label className="engine-mic-toggle"><span>采集解说麦克风<small>使用真实麦克风输入设备</small></span><input aria-label="解说麦克风" type="checkbox" checked={micEnabled} disabled={!canConfigure} onChange={event => editSelection(() => setMicEnabled(event.target.checked))} /></label>
+              {micEnabled && <label className="field"><span><Mic size={14} />麦克风设备</span><select aria-label="麦克风设备" value={micDevice} disabled={!canConfigure} onChange={event => editSelection(() => setMicDevice(event.target.value))}><option value="default">系统默认输入设备</option>{options?.audioInputs.filter(option => option.value !== 'default').map(option => <option key={option.value} value={option.value}>{option.name}</option>)}</select></label>}
+              {section === 'video' && <label className="field"><span>视频输出目标帧率</span><select aria-label="输出帧率" value={outputFps} disabled={!canConfigure} onChange={event => editSelection(() => setOutputFps(Number(event.target.value) as 30 | 60))}><option value={60}>60 帧 / 优先硬件编码</option><option value={30}>30 帧 / 降低显卡负荷</option></select><small>软件编码时引擎采用 30 帧；实际表现见输出统计。</small></label>}
+            </div>
+            <div className="engine-source-apply"><p>{sourceBlockReason || '应用来源会更新引擎配置；启动输出仍需单独操作。'}</p><button className={'button small' + (dirty ? ' primary' : '')} disabled={!canConfigure} onClick={() => void run('setup', '/api/obs/engine/setup', { gameWindow, desktopDevice, micDevice, micEnabled, outputFps }, '游戏捕获与音频设置已应用')}><Save size={14} />{pending === 'setup' ? '正在应用…' : dirty ? '应用来源修改' : '应用画面与音频'}</button></div>
+          </> : <div className="engine-external-guidance"><h3>外部 OBS 来源</h3><p>在 OBS 的同一场景准备游戏捕获、系统声音与解说音频，再添加 RiftCast HUD 浏览器来源。</p>{section === 'video' ? <button className="button" onClick={() => document.getElementById('external-obs-setup')?.scrollIntoView({ block: 'start', behavior: 'auto' })}>连接与场景设置<ArrowRight size={14} /></button> : <button className="button" onClick={() => onSection?.('video')}>打开外部 OBS 设置</button>}</div>}
+          {receipt && <p className="engine-operation-receipt" role="status">{receipt}</p>}
+        </div>
+      </div>
+      {section === 'video' && <details className="engine-performance" open={!!performance?.issues.length}>
+        <summary>OBS 输出统计<span>{performance?.available ? performance.activeFps.toFixed(1) + ' FPS / ' + encoderLabel : '等待真实统计'}</span></summary>
+        {performance?.available ? <><dl>
+          <div><dt>当前 / 目标帧率</dt><dd>{performance.activeFps.toFixed(1)} / {performance.configuredFps} FPS</dd></div>
+          <div><dt>渲染丢帧</dt><dd>{performance.rendering.percent.toFixed(2)}%</dd></div>
+          <div><dt>编码丢帧</dt><dd>{performance.encoding.percent.toFixed(2)}%</dd></div>
+          <div><dt>网络丢帧</dt><dd>{performance.network.percent.toFixed(2)}%</dd></div>
+          <div><dt>CPU / 渲染耗时</dt><dd>{performance.cpuUsage.toFixed(1)}% / {performance.renderTimeMs.toFixed(2)} ms</dd></div>
+          <div><dt>发送码率</dt><dd>{status?.streamActive ? Math.round(performance.network.bitrateKbps) + ' kbps' : 'RTMP 未运行'}</dd></div>
+        </dl><p>{performance.sampleSeconds > 0 ? '最近 ' + performance.sampleSeconds.toFixed(1) + ' 秒的 OBS 统计' : '正在建立采样基线'}；不代表平台接收帧率。</p>{performance.issues.map(issue => <p className="engine-performance-warning" key={issue}>{issue}</p>)}</> : <p>尚未提供输出采样，不能据此判断实际帧率或推流稳定性。</p>}
+      </details>}
+    </>}
   </section>;
 }
 function LayersIcon({ kind }: { kind: string }) { return kind.includes('audio') || kind.includes('wasapi') ? <Volume2 size={13} /> : <Monitor size={13} />; }
