@@ -1,0 +1,320 @@
+{
+  "base": "d6d33ee58c3ce573917da19b11a63e626b9d44f8",
+  "stage": "Astra implementation self-review; pending independent Sol verification",
+  "sourceFiles": {
+    "src/components/LiveBottom.tsx": {
+      "before": "c9c0e5f7f948a407c76ec5ee9eae1684f6d3dda131d48bede2d65a7014b9b919",
+      "after": "2942e32ea5a9321c5d92e1e17b4104b98f590bbaac5a06e81cd704d7de0eeee9"
+    },
+    "src/components/live-bottom.css": {
+      "before": "24915f82bd4229243043cac225133ad3b66c0e51049dfcdb8795b972f80aa390",
+      "after": "2dac6eb3365c19a27a1ccd47e48b6bd9eacb2d93045e809cd101e73db237b53d"
+    },
+    "src/components/program/PrematchScenes.tsx": {
+      "before": "67b9595c57ce4eeb20ca10af9b350201f8604266aefffc3669a7abb0701161db",
+      "after": "bad39fb9749309293babfbc83e01c61bbec2a6c8bc3a93a9d01abaaa035dba11"
+    },
+    "src/components/program/program-scenes.css": {
+      "before": "8761402995aba36cacf41d2c5397ccfb24d594dae3e13b3fdde7aff2048134d7",
+      "after": "065912be1e1146e769edfc85d78c0fcee88378e4a069e2acfee428bcfaea41c2"
+    },
+    "scripts/verify-custom-scenes.mjs": {
+      "before": "fefde967a4de354e4bd116e3b1fea6684173254b6f0199a417acd8b46ab1efdc",
+      "after": "08992d4395152ea6b0216eff8606b69c52a682dac2f11ebc9de08d7a74327869"
+    },
+    "scripts/verify-release.mjs": {
+      "before": "d46f7fb98ca5e6f9bac0eb2adb18a6cb43be76d8556c501a328cdccea08b8c41",
+      "after": "831173a188af78bc7a28c12298055005f40c9d4d4848a2316dc6408af5c1809c"
+    },
+    "package.json": {
+      "before": "776a31ea8e9f8e70a8ce6bc3b38f2caa25a09e139115dc2c970b2c587e82b89b",
+      "after": "776a31ea8e9f8e70a8ce6bc3b38f2caa25a09e139115dc2c970b2c587e82b89b"
+    },
+    "package-lock.json": {
+      "before": "55eaee4311a2dca04586580749dc2290a1d88a6ed3bd82c8c8782166ad95625d",
+      "after": "55eaee4311a2dca04586580749dc2290a1d88a6ed3bd82c8c8782166ad95625d"
+    }
+  },
+  "assertionCounts": {
+    "scripts/verify-custom-scenes.mjs": {
+      "before": 20,
+      "after": 21
+    },
+    "scripts/verify-release.mjs": {
+      "before": 42,
+      "after": 43
+    }
+  },
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "transformedModules": 1695,
+      "mainJsKb": 534.94,
+      "warning": "Some chunks exceed 500 kB; retained"
+    },
+    {
+      "command": "node --check scripts/verify-custom-scenes.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --check scripts/verify-release.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "capture": {
+    "before": 12,
+    "after": 12,
+    "pageErrors": [],
+    "geometry": [
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 1920,
+        "selector": ".lb-scoreboard",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 1920,
+        "selector": ".lb-pair",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 1920,
+        "selector": ".lb-feed",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 1920,
+        "selector": ".lb-patch",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 1280,
+        "selector": ".lb-scoreboard",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 1280,
+        "selector": ".lb-pair",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 1280,
+        "selector": ".lb-feed",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 1280,
+        "selector": ".lb-patch",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 640,
+        "selector": ".lb-scoreboard",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 640,
+        "selector": ".lb-pair",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 640,
+        "selector": ".lb-feed",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "live",
+        "width": 640,
+        "selector": ".lb-patch",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "draft",
+        "width": 1920,
+        "selector": ".cast-draft-cards",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "draft",
+        "width": 1280,
+        "selector": ".cast-draft-cards",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "normal",
+        "scene": "draft",
+        "width": 640,
+        "selector": ".cast-draft-cards",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 1920,
+        "selector": ".lb-scoreboard",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 1920,
+        "selector": ".lb-pair",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 1920,
+        "selector": ".lb-feed",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 1920,
+        "selector": ".lb-patch",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 1280,
+        "selector": ".lb-scoreboard",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 1280,
+        "selector": ".lb-pair",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 1280,
+        "selector": ".lb-feed",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 1280,
+        "selector": ".lb-patch",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 640,
+        "selector": ".lb-scoreboard",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 640,
+        "selector": ".lb-pair",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 640,
+        "selector": ".lb-feed",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "live",
+        "width": 640,
+        "selector": ".lb-patch",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "draft",
+        "width": 1920,
+        "selector": ".cast-draft-cards",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "draft",
+        "width": 1280,
+        "selector": ".cast-draft-cards",
+        "maxDelta": 0
+      },
+      {
+        "fixture": "pressure",
+        "scene": "draft",
+        "width": 640,
+        "selector": ".cast-draft-cards",
+        "maxDelta": 0
+      }
+    ]
+  },
+  "screenshots": {
+    "before/normal-draft-1280.png": "7b647bc1f0308da388ee33b0868ee6a62d707b4f07b9043c638bbac8c93b5e62",
+    "before/normal-draft-1920.png": "d2c722ac83193be6f71d1e51d66d8ef87715333d5c8fa893ac95560e7bc8e9bf",
+    "before/normal-draft-640.png": "df657c0b93fc33c4df1edabcf74dcbb04eb6107f0fb8e7b2791c975f45832d2c",
+    "before/normal-live-1280.png": "12f797ae7582849351e7fe37e97a9063a86c6e16111689674175ecf013ac8790",
+    "before/normal-live-1920.png": "9115004a8113bd1c63c791ca20d81fcf0aef2e243873d2f0469e5c71eb6df0ec",
+    "before/normal-live-640.png": "edc284828228ba307bab7c74827e503377fe212f608e4260bc4841798fb6a7c4",
+    "before/pressure-draft-1280.png": "0b1b45f123fe2d6bd279b932300841b613b6f3e6a8157338610e0a824aa8c61b",
+    "before/pressure-draft-1920.png": "a0086f1c0cd2ceb8fecb995d162350eefaaabf85d881ab2b967831e3eed7eb3e",
+    "before/pressure-draft-640.png": "46f16645fd43e903834e2d5ba5cae40be8bbeb2dfd3b4f52a355268e77cb6733",
+    "before/pressure-live-1280.png": "789047d58aa76da103c54babcfcf8c63367e0f452da5ad9d5e1f6cd84ea4234c",
+    "before/pressure-live-1920.png": "617284068415423e8794ba74481fe04b4d9bfb5bee7ac171d5acee45941fb16b",
+    "before/pressure-live-640.png": "e9e1b189a89fd8c31234278a26e235ce454c96fcbc468b5a5eb319469b95c1ba",
+    "after/normal-draft-1280.png": "fbc87b361e72b7ae7203af2b20e8135eea7d63e7ee39bc54a12fc8ac7f4f5fdc",
+    "after/normal-draft-1920.png": "04f87d5f589e9fcab474d636a0ffc5f734daa69cbfed52b89c6d96108cfba1fe",
+    "after/normal-draft-640.png": "9e2d5086b5b65300010644598fa60ba3e7a2f0db0ae94cf7570b5f7792b3ccbe",
+    "after/normal-live-1280.png": "0e61c60decc6b88b0109f037382f1afcd58a9055b2d9debf4a930f967cd9adac",
+    "after/normal-live-1920.png": "76e2e2ae3e3532132cb9908f8e84887d01a55fec0177e0698f90827ce306821b",
+    "after/normal-live-640.png": "4a597ce52142221c58da140e0910bb699c42521afd8994cf92beebb569078419",
+    "after/pressure-draft-1280.png": "b659af1751f810d479b4bfa31fbcf4cb1f429f3d8bc772cee4f2344655e2f52a",
+    "after/pressure-draft-1920.png": "3524318baf1526caf07476546a008d245bbc649a27f5b37d1b3fd5409320a43a",
+    "after/pressure-draft-640.png": "52ce04b1bc03267023c5c42da41eda399284d0837ee1100537e91f67727b5fab",
+    "after/pressure-live-1280.png": "9b1798ed2a0fda7a64c361b6f4a4b6b3ad77aabfbd04277a059641e0fd6632bd",
+    "after/pressure-live-1920.png": "42c765e0b8c78b21d06469b8a7049f289e6107fc3661a99fb62eb04ff82659bb",
+    "after/pressure-live-640.png": "ad4f1789fcbf0fd9640c3a124a24b5397a5b38c2887c51c59cd77367b16d3b47"
+  },
+  "notRun": [
+    "npm test",
+    "long formal verification scripts",
+    "Windows integration scripts",
+    "Windows release build",
+    "real OBS/game/camera/audio/stream/recording/system drivers"
+  ],
+  "releaseCreated": false
+}

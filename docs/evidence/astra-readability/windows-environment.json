@@ -1,0 +1,24 @@
+{
+  "platform": "linux",
+  "arch": "x64",
+  "node": "v24.19.0",
+  "windowsEnvironmentSelected": false,
+  "releaseBuildExecuted": false,
+  "projector": {
+    "sourceMatches": true,
+    "binaryMatches": true
+  },
+  "audio": {
+    "sourceMatches": true,
+    "bridgeMatches": true,
+    "toolMatches": true
+  },
+  "missingPaths": [
+    "runtime/obs-studio",
+    "runtime/vbcable/VBCABLE_Driver_Pack45.zip",
+    "node_modules/electron/dist",
+    "release",
+    ".github/workflows"
+  ],
+  "boundary": "Read-only files and hash checks. Windows executables/DLLs not loaded or executed. Prior CI settings/billing 403 not retried."
+}

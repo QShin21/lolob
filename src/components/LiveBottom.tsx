@@ -41,16 +41,18 @@ function Identity({player,ultimateIcon}:{player?:Player;ultimateIcon?:string}) {
   const status=state==='ready'?'终极技能就绪':state==='unlearned'?'终极技能尚未学习':state==='cooldown'?`终极技能冷却${ultimate?.cooldownRemaining!=null?` ${Math.ceil(ultimate.cooldownRemaining)} 秒`:''}`:'终极技能状态未提供';
   return <div className="lb-identity">
     <div className="lb-identity-line">
+      <strong className="lb-player-name" title={player?.name}>{player?.name||'—'}</strong>
+    </div>
+    <div className="lb-status-line">
       {state!=='unknown'&&<span className={`lb-ultimate ${state}`} title={status} aria-label={status}>
         <Icon src={ultimate?.icon||ultimateIcon} label="终极技能" missing="R"/>
         {state==='cooldown'&&ultimate?.cooldownRemaining!=null&&<b>{Math.ceil(ultimate.cooldownRemaining)}</b>}
       </span>}
-      <strong className="lb-player-name" title={player?.name}>{player?.name||'—'}</strong>
-    </div>
-    <div className="lb-vitals">
+      <div className="lb-vitals">
       {player?.maxExperience!==undefined&&<Meter current={player?.experience} max={player?.maxExperience} kind="experience" label="当前等级经验"/>}
       {player?.maxHealth!==undefined&&<Meter current={player?.health} max={player?.maxHealth} kind="health" label="生命值"/>}
       {player?.maxResource!==undefined&&<Meter current={player?.resource} max={player?.maxResource} kind={`resource ${(player?.resourceType||'mana').toLowerCase()}`} label="资源值"/>}
+      </div>
     </div>
   </div>;
 }

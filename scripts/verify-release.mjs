@@ -78,13 +78,13 @@ try {
   const status = await api('/api/obs/engine');
   assert.equal(status.version, '32.2.2'); assert.equal(status.streamActive, false); assert.equal(status.recordActive, false);
   checks.push('bundled OBS 32.2.2 runs from independent user directory; real WebSocket connected; stream and record off');
-  await page.getByRole('button', { name: '新建自定义场景', exact: true }).click();
+  await page.getByRole('button', { name: '新建场景', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: '新建自定义场景' });
   await dialog.getByLabel('场景名称', { exact: true }).fill('Release 场景验证');
   const image = await sharp({ create: { width: 1920, height: 1080, channels: 3, background: '#184f92' } }).png().toBuffer();
   await dialog.getByLabel('上传场景图片').setInputFiles({ name: 'release-background.png', mimeType: 'image/png', buffer: image });
   await until(async () => (await api('/api/state')).assets.length === 1, 'Release upload persisted');
-  await dialog.getByRole('button', { name: '保存场景', exact: true }).click();
+  await dialog.getByRole('button', { name: '保存到待播', exact: true }).click();
   await until(async () => (await api('/api/state')).customScenes.some(scene => scene.name === 'Release 场景验证'), 'Custom scene saved');
   checks.push('latest custom scene editor, real image upload and saved scene work in packaged renderer');
   await page.locator('.native-preview[data-kind="program"].phase-live').waitFor({ timeout: 30000 });
@@ -96,20 +96,33 @@ try {
   await page.screenshot({ path: path.join(evidence, 'release-desktop.png') });
   const musicBytes=Buffer.alloc(44+48000*4); musicBytes.write('RIFF'); musicBytes.writeUInt32LE(musicBytes.length-8,4); musicBytes.write('WAVEfmt ',8); musicBytes.writeUInt32LE(16,16); musicBytes.writeUInt16LE(1,20); musicBytes.writeUInt16LE(2,22); musicBytes.writeUInt32LE(48000,24); musicBytes.writeUInt32LE(192000,28); musicBytes.writeUInt16LE(4,32); musicBytes.writeUInt16LE(16,34); musicBytes.write('data',36); musicBytes.writeUInt32LE(48000*4,40);
   for(let i=0;i<48000;i++){ const sample=Math.round(Math.sin(i*2*Math.PI*880/48000)*3276); musicBytes.writeInt16LE(sample,44+i*4); musicBytes.writeInt16LE(sample,46+i*4); }
-  const musicInput=page.getByLabel('节目音乐文件',{exact:true}); await musicInput.setInputFiles({name:'release-music.wav',mimeType:'audio/wav',buffer:musicBytes});
+  await page.getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '连接与输出', exact: true }).click();
+  await page.getByRole('tab', { name: '声音', exact: true }).click();
+  const audioPanel = page.getByRole('tabpanel', { name: '声音', exact: true });
+  await audioPanel.getByText('添加 / 更换音乐', { exact: true }).click();
+  const musicInput=audioPanel.getByLabel('节目音乐文件',{exact:true}); await musicInput.setInputFiles({name:'release-music.wav',mimeType:'audio/wav',buffer:musicBytes});
   await until(async()=> (await api('/api/obs/production')).music?.available,'Music upload configures real managed OBS input');
   assert.equal((await api('/api/obs/production')).music.playing,false);
-  await page.getByRole('button',{name:'播放音乐',exact:true}).click(); await until(async()=> (await api('/api/obs/production')).music.playing,'Music playback confirmed');
-  await page.getByRole('button',{name:'暂停音乐',exact:true}).click(); await until(async()=> !(await api('/api/obs/production')).music.playing,'Music pause confirmed');
+  await audioPanel.getByRole('button',{name:'播放音乐',exact:true}).click(); await until(async()=> (await api('/api/obs/production')).music.playing,'Music playback confirmed');
+  await audioPanel.getByRole('button',{name:'暂停音乐',exact:true}).click(); await until(async()=> !(await api('/api/obs/production')).music.playing,'Music pause confirmed');
   checks.push('Packaged UI imports a real WAV, creates the managed music bus, and verifies default pause plus play/pause against actual OBS');
   const blueScene = (await api('/api/state')).customScenes.find(scene => scene.name === 'Release 场景验证');
   await api('/api/action', { type: 'take', scene: blueScene.id });
-  await page.evaluate(() => { location.hash = 'settings'; });
   await page.getByRole('tab', { name: '输出', exact: true }).click();
   const outputPanel = page.getByRole('region', { name: 'OBS 连接与输出配置' });
-  await outputPanel.getByLabel('直播输出方式', { exact: true }).selectOption('douyin');
+  async function chooseDestination(destination) {
+    const before = await api('/api/obs/engine');
+    await outputPanel.getByRole('group', { name: '查看输出路径', exact: true }).getByRole('button', { name: destination === 'douyin' ? '抖音直播伴侣' : 'RTMP 推流', exact: true }).click();
+    assert.equal((await api('/api/obs/engine')).destination, before.destination, 'Viewing a path must not configure the engine');
+    if (before.destination !== destination) {
+      await outputPanel.getByRole('button', { name: '设为下一次输出', exact: true }).click();
+      await until(async () => (await api('/api/obs/engine')).destination === destination, 'Output destination applied');
+      await outputPanel.getByRole('button', { name: '设为下一次输出', exact: true }).waitFor({ state: 'hidden' });
+    }
+  }
+  await chooseDestination('douyin');
   await until(async () => (await api('/api/obs/engine')).destination === 'douyin', 'Companion destination saved');
-  await outputPanel.locator('.companion-output-guide').waitFor({ state: 'visible' });
+  await outputPanel.getByRole('region', { name: 'Program 到直播伴侣的音画路径', exact: true }).waitFor({ state: 'visible' });
   assert.equal(await outputPanel.getByLabel('RTMP 服务器', { exact: true }).count(), 0);
   assert.equal((await api('/api/obs/engine')).virtualCamera.driver.installed, true, 'OBS Virtual Camera must be registered on the acceptance host');
   // Existing valid registrations are reused; this call must not need a UAC prompt.
@@ -177,10 +190,10 @@ try {
   await writeFile(path.join(evidence, 'virtual-camera-program.png'), Buffer.from(cameraPng, 'base64'));
   virtualCameraFrameVerified = true;
   checks.push('Windows video device receives 1920x1080 Program frames, ignores pending Preview, and follows an actual TAKE');
-  await outputPanel.getByRole('button', { name: '开始录制', exact: true }).click();
+  await outputPanel.getByRole('button', { name: '开始本机录制', exact: true }).click();
   await until(async () => (await api('/api/obs/engine')).recordActive, 'Recording coexists with virtual camera');
   assert.equal((await api('/api/obs/engine')).virtualCamActive, true);
-  await outputPanel.getByRole('button', { name: '停止录制', exact: true }).click();
+  await outputPanel.getByRole('button', { name: '停止本机录制', exact: true }).click();
   await until(async () => !(await api('/api/obs/engine')).recordActive, 'Recording stops independently');
   assert.equal((await api('/api/obs/engine')).virtualCamActive, true);
   checks.push('real local recording starts and stops while the companion video output continues');
@@ -194,12 +207,12 @@ try {
   assert.equal((await api('/api/obs/engine')).virtualCamActive, true);
   checks.push('closing an active companion output warns about loss of video and retains output when cancelled');
   await page.screenshot({ path: path.join(evidence, 'douyin-output.png'), fullPage: true });
-  await page.getByRole('tab', { name: '外观', exact: true }).click();
+  await page.getByRole('tab', { name: '工作台外观', exact: true }).click();
   await page.locator('input[name="ui-theme"][value="light"]').check();
   await page.getByRole('tab', { name: '输出', exact: true }).click();
   await page.screenshot({ path: path.join(evidence, 'douyin-output-light.png'), fullPage:true, animations:'disabled' });
   assert.ok((await cameraPixel()).pixel[0] > (await cameraPixel()).pixel[2] + 80, 'console theme leaves camera Program unchanged');
-  await page.getByRole('tab', { name: '外观', exact: true }).click();
+  await page.getByRole('tab', { name: '工作台外观', exact: true }).click();
   await page.locator('input[name="ui-theme"][value="dark"]').check();
   await page.getByRole('tab', { name: '输出', exact: true }).click();
   checks.push('companion guide renders in both console themes while Program video retains its broadcast colors');
@@ -213,19 +226,19 @@ try {
     const refused=await api('/api/obs/engine/output',{action:'start-virtual-camera'},true); assert.match(refused.error || '', /VB-CABLE|音频|驱动|重启/);
     const safe=await api('/api/obs/engine'); assert.equal(safe.virtualCamActive,false); assert.equal(safe.companionAudio.active,false);
     companionAudioUnavailableVerified=true; checks.push('Native final-mix library loads in packaged OBS; inaccessible audio endpoint rejects start and preserves both outputs stopped');
-    await outputPanel.getByRole('button',{name:'开始录制',exact:true}).click(); await until(async()=> (await api('/api/obs/engine')).recordActive,'Independent local recording');
-    await outputPanel.getByRole('button',{name:'停止录制',exact:true}).click(); await until(async()=> !(await api('/api/obs/engine')).recordActive,'Recording stops');
+    await outputPanel.getByRole('button',{name:'开始本机录制',exact:true}).click(); await until(async()=> (await api('/api/obs/engine')).recordActive,'Independent local recording');
+    await outputPanel.getByRole('button',{name:'停止本机录制',exact:true}).click(); await until(async()=> !(await api('/api/obs/engine')).recordActive,'Recording stops');
     checks.push('Local recording remains available when companion audio is unavailable');
     await page.screenshot({path:path.join(evidence,'douyin-output.png'),fullPage:true});
-    await page.getByRole('tab',{name:'外观',exact:true}).click(); await page.locator('input[name=ui-theme][value=light]').check(); await page.getByRole('tab',{name:'输出',exact:true}).click();
+    await page.getByRole('tab',{name:'工作台外观',exact:true}).click(); await page.locator('input[name=ui-theme][value=light]').check(); await page.getByRole('tab',{name:'输出',exact:true}).click();
     await page.screenshot({path:path.join(evidence,'douyin-output-light.png'),fullPage:true,animations:'disabled'});
-    await page.getByRole('tab',{name:'外观',exact:true}).click(); await page.locator('input[name=ui-theme][value=dark]').check(); await page.getByRole('tab',{name:'输出',exact:true}).click();
+    await page.getByRole('tab',{name:'工作台外观',exact:true}).click(); await page.locator('input[name=ui-theme][value=dark]').check(); await page.getByRole('tab',{name:'输出',exact:true}).click();
     checks.push('Full-mix preparation and device guidance render in both console themes');
   }
-  await outputPanel.getByLabel('直播输出方式', { exact: true }).selectOption('rtmp');
+  await chooseDestination('rtmp');
   await until(async () => (await api('/api/obs/engine')).destination === 'rtmp', 'RTMP mode remains available');
   await outputPanel.getByLabel('RTMP 服务器', { exact: true }).waitFor();
-  await outputPanel.getByLabel('直播输出方式', { exact: true }).selectOption('douyin');
+  await chooseDestination('douyin');
   await until(async () => (await api('/api/obs/engine')).destination === 'douyin', 'Persist companion mode for restart');
   checks.push(audioReady ? 'Hold-to-stop confirms real companion output off; RTMP configuration returns; companion choice is saved' : 'Both companion outputs remain stopped; RTMP configuration returns; companion choice is saved');
   const duplicate = spawn(executable, [], { env, windowsHide: true, stdio: 'ignore' });

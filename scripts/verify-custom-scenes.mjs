@@ -63,15 +63,18 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/api/resources/asset**', route => route.fulfill({ contentType: 'application/json', body: '{"data":{}}' }));
   await page.goto(base);
-  await page.getByRole('button', { name: '新建自定义场景', exact: true }).click();
+  await page.getByRole('button', { name: '新建场景', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: '新建自定义场景' });
   await dialog.getByLabel('场景名称', { exact: true }).fill('自定义演播室');
   const image = await sharp({ create: { width: 1920, height: 1080, channels: 3, background: '#184f92' } }).png().toBuffer();
   await dialog.getByLabel('上传场景图片').setInputFiles({ name: 'studio-background.png', mimeType: 'image/png', buffer: image });
   await until(async () => (await api('/api/state')).assets.length === 1, 'upload persisted');
-  await dialog.getByRole('button', { name: '刷新来源', exact: true }).click();
-  await dialog.getByLabel('应用窗口', { exact: true }).selectOption(windowChoice.value);
-  await dialog.getByRole('button', { name: '添加窗口', exact: true }).click();
+  await dialog.getByRole('button', { name: '添加来源', exact: true }).click();
+  const picker = dialog.getByRole('region', { name: '添加来源', exact: true });
+  await picker.getByRole('button', { name: '应用窗口', exact: true }).click();
+  await picker.getByRole('button', { name: '刷新主机来源', exact: true }).click();
+  await picker.getByRole('group', { name: '应用窗口列表', exact: true }).getByRole('button').filter({ has: page.getByText(windowChoice.name, { exact: true }) }).click();
+  await picker.getByRole('button', { name: '添加窗口', exact: true }).click();
   await dialog.getByLabel('宽度', { exact: true }).fill('960');
   await dialog.getByLabel('高度', { exact: true }).fill('540');
   await dialog.getByLabel('横向位置', { exact: true }).fill('480');
@@ -80,7 +83,7 @@ try {
   await page.screenshot({ path: path.join(evidence, 'editor-dark.png') });
   await page.evaluate(() => { document.documentElement.dataset.uiTheme = 'light'; });
   await page.waitForTimeout(200);
-  const layout = dialog.locator('.custom-scene-layout');
+  const layout = dialog.getByRole('group', { name: '场景画布，方向键微调所选图层', exact: true }).locator('.custom-scene-layout');
   const lightPixels = await layout.screenshot();
   const { data: lightData, info: lightInfo } = await sharp(lightPixels).raw().toBuffer({ resolveWithObject: true });
   const sampleIndex = (Math.floor(lightInfo.height * 0.3) * lightInfo.width + Math.floor(lightInfo.width * 0.3)) * lightInfo.channels;
@@ -89,10 +92,10 @@ try {
   await page.evaluate(() => { document.documentElement.dataset.uiTheme = 'dark'; });
   await page.setViewportSize({width:1366,height:768});
   assert.ok(await dialog.evaluate(el=>el.scrollWidth<=el.clientWidth+1),'dialog fits 1366px viewport');
-  await dialog.getByRole('button',{name:'保存场景',exact:true}).scrollIntoViewIfNeeded();
+  await dialog.getByRole('button',{name:'保存到待播',exact:true}).scrollIntoViewIfNeeded();
   await page.screenshot({path:path.join(evidence,'editor-1366.png')});
   await page.setViewportSize({width:1600,height:1000});
-  await dialog.getByRole('button', { name: '保存场景', exact: true }).click();
+  await dialog.getByRole('button', { name: '保存到待播', exact: true }).click();
   await until(async () => (await api('/api/state')).customScenes?.length === 1, 'scene saved');
   const saved = (await api('/api/state')).customScenes[0];
   assert.equal(saved.sources.length, 2);
@@ -128,7 +131,7 @@ try {
   checks.push('Enter TAKE switches actual OBS program to custom composition');
   await page.getByRole('button', { name: '编辑 自定义演播室', exact: true }).click();
   await page.getByRole('dialog').getByLabel('场景名称', { exact: true }).fill('修改后待播');
-  await page.getByRole('dialog').getByRole('button', { name: '保存场景', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: '保存到待播', exact: true }).click();
   await until(async () => (await api('/api/state')).customScenes[0].name === '修改后待播', 'edit saved');
   const staged = await api('/api/state');
   assert.equal(staged.production.program.customScenes[0].name, '自定义演播室');
@@ -136,7 +139,13 @@ try {
   await page.getByRole('button', { name: /修改后待播 · 选择预监/ }).waitFor();
   assert.ok(JSON.parse(await readFile(path.join(serviceData, 'state.json'), 'utf8')).customScenes.some(s => s.name === '修改后待播'));
   checks.push('edit remains staged, persists to disk and survives browser reload');
-  assert.ok(await page.getByRole('button',{name:'删除 修改后待播',exact:true}).isDisabled(),'on-air scene deletion disabled');
+  // The scene library now explains references in its confirmation row.
+  // Preserve the guard assertion at the actual commit button, not the entry button.
+  await page.getByRole('button',{name:'删除 修改后待播',exact:true}).click();
+  const deletePrompt = page.getByRole('alert').filter({ has: page.getByRole('button', { name: '确认删除', exact: true }) });
+  assert.match(await deletePrompt.innerText(), /节目/);
+  assert.ok(await deletePrompt.getByRole('button',{name:'确认删除',exact:true}).isDisabled(),'on-air scene deletion disabled');
+  await deletePrompt.getByRole('button',{name:'取消',exact:true}).click();
   const beforeFailure=(await obs.call('GetCurrentProgramScene')).sceneName;
   await fixtureBrowser.close();fixtureBrowser=undefined;
   await page.getByRole('button',{name:/修改后待播 · 选择预监/}).press('Enter');
