@@ -1,0 +1,70 @@
+READY offline: HTTP health ok, version 0.7.0, source 9cd6b13813c07fd8ef1ec82a402b68db2c22d86a
+READY mock: HTTP health ok, version 0.7.0, source 9cd6b13813c07fd8ef1ec82a402b68db2c22d86a
+PASS source-build-health
+PASS studio-dark-1366-768
+PASS studio-dark-1366-736
+PASS studio-dark-1440-900
+PASS studio-dark-1440-868
+PASS studio-dark-1920-1080
+PASS studio-dark-1920-1048
+PASS studio-light-1366-768
+PASS studio-light-1366-736
+PASS studio-light-1440-900
+PASS studio-light-1440-868
+PASS studio-light-1920-1080
+PASS studio-light-1920-1048
+PASS theme-state
+PASS offline-take
+PASS editor-fit-light
+PASS editor-drag
+PASS resize-n
+PASS resize-ne
+PASS resize-e
+PASS resize-se
+PASS resize-s
+PASS resize-sw
+PASS resize-w
+PASS resize-nw
+PASS keyboard-and-hotkeys
+PASS zoom-50-coordinates
+PASS numeric-range
+PASS save-staging
+PASS same-scene-service-take
+PASS editor-cas
+PASS dpr-2-drag
+STAGE offline editor complete
+PASS connected-save-take
+PASS hotkey-single-request
+PASS mock-apply-failure
+PASS mock-three-source-types
+PASS upload-and-discard
+PASS editor-permission-loss
+PASS output-route-view
+PASS output-restoration-failure
+PASS output-status-failure
+PASS output-facts-and-restart
+PASS output-partial-start
+PASS rtmp-key-memory
+PASS music-default-and-output-lock
+PASS music-transport
+PASS audio-stale-and-management
+STAGE output and audio complete
+PASS bp-search-focus
+PASS bp-cas-local-choice
+PASS bp-save-program-isolation
+PASS bp-stable-team-history
+PASS remote-readonly
+PASS remote-data
+PASS remote-subtitle
+PASS remote-replay
+PASS remote-director
+PASS mobile-subtitle-staging
+PASS mobile-custom-preview
+PASS mobile-owner-transfer
+PASS role-api-guards
+PASS source-count-limit
+PASS overlay-teamfight-theme
+READY mock-restart: HTTP health ok, version 0.7.0, source 9cd6b13813c07fd8ef1ec82a402b68db2c22d86a
+PASS mobile-reconnect-seat
+STAGE BP/mobile/limits complete
+{"outcomes":63,"passed":63,"failed":0,"pageErrors":0,"evidence":"/workspace/lolob/docs/evidence/sol-9cd6b13"}

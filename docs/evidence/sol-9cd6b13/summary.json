@@ -1,0 +1,71 @@
+{
+  "testedSource": "9cd6b13813c07fd8ef1ec82a402b68db2c22d86a",
+  "acceptance": "failed: P1 lineup player identity leaks on staged auto restore; P2 pending BP cue ignores held programme",
+  "browserBatches": [
+    {
+      "result": "frontend-safety/result.json",
+      "total": 15,
+      "pass": 15,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    {
+      "result": "browser.json",
+      "total": 63,
+      "pass": 63,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    {
+      "result": "supplemental/browser.json",
+      "total": 14,
+      "pass": 14,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    {
+      "result": "audio-extra/browser.json",
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    {
+      "result": "program-boundaries/results.json",
+      "total": 11,
+      "pass": 10,
+      "fail": 1,
+      "pageErrors": 0
+    },
+    {
+      "result": "program-lineup/results.json",
+      "total": 3,
+      "pass": 2,
+      "fail": 1,
+      "pageErrors": 0
+    }
+  ],
+  "browserTotal": 108,
+  "browserPass": 106,
+  "browserFail": 2,
+  "pageErrors": 0,
+  "unit": {
+    "total": 291,
+    "pass": 283,
+    "fail": 3,
+    "skip": 5,
+    "exit": 1,
+    "existingEnvironmentFailures": [
+      "missing VBCABLE Pack45 archive (2 tests)",
+      "Windows-only virtual-camera wrapper on Linux (1 test)"
+    ]
+  },
+  "build": {
+    "exit": 0,
+    "modules": 1680,
+    "mainChunkKb": 508.19
+  },
+  "verifiedSourceHashes": 215,
+  "implementationDiff": "",
+  "runtimeLimits": "Linux/system Chromium. Synthetic LCU transport and source application when labelled; no actual OBS/stream/device/driver/recording/user data."
+}

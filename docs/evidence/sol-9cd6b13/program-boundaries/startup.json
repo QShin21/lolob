@@ -1,0 +1,13 @@
+{
+  "source": "9cd6b13813c07fd8ef1ec82a402b68db2c22d86a",
+  "base": "http://127.0.0.1:38839",
+  "dataDir": "/tmp/riftcast-sol-bp-boundaries-DZWAGu/data",
+  "health": {
+    "service": "riftcast-director",
+    "version": "0.7.0",
+    "status": "ok",
+    "mode": "live",
+    "lanEnabled": false
+  },
+  "synthetic": "source transport hook only, no actual client/OBS/network"
+}

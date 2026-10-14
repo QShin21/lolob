@@ -1,0 +1,11 @@
+{
+  "source": "/workspace/lolob/scripts/verify-broadcast-controls.mjs",
+  "sourceSha256": "70ff0705d6fb0521df244312de45db3d8f6a71b362b4b48c784594246f869b87",
+  "copySha256": "673620b29e316bdfc65fcbe1fc8f187bcca535eb74d79a75a6f841907b89f32f",
+  "changes": [
+    "Relocate root and TS imports for docs execution.",
+    "Fixture creates a director with real ControlSeats.issue, records actual controller, verifies it through /fixture/seat, and provides seat/connected to component context.",
+    "No assertions or result conditions changed. Fixture proves rendering with explicit identity; separate real-HTTP role tests prove authorization."
+  ],
+  "originalRun": "broadcast-controls-run.txt"
+}

@@ -1,0 +1,38 @@
+{
+  "browser.mjs": {
+    "original": "docs/evidence/sol-35893d9/browser.mjs",
+    "originalSha256": "bda0032fd34a2dcfb450505f0ba6690830d8ad125f0c4b92d622fe3a9ec9dec1",
+    "newSha256": "5a3de2dd710ba23612026e95f90913151416e2c894739616dbd1b8044d0b5775",
+    "changes": "Source SHA and isolated/evidence directory names only. All assertions retained. Final source-integrity input is the freshly recorded 9cd6b13 hash map (215 files), replacing the obsolete 35893d9 design capture. Hash equality and every behavioral assertion remain unchanged."
+  },
+  "supplemental.mjs": {
+    "original": "docs/evidence/sol-35893d9/supplemental.mjs",
+    "originalSha256": "f4a345cdf2673960f2633240a88672d615ad3bebd15a587582fc96b7e026cd0d",
+    "newSha256": "d7175b39bbea4a728f3d19f423d2403a0315890a3dde1a5740c527e43b401174",
+    "changes": "Source SHA and isolated/evidence directory names only. All assertions retained."
+  },
+  "audio-extra.mjs": {
+    "original": "docs/evidence/sol-35893d9/audio-extra.mjs",
+    "originalSha256": "6800ee951affdff57127ac678861fc0abae719fa96633578d7ef24c6fa9324d1",
+    "newSha256": "80efd3eee73fb60a7f7a16e34bc47ac7c2d979404b445de69db453b5cd182dc5",
+    "changes": "Source SHA and isolated/evidence directory names only. All assertions retained."
+  },
+  "playwright-system.mjs": {
+    "original": "docs/evidence/sol-35893d9/playwright-system.mjs",
+    "originalSha256": "07a2830ae51d1ff024ddc904a6d1392858b27af2f506c4c3698e24e30115b7cb",
+    "newSha256": "07a2830ae51d1ff024ddc904a6d1392858b27af2f506c4c3698e24e30115b7cb",
+    "changes": "Source SHA and isolated/evidence directory names only. All assertions retained."
+  },
+  "legacy-production.mjs": {
+    "original": "docs/evidence/sol-35893d9/legacy-production.mjs",
+    "originalSha256": "1ba62a79dd4eac79d74829e387dc5ff23c88fcca88ed6210323111e8f006757a",
+    "newSha256": "99eecd273f30dfa7dad8ed53b0c23bb3458f5eaeb21447d787a8ca8ff567fff0",
+    "changes": "Source SHA and isolated/evidence directory names only. All assertions retained."
+  },
+  "legacy-ui-theme.mjs": {
+    "original": "docs/evidence/sol-35893d9/legacy-ui-theme.mjs",
+    "originalSha256": "740e9bb3518f2a6d2f25277e6005283449b5317a407ea5212516a68ec9ff0a48",
+    "newSha256": "80d67306ad7f6f3a302847541f856df7ebf8e9a6dc76d2a896f16d48c40e82c4",
+    "changes": "Source SHA and isolated/evidence directory names only. All assertions retained."
+  }
+}

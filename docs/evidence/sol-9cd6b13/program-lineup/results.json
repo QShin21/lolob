@@ -1,0 +1,32 @@
+{
+  "source": "9cd6b13813c07fd8ef1ec82a402b68db2c22d86a",
+  "base": "http://127.0.0.1:43625",
+  "dataDir": "/tmp/riftcast-sol-bp-boundaries-0I3nlZ/data",
+  "synthetic": "LCU transport and 180ms source application only; actual production logic, HTTP, WS and renderer",
+  "outcomes": [
+    {
+      "id": "lineup-legitimate-automatic-roster-progress",
+      "status": "pass"
+    },
+    {
+      "id": "lineup-manual-save-still-preserves-current-picture",
+      "status": "pass"
+    },
+    {
+      "id": "lineup-restore-auto-cannot-publish-pending-roster-before-take",
+      "status": "fail",
+      "error": "Pending-only automatic restore changed the rendered lineup programme hero\n\n'暗裔剑魔' !== '灵罗娃娃'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Pending-only automatic restore changed the rendered lineup programme hero\n\n'暗裔剑魔' !== '灵罗娃娃'\n\n    at file:///workspace/lolob/docs/evidence/sol-9cd6b13/program-lineup.mjs:80:931\n    at async check (file:///workspace/lolob/docs/evidence/sol-9cd6b13/program-lineup.mjs:62:46)\n    at async file:///workspace/lolob/docs/evidence/sol-9cd6b13/program-lineup.mjs:80:2"
+    }
+  ],
+  "errors": [],
+  "actions": [
+    {
+      "type": "set-draft"
+    },
+    {
+      "type": "production",
+      "op": "draft-mode"
+    }
+  ]
+}

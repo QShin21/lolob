@@ -1,0 +1,8 @@
+{
+  "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.sidebar').getByRole('button', { name: '连接与输出', exact: true })\u001b[22m\n",
+  "stack": "locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.sidebar').getByRole('button', { name: '连接与输出', exact: true })\u001b[22m\n\n    at appearance (/workspace/lolob/docs/evidence/sol-9cd6b13/legacy-ui-theme.mjs:43:86)\n    at /workspace/lolob/docs/evidence/sol-9cd6b13/legacy-ui-theme.mjs:87:9",
+  "tests": [
+    "health version matches package version"
+  ],
+  "errors": []
+}

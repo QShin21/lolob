@@ -1,0 +1,28 @@
+
+> riftcast-director@0.7.0 verify:frontend-safety
+> node scripts/verify-frontend-safety.mjs
+
+READY 9cd6b13813c07fd8ef1ec82a402b68db2c22d86a: http://127.0.0.1:43805, pure HTTP; no OBS
+PASS escape-empty
+PASS escape-nonempty
+PASS bp-save-only-keeps-rendered-program
+PASS bp-explicit-same-scene-take-publishes
+PASS transport-reconnect-validates-before-enabling
+READY 9cd6b13813c07fd8ef1ec82a402b68db2c22d86a: http://127.0.0.1:43805, pure HTTP; no OBS
+PASS restart-rejects-old-seat-without-submission
+PASS explicit-recovery-keeps-draft-and-does-not-take
+READY 9cd6b13813c07fd8ef1ec82a402b68db2c22d86a: http://127.0.0.1:32905, labelled synthetic engine
+PASS toast-take-hit-dark-1366x736
+PASS toast-take-hit-dark-1366x768
+PASS toast-take-hit-dark-1440x868
+PASS toast-take-hit-dark-1920x1048
+PASS toast-take-hit-light-1366x736
+PASS toast-take-hit-light-1366x768
+PASS toast-take-hit-light-1440x868
+PASS toast-take-hit-light-1920x1048
+{"source":"9cd6b13813c07fd8ef1ec82a402b68db2c22d86a","passed":15,"failed":0,"errors":0,"evidence":"/workspace/lolob/verification-output/frontend-safety-9cd6b13"}
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

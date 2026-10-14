@@ -1,0 +1,13 @@
+READY http://127.0.0.1:38839 source 9cd6b13813c07fd8ef1ec82a402b68db2c22d86a
+PASS automatic-lcu-progress-after-take
+PASS manual-save-holds-current-automatic-picture
+FAIL restore-auto-to-take-snapshot-still-reports-pending-bp: PGM Gwen and pending Aatrox differ, but pendingContent reports no BP
+PASS automatic-same-scene-retake-and-next-sample
+PASS compare-and-client-samples-cannot-bypass-manual-handoff
+PASS manual-take-keeps-client-samples-as-comparison-only
+PASS restore-auto-after-manual-take-needs-explicit-retake
+PASS failed-preparation-preserves-visible-held-bp
+PASS retry-same-scene-take-publishes-and-keeps-manual-confirmation-distinct
+PASS undo-restores-last-visible-auto-bp-and-preserves-pending
+PASS undo-again-restores-manual-picture
+{"source":"9cd6b13813c07fd8ef1ec82a402b68db2c22d86a","pass":10,"fail":1,"errors":0}

@@ -1,0 +1,7 @@
+PASS lineup-legitimate-automatic-roster-progress
+PASS lineup-manual-save-still-preserves-current-picture
+FAIL lineup-restore-auto-cannot-publish-pending-roster-before-take: Pending-only automatic restore changed the rendered lineup programme hero
+
+'暗裔剑魔' !== '灵罗娃娃'
+
+{"source":"9cd6b13813c07fd8ef1ec82a402b68db2c22d86a","pass":2,"fail":1,"errors":0}

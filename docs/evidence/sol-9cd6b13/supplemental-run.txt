@@ -1,0 +1,16 @@
+READY supplemental-offline: HTTP health ok, version 0.7.0, source 9cd6b13813c07fd8ef1ec82a402b68db2c22d86a
+PASS theme-standby
+PASS theme-draft
+PASS theme-lineup
+PASS theme-live
+PASS theme-teamfight
+PASS theme-gold-ranking
+PASS theme-economy
+PASS theme-ranking
+PASS theme-schedule
+PASS theme-postgame
+PASS theme-interview
+PASS image-client-max
+PASS image-server-signature
+PASS image-supported-formats
+{"passed":14,"failed":0,"pageErrors":0}
