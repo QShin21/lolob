@@ -1,0 +1,13 @@
+READY http://127.0.0.1:36257 source 61ab1645378f1987fa62f478f75b87dddb83f2cc
+PASS automatic-lcu-progress-after-take
+PASS manual-save-holds-current-automatic-picture
+PASS restore-auto-to-take-snapshot-still-reports-pending-bp
+PASS automatic-same-scene-retake-and-next-sample
+PASS compare-and-client-samples-cannot-bypass-manual-handoff
+PASS manual-take-keeps-client-samples-as-comparison-only
+PASS restore-auto-after-manual-take-needs-explicit-retake
+PASS failed-preparation-preserves-visible-held-bp
+PASS retry-same-scene-take-publishes-and-keeps-manual-confirmation-distinct
+PASS undo-restores-last-visible-auto-bp-and-preserves-pending
+PASS undo-again-restores-manual-picture
+{"source":"61ab1645378f1987fa62f478f75b87dddb83f2cc","pass":11,"fail":0,"errors":0}

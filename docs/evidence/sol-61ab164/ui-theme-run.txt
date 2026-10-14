@@ -1,0 +1,3177 @@
+
+> riftcast-director@0.7.0 verify:ui-theme
+> node scripts/verify-ui-theme.mjs
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: economy: all canvas descendants and pseudo-elements retain broadcast colors
++ actual - expected
+... Skipped lines
+
+  {
+    overlay: [
+      [
+        {
+          class: 'broadcast-canvas cast-canvas cast-scene-economy  transparent cast-transparent',
+...
+              'background-image': 'none',
++             'border-bottom-color': 'rgb(178, 198, 196)',
++             'border-left-color': 'rgb(178, 198, 196)',
++             'border-right-color': 'rgb(178, 198, 196)',
++             'border-top-color': 'rgb(178, 198, 196)',
+-             'border-bottom-color': 'rgb(173, 184, 199)',
+-             'border-left-color': 'rgb(173, 184, 199)',
+-             'border-right-color': 'rgb(173, 184, 199)',
+-             'border-top-color': 'rgb(173, 184, 199)',
+              'box-shadow': 'none',
++             'outline-color': 'rgb(178, 198, 196)',
++             color: 'rgb(178, 198, 196)',
+-             'outline-color': 'rgb(173, 184, 199)',
+-             color: 'rgb(173, 184, 199)',
+              fill: 'rgb(0, 0, 0)',
+              stroke: 'none'
+            },
+            {
+              'background-color': 'rgba(0, 0, 0, 0)',
+              'background-image': 'none',
++             'border-bottom-color': 'rgb(178, 198, 196)',
++             'border-left-color': 'rgb(178, 198, 196)',
++             'border-right-color': 'rgb(178, 198, 196)',
++             'border-top-color': 'rgb(178, 198, 196)',
+-             'border-bottom-color': 'rgb(173, 184, 199)',
+-             'border-left-color': 'rgb(173, 184, 199)',
+-             'border-right-color': 'rgb(173, 184, 199)',
+-             'border-top-color': 'rgb(173, 184, 199)',
+              'box-shadow': 'none',
++             'outline-color': 'rgb(178, 198, 196)',
++             color: 'rgb(178, 198, 196)',
+-             'outline-color': 'rgb(173, 184, 199)',
+-             color: 'rgb(173, 184, 199)',
+              fill: 'rgb(0, 0, 0)',
+              stroke: 'none'
+            },
+            {
+              'background-color': 'rgba(0, 0, 0, 0)',
+              'background-image': 'none',
++             'border-bottom-color': 'rgb(178, 198, 196)',
++             'border-left-color': 'rgb(178, 198, 196)',
++             'border-right-color': 'rgb(178, 198, 196)',
++             'border-top-color': 'rgb(178, 198, 196)',
+-             'border-bottom-color': 'rgb(173, 184, 199)',
+-             'border-left-color': 'rgb(173, 184, 199)',
+-             'border-right-color': 'rgb(173, 184, 199)',
+-             'border-top-color': 'rgb(173, 184, 199)',
+              'box-shadow': 'none',
++             'outline-color': 'rgb(178, 198, 196)',
++             color: 'rgb(178, 198, 196)',
+-             'outline-color': 'rgb(173, 184, 199)',
+-             color: 'rgb(173, 184, 199)',
+              fill: 'rgb(0, 0, 0)',
+              stroke: 'none'
+            }
+          ],
+          tag: 'DIV'
+...
+              'background-image': 'none',
++             'border-bottom-color': 'rgb(178, 198, 196)',
++             'border-left-color': 'rgb(178, 198, 196)',
++             'border-right-color': 'rgb(178, 198, 196)',
++             'border-top-color': 'rgb(178, 198, 196)',
+-             'border-bottom-color': 'rgb(173, 184, 199)',
+-             'border-left-color': 'rgb(173, 184, 199)',
+-             'border-right-color': 'rgb(173, 184, 199)',
+-             'border-top-color': 'rgb(173, 184, 199)',
+              'box-shadow': 'none',
++             'outline-color': 'rgb(178, 198, 196)',
++             color: 'rgb(178, 198, 196)',
+-             'outline-color': 'rgb(173, 184, 199)',
+-             color: 'rgb(173, 184, 199)',
+              fill: 'rgb(0, 0, 0)',
+              stroke: 'none'
+            },
+            {
+              'background-color': 'rgba(0, 0, 0, 0)',
+              'background-image': 'none',
++             'border-bottom-color': 'rgb(178, 198, 196)',
++             'border-left-color': 'rgb(178, 198, 196)',
++             'border-right-color': 'rgb(178, 198, 196)',
++             'border-top-color': 'rgb(178, 198, 196)',
+-             'border-bottom-color': 'rgb(173, 184, 199)',
+-             'border-left-color': 'rgb(173, 184, 199)',
+-             'border-right-color': 'rgb(173, 184, 199)',
+-             'border-top-color': 'rgb(173, 184, 199)',
+              'box-shadow': 'none',
++             'outline-color': 'rgb(178, 198, 196)',
++             color: 'rgb(178, 198, 196)',
+-             'outline-color': 'rgb(173, 184, 199)',
+-             color: 'rgb(173, 184, 199)',
+              fill: 'rgb(0, 0, 0)',
+              stroke: 'none'
+            },
+            {
+              'background-color': 'rgba(0, 0, 0, 0)',
+              'background-image': 'none',
++             'border-bottom-color': 'rgb(178, 198, 196)',
++             'border-left-color': 'rgb(178, 198, 196)',
++             'border-right-color': 'rgb(178, 198, 196)',
++             'border-top-color': 'rgb(178, 198, 196)',
+-             'border-bottom-color': 'rgb(173, 184, 199)',
+-             'border-left-color': 'rgb(173, 184, 199)',
+-             'border-right-color': 'rgb(173, 184, 199)',
+-             'border-top-color': 'rgb(173, 184, 199)',
+              'box-shadow': 'none',
++             'outline-color': 'rgb(178, 198, 196)',
++             color: 'rgb(178, 198, 196)',
+-             'outline-color': 'rgb(173, 184, 199)',
+-             color: 'rgb(173, 184, 199)',
+              fill: 'rgb(0, 0, 0)',
+              stroke: 'none'
+            }
+          ],
+          tag: 'DIV'
+
+    at file:///workspace/lolob/scripts/verify-ui-theme.mjs:141:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: {
+    studio: [
+      [
+        {
+          tag: 'DIV',
+          class: 'broadcast-canvas cast-canvas cast-scene-economy  ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-capture-preview capture-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-feed-symbol',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SMALL',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'ob-score-mask',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SECTION',
+          class: 'lt-scoreboard',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-main',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: 'won',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-kills',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-meta',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-clock',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-analysis cast-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'HEADER',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-economy-values',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'economy-chart ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        ... 24 more items
+      ],
+      [
+        {
+          tag: 'DIV',
+          class: 'broadcast-canvas cast-canvas cast-scene-economy  ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-capture-preview capture-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-feed-symbol',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SMALL',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'ob-score-mask',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SECTION',
+          class: 'lt-scoreboard',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-main',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: 'won',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-kills',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-meta',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-clock',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-analysis cast-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'HEADER',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-economy-values',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'economy-chart ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        ... 24 more items
+      ]
+    ],
+    overlay: [
+      [
+        {
+          tag: 'DIV',
+          class: 'broadcast-canvas cast-canvas cast-scene-economy  transparent cast-transparent',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'ob-score-mask',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SECTION',
+          class: 'lt-scoreboard',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-main',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: 'won',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-kills',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-meta',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-clock',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-analysis cast-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'HEADER',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-economy-values',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'economy-chart ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        ... 16 more items
+      ]
+    ]
+  },
+  expected: {
+    studio: [
+      [
+        {
+          tag: 'DIV',
+          class: 'broadcast-canvas cast-canvas cast-scene-economy  ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-capture-preview capture-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-feed-symbol',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SMALL',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'ob-score-mask',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SECTION',
+          class: 'lt-scoreboard',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-main',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: 'won',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-kills',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-meta',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-clock',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-analysis cast-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'HEADER',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-economy-values',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'economy-chart ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        ... 24 more items
+      ],
+      [
+        {
+          tag: 'DIV',
+          class: 'broadcast-canvas cast-canvas cast-scene-economy  ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-capture-preview capture-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-feed-symbol',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SMALL',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'ob-score-mask',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SECTION',
+          class: 'lt-scoreboard',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-main',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: 'won',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-kills',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-meta',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-clock',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-analysis cast-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'HEADER',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-economy-values',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'economy-chart ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        ... 24 more items
+      ]
+    ],
+    overlay: [
+      [
+        {
+          tag: 'DIV',
+          class: 'broadcast-canvas cast-canvas cast-scene-economy  transparent cast-transparent',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'ob-score-mask',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SECTION',
+          class: 'lt-scoreboard',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-main',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: 'won',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-kills',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-resources red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-towers',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-gold',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'ellipse',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-team red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'lt-series red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'I',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-meta',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-clock',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'lt-dragons red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'taken',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: '',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'path',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-analysis cast-economy',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'HEADER',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'cast-economy-values',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'blue',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'STRONG',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'SPAN',
+          class: 'red',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'B',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'DIV',
+          class: 'economy-chart ',
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'svg',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'text',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'g',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        {
+          tag: 'line',
+          class: null,
+          styles: [ [Object], [Object], [Object] ]
+        },
+        ... 16 more items
+      ]
+    ]
+  },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

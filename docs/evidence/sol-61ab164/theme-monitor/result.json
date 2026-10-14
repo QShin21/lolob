@@ -1,0 +1,123 @@
+{
+  "source": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+  "status": "fail",
+  "error": "desktop programme HUD text must not inherit console theme\n+ actual - expected\n\n+ 'rgb(178, 198, 196)'\n- 'rgb(173, 184, 199)'\n         ^\n",
+  "stack": "AssertionError [ERR_ASSERTION]: desktop programme HUD text must not inherit console theme\n+ actual - expected\n\n+ 'rgb(178, 198, 196)'\n- 'rgb(173, 184, 199)'\n         ^\n\n    at file:///workspace/lolob/docs/evidence/sol-61ab164/theme-monitor-focused.mjs:36:9",
+  "detail": {
+    "source": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+    "base": "http://127.0.0.1:41157",
+    "dir": "/tmp/riftcast-sol-theme-note-L4bHDT",
+    "environment": "Actual isolated HTTP and Chromium; pure demo, no engine hook/device/OBS",
+    "dark": {
+      "theme": "dark",
+      "program": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(173, 184, 199)",
+        "uiMuted": "#adb8c7",
+        "rect": {
+          "x": 155.15625,
+          "y": 376.21875,
+          "width": 297.6875,
+          "height": 4.625
+        }
+      },
+      "preview": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(173, 184, 199)",
+        "uiMuted": "#adb8c7",
+        "rect": {
+          "x": 623.15625,
+          "y": 376.21875,
+          "width": 297.6875,
+          "height": 4.625
+        }
+      },
+      "output": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(167, 190, 203)",
+        "uiMuted": "",
+        "rect": {
+          "x": 327.375,
+          "y": 1019.96875,
+          "width": 1265.25,
+          "height": 19.5625
+        }
+      }
+    },
+    "light": {
+      "theme": "light",
+      "program": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(178, 198, 196)",
+        "uiMuted": "#b2c6c4",
+        "rect": {
+          "x": 155.15625,
+          "y": 376.21875,
+          "width": 297.6875,
+          "height": 4.625
+        }
+      },
+      "preview": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(178, 198, 196)",
+        "uiMuted": "#b2c6c4",
+        "rect": {
+          "x": 623.15625,
+          "y": 376.21875,
+          "width": 297.6875,
+          "height": 4.625
+        }
+      },
+      "output": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(167, 190, 203)",
+        "uiMuted": "",
+        "rect": {
+          "x": 327.375,
+          "y": 1019.96875,
+          "width": 1265.25,
+          "height": 19.5625
+        }
+      }
+    },
+    "again": {
+      "theme": "dark",
+      "program": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(173, 184, 199)",
+        "uiMuted": "#adb8c7",
+        "rect": {
+          "x": 155.15625,
+          "y": 376.21875,
+          "width": 297.6875,
+          "height": 4.625
+        }
+      },
+      "preview": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(173, 184, 199)",
+        "uiMuted": "#adb8c7",
+        "rect": {
+          "x": 623.15625,
+          "y": 376.21875,
+          "width": 297.6875,
+          "height": 4.625
+        }
+      },
+      "output": {
+        "text": "最新样本 19:00 · 空白区间暂无连续采样",
+        "color": "rgb(167, 190, 203)",
+        "uiMuted": "",
+        "rect": {
+          "x": 327.375,
+          "y": 1019.96875,
+          "width": 1265.25,
+          "height": 19.5625
+        }
+      }
+    },
+    "actions": [],
+    "programmeUnchanged": true,
+    "errors": []
+  }
+}

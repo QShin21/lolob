@@ -1,0 +1,93 @@
+{
+  "testedSource": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+  "batches": {
+    "browser.json": {
+      "total": 63,
+      "pass": 63,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    "supplemental/browser.json": {
+      "total": 14,
+      "pass": 14,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    "audio-extra/browser.json": {
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    "program-boundaries/results.json": {
+      "total": 11,
+      "pass": 11,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    "program-lineup/results.json": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    "program-roster/results.json": {
+      "total": 14,
+      "pass": 14,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    "frontend-safety/result.json": {
+      "total": 15,
+      "pass": 15,
+      "fail": 0,
+      "pageErrors": 0
+    },
+    "theme-monitor/result.json": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "pageErrors": 0
+    }
+  },
+  "browserTotals": {
+    "total": 123,
+    "pass": 122,
+    "fail": 1,
+    "pageErrors": 0
+  },
+  "build": "passed",
+  "unit": {
+    "total": 302,
+    "pass": 294,
+    "fail": 3,
+    "skip": 5,
+    "exitCode": 1
+  },
+  "originalScripts": {
+    "frontend-safety": {
+      "total": 15,
+      "pass": 15,
+      "exitCode": 0
+    },
+    "broadcast-controls": {
+      "groups": 7,
+      "heroesDecoded": 173,
+      "pageErrors": 0,
+      "exitCode": 0
+    },
+    "production": {
+      "exitCode": 1,
+      "reason": "Obsolete .remote-bottom locator on unauthorized mobile roles",
+      "downstream": "subtitle/replay iteration and final persisted report did not execute"
+    },
+    "ui-theme": {
+      "exitCode": 1,
+      "reason": "Economy chart-sample-note in desktop monitors inherits --ui-muted from console theme",
+      "output": "actual /overlay color stable in focused repeat",
+      "downstream": "remaining theme-script cases did not execute"
+    }
+  },
+  "firstRosterHarnessRun": "Setup timeout because direct hostname alias is excluded by validHost/validOrigin with LAN disabled. An explicit loopback UI transport proxy was then used; no product assertions or implementation changed. Not a product failure count.",
+  "limits": "Isolated synthetic sources/application or device RPCs; actual HTTP/WS/UI and samplers. No real OBS, LoL client, LAN/mobile OS, drivers, media output, audience receiver, Windows build or release."
+}

@@ -1,0 +1,5 @@
+{
+  "error": "TimeoutError: locator.boundingBox: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.remote-bottom')\u001b[22m\n",
+  "errors": [],
+  "body": "Rc\n导播台\nBP 阵容\n数据\n赛事\n输出\n收尾\n帮助\n0.7.0\nRIFTCAST\n隔离验证 · 待播标题\nAZR 1 : 0 EMB\n第 2 局\n演示数据\n主机导播\n已同步\n连接与输出\n数据连接\n画面\n声音\n输出\n节目包装\n诊断\n协作\n工作台外观\n工作台已同步\n当前控制：主机导播\n返回导播台\n工作台外观\n\n操作界面主题与本机偏好\n\n不改变节目画面\n系统外观\n\n选择工作台的界面风格，切换后立即生效。\n\n界面风格\n深色风格\n墨蓝底色，适合暗光导播环境。\n浅色风格\n浅灰底色与白色面板，适合明亮环境。\n\n偏好保存在当前浏览器或桌面客户端，下次打开自动沿用。节目输出与场景包装保持各自的播出配色。\n\n当前使用深色风格 · 自动保存\n\nPGM\n赛前倒计时\n切入请求已接收 · 等待 OBS\nPVW\n赛后采访\n5 类已保存待播 · v7\nRTMP\n待确认\n摄像头\n待确认\n节目声音\n待确认\nREC\n待确认\n切入节目\nCtrl+Enter\n先连接 OBS，再核对预监\n回到比赛\n技术暂停\n核对 / 应急"
+}

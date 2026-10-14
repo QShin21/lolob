@@ -1,0 +1,46 @@
+{
+  "browser.mjs": {
+    "original": "docs/evidence/sol-9cd6b13/browser.mjs",
+    "originalSha256": "5a3de2dd710ba23612026e95f90913151416e2c894739616dbd1b8044d0b5775",
+    "copySha256": "77d598b4a5e43a3800d24d3934c434d861d75c80a5da7eaad7faff5942a06a9f",
+    "changes": "Source SHA, evidence path and isolated directory labels only. Every original behavioral assertion retained."
+  },
+  "supplemental.mjs": {
+    "original": "docs/evidence/sol-9cd6b13/supplemental.mjs",
+    "originalSha256": "d7175b39bbea4a728f3d19f423d2403a0315890a3dde1a5740c527e43b401174",
+    "copySha256": "76985b133a02f47ba928e830a596ce0c5dae504302c4a0b42374ca28540d8ae8",
+    "changes": "Source SHA, evidence path and isolated directory labels only. Every original behavioral assertion retained."
+  },
+  "audio-extra.mjs": {
+    "original": "docs/evidence/sol-9cd6b13/audio-extra.mjs",
+    "originalSha256": "80efd3eee73fb60a7f7a16e34bc47ac7c2d979404b445de69db453b5cd182dc5",
+    "copySha256": "8a99bc5f183151bcb8a7468a4827bf7ffb4317f644a47dcffda60521199255ff",
+    "changes": "Source SHA, evidence path and isolated directory labels only. Every original behavioral assertion retained."
+  },
+  "playwright-system.mjs": {
+    "original": "docs/evidence/sol-9cd6b13/playwright-system.mjs",
+    "originalSha256": "07a2830ae51d1ff024ddc904a6d1392858b27af2f506c4c3698e24e30115b7cb",
+    "copySha256": "07a2830ae51d1ff024ddc904a6d1392858b27af2f506c4c3698e24e30115b7cb",
+    "changes": "Source SHA, evidence path and isolated directory labels only. Every original behavioral assertion retained."
+  },
+  "program-boundaries.mjs": {
+    "original": "docs/evidence/sol-9cd6b13/program-boundaries.mjs",
+    "originalSha256": "eb86f634bc33bc3fb181d24945e90205d705976906b9f716843fdfbe4f7d6adf",
+    "copySha256": "6b2bc78dbed4876c1c5f05ebcb1dde35767369255dfbd4e96c0a902b6a71dcb4",
+    "changes": "Source SHA, evidence path and isolated directory labels only. Every original behavioral assertion retained."
+  },
+  "program-lineup.mjs": {
+    "original": "docs/evidence/sol-9cd6b13/program-lineup.mjs",
+    "originalSha256": "2343d22cb889fffaeee08d18b671614ee2929798a89fc98a4740d0e67548f525",
+    "copySha256": "384b55d40b6b53a60d1c88a95c5e31c9763daa7ed575d7b898633009f3120d81",
+    "changes": "Source SHA, evidence path and isolated directory labels only. Every original behavioral assertion retained."
+  },
+  "program-roster-browser.mjs": {
+    "newSha256": "252edfcd9266bf197801a7dbeb134c5ec70e3e1f3f95f11629fab4aafdd350a2",
+    "changes": "New independent test harness; implementation unchanged. See source and roster-harness-adaptation.json for explicit transport seams."
+  },
+  "theme-monitor-focused.mjs": {
+    "newSha256": "89465aab6038854abe41ed7d03041acee6620ef2fcde9b4baad484dcf5f09b3d",
+    "changes": "New independent test harness; implementation unchanged. See source and roster-harness-adaptation.json for explicit transport seams."
+  }
+}

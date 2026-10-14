@@ -1,0 +1,6 @@
+desktop programme HUD text must not inherit console theme
++ actual - expected
+
++ 'rgb(178, 198, 196)'
+- 'rgb(173, 184, 199)'
+         ^

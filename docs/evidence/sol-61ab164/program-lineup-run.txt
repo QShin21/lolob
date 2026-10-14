@@ -1,0 +1,4 @@
+PASS lineup-legitimate-automatic-roster-progress
+PASS lineup-manual-save-still-preserves-current-picture
+PASS lineup-restore-auto-cannot-publish-pending-roster-before-take
+{"source":"61ab1645378f1987fa62f478f75b87dddb83f2cc","pass":3,"fail":0,"errors":0}

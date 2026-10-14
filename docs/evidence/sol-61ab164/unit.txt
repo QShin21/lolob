@@ -1,0 +1,657 @@
+
+> riftcast-director@0.7.0 test
+> tsx --test server/*.test.ts
+
+✔ live polling retains the last successful sample time across failure and reconnect (16.379458ms)
+✔ draft resolves red local team from gameflow and maps summary bans without relying on local perspective (0.980031ms)
+✔ objective and first-blood attribution handles full Riot IDs, minions and ambiguous player aliases (0.741823ms)
+✔ Live rune artwork keeps valid API identifiers alongside rune names (0.341363ms)
+✔ Live inventory preserves empty equipment slots and the separate trinket position when the API supplies slot identities (0.312439ms)
+✔ Live combat details belong only to their identified player and retired income extensions are ignored (0.502864ms)
+✔ draft locking requires all ten completed unique picks and never accepts roster preselections (0.49967ms)
+✔ replay events and objectives reflect the current position and cannot prematurely end the match (0.483155ms)
+✔ LCU accepts a valid idle phase when gameflow session is absent and waits for real draft side information (24.759753ms)
+✔ bottom scoreboard pairs lanes independently of source order (4.35159ms)
+✔ live lead accepts matched fresh API and OCR cumulative gold and rejects stale or mismatched samples (1.702445ms)
+✔ bottom equipment keeps six slots and separates compact inventory trinkets (0.90645ms)
+✔ bottom settings persist independently, migrate older saves, and validate feed sources (8.494246ms)
+✔ five-pair controls persist over HTTP, migrate the retired scene, rotate in wall time and remove the telemetry endpoint (6133.96237ms)
+✔ companion uses final track 1, pins capture defaults and restores independent recording tracks and monitoring (25.152232ms)
+✔ failed native audio start restores monitoring and tracks without starting a partial mix (2.930378ms)
+✔ cable feedback is rejected for defaults and the additional Pack45 16-channel endpoint (1.656996ms)
+✔ new replay or music sources are enrolled during output without changing mute, gain or sync (1.707172ms)
+✔ persisted route snapshot recovers after a crash and missing sources do not prevent recovery (4.879963ms)
+✔ native failure and disappearing endpoints are never reported as healthy output (3.377469ms)
+✔ production cannot alter bridge-owned monitoring or recording tracks while audio is live (5.902456ms)
+✔ music import validates signatures, persists an owned file and starts paused at a safe default gain (6.026614ms)
+✔ invalid music extension, renamed image, oversize data and unsafe persisted paths are rejected (2.086261ms)
+✔ read-only seat verification preserves all five roles and actual ownership (1.919811ms)
+✔ an expired seat cannot silently enroll, change role or regain control after restart (0.763716ms)
+✔ explicit new local enrollment and a newly issued invitation are separate recovery paths (0.27376ms)
+✔ custom edits remain staged through save, reload and deletion; TAKE freezes content (17.032979ms)
+✔ custom scenes validate references, geometry, limits and control seat permissions (12.466317ms)
+✔ OBS builds independent layers, validates missing windows and preserves borrowed sources on failure (21.255375ms)
+✔ custom scenes can be queued in rundown and cannot be deleted while referenced (2.820052ms)
+✔ embedded preview switches and returns without any screenshot subscribers (2.33243ms)
+✔ external preview switches and returns without any screenshot subscribers (1.604177ms)
+✔ locked LCU candidates become history only when gameflow confirms game start (26.194947ms)
+✔ hovered complete rosters and cancelled final drafts never create global bans (3.327674ms)
+✔ final roster trades and side changes retain the champions under the original team IDs (6.253994ms)
+✔ full live spectating rosters update one game without duplicating history (2.85244ms)
+✔ an old live sample after advancing the game number cannot become the next game (4.962367ms)
+✔ restart retains both completed history and a pending locked draft for reconnect (2.734103ms)
+✔ different fixtures and restarted series isolate their global bans while retaining history (7.205713ms)
+✔ manual complete drafts require entering live and reject previous picks on either side (9.002508ms)
+✔ legacy history migration rejects malformed entries and keeps valid series records (1.643757ms)
+✔ delayed LCU and manual phase changes preserve the authoritative live roster (2.318569ms)
+✔ new broadcast scenes and native HUD modes are validated through state actions (4.339531ms)
+✔ LCU polling stages the final draft and commits gameflow start through the real adapter hook (21.840603ms)
+✔ live polling commits a complete spectator roster through the adapter and retains it across disconnect (4.002285ms)
+✔ gold parser accepts scoreboard units and rejects ambiguous OCR or invented values (1.587181ms)
+✔ manual real values update the scoreboard immediately and expire after ten seconds without estimating player gold (5.613023ms)
+✔ native cumulative gold takes priority while manual and OCR retain accurate source metadata (2.163456ms)
+✔ seek backwards, new game, source-mode changes and explicit reset discard former samples (1.330086ms)
+✔ OCR is opt-in and an in-flight read is discarded after the match changes (1.299269ms)
+✔ explicit automatic calibration saves validated regions and immediately publishes a real OCR sample (2.064218ms)
+✔ ambiguous or outdated automatic calibration keeps the previous configuration intact (2.241183ms)
+✔ automatic team calibration retains independently disabled player OCR and its custom region (1.081643ms)
+﹣ Windows OCR auto-location uses word bounds, excludes the timer and rejects a third gold candidate (0.090696ms) # SKIP
+✔ 1500 ms polling displays every intervening second without changing real samples (1.682775ms)
+✔ integer sampling jitter is corrected while the display remains monotonic (0.440902ms)
+✔ Replay speed, pause and resume preserve the sampled game-time anchor (0.178418ms)
+✔ seek discontinuities and new matches re-anchor in both directions (0.132268ms)
+✔ source expiry and transport loss freeze the display until fresh data arrives (0.170776ms)
+✔ network age is applied once and subsequent progress uses monotonic time (0.10025ms)
+✔ clock metadata follows actual source status and cannot leak across modes or matches (35.000175ms)
+✔ malformed sample validity cannot keep an unbounded display clock running (1.171288ms)
+✔ adapters publish actual Live and Replay clocks while preserving gameTime recording semantics (6.008175ms)
+✔ expired Replay metadata yields a fresh frozen Live anchor and runtime resets clear the old session (3056.469865ms)
+✔ confirmed end archives observed players and scores once across repeated signals and restart (14.604896ms)
+✔ unknown winner is archived without a guessed score and explicit confirmation is idempotent (3.369016ms)
+✔ LCU-first archive accepts one matching definitive Live end payload without resaving score (3.829766ms)
+✔ partial terminal scores preserve the last valid KDA/CS and provenance while other final fields update (2.556066ms)
+✔ initial end signals with a conflicting known game ID cannot archive a different game (8.536901ms)
+✔ LCU end of another known game is ignored until the observed game confirms its own end (23.186773ms)
+✔ next game preserves series, teams and BO score while detaching frozen data (2.379942ms)
+✔ without source IDs, time reset accepts the next game and late previous-game samples stay gated (1.417467ms)
+✔ series completion updates schedule and blocks advance; reloading schedule resumes archive (2.417497ms)
+✔ winner parsing accepts only explicit end fields, never kills or gold or future replay events (0.514292ms)
+✔ actual adapter polling freezes GameEnd once and a disconnect cannot finalize a running match (3.274343ms)
+✔ LCU confirmed end archives last successful sample and later winner metadata updates score once (4.832772ms)
+✔ LCU PreEnd waits, End saves provisionally, and matching final Live sample upgrades one archive (3.798259ms)
+✔ all ten players share one descending ranking and one bar scale (2.993391ms)
+✔ missing, negative and non-finite totals sort last; spendable gold never substitutes for total gold (6.143208ms)
+✔ live totals require fresh OCR or an active API sample and reject a pending replay seek (0.61336ms)
+✔ equal totals stay in a stable order when incoming roster order changes (0.525339ms)
+✔ HTTP / WebSocket service, upload and LAN control credentials work together (468.132763ms)
+✔ desktop IPC shutdown flushes the latest recording even while an older snapshot is being written (2854.532432ms)
+✔ automatic HUD hides only broadcast interface panels and preserves the native target, minimap, health bars, camera and world (6.115517ms)
+✔ live scenes enable game-provided bottom corners and restore their original hidden settings (4.633202ms)
+✔ OCR keeps visible team and player score sources while other native panels are hidden (1.197066ms)
+✔ player OCR independently preserves the expanded scoreboard and restores the saved switches (1.371848ms)
+✔ OCR enabling exposes its score input even when the score began hidden, then restores the original setting (1.575163ms)
+✔ unsupported replay responses fall back without posting partial or unvalidated render changes (2.24625ms)
+✔ missing bottom corner or OCR score switches fall back without hiding any native HUD panels (3.500993ms)
+✔ a teamfight preview leaves the game untouched and a live program still enables automatic hiding (1.05937ms)
+✔ teamfight preserves native HUD without Replay API calls in auto, mask and off modes (2.640272ms)
+✔ entering teamfight restores automatic changes once then preserves manual native HUD changes (1.719991ms)
+✔ teamfight reports unconfirmed restoration without claiming an OBS mask and retries the saved switches (1.177186ms)
+✔ entering teamfight after the replay changes preserves the replacement process HUD (1.047472ms)
+✔ program scene changes restore native HUD immediately while unchanged failures remain throttled (1.560272ms)
+✔ broadcast and native HUD mode changes bypass the previous context throttle (1.73955ms)
+✔ a busy tick does not consume a scene change awaiting native HUD restoration (1.157286ms)
+✔ an unconfirmed API write enables fallback and keeps the original switches available for restoration (0.843616ms)
+✔ leaving a live program restores the exact original interface configuration (0.82611ms)
+✔ an unconfirmed restoration keeps the original switches and retries instead of reporting restored (1.114623ms)
+✔ mask and off modes restore automatic changes and remain free of subsequent game mutations (1.63255ms)
+✔ a changed replay process receives its own saved HUD configuration and never the previous process settings (1.223686ms)
+✔ closing after the replay process changes never restores old switches into the replacement process (0.864097ms)
+✔ shutdown waits for an in-flight hide so the final game state is restored (0.967412ms)
+✔ RTMP configuration checks inactive OBS and returns only a credential-free confirmation (1.938699ms)
+✔ RTMP configuration refuses active, reconnecting, unknown and disconnected OBS states (0.73972ms)
+✔ RTMP validation and OBS failures never include stream credentials in error messages (0.512769ms)
+✔ HUD installation creates a transparent browser input and safely reuses matching sources (1.367833ms)
+✔ HUD installation refuses conflicting sources, missing scenes and external URLs (0.649955ms)
+✔ Bilibili endpoints use OBS WebSocket protocol and keep keys out of HTTP, WS, files and logs (444.485213ms)
+✔ camera enumeration reads actual OBS device identifiers and removes its disabled probe (2.130898ms)
+✔ device enumeration reuses an existing DirectShow source and cleans a probe after failed properties (0.797086ms)
+✔ two cameras cover only their exact panels, mute camera audio and sit under both browser buses (1.728364ms)
+✔ camera rectangles follow HUD letterboxing on a non 16:9 OBS canvas (0.521092ms)
+✔ both panels can share one camera without opening the same USB device twice (1.071558ms)
+✔ swapping cameras changes scene mappings while each physical device keeps its immutable source (1.078698ms)
+✔ switching to image or off disables both camera buses without touching uploaded images (0.608943ms)
+✔ unknown devices and conflicting source types cannot change existing camera selections (0.564157ms)
+✔ adapter sync caches stable settings and updates camera visibility independently for program and preview (3.928625ms)
+✔ failed camera sync is throttled across broadcast ticks and retries a changed selection immediately (1.655754ms)
+✔ five-pair manual and automatic selections route each side to the matching OBS camera on both buses (19.604217ms)
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+✔ portable configuration is isolated, authenticated and preserves existing profile settings (435.863787ms)
+✔ spectator OCR captures only the verified original LoL source at native resolution (1.937307ms)
+✔ automatic scene setup creates exact LoL capture, muted microphone and HUD above game (5.103368ms)
+✔ setup refuses active or unconfirmed outputs and invalid primitive selections before mutation (3.955055ms)
+✔ source conflicts are rejected and unavailable window values are never applied (1.646581ms)
+✔ delayed LoL startup binds only exact enabled executable and preserves a selected window (1.569405ms)
+✔ lost transport reconnects the owned live OBS without restarting or altering active outputs (1.372429ms)
+✔ failed reconnect retains owned process and sanitizes transport error credentials (0.709886ms)
+✔ concurrent start requests share one launch and mutations are serialized (1.070857ms)
+✔ shutdown stops only owned outputs and never sends stop commands to external OBS (3.262235ms)
+✔ mode switch refuses active or disconnected owned outputs and source preview validates data (2.20579ms)
+✔ startup migrates the owned profile to hardware encoding while retaining destination and bitrate (43.572242ms)
+✔ simultaneous previews share one GPU screenshot and output preview has lower overhead (0.902915ms)
+✔ missing optional OBS statistics retain connection and output controls (1.170666ms)
+✔ saved mode honors explicit environment and external process settings stay outside engine state (1.336135ms)
+✔ output commands wait for asynchronous recording start and final stop states (608.640625ms)
+✔ OBS readiness waits for a loaded collection after transport identification (502.41586ms)
+✔ runtime lock refuses another live service and retains ownership until OBS exits (11.486506ms)
+✔ stale runtime lock is reclaimed only when both owner and child have exited (4.477328ms)
+✔ live monitors capture new frames and create a visual-only preview without touching program or outputs (9.122849ms)
+✔ reconnecting refreshes an existing preview HUD to 1 FPS while preserving the program HUD and game capture (3.010117ms)
+✔ desktop monitor opens the correct native bus without screenshot polling or output actions (2.585961ms)
+✔ live capture rejects invalid frames and external preview requires studio mode (0.97949ms)
+✔ engine mutations wait for the in-flight monitor and old connection work never prepares a new transport (17.957536ms)
+✔ owned preview reactivates after studio mode or its bus is changed (2.953542ms)
+✔ Douyin destination persists and virtual camera starts independently of RTMP and recording (6.074375ms)
+✔ companion audio failure prevents partial camera start and cleans up the attempted route (2.603016ms)
+✔ audio-only owned route also prevents source and destination mutations until stopped (8.259078ms)
+✔ owned audio loader preserves unrelated scripts, supports Unicode paths and leaves one recovery backup (29.521333ms)
+✔ live virtual camera prevents source, engine, destination and driver changes (1.812559ms)
+✔ companion output rejects missing registration, missing sources and unintended RTMP starts (2.131288ms)
+✔ virtual camera start and stop wait for actual output state rather than the RPC acknowledgement (610.262273ms)
+✔ owned virtual camera closes with its engine while external OBS camera remains untouched (4.316317ms)
+✔ owned collection migrates virtual camera to Program while preserving original scene configuration (83.979084ms)
+✔ an unavailable virtual camera plugin does not block RTMP setup and cannot report a running camera (4.60493ms)
+✔ successful first registration restarts only the inactive owned engine to load the camera plugin (2.381002ms)
+✔ performance separates recent rendering, encoding and RTMP network frame loss (1.13925ms)
+✔ counter resets and idle output do not replay historical or negative loss rates (0.191748ms)
+✔ only the explicitly designated studio program can own a native display (0.696395ms)
+✔ snapshot producer enforces one frame per second despite fast acknowledgements and new subscribers (2.290056ms)
+✔ decode backpressure skips idle and slow subscribers and closing clients stops capture (0.585409ms)
+✔ preview and program use distinct sources and buffered clients recover without blocking healthy clients (0.7332ms)
+✔ an in-flight capture never overlaps and is discarded when the last subscriber leaves (0.57977ms)
+✔ capture failures send safe status and close subscribers for reconnection (0.725168ms)
+✔ summoner icons accept real localized spectator spell tokens and evolved variants (1.202965ms)
+✔ spell slots and source tokens survive normalization without shifting the second spell (7.630651ms)
+✔ scoreboard reads explicit vision, rune roles, item counts and compatible details (0.541722ms)
+✔ absent details remain unknown and active ability levels do not invent ultimate readiness (0.350836ms)
+✔ legacy two-person settings migrate into the jungle pair and retain the saved sources (3.510067ms)
+✔ each of five pairs persists independent material settings and resolves its own lane name and portrait (5.800915ms)
+✔ server-controlled rotation holds each pair for five seconds, wraps and stops immediately on manual cut (4.666923ms)
+✔ automatic rotation waits off-air and restarts a complete slot when a live bus becomes visible (0.858648ms)
+✔ invalid slot indices and partial or malformed pair configurations cannot mutate saved settings (3.887994ms)
+✔ pending presentation counts editorial changes without counting live telemetry or rotation timers (5.899333ms)
+✔ TAKE eligibility distinguishes offline, role, owner, waiting and applied states (1.115164ms)
+✔ gold curves split a lead crossing at zero and preserve missing/backwards clock gaps (0.253781ms)
+✔ schedule pagination covers every match, clamps stale pages and uses Beijing calendar days (12.267427ms)
+✔ interview, schedule and crop edits remain staged, survive restart and reject malformed input (3.60528ms)
+✔ ranking scene announces the actual person selected for broadcast (0.515022ms)
+✔ HTTP seats enforce stale forms, idempotent submissions and explicit ownership transfer (497.916824ms)
+✔ HTTP seat resume is read-only and rejects a prior service identity before any submission (911.061085ms)
+✔ delayed success source application publishes PGM only after preparation and preserves telemetry (950.180815ms)
+✔ delayed failure source application publishes PGM only after preparation and preserves telemetry (789.801465ms)
+✔ HTTP save failure stays visible and rejects a mutation acknowledgement (485.742578ms)
+✔ independent OBS clip previews, trims, restores audio and returns at its out-point (26.780665ms)
+✔ clip buffers index the on-air game while later-game content is being prepared (17.561401ms)
+✔ failed media switch restores original sound policy; emergency and track changes confirm actual output (9.430331ms)
+✔ continuous recording maps game and video time segments to a verified file (7.239704ms)
+✔ durable state replacement reopens correctly and failed replacement rejects without losing prior state (3.366141ms)
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/var/cache/fontconfig
+	/home/agent/.cache/fontconfig
+	/home/agent/.fontconfig
+✔ OBS emergency collection stays native and keeps existing scenes when prepared repeatedly (587.11531ms)
+✔ offline assets are pinned, cached once across concurrent readers, and reused without a network (42.516608ms)
+✔ manual BP survives restart while game statistics are invalidated; new series starts at zero (3.217678ms)
+✔ resource countdown expires with the game version, stale clock and replay discontinuity (1.076205ms)
+✔ alerts acknowledge one incident, resolve independently and reopen for a later recurrence (1.093852ms)
+✔ result CSV tracks corrections and invalid remake attempts consistently with JSON (4.986012ms)
+✔ audio peak hold expires and disconnected or stale samples remain unavailable (5.15817ms)
+✔ same-scene TAKE stages manual configuration while current-match telemetry continues (8.129699ms)
+✔ live retains the full previous-game context during next-game preparation (15.98804ms)
+✔ postgame retains the full previous-game context during next-game preparation (6.622507ms)
+✔ interview retains the full previous-game context during next-game preparation (6.08459ms)
+✔ draft retains the full previous-game context during next-game preparation (6.774425ms)
+✔ lineup retains the full previous-game context during next-game preparation (7.508787ms)
+✔ schedule retains the full previous-game context during next-game preparation (5.714625ms)
+✔ on-air terminal data remains frozen after source loss and next-game preparation (5.964179ms)
+✔ scores, feed mappings and sample gate follow team identities across a side swap (4.553022ms)
+✔ corrections recalculate the effective ledger and exports without duplicating game wins (7.419093ms)
+✔ manual BP assignments are staged, and standard / per-team fearless exceptions respect rules (2.907613ms)
+✔ preselected heroes stay outside locked choices and history (0.640361ms)
+✔ remake archives the invalid attempt and gates the old game without advancing the BO number (2.151498ms)
+✔ check fingerprints expire by affected source while unrelated checks stay valid (2.177698ms)
+✔ terminal arrival and completeness remain distinct, and a partial record requires an explicit reason (2.607012ms)
+✔ replay writes remain blocked while an independent clip is on air (1.757147ms)
+✔ seat ownership, role permissions and repeated request IDs remain authoritative (0.74643ms)
+✔ program and preview feed selection have separate clocks and hold through pauses (6.152763ms)
+✔ manual pending BP holds the latest automatic picture without rewriting the last TAKE (13.486086ms)
+✔ same-scene re-TAKE publishes manual BP; undo and redo restore each visible programme (11.42303ms)
+✔ manual starts a hold before modifying BP (2.808785ms)
+✔ compare starts a hold before modifying BP (1.746341ms)
+✔ clear starts a hold before modifying BP (1.877838ms)
+✔ undo starts a hold before modifying BP (1.86635ms)
+✔ restoring automatic BP is pending until TAKE (manual TAKE=false) (3.402716ms)
+✔ restoring automatic BP is pending until TAKE (manual TAKE=true) (5.221946ms)
+✔ pending hold survives serialization/restart and cannot follow a new attempt (5.574534ms)
+✔ unpublished source preparation preserves held BP; publication clears only the completed hold (3.098049ms)
+✔ legacy manual state without a hold falls back to its accepted snapshot, never pending draft (1.137517ms)
+✔ all programme renderers consume held identities, including focus-player reports with a newer archive (682.725643ms)
+✔ actual LCU collector: automatic progression, manual comparison, restored roster and source all wait for TAKE (11.293677ms)
+✔ roster identity and membership stay on air while same-ID statistics, items and clocks keep advancing (2.875685ms)
+✔ a restored equal picture still reports that automatic synchronization awaits TAKE (3.328245ms)
+✔ an unavailable automatic sample after restart is not counted as an editorial BP or roster change (1.263847ms)
+✔ restore, application failure, re-TAKE and undo/redo preserve roster identity (manual TAKE=false) (6.928807ms)
+✔ restore, application failure, re-TAKE and undo/redo preserve roster identity (manual TAKE=true) (10.822159ms)
+✔ assignment edits hold the current automatic hero, including repeated edits and removal, until TAKE (3.747543ms)
+✔ an unchanged mapping does not pause auto, while reverting a staged mapping still reports its held source (2.080973ms)
+✔ held roster survives save/restart, new attempts and legacy undo without crossing match identity (13.418014ms)
+✔ legacy BP-only holds cannot infer assignments from picks or expose pending player identities (2.516937ms)
+✔ Replay 404 diagnosis distinguishes disabled configuration from restart and declared-but-unavailable routes (3.428124ms)
+✔ Replay readiness requires a playback schema and keeps unavailable client distinct from disabled API (0.821834ms)
+✔ Replay configuration is read only from General and locates Game/Config with UTF16 support (12.55505ms)
+✔ Replay adapter reconnects after an unavailable interface becomes ready and reports POST failure separately (3.79864ms)
+✔ equipment updates exact statistics independently while prior gold keeps its original timestamp and chart point (16.221231ms)
+✔ an equipment-only first sample supplies all ten exact statistics and leaves missing economy unavailable (3.564368ms)
+✔ a regressing OCR statistic cannot refresh an older accepted reading (2.979501ms)
+✔ capture metadata starts the freshness window at frame acquisition after slow initialization (1.993842ms)
+✔ 500 ms player polling avoids overlap and ignores in-flight reads after shutdown (2.057568ms)
+✔ scoreboard observations update exact CS and KDA, team kills and gold, then restore API statistics after expiry (3.570367ms)
+✔ production player sampling cannot refresh a retained OBS texture after the game API disconnects (1.308874ms)
+✔ warm OCR requests share one process and preserve Unicode paths through the JSON protocol (52.656403ms)
+✔ initialization can time out and restart before any frame is read (283.003834ms)
+✔ closing during initialization rejects readiness and closes the uninitialized process (53.200359ms)
+✔ concurrent callers serialize frames so responses cannot cross between samples (151.646452ms)
+✔ timeouts terminate the stalled process and the next request recovers with a new runtime (317.653785ms)
+✔ invalid protocol output is discarded without logging contents and a later request restarts cleanly (70.970496ms)
+✔ closing during a stuck sample rejects queued work and leaves no worker process alive (54.291178ms)
+﹣ the PowerShell protocol initializes once, validates arguments, and recovers after an invalid request (0.263906ms) # SKIP
+✔ native scoreboard distinguishes spendable current gold and exact cumulative gold, and rejects ambiguous strings (1.253741ms)
+✔ word geometry combines columns even when Windows OCR assigns independent line numbers (1.381643ms)
+✔ scoreboard identity uses a unique same-side KDA plus CS, independent of roster order (0.441402ms)
+✔ verified champion portraits correct stale statistics, take priority, and reject weak or duplicate identities (0.81906ms)
+✔ one obscured portrait is identified only by four confirmed teammates and a complete unique roster (0.403365ms)
+✔ individual OCR runs independently of team OCR, expires, respects API totals and rejects decreasing or outdated samples (6.5709ms)
+✔ complete five-row scoreboard identifies all ten players without assigning duplicate or cropped entries (0.803435ms)
+✔ central champion death timers are excluded by column geometry and never replace missing CS (0.246049ms)
+✔ equipment view supplies fresh KDA and CS independently of missing gold and excludes portrait overlays (0.931958ms)
+✔ ambiguous or invalid gold cells leave independently valid KDA and CS available (0.415544ms)
+✔ recorded 4K equipment view matches all ten exact statistics without fabricating personal gold (10.124236ms)
+✔ small unrelated HUD words cannot split the main numeric scoreboard row (0.295914ms)
+✔ recorded Windows OCR from the user attachment and two native 4K frames preserves all ten exact player values (6.417835ms)
+✔ victory shade and multiple respawn overlays preserve a safe partial identity result (1.865739ms)
+✔ CSV appends individual OCR provenance and spendable gold while preserving the original cumulative-gold column (6.622237ms)
+﹣ Windows OCR reads all ten current(total) rows from an offline native-style scoreboard fixture (0.050866ms) # SKIP
+✔ preview does not go on air until take, and password is never broadcast (10.419124ms)
+✔ switching to real source clears all synthetic match data (2.51867ms)
+✔ demo respects pause and save recording is a detached snapshot (2.540607ms)
+✔ untrusted mutations are rejected without modifying current state (5.132652ms)
+✔ Live API preserves unavailable cumulative gold and reads correct team / tower owner (6.999563ms)
+✔ LCU draft uses explicit teams and action sequence, including red local team (1.197056ms)
+✔ lockfile validation and origin checks restrict authentication to local service (0.405138ms)
+✔ image upload checks dimensions and signature; CSV neutralizes spreadsheet formulas (1.654083ms)
+✔ restoring real mode keeps persistent production assets and recordings while clearing old match samples (1.621262ms)
+✔ loading the next fixture resets match stats and uses its own roster and portraits (2.612991ms)
+✔ team and schedule edits preserve references and reject duplicate fixture identities (2.823246ms)
+✔ sponsor image accepts uploaded assets and can be removed (1.75233ms)
+✔ saved legacy looks restore as ARENA while preserving production configuration (7.996059ms)
+✔ legacy overlay API names resolve to ARENA and unknown looks are rejected (2.202475ms)
+✔ legacy real states with absent history fields never inherit demonstration samples (2.386201ms)
+✔ real recordings require observed statistics and preserve their actual time and source (1.78602ms)
+✔ a successful replay seek blocks records until matching current Live data arrives (1.490126ms)
+✔ recording discards expired OCR gold while preserving fresh API statistics and original state (1.447672ms)
+✔ legacy live recording compatibility still requires a fresh connected client (1.475294ms)
+✔ fresh explicitly sourced team economy can be saved without a player roster (1.947703ms)
+✔ incomplete and invalid API scores cannot be saved as real zero statistics (2.937588ms)
+✔ Pack45 stereo device is selected automatically and an existing valid cable never requests elevation (7.533074ms)
+✔ inactive installed driver reports restart or session isolation and is never installed repeatedly (2.004889ms)
+✔ modified installer archive is rejected before extraction or any elevated action (3.460588ms)
+✖ official archive verifies signature, runs encoded fixed installer and restores only original defaults (1.471478ms)
+✖ bad device response and publisher validation failures never trigger installation (2.283056ms)
+✖ existing OBS registration is reused without requesting elevation or changing its path (0.838227ms)
+﹣ driver installation uses fixed encoded modules, keeps valid registrations and confirms readback (0.216625ms) # Windows registration wrapper
+﹣ registration probe failure never triggers an install or requests elevation (0.136335ms) # Windows registration wrapper
+ℹ tests 302
+ℹ suites 0
+ℹ pass 294
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 5
+ℹ todo 0
+ℹ duration_ms 9523.322514
+
+✖ failing tests:
+
+test at server/virtual-audio-driver.test.ts:35:1
+✖ official archive verifies signature, runs encoded fixed installer and restores only original defaults (1.471478ms)
+  Error: ENOENT: no such file or directory, copyfile '/workspace/lolob/runtime/vbcable/VBCABLE_Driver_Pack45.zip' -> '/tmp/riftcast-audio-driver-enjJAI/runtime/vbcable/VBCABLE_Driver_Pack45.zip'
+      at async copyFile (node:internal/fs/promises:679:10)
+      at async TestContext.<anonymous> (/workspace/lolob/server/virtual-audio-driver.test.ts:36:34)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/workspace/lolob/runtime/vbcable/VBCABLE_Driver_Pack45.zip',
+    dest: '/tmp/riftcast-audio-driver-enjJAI/runtime/vbcable/VBCABLE_Driver_Pack45.zip'
+  }
+
+test at server/virtual-audio-driver.test.ts:50:1
+✖ bad device response and publisher validation failures never trigger installation (2.283056ms)
+  Error: ENOENT: no such file or directory, copyfile '/workspace/lolob/runtime/vbcable/VBCABLE_Driver_Pack45.zip' -> '/tmp/riftcast-audio-driver-P9EMFY/runtime/vbcable/VBCABLE_Driver_Pack45.zip'
+      at async copyFile (node:internal/fs/promises:679:10)
+      at async TestContext.<anonymous> (/workspace/lolob/server/virtual-audio-driver.test.ts:54:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/workspace/lolob/runtime/vbcable/VBCABLE_Driver_Pack45.zip',
+    dest: '/tmp/riftcast-audio-driver-P9EMFY/runtime/vbcable/VBCABLE_Driver_Pack45.zip'
+  }
+
+test at server/virtual-camera-driver.test.ts:8:1
+✖ existing OBS registration is reused without requesting elevation or changing its path (0.838227ms)
+  Error: 虚拟摄像头需要 Windows x64
+      at VirtualCameraDriver.install (/workspace/lolob/server/virtual-camera-driver.ts:43:29)
+      at async TestContext.<anonymous> (/workspace/lolob/server/virtual-camera-driver.test.ts:11:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

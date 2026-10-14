@@ -1,0 +1,32 @@
+
+> riftcast-director@0.7.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1680 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                               0.97 kB │ gzip:   0.59 kB
+dist/assets/Draft-Ds8QdWU6.css               19.17 kB │ gzip:   3.88 kB
+dist/assets/Management-B-V7SuPd.css          33.90 kB │ gzip:   6.62 kB
+dist/assets/Settings-h0Y4HQx0.css            35.22 kB │ gzip:   5.94 kB
+dist/assets/index-CmdT71oS.css              217.41 kB │ gzip:  41.84 kB
+dist/assets/image-Byjxh6DO.js                 0.27 kB │ gzip:   0.22 kB
+dist/assets/LiveData-DyDjpdcR.js             10.50 kB │ gzip:   3.99 kB
+dist/assets/EconomySourcePanel-CFhEpo0U.js   11.31 kB │ gzip:   4.68 kB
+dist/assets/Management-DwMolXXN.js           30.29 kB │ gzip:  10.36 kB
+dist/assets/Draft-eK3jTpqN.js                33.21 kB │ gzip:  10.75 kB
+dist/assets/Settings-CEncSS0m.js             70.57 kB │ gzip:  21.76 kB
+dist/assets/index-BmuC0xZy.js               508.86 kB │ gzip: 155.72 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.67s
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

@@ -1,0 +1,16 @@
+{
+  "source": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+  "base": "http://127.0.0.1:40013",
+  "dataDir": "/tmp/riftcast-sol-bp-boundaries-JztROe/data",
+  "synthetic": "Actual pollLcu/pollLive + HTTP/WS/renderers, synthetic request transport and application stub; no physical devices or network",
+  "outcomes": [
+    {
+      "id": "harness",
+      "status": "error",
+      "error": "locator.waitFor: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: '只读席', exact: true }) to be visible\u001b[22m\n",
+      "stack": "locator.waitFor: Timeout 6500ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: '只读席', exact: true }) to be visible\u001b[22m\n\n    at /workspace/lolob/docs/evidence/sol-61ab164/program-roster-browser.mjs:123:229"
+    }
+  ],
+  "errors": [],
+  "actions": []
+}

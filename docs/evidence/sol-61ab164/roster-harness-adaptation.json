@@ -1,0 +1,6 @@
+{
+  "firstRun": "program-roster-first-pass/results.json",
+  "reason": "The direct alias initialization timed out. Source validHost/validOrigin excludes this hostname with LAN disabled. This is harness setup, not a tested programme-boundary failure.",
+  "change": "Use a labelled loopback UI HTTP/WS proxy to exercise the actual nonlocal Remote branch against the real service and role/seat state. No application or behavioral assertions changed.",
+  "boundary": "Proxy does not test real LAN, Origin policy or mobile operating system. Original validHost rejection retained in first-run evidence."
+}

@@ -1,0 +1,137 @@
+{
+  "source": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+  "base": "http://127.0.0.1:36257",
+  "dataDir": "/tmp/riftcast-sol-bp-boundaries-ZAJqon/data",
+  "synthetic": "LCU transport and 180ms source application only; actual production logic, HTTP, WS and renderer",
+  "outcomes": [
+    {
+      "id": "automatic-lcu-progress-after-take",
+      "status": "pass",
+      "detail": {
+        "snapshot": "Aatrox",
+        "visible": "灵罗娃娃",
+        "pending": "Gwen"
+      }
+    },
+    {
+      "id": "manual-save-holds-current-automatic-picture",
+      "status": "pass",
+      "detail": {
+        "snapshot": "Aatrox",
+        "hold": "Gwen",
+        "pending": "Akali"
+      }
+    },
+    {
+      "id": "restore-auto-to-take-snapshot-still-reports-pending-bp",
+      "status": "pass",
+      "detail": {
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "held": "Gwen",
+        "staged": "Aatrox",
+        "visible": "灵罗娃娃",
+        "footer": "PVW\nBP 选人\n2 类已保存待播 · v3"
+      }
+    },
+    {
+      "id": "automatic-same-scene-retake-and-next-sample",
+      "status": "pass"
+    },
+    {
+      "id": "compare-and-client-samples-cannot-bypass-manual-handoff",
+      "status": "pass"
+    },
+    {
+      "id": "manual-take-keeps-client-samples-as-comparison-only",
+      "status": "pass"
+    },
+    {
+      "id": "restore-auto-after-manual-take-needs-explicit-retake",
+      "status": "pass"
+    },
+    {
+      "id": "failed-preparation-preserves-visible-held-bp",
+      "status": "pass"
+    },
+    {
+      "id": "retry-same-scene-take-publishes-and-keeps-manual-confirmation-distinct",
+      "status": "pass"
+    },
+    {
+      "id": "undo-restores-last-visible-auto-bp-and-preserves-pending",
+      "status": "pass"
+    },
+    {
+      "id": "undo-again-restores-manual-picture",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "actions": [
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "take",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "take",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "take",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "take",
+      "requestIdPresent": true
+    },
+    {
+      "type": "take",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "immediate",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "immediate",
+      "requestIdPresent": true
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "source": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+  "base": "http://127.0.0.1:42953",
+  "dataDir": "/tmp/riftcast-sol-bp-boundaries-MWdoKO/data",
+  "synthetic": "Actual pollLcu/pollLive + HTTP/WS/renderers, synthetic request transport and application stub; no physical devices or network",
+  "outcomes": [
+    {
+      "id": "pending-roster-boundary-draft",
+      "status": "pass",
+      "detail": {
+        "scene": "draft",
+        "programme": "Gwen / original live-player identity",
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "takeRequests": 0
+      }
+    },
+    {
+      "id": "pending-roster-boundary-lineup",
+      "status": "pass",
+      "detail": {
+        "scene": "lineup",
+        "programme": "Gwen / original live-player identity",
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "takeRequests": 0
+      }
+    },
+    {
+      "id": "pending-roster-boundary-live",
+      "status": "pass",
+      "detail": {
+        "scene": "live",
+        "programme": "Gwen / original live-player identity",
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "takeRequests": 0
+      }
+    },
+    {
+      "id": "pending-roster-boundary-gold-ranking",
+      "status": "pass",
+      "detail": {
+        "scene": "gold-ranking",
+        "programme": "Gwen / original live-player identity",
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "takeRequests": 0
+      }
+    },
+    {
+      "id": "pending-roster-boundary-economy",
+      "status": "pass",
+      "detail": {
+        "scene": "economy",
+        "programme": "Gwen / original live-player identity",
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "takeRequests": 0
+      }
+    },
+    {
+      "id": "pending-roster-boundary-ranking",
+      "status": "pass",
+      "detail": {
+        "scene": "ranking",
+        "programme": "Gwen / original live-player identity",
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "takeRequests": 0
+      }
+    },
+    {
+      "id": "pending-roster-boundary-postgame",
+      "status": "pass",
+      "detail": {
+        "scene": "postgame",
+        "programme": "Gwen / original live-player identity",
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "takeRequests": 0
+      }
+    },
+    {
+      "id": "pending-roster-boundary-interview",
+      "status": "pass",
+      "detail": {
+        "scene": "interview",
+        "programme": "Gwen / original live-player identity",
+        "pending": [
+          "BP",
+          "英雄归属"
+        ],
+        "takeRequests": 0
+      }
+    },
+    {
+      "id": "same-ID-live-telemetry-advances-under-held-identity",
+      "status": "pass",
+      "detail": {
+        "collectedBy": "actual pollLive/normalizeLive",
+        "oldCs": 201,
+        "newCs": 777,
+        "pgmHero": "Gwen",
+        "pendingHero": "Aatrox",
+        "desktopMobileCs": 777
+      }
+    },
+    {
+      "id": "GUI-assignment-swap-save-take-undo-redo",
+      "status": "pass",
+      "detail": {
+        "pendingOnlyTakeRequests": 0,
+        "acceptedTop": "LeeSin",
+        "undoTop": "Gwen",
+        "redoTop": "LeeSin"
+      }
+    },
+    {
+      "id": "focus-programme-preserves-identity-after-new-archive-on-output-desktop-mobile",
+      "status": "pass",
+      "detail": {
+        "archiveHero": "Aatrox",
+        "programmeHero": "Gwen",
+        "previewHero": "Aatrox",
+        "version": 63
+      }
+    },
+    {
+      "id": "same-scene-focus-retake-publishes-selected-final-archive",
+      "status": "pass",
+      "detail": {
+        "outputDesktopMobile": "Aatrox after explicit same-scene TAKE",
+        "application": "applied"
+      }
+    },
+    {
+      "id": "legacy-BP-only-hold-uses-last-accepted-roster-not-fabricated-handoff",
+      "status": "pass",
+      "detail": {
+        "acceptedHero": "Aatrox",
+        "storedDraftOnly": "Gwen",
+        "currentSample": "Ashe",
+        "renderedLineup": "Aatrox",
+        "limitation": "No historical handoff player identities exist; Gwen roster is not claimed to be reconstructed"
+      }
+    },
+    {
+      "id": "legacy-undo-without-rosterHold-restores-accepted-players-and-rejects-later-samples",
+      "status": "pass",
+      "detail": {
+        "acceptedPreviousHero": "Ashe",
+        "currentSample": "Akali",
+        "programme": "Ashe"
+      }
+    }
+  ],
+  "errors": [],
+  "actions": [
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "draft-mode",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "assign",
+      "requestIdPresent": true
+    },
+    {
+      "type": "take",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "immediate",
+      "requestIdPresent": true
+    },
+    {
+      "type": "production",
+      "op": "immediate",
+      "requestIdPresent": true
+    },
+    {
+      "type": "set-draft",
+      "requestIdPresent": true
+    },
+    {
+      "type": "take",
+      "requestIdPresent": true
+    }
+  ]
+}

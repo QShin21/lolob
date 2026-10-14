@@ -1,0 +1,13 @@
+{
+  "testedSource": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+  "health": {
+    "service": "riftcast-director",
+    "version": "0.7.0",
+    "status": "ok",
+    "mode": "demo",
+    "lanEnabled": false
+  },
+  "port": 39841,
+  "isolatedDataDir": "/tmp/lolob-sol-61ab164-nNhzQ0/audio-mock",
+  "engine": "explicit synthetic hook"
+}

@@ -1,0 +1,252 @@
+{
+  "testedSource": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+  "environment": "Linux / system Chromium; real isolated HTTP; explicitly mocked engine and device scenarios",
+  "startedAt": "2026-10-14T08:09:21.263Z",
+  "work": "/tmp/lolob-sol-61ab164-HJYgxV",
+  "outcomes": [
+    {
+      "id": "theme-standby",
+      "description": "Built 1920x1080 output geometry and theme boundary for standby",
+      "status": "pass",
+      "data": {
+        "scene": "standby",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:09:26.190Z"
+    },
+    {
+      "id": "theme-draft",
+      "description": "Built 1920x1080 output geometry and theme boundary for draft",
+      "status": "pass",
+      "data": {
+        "scene": "draft",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:09:30.713Z"
+    },
+    {
+      "id": "theme-lineup",
+      "description": "Built 1920x1080 output geometry and theme boundary for lineup",
+      "status": "pass",
+      "data": {
+        "scene": "lineup",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:09:35.274Z"
+    },
+    {
+      "id": "theme-live",
+      "description": "Built 1920x1080 output geometry and theme boundary for live",
+      "status": "pass",
+      "data": {
+        "scene": "live",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:09:39.437Z"
+    },
+    {
+      "id": "theme-teamfight",
+      "description": "Built 1920x1080 output geometry and theme boundary for teamfight",
+      "status": "pass",
+      "data": {
+        "scene": "teamfight",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:09:43.626Z"
+    },
+    {
+      "id": "theme-gold-ranking",
+      "description": "Built 1920x1080 output geometry and theme boundary for gold-ranking",
+      "status": "pass",
+      "data": {
+        "scene": "gold-ranking",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:09:47.950Z"
+    },
+    {
+      "id": "theme-economy",
+      "description": "Built 1920x1080 output geometry and theme boundary for economy",
+      "status": "pass",
+      "data": {
+        "scene": "economy",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:09:52.369Z"
+    },
+    {
+      "id": "theme-ranking",
+      "description": "Built 1920x1080 output geometry and theme boundary for ranking",
+      "status": "pass",
+      "data": {
+        "scene": "ranking",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:09:56.743Z"
+    },
+    {
+      "id": "theme-schedule",
+      "description": "Built 1920x1080 output geometry and theme boundary for schedule",
+      "status": "pass",
+      "data": {
+        "scene": "schedule",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:10:01.118Z"
+    },
+    {
+      "id": "theme-postgame",
+      "description": "Built 1920x1080 output geometry and theme boundary for postgame",
+      "status": "pass",
+      "data": {
+        "scene": "postgame",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:10:05.549Z"
+    },
+    {
+      "id": "theme-interview",
+      "description": "Built 1920x1080 output geometry and theme boundary for interview",
+      "status": "pass",
+      "data": {
+        "scene": "interview",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "themeInvariant": true,
+        "realObs": false
+      },
+      "at": "2026-10-14T08:10:09.835Z"
+    },
+    {
+      "id": "image-client-max",
+      "description": "Oversize image is blocked before HTTP and local draft stays intact",
+      "status": "pass",
+      "at": "2026-10-14T08:10:15.068Z"
+    },
+    {
+      "id": "image-server-signature",
+      "description": "Malformed image fails real upload validation without losing local input",
+      "status": "pass",
+      "data": {
+        "error": "文件签名无效，仅支持 PNG、JPEG、WebP、GIF 图片"
+      },
+      "at": "2026-10-14T08:10:16.149Z"
+    },
+    {
+      "id": "image-supported-formats",
+      "description": "Real isolated upload accepts JPEG WebP GIF alongside PNG",
+      "status": "pass",
+      "data": [
+        {
+          "format": "jpeg",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "format": "webp",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "format": "gif",
+          "width": 320,
+          "height": 180
+        }
+      ],
+      "at": "2026-10-14T08:10:16.281Z"
+    }
+  ],
+  "errors": [],
+  "geometry": [],
+  "requests": [],
+  "images": [
+    "overlay-standby.png",
+    "overlay-draft.png",
+    "overlay-lineup.png",
+    "overlay-live.png",
+    "overlay-gold-ranking.png",
+    "overlay-economy.png",
+    "overlay-ranking.png",
+    "overlay-schedule.png",
+    "overlay-postgame.png",
+    "overlay-interview.png",
+    "draft-at-720p.png",
+    "draft-small-player.png",
+    "editor-image-size-error.png",
+    "editor-image-content-error.png"
+  ]
+}

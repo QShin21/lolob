@@ -1,0 +1,4 @@
+READY audio-mock: HTTP health ok, version 0.7.0, source 61ab1645378f1987fa62f478f75b87dddb83f2cc
+PASS fader-refresh-protection
+PASS fader-keyboard
+{"passed":2,"failed":0,"pageErrors":0}

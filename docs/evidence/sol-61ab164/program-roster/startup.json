@@ -1,0 +1,14 @@
+{
+  "source": "61ab1645378f1987fa62f478f75b87dddb83f2cc",
+  "base": "http://127.0.0.1:42953",
+  "dataDir": "/tmp/riftcast-sol-bp-boundaries-MWdoKO/data",
+  "health": {
+    "service": "riftcast-director",
+    "version": "0.7.0",
+    "status": "ok",
+    "mode": "live",
+    "lanEnabled": false
+  },
+  "remoteRendering": "sol-workstation.test uses an explicit loopback HTTP/WS transport proxy to the actual authorized service; no real LAN/mobile OS",
+  "synthetic": "Only source transport/application are stubbed; actual pollLive/pollLcu, HTTP, WebSocket and React execute"
+}

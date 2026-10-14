@@ -1,0 +1,15 @@
+PASS pending-roster-boundary-draft
+PASS pending-roster-boundary-lineup
+PASS pending-roster-boundary-live
+PASS pending-roster-boundary-gold-ranking
+PASS pending-roster-boundary-economy
+PASS pending-roster-boundary-ranking
+PASS pending-roster-boundary-postgame
+PASS pending-roster-boundary-interview
+PASS same-ID-live-telemetry-advances-under-held-identity
+PASS GUI-assignment-swap-save-take-undo-redo
+PASS focus-programme-preserves-identity-after-new-archive-on-output-desktop-mobile
+PASS same-scene-focus-retake-publishes-selected-final-archive
+PASS legacy-BP-only-hold-uses-last-accepted-roster-not-fabricated-handoff
+PASS legacy-undo-without-rosterHold-restores-accepted-players-and-rejects-later-samples
+{"source":"61ab1645378f1987fa62f478f75b87dddb83f2cc","pass":14,"fail":0,"errors":0}
