@@ -1,0 +1,42 @@
+{
+  "testedSource": "35893d927695588c36987dce4dcb0d64e366fe3d",
+  "implementationChanged": false,
+  "buildExit": 0,
+  "unit": {
+    "total": 276,
+    "passed": 268,
+    "failed": 3,
+    "skipped": 5,
+    "exitCode": 1
+  },
+  "browserBatches": [
+    {
+      "batch": "browser.json",
+      "pass": 60,
+      "fail": 3
+    },
+    {
+      "batch": "supplemental/browser.json",
+      "pass": 14,
+      "fail": 0
+    },
+    {
+      "batch": "audio-extra/browser.json",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "batch": "toast-extra/browser.json",
+      "pass": 0,
+      "fail": 1
+    },
+    {
+      "batch": "focused/browser.json",
+      "pass": 2,
+      "fail": 3
+    }
+  ],
+  "acceptance": "failed; return to Astra",
+  "windowsAndRealDevices": "not run",
+  "release": "not created"
+}

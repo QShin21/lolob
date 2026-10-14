@@ -1,0 +1,17 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 5000ms exceeded.
+Call log:
+[2m  - waiting for locator('.sidebar').getByRole('button', { name: '连接与输出', exact: true })[22m
+
+    at appearance (/workspace/lolob/docs/evidence/sol-35893d9/legacy-ui-theme.mjs:43:86)
+    at /workspace/lolob/docs/evidence/sol-35893d9/legacy-ui-theme.mjs:87:9 {
+  log: [
+    "  - waiting for locator('.sidebar').getByRole('button', { name: '连接与输出', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

@@ -1,0 +1,17 @@
+{"error":"TimeoutError: locator.isEnabled: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '固定播出与应急控制' }).getByRole('button', { name: '切入节目' })\u001b[22m\n","errors":[],"body":"Rc\n导播台\nBP 阵容\n数据\n赛事\n输出\n收尾\n帮助\n0.7.0\nRIFTCAST\n峡谷邀请赛 · 秋季赛\nAZR 1 : 0 EMB\n第 2 局\n演示数据\n主机导播\n已同步\n导播台\n赛前\nBP\n局内\n赛后\n18:44\nBP 与归属\n本局资料\nPGM\n节目播出\n赛前倒计时\n引擎就绪后每秒更新 1 帧合成画面\n在「连接与输出」中启动直播引擎\n等待合成快照\n查看场景排版\n 等待实时画面\n16:9\nPVW\n预监画面\n赛前倒计时\n引擎就绪后每秒更新 1 帧合成画面\n在「连接与输出」中启动直播引擎\n等待合成快照\n查看场景排版\n 等待实时画面\n16:9\n节目回执\n尚未切入\n节目版本 1\n下一次切入\n赛前倒计时\n3 类待播变化\n切入节目\nCtrl+Enter\n先连接 OBS，再核对预监\n场景库\n全部\n常用\n自定义\n赛前 / BP\n局内\n赛后\n新建场景\n1\n赛前倒计时\n赛事开场 · 倒计时\nPGM\nPVW\n☆\n2\nBP 选人\n英雄选择 · 禁用列表\n★\n3\n首发对位\n选手阵容 · 英雄展示\n☆\n4\n局内计分板\n比分 · 选手 · 资源\n★\nT\n团战视图\n原生视角 · 游戏内按 A\n★\nG\n十人经济排行\n累计经济 · 全场排序\n★\n5\n经济曲线\n经济走势 · 领先差值\n☆\n6\n十人数据榜\nKDA · 补刀 · 装备\n☆\n7\n赛程看板\n赛程 · BO 比分\n☆\n8\n赛后报告\n对局统计 · 高光选手\n☆\n9\n赛后采访\n选手名牌 · 采访标题\n☆\n单击只准备预监，核对后切入节目\n11 个场景 · 0 / 50 自定义\n音频\n回放\n字幕\n选手\n更多\n顺序\n暂停 / 结果\n镜头\n开播检查\n包装\n席位\n节"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.isEnabled: Timeout 5000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: '固定播出与应急控制' }).getByRole('button', { name: '切入节目' })[22m
+
+    at /workspace/lolob/docs/evidence/sol-35893d9/legacy-production.mjs:125:27 {
+  log: [
+    "  - waiting for getByRole('region', { name: '固定播出与应急控制' }).getByRole('button', { name: '切入节目' })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

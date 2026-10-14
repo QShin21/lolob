@@ -1,0 +1,29 @@
+{
+  "file": "lolob_frontend_rebuild_prompt_main_0.7.0.md",
+  "libraryFileId": "libfile_fa8f64dc18bc8191840dd744c317798c",
+  "totalLines": 493,
+  "sizeBytes": 58822,
+  "complete": true,
+  "windows": [
+    {
+      "start": 1,
+      "end": 125,
+      "hasMore": true
+    },
+    {
+      "start": 126,
+      "end": 250,
+      "hasMore": true
+    },
+    {
+      "start": 251,
+      "end": 375,
+      "hasMore": true
+    },
+    {
+      "start": 376,
+      "end": 493,
+      "hasMore": false
+    }
+  ]
+}

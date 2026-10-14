@@ -1,0 +1,76 @@
+{
+  "testedSource": "35893d927695588c36987dce4dcb0d64e366fe3d",
+  "environment": "Linux / system Chromium; real isolated HTTP; explicitly mocked engine and device scenarios",
+  "startedAt": "2026-10-14T05:01:44.909Z",
+  "work": "/tmp/lolob-sol-35893d9-r7pKMr",
+  "outcomes": [
+    {
+      "id": "empty-search-escape",
+      "description": "Empty search: Escape closes hero dialog and restores trigger focus",
+      "status": "pass",
+      "data": {
+        "focusRestored": true
+      },
+      "at": "2026-10-14T05:01:47.926Z"
+    },
+    {
+      "id": "nonempty-search-escape",
+      "description": "Nonempty search: one Escape closes dialog as documented",
+      "status": "fail",
+      "error": "{\"open\":true,\"query\":\"\"}\n\ntrue !== false\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"open\":true,\"query\":\"\"}\n\ntrue !== false\n\n    at file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:79:511\n    at async check (file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:27:66)\n    at async file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:79:2",
+      "screenshot": "failure-nonempty-search-escape.png",
+      "at": "2026-10-14T05:01:52.006Z"
+    },
+    {
+      "id": "bp-pending-isolation-real-http",
+      "description": "Pure offline HTTP: manual hero pending-save cannot change rendered Program",
+      "status": "fail",
+      "error": "Pending-only manual BP edits leaked to rendered Program\n+ actual - expected\n\n  [\n+   '离群之刺',\n-   '暗裔剑魔',\n    '盲僧',\n    '九尾妖狐',\n    '暴走萝莉',\n    '魂锁典狱长',\n    '纳祖芒荣耀',\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Pending-only manual BP edits leaked to rendered Program\n+ actual - expected\n\n  [\n+   '离群之刺',\n-   '暗裔剑魔',\n    '盲僧',\n    '九尾妖狐',\n    '暴走萝莉',\n    '魂锁典狱长',\n    '纳祖芒荣耀',\n\n    at file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:80:1427\n    at async check (file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:27:66)\n    at async file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:80:2",
+      "screenshot": "failure-bp-pending-isolation-real-http.png",
+      "at": "2026-10-14T05:01:57.825Z"
+    },
+    {
+      "id": "restart-auth-real-http",
+      "description": "Pure offline HTTP: restart revalidates seat before enabling submit",
+      "status": "fail",
+      "error": "Stale seat remained submit-enabled until HTTP rejection\n\ntrue !== false\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Stale seat remained submit-enabled until HTTP rejection\n\ntrue !== false\n\n    at file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:82:1197\n    at async check (file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:27:66)\n    at async file:///workspace/lolob/docs/evidence/sol-35893d9/focused.mjs:82:2",
+      "screenshot": "failure-restart-auth-real-http.png",
+      "at": "2026-10-14T05:01:59.617Z"
+    },
+    {
+      "id": "restart-rejection-protection",
+      "description": "After refusal, identity warning remains, draft retained and further submission is disabled",
+      "status": "pass",
+      "at": "2026-10-14T05:01:59.624Z"
+    }
+  ],
+  "errors": [],
+  "geometry": [],
+  "requests": [
+    {
+      "scope": "focused-offline",
+      "type": "set-draft",
+      "requestId": true,
+      "configVersion": 1
+    },
+    {
+      "scope": "focused-offline",
+      "type": "set-overlay",
+      "requestId": true,
+      "configVersion": 2
+    }
+  ],
+  "images": [
+    "bp-escape-clears-search-keeps-dialog.png",
+    "failure-nonempty-search-escape.png",
+    "bp-program-before.png",
+    "bp-program-after-pending.png",
+    "failure-bp-pending-isolation-real-http.png",
+    "restart-stale-seat-before-submit.png",
+    "restart-seat-rejected-draft-retained.png",
+    "failure-restart-auth-real-http.png"
+  ]
+}

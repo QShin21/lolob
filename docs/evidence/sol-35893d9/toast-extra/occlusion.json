@@ -1,0 +1,21 @@
+{
+  "take": {
+    "x": 853.890625,
+    "y": 686.5,
+    "width": 173.15625,
+    "height": 38,
+    "bottom": 724.5,
+    "right": 1027.046875
+  },
+  "toast": {
+    "x": 373,
+    "y": 610.828125,
+    "width": 620,
+    "height": 97.171875,
+    "bottom": 708,
+    "right": 993
+  },
+  "takeEnabled": true,
+  "centerOccluded": true,
+  "hit": "toast notice-error"
+}

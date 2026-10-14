@@ -1,0 +1,3 @@
+READY toast-mock: HTTP health ok, version 0.7.0, source 35893d927695588c36987dce4dcb0d64e366fe3d
+FAIL toast-take-occlusion: {"take":{"x":853.890625,"y":686.5,"width":173.15625,"height":38,"bottom":724.5,"right":1027.046875},"toast":{"x":373,"y":610.828125,"width":620,"height":97.171875,"bottom":708,"right":993},"takeEnabled":true,"centerOccluded":true,"hit":"toast notice-error"}
+{"passed":0,"failed":1,"pageErrors":0}

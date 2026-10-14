@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-14T04:51:08.257Z",
+  "checks": [
+    "UI saves five independent blue/red material pairs",
+    "Every manual preparation updates both preview portraits and lane names",
+    "Complete five-slot auto cycle uses five-second wall-clock slots and synchronized panels",
+    "Camera mode saves its group/device independently; manual cut stops rotation",
+    "Unified descending ranking renders five rows per column, ten local champion icons, bars and full gold numbers",
+    "All 173 champions decode their prepared artwork in BP and lineup programs",
+    "Long names, missing portraits/logos, half-missing gold, Game 5 history, discontinuous economy and schedule page three render"
+  ],
+  "errors": [],
+  "heroCoverage": 173,
+  "configurationRequests": 10,
+  "boundary": "Isolated browser fixtures with explicit demo data and mocked camera RPCs. Local Riot hero assets decode normally. No production state, OBS, game control or live output was accessed."
+}

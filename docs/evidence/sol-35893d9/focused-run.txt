@@ -1,0 +1,8 @@
+READY focused-offline: HTTP health ok, version 0.7.0, source 35893d927695588c36987dce4dcb0d64e366fe3d
+PASS empty-search-escape
+FAIL nonempty-search-escape: {"open":true,"query":""}
+FAIL bp-pending-isolation-real-http: Pending-only manual BP edits leaked to rendered Program
+READY focused-restart: HTTP health ok, version 0.7.0, source 35893d927695588c36987dce4dcb0d64e366fe3d
+FAIL restart-auth-real-http: Stale seat remained submit-enabled until HTTP rejection
+PASS restart-rejection-protection
+{"passed":2,"failed":3,"pageErrors":0}

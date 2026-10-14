@@ -1,0 +1,7 @@
+{
+  "submitEnabledBeforeRevalidation": true,
+  "serverRejectedStaleSeat": true,
+  "programUnchanged": true,
+  "localDraftRetained": true,
+  "engine": "no hook, no OBS process"
+}

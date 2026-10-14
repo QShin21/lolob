@@ -1,0 +1,22 @@
+[
+  {
+    "source": "scripts/verify-production-workflow.mjs",
+    "sha256": "4aa334352274a0de47b19a9bb3846617933bc01b484b4cf9fdd60c1792e8fcad",
+    "changes": [
+      "root and tsImport path fixed for relocated copy",
+      "output redirected into owned QA evidence"
+    ],
+    "assertions": "unchanged",
+    "runtimeWrapper": "system Chromium, 5s locator timeout, physical engine mutations blocked"
+  },
+  {
+    "source": "scripts/verify-ui-theme.mjs",
+    "sha256": "1acb135552af966edc585927c27e0ea263107d919f8d3b4fa40ac2f51d7ebad0",
+    "changes": [
+      "root and tsImport path fixed for relocated copy",
+      "output redirected into owned QA evidence"
+    ],
+    "assertions": "unchanged",
+    "runtimeWrapper": "system Chromium, 5s locator timeout, physical engine mutations blocked"
+  }
+]

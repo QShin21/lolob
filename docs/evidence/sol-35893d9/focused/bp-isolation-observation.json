@@ -1,0 +1,44 @@
+{
+  "before": [
+    "暗裔剑魔",
+    "盲僧",
+    "九尾妖狐",
+    "暴走萝莉",
+    "魂锁典狱长",
+    "纳祖芒荣耀",
+    "皮城执法官",
+    "沙漠皇帝",
+    "虚空之女",
+    "深海泰坦"
+  ],
+  "after": [
+    "离群之刺",
+    "盲僧",
+    "九尾妖狐",
+    "暴走萝莉",
+    "魂锁典狱长",
+    "纳祖芒荣耀",
+    "皮城执法官",
+    "沙漠皇帝",
+    "虚空之女",
+    "深海泰坦"
+  ],
+  "storedProgram": [
+    "Aatrox",
+    "LeeSin",
+    "Ahri",
+    "Jinx",
+    "Thresh"
+  ],
+  "pending": [
+    "Akali",
+    "LeeSin",
+    "Ahri",
+    "Jinx",
+    "Thresh"
+  ],
+  "draftMode": "manual",
+  "snapshotDraftManual": false,
+  "takeRequestsDuringSave": 0,
+  "engine": "no hook, no OBS process"
+}

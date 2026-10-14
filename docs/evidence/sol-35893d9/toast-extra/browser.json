@@ -1,0 +1,31 @@
+{
+  "testedSource": "35893d927695588c36987dce4dcb0d64e366fe3d",
+  "environment": "Linux / system Chromium; real isolated HTTP; explicitly mocked engine and device scenarios",
+  "startedAt": "2026-10-14T05:12:43.640Z",
+  "work": "/tmp/lolob-sol-35893d9-iA9bqt",
+  "outcomes": [
+    {
+      "id": "toast-take-occlusion",
+      "description": "Persistent detailed error must not cover the main TAKE click target",
+      "status": "fail",
+      "error": "{\"take\":{\"x\":853.890625,\"y\":686.5,\"width\":173.15625,\"height\":38,\"bottom\":724.5,\"right\":1027.046875},\"toast\":{\"x\":373,\"y\":610.828125,\"width\":620,\"height\":97.171875,\"bottom\":708,\"right\":993},\"takeEnabled\":true,\"centerOccluded\":true,\"hit\":\"toast notice-error\"}\n\ntrue !== false\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"take\":{\"x\":853.890625,\"y\":686.5,\"width\":173.15625,\"height\":38,\"bottom\":724.5,\"right\":1027.046875},\"toast\":{\"x\":373,\"y\":610.828125,\"width\":620,\"height\":97.171875,\"bottom\":708,\"right\":993},\"takeEnabled\":true,\"centerOccluded\":true,\"hit\":\"toast notice-error\"}\n\ntrue !== false\n\n    at file:///workspace/lolob/docs/evidence/sol-35893d9/toast-extra.mjs:83:1001\n    at async check (file:///workspace/lolob/docs/evidence/sol-35893d9/toast-extra.mjs:27:66)\n    at async file:///workspace/lolob/docs/evidence/sol-35893d9/toast-extra.mjs:83:2",
+      "screenshot": "failure-toast-take-occlusion.png",
+      "at": "2026-10-14T05:12:46.344Z"
+    }
+  ],
+  "errors": [],
+  "geometry": [],
+  "requests": [
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/engine/output",
+      "action": "stop-virtual-camera",
+      "keyPresent": false
+    }
+  ],
+  "images": [
+    "long-error-over-bottom-take.png",
+    "failure-toast-take-occlusion.png"
+  ]
+}
