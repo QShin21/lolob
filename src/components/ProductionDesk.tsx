@@ -92,7 +92,7 @@ export function ProductionBar(ctx: StateContext & { showTake?: boolean }) {
     const refresh=async()=>{if(document.hidden||fetching)return;fetching=true;try{const next=await api<ObsEngineStatus>('/api/obs/engine');if(!stopped)setOutput(next);}catch{if(!stopped)setOutput(null);}finally{fetching=false;}};
     void refresh();const timer=setInterval(()=>void refresh(),3000);return()=>{stopped=true;clearInterval(timer);};
   },[]);
-  const allowed=ctx.connected!==false&&(!ctx.seat||(ctx.seat.role==='director'&&(!p?.control||p.control.owner===ctx.seat.id)));
+  const allowed=ctx.connected!==false&&!!ctx.seat&&ctx.seat.role==='director'&&p?.control?.owner===ctx.seat.id;
   const host=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
   const act=async(work:()=>Promise<unknown>)=>{if(operation.current)return;operation.current=true;setBusy(true);try{await work();}catch(e){notify(e instanceof Error?e.message:'操作未完成','error');}finally{operation.current=false;setBusy(false);}};
   const engine=(action:string)=>void act(async()=>{await api('/api/obs/production',{method:'POST',body:JSON.stringify({action})});notify('OBS 已确认操作','success');});

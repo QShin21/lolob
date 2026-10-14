@@ -4,10 +4,11 @@ import { api, sceneInfo } from '../lib';
 
 /** One listener owns console shortcuts; editing surfaces never bubble into TAKE. */
 export function useDirectorKeys(ctx: Partial<StateContext>, studio: boolean, enabled: boolean) {
-  const { state, send, notify } = ctx;
+  const { state, send, notify, seat, connected } = ctx;
   useEffect(() => {
     if (!enabled || !state || !send || !notify) return;
     const handler = (event: KeyboardEvent) => {
+      if (!seat || connected === false) return;
       const target = event.target instanceof Element ? event.target : null;
       if (event.repeat) {
         if (event.key === 'Enter' && target?.closest('.take-button,.scene-card')) event.preventDefault();
@@ -22,6 +23,7 @@ export function useDirectorKeys(ctx: Partial<StateContext>, studio: boolean, ena
         event.preventDefault();
         if (binding === 'take') { void send({ type: 'take' }).catch(() => {}); return; }
         if (binding === 'emergency' || binding === 'live') {
+          if (seat.role !== 'director' || state.production?.control?.owner !== seat.id) return;
           void api('/api/obs/production', { method: 'POST', body: JSON.stringify({ action: binding === 'emergency' ? 'emergency' : 'return-live' }) }).catch(e => notify(e.message, 'error'));
           return;
         }
@@ -40,5 +42,5 @@ export function useDirectorKeys(ctx: Partial<StateContext>, studio: boolean, ena
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [state, send, notify, studio, enabled]);
+  }, [state, send, notify, seat, connected, studio, enabled]);
 }

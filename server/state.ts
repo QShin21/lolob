@@ -6,7 +6,7 @@ import { captureManualDraft, getFearlessBans, initializeDraftHistory, startDraft
 import { playerFeedControl, playerFeedPairs, playerFeedInterval } from '../shared/player-feeds';
 import { currentGameResult, frozenGameState, reportGameResult, rosterFingerprint, gameResultAwaitingTerminalSample } from '../shared/game-results';
 import { finalizeGame } from './game-results';
-import { captureProgram, ensureProduction, preserveProgram, takeProgram, productionDefaults } from '../shared/production';
+import { captureProgram, ensureProduction, holdProgramDraft, preserveProgram, takeProgram, productionDefaults } from '../shared/production';
 import { applyProduction, audit, correctResult, recalculateScores } from './production';
 
 export const scenes = ['standby', 'draft', 'lineup', 'live', 'economy', 'ranking', 'schedule', 'postgame', 'interview', 'teamfight', 'gold-ranking'] as const;
@@ -194,7 +194,7 @@ export function applyAction(current:BroadcastState,input:unknown):BroadcastState
   initializeDraftHistory(s);
   const production=ensureProduction(s);
   if(!production.program)production.program=captureProgram(current);
-  if(type==='set-draft'){production.draftUndo.push(structuredClone(s.draft));production.draftUndo=production.draftUndo.slice(-30);production.draftMode='manual';}
+  if(type==='set-draft'){holdProgramDraft(s);production.draftUndo.push(structuredClone(s.draft));production.draftUndo=production.draftUndo.slice(-30);production.draftMode='manual';}
   if(type==='set-overlay')applyBottomOverlay(s,record(a.patch));
   switch(type as BroadcastAction['type']) {
     case 'set-mode': {const next=oneOf(a.mode,['demo','live']);if(next!==s.mode){preserveProgram(s);s.mode=next;delete s.finishedGameId;delete s.reportGameId;delete s.awaitingNextGame;delete s.activeSourceGameId;startDraftSeries(s);production.scores={};production.baseScores={};production.attempt=1;if(next==='live'){clearLiveData(s);s.paused=false;s.phase='pregame';}else {const d=createSeed();Object.assign(s,{players:d.players,stats:d.stats,events:d.events,economy:d.economy,draft:d.draft,gameTime:d.gameTime,phase:d.phase,paused:false});if(s.match.game>1)s.draftHistory!.push({...d.draftHistory![0],seriesId:s.match.seriesId!,game:s.match.game-1,blueTeamId:s.match.blueTeamId,redTeamId:s.match.redTeamId});captureManualDraft(s);}ensureProduction(s);}break;}

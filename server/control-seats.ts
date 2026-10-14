@@ -10,12 +10,18 @@ export class ControlSeats {
     const p = record(input), role = local ? (p.role ?? 'director') : 'data';
     const existing = this.resolve(existingToken);
     if (existing && p.fresh !== true) return { token: existingToken, ...existing, owner: this.owner === existing.id };
+    if (existingToken !== undefined && !existing && p.fresh !== true) throw new ValidationError('操作席位已失效，请重新连接操作席位');
     if (!['readonly', 'data', 'subtitle', 'replay', 'director'].includes(String(role))) throw new ValidationError('操作席位无效');
     const token = randomBytes(24).toString('base64url'), seat = { id: randomUUID(), name: str(p.name ?? (local ? '主机导播' : '移动资料席'), 80), role: role as SeatRole };
     this.seats.set(token, seat); if (!this.owner && role === 'director') this.owner = seat.id;
     return { token, ...seat, owner: this.owner === seat.id };
   }
   resolve(token: unknown) { return typeof token === 'string' ? this.seats.get(token) : undefined; }
+  verify(token: unknown) {
+    const seat = this.resolve(token);
+    if (!seat) throw new ValidationError('操作席位已失效，请重新连接操作席位');
+    return { ...seat, owner: this.owner === seat.id };
+  }
   claim(token: unknown, note: unknown) {
     const seat = this.resolve(token); if (seat?.role !== 'director') throw new ValidationError('只有主导播席位可以接管节目');
     if (!str(note, 300).trim()) throw new ValidationError('接管需填写理由');

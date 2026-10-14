@@ -20,6 +20,7 @@
     "prepare:offline": "node scripts/prepare-offline.mjs",
     "verify:production": "node scripts/verify-production-workflow.mjs",
     "verify:ui-theme": "node scripts/verify-ui-theme.mjs",
+    "verify:frontend-safety": "node scripts/verify-frontend-safety.mjs",
     "verify:custom-scenes": "node scripts/verify-custom-scenes.mjs",
     "verify:champion-art": "node scripts/prepare-champion-art.mjs --verify",
     "verify:broadcast-controls": "node scripts/verify-broadcast-controls.mjs",

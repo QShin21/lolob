@@ -78,6 +78,10 @@ app.get('/api/obs/cameras',async(req,res)=>{if(!isLoopback(req.socket.remoteAddr
 app.post('/api/obs/player-feeds',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'选手摄像头仅支持在导播主机应用'});return;}seats.authorize(req.headers['x-seat-token'],'output');res.json(await adapters.syncPlayerFeeds(true));});
 app.get('/api/state',(_req,res)=>res.json(publicState(state)));
 let actionQueue:Promise<unknown>=Promise.resolve();
+app.get('/api/control/seat',(req,res)=>{
+  try { res.json(seats.verify(req.headers['x-seat-token'])); }
+  catch { res.status(401).json({code:'SEAT_EXPIRED',error:'操作席位已失效，请重新连接操作席位'}); }
+});
 app.post('/api/control/seat',(req,res)=>{const seat=seats.issue(req.body,isLoopback(req.socket.remoteAddress),req.headers['x-seat-token']);const owner=seats.ownerInfo();if(owner)ensureProduction(state).control={owner:owner.id,name:owner.name};res.json(seat);});
 app.post('/api/control/invite',(req,res)=>{if(!isLoopback(req.socket.remoteAddress))throw new ValidationError('邀请操作席位请由主机导播发起');seats.authorize(req.headers['x-seat-token'],'engine');const seat=seats.issue({...record(req.body),fresh:true},true);const address=lanAddresses()[0];res.json({...seat,url:lan&&address?`http://${address}:${port}/remote?token=${encodeURIComponent(controlToken)}&seat=${encodeURIComponent(String(seat.token))}`:undefined});});
 app.post('/api/control/claim',async(req,res,next)=>{const run=actionQueue.catch(()=>{}).then(async()=>{const body=record(req.body);const control=seats.claim(req.headers['x-seat-token'],body.reason);commit(s=>{ensureProduction(s).control=control;audit(s,'claim-control',control.name,String(body.reason));});await persist();res.json(control);});actionQueue=run;try{await run;}catch(error){next(error);}});

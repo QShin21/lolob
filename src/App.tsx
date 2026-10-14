@@ -6,6 +6,7 @@ import { getTeam } from './lib';
 import { programState } from '../shared/production';
 import { Brand } from './components/Icons';
 import { Notification } from './components/ConsoleUI';
+import { SeatRecovery } from './components/SeatRecovery';
 import { ProductionBar } from './components/ProductionDesk';
 import { BroadcastCanvas } from './components/BroadcastCanvas';
 import { GameClockConnectionProvider } from './components/GameTime';
@@ -35,7 +36,7 @@ const readPage = (): WorkflowPage => {
 
 export default function App() {
   const broadcast = useBroadcast();
-  const { state, champions, connected, error, toast, notify, send, seat, dismissNotice } = broadcast;
+  const { state, champions, connected, error, toast, notify, send, seat, lastSeat, seatStatus, seatError, recoverSeat, dismissNotice } = broadcast;
   const { theme, setTheme } = useUiTheme();
   const [page, updatePage] = useState<WorkflowPage>(readPage);
   const [visited, setVisited] = useState<Set<WorkflowPage>>(() => new Set([readPage()]));
@@ -61,7 +62,8 @@ export default function App() {
     const preview = new URLSearchParams(location.search).get('preview') === '1';
     return <GameClockConnectionProvider value={connected}><BroadcastCanvas bus={preview ? 'preview' : 'program'} state={preview ? state : onAir} champions={champions} scene={preview ? state.previewScene : state.programScene} output/>{!connected && (preview ? state.previewScene : state.programScene) !== 'teamfight' && <div className="output-offline">导播服务中断 · 保留最后画面</div>}</GameClockConnectionProvider>;
   }
-  if (remote) return <GameClockConnectionProvider value={connected}><Remote {...ctx} toast={toast} dismissNotice={dismissNotice}/></GameClockConnectionProvider>;
+  const seatRecovery = { status: seatStatus, detail: seatError, recover: recoverSeat };
+  if (remote) return <GameClockConnectionProvider value={connected}><Remote {...ctx} displaySeat={lastSeat} seatRecovery={seatRecovery} toast={toast} dismissNotice={dismissNotice}/></GameClockConnectionProvider>;
   return <GameClockConnectionProvider value={connected}>
     <div className={`app-shell control-room page-${page}`} data-layout={state.production?.layout ?? 'single'}>
       <aside className="control-rail">
@@ -75,11 +77,12 @@ export default function App() {
           <div className="control-title"><strong>RIFTCAST</strong><span>ARENA / {navigation.find(item => item.id === page)?.name}</span></div>
           <button className="control-match" title="正在节目中的比赛 · 打开赛事资料" onClick={() => navigate('manage')}><span>{onAir.match.title}</span><b>{getTeam(onAir, 'blue')?.tag} <em>{onAir.match.blueScore} : {onAir.match.redScore}</em> {getTeam(onAir, 'red')?.tag}</b><small>第 {onAir.match.game} 局</small></button>
           <span className="control-mode">{state.mode === 'demo' ? '演示数据' : '本地实况'}</span>
-          <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? '验证席位中'}</span>
-          <span className={`control-sync ${connected ? '' : 'disconnected'}`}><Wifi size={14}/>{connected ? '已同步' : '同步中断'}</span>
+          <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? (seatStatus === 'invalid' ? '席位失效' : '验证席位中')}</span>
+          <span className={`control-sync ${connected && seat ? '' : 'disconnected'}`}><Wifi size={14}/>{connected ? seat ? '已同步' : '数据已同步 · 待验证席位' : '同步中断'}</span>
         </header>
         {!connected && <div className="control-disconnect" role="alert">{error || '同步中断，保留最后画面与本地草稿，正在重连。'}</div>}
-        <main className="control-main">
+        <SeatRecovery {...seatRecovery}/>
+        <main className="control-main" inert={!seat}>
           <Suspense fallback={<div className="page-loading" role="status">正在载入页面…</div>}>
             {visited.has('studio') && <div className="control-page control-studio-page" hidden={page !== 'studio'}><Studio {...ctx} onSettings={() => navigate('settings')} onDraft={() => navigate('draft')} onRecords={records}/></div>}
             {visited.has('draft') && <div className="control-page" hidden={page !== 'draft'}><Draft {...ctx}/></div>}
@@ -90,9 +93,11 @@ export default function App() {
             {page === 'wrap' && <div className="control-page"><WrapUp {...ctx} streamReady={streamReady} onSettings={() => navigate('settings')} onManage={() => navigate('manage')} onRecords={records} onNextGame={() => navigate('draft')} onReport={() => navigate('studio')}/></div>}
           </Suspense>
         </main>
-        <ProductionBar {...ctx} showTake={page !== 'studio'}/>
+        <div className="control-safety">
+          <div className="control-notices"><Notification notice={toast} dismiss={dismissNotice}/></div>
+          <ProductionBar {...ctx} showTake={page !== 'studio'}/>
+        </div>
       </div>
-      <Notification notice={toast} dismiss={dismissNotice}/>
     </div>
   </GameClockConnectionProvider>;
 }

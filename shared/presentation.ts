@@ -44,7 +44,8 @@ export function pendingContent(state: BroadcastState): string[] {
     items.push("选手画面");
   if (!same(look, oldLook)) items.push("包装");
   if (state.selectedPlayerId !== onAir.selectedPlayerId) items.push("焦点选手");
-  if (p?.draftMode !== "auto" && !same(state.draft, onAir.draft))
+  if (p && ((p.program?.draftManual !== (p.draftMode !== "auto")) ||
+    ((p.draftMode !== "auto" || p.programDraftHold || p.program?.draftManual) && !same(state.draft, onAir.draft))))
     items.push("BP");
   if (!same(p?.assignments, onAir.assignments)) items.push("英雄归属");
   if (!same(p?.rules, onAir.rules)) items.push("赛事规则");
@@ -57,10 +58,11 @@ export function takeBlockReason(
   connected = true,
 ): string {
   if (!connected) return "同步中断，等待重新连接";
+  if (!seat) return "操作席位尚未验证，请先恢复席位";
   if (
     seat &&
     (seat.role !== "director" ||
-      (state.production?.control && state.production.control.owner !== seat.id))
+      state.production?.control?.owner !== seat.id)
   )
     return "由当前主导播席切入节目";
   if (state.connections.obs.status !== "connected")

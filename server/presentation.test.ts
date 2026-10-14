@@ -52,6 +52,10 @@ test("TAKE eligibility distinguishes offline, role, owner, waiting and applied s
   p.control = { owner: "owner", name: "主导播" };
   assert.match(takeBlockReason(s, owner), /连接 OBS/);
   s.connections.obs.status = "connected";
+  assert.match(takeBlockReason(s, undefined), /席位尚未验证/);
+  const noController = structuredClone(s);
+  delete noController.production!.control;
+  assert.match(takeBlockReason(noController, owner), /主导播席/);
   assert.match(takeBlockReason(s, owner, false), /同步中断/);
   assert.match(takeBlockReason(s, { ...owner, role: "subtitle" }), /主导播/);
   assert.match(takeBlockReason(s, { ...owner, id: "another" }), /主导播/);

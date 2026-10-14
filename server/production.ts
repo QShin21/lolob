@@ -2,7 +2,7 @@ import { validateSceneId } from './custom-scenes';
 import { randomUUID } from 'node:crypto';
 import type { BroadcastState, Side } from '../shared/types';
 import type { ProductionCommand } from '../shared/production-types';
-import { captureProgram, checkFingerprint, checkValid, ensureProduction, preserveProgram, productionKey, requestApplication, returnToGame, dataHealth } from '../shared/production';
+import { captureProgram, checkFingerprint, checkValid, ensureProduction, holdProgramDraft, preserveProgram, previousProgram, productionKey, requestApplication, returnToGame, dataHealth } from '../shared/production';
 import { currentGameResult } from '../shared/game-results';
 import { syncResultRecording } from './game-results';
 import { record, str, ValidationError, fallbackChampions } from './state';
@@ -42,6 +42,7 @@ export function applyProduction(s: BroadcastState, raw: unknown, actor = '主机
     }
     case 'draft-mode': {
       if (!['auto', 'manual', 'compare'].includes(c.mode)) throw new ValidationError('BP 接管模式无效');
+      if (c.mode !== p.draftMode) holdProgramDraft(s);
       if (c.mode === 'auto' && p.draftMode !== 'auto' && p.clientDraft) {
         if (c.resolution !== 'client') throw new ValidationError('请核对客户端差异，再选择使用客户端样本恢复自动');
         s.draft = structuredClone(p.clientDraft.draft); s.players = structuredClone(p.clientDraft.players);
@@ -50,7 +51,7 @@ export function applyProduction(s: BroadcastState, raw: unknown, actor = '主机
       break;
     }
     case 'draft-undo': case 'draft-clear': {
-      reason(c.reason); p.draftMode = 'manual';
+      reason(c.reason); holdProgramDraft(s); p.draftMode = 'manual';
       if (c.op === 'draft-undo') { const previous = p.draftUndo.pop(); if (!previous) throw new ValidationError('没有可回退的 BP 操作'); s.draft = previous; }
       else { p.draftUndo.push(structuredClone(s.draft)); s.draft = { bluePicks: [], redPicks: [], blueBans: [], redBans: [], timer: 0, activeTeam: 'blue', action: '人工 BP' }; }
       delete s.draftHistoryPending;
@@ -127,7 +128,7 @@ export function applyProduction(s: BroadcastState, raw: unknown, actor = '主机
       if (c.action === 'live' || c.action === 'analysis-off') returnToGame(s);
       else if (c.action === 'feeds-off') { p.program.overlay.playerFeedPairs = Array.from({ length: 5 }, () => ({ blue: { mode: 'off', imageUrl: '', cameraDeviceId: '', label: '' }, red: { mode: 'off', imageUrl: '', cameraDeviceId: '', label: '' } })); p.feedHold = true; }
       else if (c.action === 'ticker') { p.program.overlay.ticker = !!c.text?.trim(); p.program.overlay.tickerText = str(c.text ?? '', 500); }
-      else if (c.action === 'undo') { if (!p.previousProgram) throw new ValidationError('没有可撤回的人工切换'); const previous = p.previousProgram; preserveProgram(s); p.previousProgram = { content: structuredClone(p.program), scene: s.programScene }; p.program = previous.content; s.programScene = previous.scene; delete p.playingClipId; }
+      else if (c.action === 'undo') { if (!p.previousProgram) throw new ValidationError('没有可撤回的人工切换'); const previous = p.previousProgram; p.previousProgram = previousProgram(s); p.program = previous.content; p.programDraftHold = previous.draftHold ?? structuredClone(previous.content.draft); s.programScene = previous.scene; delete p.playingClipId; }
       else throw new ValidationError('应急操作无效');
       if (!['live','analysis-off'].includes(c.action)) requestApplication(s);
       break;

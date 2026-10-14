@@ -143,7 +143,14 @@ export function DraftChampionPicker({
         event.preventDefault();
         if (!busy) onClose();
       }}
-      onKeyDown={(event) => event.stopPropagation()}
+      onKeyDown={(event) => {
+        event.stopPropagation();
+        // Cancel the search input's native "clear" action as well as dialog cancel.
+        if (event.key === "Escape" && !event.nativeEvent.isComposing) {
+          event.preventDefault();
+          if (!busy) onClose();
+        }
+      }}
     >
       <header className="bp-picker-heading">
         <div>

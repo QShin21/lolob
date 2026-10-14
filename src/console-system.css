@@ -242,6 +242,23 @@
     transform: scaleX(1);
   }
 }
+.seat-recovery {
+  flex: none;
+  padding: 10px 16px;
+  background: var(--ui-warning-bg);
+  color: var(--ui-text);
+  border-bottom: 1px solid var(--ui-warning);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.seat-recovery > div:first-child { display: flex; gap: 12px; flex-wrap: wrap }
+.seat-recovery strong { color: var(--ui-warning) }
+.seat-recovery-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; margin-top: 8px }
+.seat-recovery-actions label { display: grid; gap: 3px; flex: 1; min-width: min(240px,100%) }
+.seat-recovery-actions input { width: 100%; min-width: 0; font: inherit }
+.seat-recovery-actions button { min-height: 36px }
+.remote-workbench .seat-recovery { padding: 12px; border: 1px solid var(--ui-warning); border-radius: 4px }
+.remote-workbench .seat-recovery-actions button { min-height: 44px }
 .toast {
   max-width: min(620px, calc(100vw - 32px));
   font-size: 14px !important;

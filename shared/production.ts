@@ -38,7 +38,10 @@ export function programState(s: BroadcastState): BroadcastState {
   const current=result?frozenGameState(s,result):s;
   const same = c.key === productionKey(s) && (!!result || s.mode==='demo' || s.players.length>0&&s.phase!=='pregame');
   const view: BroadcastState = { ...current, customScenes: c.customScenes ?? [], ...(same ? {} : c.telemetry), mode: c.mode, match: c.match, teams: c.teams, overlay: c.overlay, selectedPlayerId: c.selectedPlayerId, schedule: c.schedule ?? s.schedule, draftHistory: c.draftHistory,
-    production: { ...ensureProduction(s), assignments: c.assignments ?? [], versions: c.versions ?? ensureProduction(s).versions, rules: c.rules ?? ensureProduction(s).rules, attempt: c.attempt ?? 1 }, draft: same && !c.draftManual ? current.draft : c.draft };
+    production: { ...ensureProduction(s), assignments: c.assignments ?? [], versions: c.versions ?? ensureProduction(s).versions, rules: c.rules ?? ensureProduction(s).rules, attempt: c.attempt ?? 1 },
+    // Only an uninterrupted automatic session may read the current source. A manual
+    // handoff holds the last visible BP until TAKE, including when auto is staged again.
+    draft: c.draftManual ? c.draft : s.production?.programDraftHold ?? (same && s.production?.draftMode === 'auto' ? current.draft : c.draft) };
   if(recorded){view.finishedGameId=recorded.id;view.reportGameId=recorded.id;}
   if (same) view.players = applyIdentity(view, current.players).map(player => {
     const previous = c.telemetry.players.find(p => p.id === player.id);
@@ -59,12 +62,23 @@ export function preserveProgram(s: BroadcastState): void {
   if (!p.program) p.program = captureProgram(s);
   if (p.program.key === productionKey(s)) p.program.telemetry = telemetry(programState(s));
 }
+/** Call before editing BP or changing its source; never overwrite the last TAKE snapshot. */
+export function holdProgramDraft(s: BroadcastState): void {
+  const p = ensureProduction(s);
+  if (!p.program) p.program = captureProgram(s);
+  if (!p.program.draftManual && !p.programDraftHold) p.programDraftHold = structuredClone(programState(s).draft);
+}
+/** Undo restores the picture seen before the switch, not a later pending BP edit. */
+export function previousProgram(s: BroadcastState): NonNullable<ProductionState['previousProgram']> {
+  preserveProgram(s);
+  return { content: structuredClone(ensureProduction(s).program!), scene: s.programScene, draftHold: structuredClone(programState(s).draft) };
+}
 export function takeProgram(s: BroadcastState, scene=s.programScene): void {
   const p = ensureProduction(s);
-  preserveProgram(s);
-  if (p.program) p.previousProgram = { content: structuredClone(p.program), scene: s.programScene };
+  p.previousProgram = previousProgram(s);
   const report=['postgame','ranking'].includes(scene)?currentGameResult(s)??reportGameResult(s):undefined;
   p.program = captureProgram(report?frozenGameState(s,report):s);
+  delete p.programDraftHold;
   requestApplication(s);
 }
 export function requestApplication(s: BroadcastState): void {
@@ -76,7 +90,7 @@ export function publishProgram(s: BroadcastState, candidate: BroadcastState): vo
   const current=ensureProduction(s), next=ensureProduction(candidate);
   if(productionKey(s)!==productionKey(candidate))throw new Error('切入期间比赛身份已变化，请重新核对后 TAKE');
   s.programScene=candidate.programScene;
-  for(const key of ['program','previousProgram','playingClipId','analysisEndsAt','feedHold','entry','application'] as const){
+  for(const key of ['program','programDraftHold','previousProgram','playingClipId','analysisEndsAt','feedHold','entry','application'] as const){
     if(next[key]===undefined)delete (current as unknown as Record<string,unknown>)[key];
     else (current as unknown as Record<string,unknown>)[key]=structuredClone(next[key]);
   }
@@ -87,7 +101,7 @@ export function returnToGame(s: BroadcastState): void {
   const p = ensureProduction(s);
   preserveProgram(s);
   if (!p.program || !p.program.telemetry.players.length || ['pregame', 'draft'].includes(p.program.telemetry.phase)) throw new Error('当前节目尚未取得可返回的比赛内容，请先核对本局后 TAKE');
-  p.previousProgram = { content: structuredClone(p.program), scene: s.programScene };
+  p.previousProgram = previousProgram(s);
   s.programScene = 'live'; delete p.analysisEndsAt; delete p.playingClipId;
   requestApplication(s);
 }

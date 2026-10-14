@@ -9,11 +9,12 @@ import {
   WifiOff,
 } from "lucide-react";
 import { programState } from "../../shared/production";
-import type { Notice, Scene, StateContext } from "../../shared/types";
+import type { ControlSeat, Notice, Scene, StateContext } from "../../shared/types";
 import { MonitorPane } from "../components/MonitorPane";
 import { BroadcastCanvas } from "../components/BroadcastCanvas";
 import { Notification, TakeControl } from "../components/ConsoleUI";
 import { ProductionDesk } from "../components/ProductionDesk";
+import { SeatRecovery, type SeatRecoveryProps } from "../components/SeatRecovery";
 import {
   applicationLabel,
   pendingContent,
@@ -57,9 +58,11 @@ export function Remote(
     connected: boolean;
     toast: Notice | null;
     dismissNotice: () => void;
+    displaySeat?: ControlSeat;
+    seatRecovery: SeatRecoveryProps;
   },
 ) {
-  const { state, seat, connected, toast, dismissNotice } = ctx;
+  const { state, seat, displaySeat, seatRecovery, connected, toast, dismissNotice } = ctx;
   const [monitor, setMonitor] = useState<"program" | "preview">("program"),
     [seatIssue, setSeatIssue] = useState("");
   const seatIdentity = useRef(seat?.id);
@@ -78,7 +81,7 @@ export function Remote(
     )
       setSeatIssue(toast.message);
   }, [toast]);
-  const role = seat?.role ?? "readonly",
+  const role = displaySeat?.role ?? "readonly",
     onAir = programState(state),
     displayState = monitor === "program" ? onAir : state;
   const owner =
@@ -101,13 +104,13 @@ export function Remote(
           <strong>RiftCast</strong>
           <span className={`remote-sync ${connected ? "is-connected" : ""}`}>
             {connected ? <Wifi size={14} /> : <WifiOff size={14} />}{" "}
-            {connected ? "已同步" : "同步中断"}
+            {connected ? seat ? "已同步" : "数据已同步 · 待验证席位" : "同步中断"}
           </span>
         </div>
         <div className="remote-seat-heading">
           <div>
-            <h1>{seat ? roleNames[role] : "正在验证席位"}</h1>
-            <span title={seat?.name}>{seat?.name || "等待授权身份"}</span>
+            <h1>{displaySeat ? roleNames[role] : "正在验证席位"}</h1>
+            <span title={displaySeat?.name}>{displaySeat?.name || "等待授权身份"}{displaySeat && !seat ? " · 尚未验证" : ""}</span>
           </div>
           {owner && (
             <span className="remote-own-control">
@@ -128,7 +131,8 @@ export function Remote(
           <p>当前显示最后收到的状态。本地草稿保留，恢复同步后再提交。</p>
         </div>
       )}
-      {seatIssue && (
+      <SeatRecovery {...seatRecovery}/>
+      {seatIssue && seatRecovery.status === "verified" && (
         <div className="remote-connection-warning" role="alert">
           <strong>操作席位需要重新验证</strong>
           <p>
@@ -274,21 +278,21 @@ export function Remote(
           disabled={!connected || !!seatIssue || !seat}
           aria-label="当前席位制作任务"
         >
-          {seat && role === "subtitle" && (
+          {displaySeat && role === "subtitle" && (
             <ProductionDesk
               {...ctx}
               initialTask="subtitle"
               allowedTasks={["subtitle"]}
             />
           )}
-          {seat && role === "replay" && (
+          {displaySeat && role === "replay" && (
             <ProductionDesk
               {...ctx}
               initialTask="replay"
               allowedTasks={["replay", "rundown"]}
             />
           )}
-          {seat && role === "director" && (
+          {displaySeat && role === "director" && (
             <ProductionDesk
               {...ctx}
               initialTask="subtitle"
@@ -299,7 +303,7 @@ export function Remote(
               }
             />
           )}
-          {seat && role === "data" && (
+          {displaySeat && role === "data" && (
             <ProductionDesk
               {...ctx}
               initialTask="graphics"

@@ -51,6 +51,24 @@ test('HTTP seats enforce stale forms, idempotent submissions and explicit owners
   }finally{await api.close();}
 });
 
+test('HTTP seat resume is read-only and rejects a prior service identity before any submission',{timeout:20000},async()=>{
+  const original=await service(),restarted=await service();try{
+    const owner=await original.post('/api/control/seat',{name:'重连回归主导播'}).then(r=>r.json());
+    const sub=await original.post('/api/control/invite',{name:'字幕邀请',role:'subtitle'},owner.token).then(r=>r.json());
+    const before=await original.get();
+    const valid=await fetch(original.base+'/api/control/seat',{headers:{'x-seat-token':sub.token}});
+    assert.equal(valid.status,200);assert.deepEqual(await valid.json(),{id:sub.id,name:'字幕邀请',role:'subtitle',owner:false});
+    const after=await original.get();
+    for(const field of ['control','configVersion','program','audit'])assert.deepEqual(after.production[field],before.production[field],`verification does not change ${field}`);
+    const invalid=await fetch(restarted.base+'/api/control/seat',{headers:{'x-seat-token':sub.token}});
+    assert.equal(invalid.status,401);assert.equal((await invalid.json()).code,'SEAT_EXPIRED');
+    assert.equal((await restarted.post('/api/control/seat',{role:'director'},sub.token)).status,400,'old invite cannot silently become a director');
+    assert.equal((await restarted.get()).production.control,undefined);
+    const fresh=await restarted.post('/api/control/seat',{role:'director',fresh:true},owner.token).then(r=>r.json());
+    assert.equal(fresh.owner,true,'explicit host recovery can establish a fresh controller');
+  }finally{await original.close();await restarted.close();}
+});
+
 for(const delayed of ['success','failure'] as const)test(`delayed ${delayed} source application publishes PGM only after preparation and preserves telemetry`,{timeout:20000},async()=>{
   const api=await service(false,delayed);try{
     const original=await api.get();

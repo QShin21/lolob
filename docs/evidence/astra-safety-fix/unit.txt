@@ -1,0 +1,28 @@
+✔ read-only seat verification preserves all five roles and actual ownership (1.81915ms)
+✔ an expired seat cannot silently enroll, change role or regain control after restart (0.75934ms)
+✔ explicit new local enrollment and a newly issued invitation are separate recovery paths (0.225008ms)
+✔ pending presentation counts editorial changes without counting live telemetry or rotation timers (16.312317ms)
+✔ TAKE eligibility distinguishes offline, role, owner, waiting and applied states (1.519259ms)
+✔ gold curves split a lead crossing at zero and preserve missing/backwards clock gaps (0.24014ms)
+✔ schedule pagination covers every match, clamps stale pages and uses Beijing calendar days (14.200469ms)
+✔ interview, schedule and crop edits remain staged, survive restart and reject malformed input (3.767272ms)
+✔ ranking scene announces the actual person selected for broadcast (0.52034ms)
+✔ manual pending BP holds the latest automatic picture without rewriting the last TAKE (7.125452ms)
+✔ same-scene re-TAKE publishes manual BP; undo and redo restore each visible programme (7.694415ms)
+✔ manual starts a hold before modifying BP (1.85916ms)
+✔ compare starts a hold before modifying BP (1.566871ms)
+✔ clear starts a hold before modifying BP (1.679891ms)
+✔ undo starts a hold before modifying BP (1.594001ms)
+✔ restoring automatic BP is pending until TAKE (manual TAKE=false) (3.467252ms)
+✔ restoring automatic BP is pending until TAKE (manual TAKE=true) (5.347895ms)
+✔ pending hold survives serialization/restart and cannot follow a new attempt (11.335249ms)
+✔ unpublished source preparation preserves held BP; publication clears only the completed hold (2.588083ms)
+✔ legacy manual state without a hold falls back to its accepted snapshot, never pending draft (1.268042ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 343.200162
