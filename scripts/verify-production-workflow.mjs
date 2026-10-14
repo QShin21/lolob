@@ -254,12 +254,12 @@ try {
     .first()
     .inputValue();
   await page.getByRole("button", { name: "实时数据", exact: true }).click();
-  await page.locator(".data-table-scroll tbody tr").first().waitFor();
-  assert.equal(await page.locator(".data-table-scroll tbody tr").count(), 10);
+  await page.locator(".data-grid-scroll tbody tr").first().waitFor();
+  assert.equal(await page.locator(".data-grid-scroll tbody tr").count(), 10);
   await page
     .getByRole("combobox", { name: "选手显示范围" })
     .selectOption("blue");
-  assert.equal(await page.locator(".data-table-scroll tbody tr").count(), 5);
+  assert.equal(await page.locator(".data-grid-scroll tbody tr").count(), 5);
   await page.getByRole("button", { name: "BP 与阵容", exact: true }).click();
   assert.equal(
     await page

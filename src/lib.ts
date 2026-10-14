@@ -18,11 +18,14 @@ export const getTeam = (state: BroadcastState, side: Side) => state.teams.find(t
 export function championFor(champions: Champion[], id: string) { return champions.find(c => c.id === id || String(c.key) === id); }
 export const playerKda = (p?: Player, compact = false) => !p || p.statsAvailable === false ? '—' : [p.kills, p.deaths, p.assists].join(compact ? '/' : ' / ');
 export const playerCs = (p?: Player) => !p || p.statsAvailable === false ? '—' : p.cs;
+export class ApiError extends Error {
+  constructor(message: string, readonly status: number) { super(message); this.name = 'ApiError'; }
+}
 export async function api<T>(url: string, init?: RequestInit): Promise<T> {
   const token = new URLSearchParams(location.search).get('token') || sessionStorage.getItem('riftcast-control-token');
   const seat=sessionStorage.getItem('riftcast-seat-token');
   const response = await fetch(url, { ...init, headers: { ...(init?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...(token ? { 'X-Control-Token': token } : {}),...(seat?{'X-Seat-Token':seat}:{}), ...init?.headers } });
-  if (!response.ok) { const error = await response.json().catch(() => ({})); const message=error.error || error.message || `请求失败 (${response.status})`; throw new Error(/not connected/i.test(message)?'OBS 尚未连接，请在连接与输出中连接引擎':message); }
+  if (!response.ok) { const error = await response.json().catch(() => ({})); const message=error.error || error.message || `请求失败 (${response.status})`; throw new ApiError(/not connected/i.test(message)?'OBS 尚未连接，请在连接与输出中连接引擎':message, response.status); }
   return response.json();
 }
 export const dispatch = (action: BroadcastAction) => api<BroadcastState>('/api/action', { method: 'POST', body: JSON.stringify(action) });

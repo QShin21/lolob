@@ -59,8 +59,10 @@ export function Management(
     [teams, setTeams] = useState<Record<string, Draft<Team>>>({});
   const [assetTab, setAssetTab] = useState<"local" | "heroes">("local");
   const [assetsVisited, setAssetsVisited] = useState(false);
+  const [recordsVisited, setRecordsVisited] = useState(false);
   useEffect(() => {
     if (tab === "assets") setAssetsVisited(true);
+    if (tab === "recordings") setRecordsVisited(true);
   }, [tab]);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -606,7 +608,11 @@ export function Management(
           </div>
         </div>
       )}
-      {tab === "recordings" && <ManagementRecords {...ctx} />}
+      {(tab === "recordings" || recordsVisited) && (
+        <div hidden={tab !== "recordings"} className="manage-records-host">
+          <ManagementRecords {...ctx} />
+        </div>
+      )}
       <footer className="domain-footer">
         <span>
           {draftCount

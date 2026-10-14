@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Archive, Download, FileJson, Save, Search } from "lucide-react";
-import type { Champion, Recording, StateContext } from "../../shared/types";
+import type { BroadcastAction, Champion, Recording, StateContext } from "../../shared/types";
 import { csvRecording } from "../../shared/recording-export";
 import {
   frozenGameState,
   gameResultAwaitingTerminalSample,
 } from "../../shared/game-results";
 import { BroadcastCanvas } from "../components/BroadcastCanvas";
-import { time } from "../lib";
+import { ApiError, time } from "../lib";
 import { useMemoryState } from "../useMemoryState";
 import { gameResultKey } from "../../shared/game-results";
 import { TaskTabs } from "../components/ConsoleUI";
@@ -46,6 +46,8 @@ export function ManagementRecords({
   champions,
   send,
   notify,
+  seat,
+  connected,
 }: StateContext) {
   const [selected, setSelected] = useState(""),
     [query, setQuery] = useState(""),
@@ -56,6 +58,21 @@ export function ManagementRecords({
     ),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  type SaveTransaction = {
+    action: Extract<BroadcastAction, { type: "save-recording" }>;
+    seatId: string;
+    gameKey: string;
+    uncertain: boolean;
+  };
+  const inFlight = useRef(false);
+  const transaction = useRef<SaveTransaction | null>(null);
+  const [unconfirmed, setUnconfirmed] = useState<SaveTransaction | null>(null);
+  const [reviewed, setReviewed] = useState(false);
+  const gameKey = gameResultKey(state);
+  const latestGame = useRef(gameKey);
+  latestGame.current = gameKey;
+  const canSave = !!connected && !!seat && ["director", "data"].includes(seat.role);
+  const canRetry = canSave && (!unconfirmed || (unconfirmed.seatId === seat?.id && unconfirmed.gameKey === gameKey));
   const [scene, setScene] = useState<"postgame" | "ranking">("postgame"),
     [showReport, setShowReport] = useState(false);
   // Older valid result snapshots remain accessible even beyond the short recording list.
@@ -89,16 +106,44 @@ export function ManagementRecords({
       ) ?? [])
     : [];
   async function save() {
-    if (busy) return;
+    // Acquire before any await or React update. A second native click in the
+    // same event turn must join neither a fresh ID nor a second snapshot.
+    if (inFlight.current || !canSave || !seat) return;
+    const pending = transaction.current;
+    if (pending && (pending.seatId !== seat.id || pending.gameKey !== gameKey)) {
+      setError("席位或对局已变化。请核对下方记录并结束上次保存，不能把旧请求作为新快照重发。");
+      return;
+    }
+    inFlight.current = true;
+    const current = pending ?? {
+      action: { type: "save-recording" as const, title: title.trim() || undefined,
+        requestId: crypto.randomUUID(), expectedConfigVersion: state.production?.configVersion },
+      seatId: seat.id, gameKey, uncertain: false,
+    };
+    transaction.current = current;
     setBusy(true);
     setError("");
     try {
-      await send({ type: "save-recording", title: title.trim() || undefined });
-      setTitle("");
+      await send(current.action);
+      transaction.current = null;
+      setUnconfirmed(null);
+      setReviewed(false);
+      if (latestGame.current === current.gameKey) setTitle("");
       notify("当前对局快照已保存");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "快照保存失败");
+      // Validation/CAS rejection before any uncertain response is a known
+      // failure. Transport, parsing, changed connection, and 5xx can follow a
+      // committed write: keep the exact payload until a receipt or human review.
+      const rejected = e instanceof ApiError && e.status >= 400 && e.status < 500 && e.status !== 408;
+      if (rejected && !current.uncertain) {
+        transaction.current = null;
+      } else {
+        current.uncertain = true;
+        setUnconfirmed({ ...current });
+      }
+      setError(e instanceof Error ? e.message : "快照保存结果未确认");
     } finally {
+      inFlight.current = false;
       setBusy(false);
     }
   }
@@ -117,16 +162,27 @@ export function ManagementRecords({
           placeholder="记录名称（可选）"
           maxLength={150}
           value={title}
+          disabled={busy || !!unconfirmed || !canSave}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <button className="button" disabled={busy} onClick={() => void save()}>
+        <button className="button" disabled={busy || !canRetry} onClick={() => void save()}>
           <Save size={14} />
-          保存记录
+          {busy ? "正在保存记录" : unconfirmed ? "核对并重试原保存" : "保存记录"}
         </button>
       </div>
       {error && (
         <div className="domain-note error" role="alert">
           {error}
+        </div>
+      )}
+      {unconfirmed && (
+        <div className="domain-note warning manage-save-recovery" role="status">
+          <strong>上次保存结果未确认：{unconfirmed.action.title || "自动命名的对局快照"}</strong>
+          <p>先查看下方记录。同一席位重试会沿用原请求，不另建记录。服务重启或席位变更后，请人工核对记录；不要直接再次保存。</p>
+          <label><input type="checkbox" checked={reviewed} disabled={busy} onChange={e => setReviewed(e.target.checked)} />我已核对记录列表与本次保存结果</label>
+          <button className="button small" disabled={busy || !reviewed} onClick={() => {
+            transaction.current = null; setUnconfirmed(null); setReviewed(false); setError("");
+          }}>结束本次保存核对</button>
         </div>
       )}
       <div className="manage-split">

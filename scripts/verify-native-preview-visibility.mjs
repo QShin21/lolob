@@ -103,7 +103,7 @@ async function present(kind = 'program') {
   await page.locator(`.native-preview[data-kind="${kind}"].phase-live`).waitFor();
 }
 async function openEditor() { await page.getByRole('button', { name: '新建自定义场景', exact: true }).click(); await page.getByRole('dialog').waitFor(); }
-async function closeEditor() { await page.getByRole('dialog').getByRole('button', { name: '取消', exact: true }).click(); await page.getByRole('dialog').waitFor({ state: 'detached' }); }
+async function closeEditor() { await page.getByRole('dialog').getByRole('button', { name: '返回导播台，关闭场景编辑器', exact: true }).click(); await page.getByRole('dialog').waitFor({ state: 'detached' }); }
 
 try {
   const oldPreview = baseline ? execFileSync('git', ['show', 'HEAD:src/components/ObsLivePreview.tsx'], { cwd: root, encoding: 'utf8' }) : undefined;

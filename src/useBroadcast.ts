@@ -165,7 +165,9 @@ export function useBroadcast() {
         const reason = takeBlockReason(latest.current, verifiedSeat.current, transportOpen.current);
         if (reason) throw new Error(reason);
       }
-      const next = await dispatch({ ...action, expectedConfigVersion: action.expectedConfigVersion ?? latest.current?.production?.configVersion, requestId: crypto.randomUUID() });
+      // A caller may retain a transaction after losing its receipt. The exact
+      // request ID AND version must survive retries for the server dedupe check.
+      const next = await dispatch({ ...action, expectedConfigVersion: action.expectedConfigVersion ?? latest.current?.production?.configVersion, requestId: action.requestId ?? crypto.randomUUID() });
       if (generation !== verification.current) throw new Error('提交期间连接已变化，请核对当前待播与节目回执后再操作');
       accept(next);
       if ((action.type === 'take' || action.type === 'production' && action.command.op === 'immediate') && next.production?.application?.status === 'failed') throw new Error(next.production.application.detail);

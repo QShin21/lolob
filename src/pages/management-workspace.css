@@ -336,6 +336,7 @@
   color: var(--ui-text);
 }
 .manage-assets,
+.manage-records-host:not([hidden]),
 .manage-records,
 .manage-heroes {
   display: flex;
@@ -344,6 +345,10 @@
   flex: 1;
   gap: 12px;
 }
+.manage-save-recovery { flex: none; }
+.manage-save-recovery p { margin: 6px 0; }
+.manage-save-recovery label { display: inline-flex; align-items: center; gap: 8px; margin-right: 12px; }
+.manage-save-recovery input { width: 16px; min-height: 16px; }
 .manage-assets > .task-tabs {
   padding: 0;
   margin: 0;
