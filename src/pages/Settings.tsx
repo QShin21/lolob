@@ -28,7 +28,7 @@ async function request<T = Record<string, unknown>>(url: string, body?: Record<s
   return api<T>(url, body ? { method: 'POST', body: JSON.stringify(body) } : undefined);
 }
 
-type SettingsSection = 'data' | 'video' | 'audio' | 'output' | 'graphics' | 'appearance' | 'diagnostics' | 'collaboration';
+export type SettingsSection = 'data' | 'video' | 'audio' | 'output' | 'graphics' | 'appearance' | 'diagnostics' | 'collaboration';
 const settingsTasks: { id: SettingsSection; label: string; description: string; icon: typeof Plug }[] = [
   { id: 'data', label: '数据连接', description: '客户端、局内数据与本地回放', icon: Plug },
   { id: 'video', label: '画面', description: '引擎、游戏捕获与合成画面', icon: Monitor },
@@ -40,10 +40,11 @@ const settingsTasks: { id: SettingsSection; label: string; description: string; 
   { id: 'appearance', label: '工作台外观', description: '操作界面主题与本机偏好', icon: Palette },
 ];
 
-type Props = StateContext & { onOpenStudio?: () => void; outputReady?: boolean; onOutputReady?: (ready: boolean) => void };
-export function Settings({ state, send, notify, champions, seat, connected, onOpenStudio, outputReady, onOutputReady }: Props) {
+type Props = StateContext & { onOpenStudio?: () => void; outputReady?: boolean; onOutputReady?: (ready: boolean) => void; focusTask?:{section:SettingsSection;sequence:number} };
+export function Settings({ state, send, notify, champions, seat, connected, onOpenStudio, outputReady, onOutputReady, focusTask }: Props) {
   const settingsDraft=useConfigDraft(state.settings,state.production?.configVersion),settings=settingsDraft.draft,setSettings=settingsDraft.setDraft;
   const [section, setSection] = useState<SettingsSection>('output');
+  useEffect(()=>{if(focusTask)setSection(focusTask.section);},[focusTask]);
   const workspaceScroll = useRef<HTMLDivElement>(null);
   const operationActive = useRef(false);
   const [operationError, setOperationError] = useState('');

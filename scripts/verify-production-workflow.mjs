@@ -146,7 +146,7 @@ try {
     await page.getByRole("region", { name: "固定播出与应急控制" }).isVisible(),
   );
   await page.getByRole("tab", { name: /战队与选手/ }).click();
-  await page.locator(".team-directory-card").first().click();
+  await page.locator('.manage-object[data-kind="team"]').first().click();
   await page
     .getByLabel("选手 1 游戏账号", { exact: true })
     .fill("fixture-account");
@@ -158,7 +158,7 @@ try {
   const openedVersion = (await state()).production.configVersion;
   await action({ type: "set-overlay", patch: { sponsor: "并发资料修改" } });
   await page.getByRole("button", { name: "保存战队", exact: true }).click();
-  await page
+  await page.locator(".manage-workbench")
     .getByText("配置已被其他席位修改，请核对最新版本后重新保存", {
       exact: true,
     })
@@ -386,6 +386,7 @@ try {
   await mobile.goto(base + "/remote");
   await mobile.getByRole("heading", { name: "资料席", exact: true }).waitFor();
   assert.equal(await mobile.getByRole('button', { name: '切入节目', exact: true }).count(), 0, 'a data seat has no executable TAKE');
+  assert.equal(await mobile.locator('.remote-take-dock').count(), 0, 'data seat has no programme action dock');
   assert.ok(await mobile.locator('.remote-controller').isVisible());
   assert.equal(
     await mobile.evaluate(
@@ -436,8 +437,7 @@ try {
         await seatPage.locator('textarea[maxlength="500"]').count(),
         1,
       );
-    const pinned = await seatPage.locator(".remote-bottom").boundingBox();
-    assert.ok(pinned.y + pinned.height <= 846 && pinned.y > 600);
+    assert.equal(await seatPage.locator('.remote-take-dock').count(), 0, `${role} has no programme action dock`);
     await seatPage.screenshot({
       path: path.join(evidence, "remote-" + role + "-390.png"),
     });
@@ -446,6 +446,21 @@ try {
   tests.push(
     "readonly, subtitle and replay seats retain role-specific controls, identify the controller and expose no TAKE",
   );
+  // Reuse the verified current controller, without granting a restricted role TAKE.
+  const ownerToken = await page.evaluate(() => sessionStorage.getItem('riftcast-seat-token'));
+  const ownerPage = await mobileContext.newPage();
+  ownerPage.on('pageerror', (e) => errors.push(e.message));
+  await ownerPage.goto(base + '/remote?seat=' + encodeURIComponent(ownerToken));
+  await ownerPage.getByRole('heading', { name: '主导播席', exact: true }).waitFor();
+  assert.ok(await ownerPage.getByRole('button', { name: '切入节目', exact: true }).isVisible());
+  for (const scroll of [0, 10000]) {
+    await ownerPage.evaluate(y => window.scrollTo(0, y), scroll);
+    const pinned = await ownerPage.locator('.remote-take-dock').boundingBox();
+    assert.ok(pinned && pinned.x >= 0 && pinned.x + pinned.width <= 392 && pinned.y + pinned.height <= 846 && pinned.y > 600, 'current controller TAKE dock stays within the mobile viewport');
+  }
+  await ownerPage.screenshot({ path: path.join(evidence, 'remote-director-390.png') });
+  await ownerPage.close();
+  tests.push('verified current controller retains a visible fixed TAKE dock at 390 pixels before and after scrolling');
   await mobileContext.close();
   assert.deepEqual(errors, []);
   const saved = JSON.parse(

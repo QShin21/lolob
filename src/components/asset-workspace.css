@@ -1,0 +1,204 @@
+.asset-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+}
+.asset-workspace-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: none;
+}
+.asset-workspace-toolbar > .domain-search {
+  max-width: 280px;
+  flex: 1;
+}
+.asset-workspace-toolbar > span {
+  color: var(--ui-muted);
+  font-size: 12px;
+  margin-right: auto;
+}
+.asset-workspace-toolbar > label:not(.domain-search):not(.button) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.asset-workspace-toolbar select {
+  font-size: 13px;
+  min-height: 34px;
+}
+.asset-upload-button {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.asset-upload-button input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  cursor: pointer;
+}
+.asset-upload-button:focus-within {
+  outline: 2px solid var(--ui-focus);
+  outline-offset: 2px;
+}
+.asset-upload-button:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.asset-transfer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.asset-transfer progress {
+  height: 8px;
+  flex: 1;
+  accent-color: var(--ui-accent);
+}
+.asset-transfer small {
+  color: var(--ui-muted);
+}
+.asset-workspace > .domain-note {
+  max-height: 180px;
+  overflow: auto;
+}
+.asset-workspace-stage {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(320px, 1fr);
+  gap: 24px;
+  min-height: 0;
+  flex: 1;
+}
+.asset-list {
+  border-top: 1px solid var(--ui-border);
+}
+.asset-object {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  padding: 12px;
+  width: 100%;
+  min-height: 88px;
+  border-bottom: 1px solid var(--ui-border);
+  border-left: 3px solid transparent;
+  color: var(--ui-text);
+}
+.asset-object[aria-pressed="true"] {
+  background: var(--ui-selected);
+  border-left-color: var(--ui-accent);
+}
+.asset-object:hover {
+  background: var(--ui-hover);
+}
+.asset-object > img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  background: repeating-conic-gradient(#314349 0% 25%, #223339 0% 50%) 0/12px
+    12px;
+  flex: none;
+}
+.asset-object > span {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.asset-object strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+.asset-object small {
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+.asset-review {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+}
+.asset-review header h2 {
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+.asset-review header span,
+.asset-review > small {
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+.asset-crops {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.asset-crops figure {
+  margin: 0;
+  min-width: 0;
+}
+.asset-crops img {
+  width: 100%;
+  height: 190px;
+  object-fit: contain;
+  background: repeating-conic-gradient(#314349 0% 25%, #223339 0% 50%) 0/14px
+    14px;
+}
+.asset-crops figure:nth-child(2) img {
+  object-fit: cover;
+  width: 142px;
+  max-width: 100%;
+  background: var(--ui-bg);
+}
+.asset-crops figcaption {
+  color: var(--ui-muted);
+  font-size: 12px;
+  margin-top: 6px;
+}
+.asset-review > label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+}
+.asset-review > label input {
+  width: 100%;
+  accent-color: var(--ui-accent);
+}
+.asset-review > p {
+  color: var(--ui-muted);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0;
+}
+.asset-review > a {
+  align-self: flex-start;
+}
+@media (max-width: 900px) {
+  .asset-workspace-stage {
+    grid-template-columns: 1fr;
+  }
+  .asset-list {
+    max-height: 400px;
+    overflow: auto;
+  }
+  .asset-workspace-toolbar {
+    gap: 8px;
+  }
+  .asset-workspace-toolbar > .domain-search {
+    max-width: none;
+    flex-basis: 100%;
+  }
+}

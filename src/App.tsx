@@ -16,6 +16,7 @@ import { Studio } from './pages/Studio';
 import { Remote } from './pages/Remote';
 import { Help } from './pages/Help';
 import { version } from '../package.json';
+import type { SettingsSection } from './pages/Settings';
 const Draft = lazy(() => import('./pages/Draft').then(m => ({ default: m.Draft })));
 const LiveData = lazy(() => import('./pages/LiveData').then(m => ({ default: m.LiveData })));
 const Management = lazy(() => import('./pages/Management').then(m => ({ default: m.Management })));
@@ -41,6 +42,8 @@ export default function App() {
   const [page, updatePage] = useState<WorkflowPage>(readPage);
   const [visited, setVisited] = useState<Set<WorkflowPage>>(() => new Set([readPage()]));
   const [streamReady, setStreamReady] = useState(false);
+  const [settingsFocus,setSettingsFocus]=useState<{section:SettingsSection;sequence:number}>();
+  const [draftFocus,setDraftFocus]=useState<{task:'rules';sequence:number}>();
   const [managementTab, setManagementTab] = useState<'schedule' | 'recordings'>('schedule');
   const output = location.pathname.startsWith('/overlay'), remote = location.pathname.startsWith('/remote');
   const setPage = (next: WorkflowPage) => {
@@ -49,6 +52,8 @@ export default function App() {
   };
   const navigate = (next: WorkflowPage) => { if (next === 'manage') setManagementTab('schedule'); setPage(next); };
   const records = () => { setManagementTab('recordings'); setPage('manage'); };
+  const guideNavigate = (next:WorkflowPage,section?:SettingsSection) => { if(section)setSettingsFocus(old=>({section,sequence:(old?.sequence??0)+1}));navigate(next); };
+  const newSeries = () => {setDraftFocus(old=>({task:'rules',sequence:(old?.sequence??0)+1}));navigate('draft');};
   useEffect(() => { const change = () => setPage(readPage()); window.addEventListener('hashchange', change); return () => window.removeEventListener('hashchange', change); }, []);
   useEffect(() => { if (state?.connections.obs.status !== 'connected') setStreamReady(false); }, [state?.connections.obs.status]);
   useEffect(() => {
@@ -85,12 +90,12 @@ export default function App() {
         <main className="control-main" inert={!seat}>
           <Suspense fallback={<div className="page-loading" role="status">正在载入页面…</div>}>
             {visited.has('studio') && <div className="control-page control-studio-page" hidden={page !== 'studio'}><Studio {...ctx} onSettings={() => navigate('settings')} onDraft={() => navigate('draft')} onRecords={records}/></div>}
-            {visited.has('draft') && <div className="control-page" hidden={page !== 'draft'}><Draft {...ctx}/></div>}
-            {page === 'data' && <div className="control-page"><LiveData {...ctx}/></div>}
+            {visited.has('draft') && <div className="control-page" hidden={page !== 'draft'}><Draft {...ctx} focusTask={draftFocus}/></div>}
+            {visited.has('data') && <div className="control-page" hidden={page !== 'data'}><LiveData {...ctx}/></div>}
             {visited.has('manage') && <div className="control-page" hidden={page !== 'manage'}><Management {...ctx} initialTab={managementTab} onOpenSettings={() => navigate('settings')}/></div>}
-            {visited.has('settings') && <div className="control-page" hidden={page !== 'settings'}><Settings {...ctx} outputReady={streamReady} onOpenStudio={() => navigate('studio')} onOutputReady={setStreamReady}/></div>}
-            {page === 'help' && <div className="control-page"><Help state={state} onNavigate={navigate}/></div>}
-            {page === 'wrap' && <div className="control-page"><WrapUp {...ctx} streamReady={streamReady} onSettings={() => navigate('settings')} onManage={() => navigate('manage')} onRecords={records} onNextGame={() => navigate('draft')} onReport={() => navigate('studio')}/></div>}
+            {visited.has('settings') && <div className="control-page" hidden={page !== 'settings'}><Settings {...ctx} focusTask={settingsFocus} outputReady={streamReady} onOpenStudio={() => navigate('studio')} onOutputReady={setStreamReady}/></div>}
+            {visited.has('help') && <div className="control-page" hidden={page !== 'help'}><Help state={state} onNavigate={guideNavigate}/></div>}
+            {page === 'wrap' && <div className="control-page"><WrapUp {...ctx} streamReady={streamReady} onSettings={() => guideNavigate('settings','output')} onManage={() => navigate('manage')} onRecords={records} onNextGame={() => navigate('draft')} onNewSeries={newSeries} onReport={() => navigate('studio')}/></div>}
           </Suspense>
         </main>
         <div className="control-safety">

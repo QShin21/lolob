@@ -1,74 +1,10 @@
-import { HoldButton } from './ProductionDesk';
-import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Camera, Check, Film, Radio, Settings2, Square, Trophy } from 'lucide-react';
-import type { OutputAction } from '../../shared/obs-output';
-import type { ObsEngineStatus } from './EmbeddedObs';
-import type { BroadcastState, StateContext } from '../../shared/types';
-import { api } from '../lib';
-import { currentGameResult, gameResultAwaitingTerminalSample } from '../../shared/game-results';
-import { MatchLifecycle } from './MatchLifecycle';
-import {checkValid} from '../../shared/production';
-
-export type WorkflowPage = 'studio' | 'draft' | 'data' | 'manage' | 'settings' | 'help' | 'wrap';
-type EngineOutput = ObsEngineStatus;
-
-export function StudioOutputDock({ notify, onSettings, streamReady }: Pick<StateContext, 'notify'> & { onSettings: () => void; streamReady: boolean }) {
-  const [status, setStatus] = useState<EngineOutput | null>(null);
-  const [error, setError] = useState('');
-  const [pending, setPending] = useState(false);
-  const operation = useRef({ generation: 0, pending: false });
-  const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
-  useEffect(() => {
-    let active = true, fetching = false;
-    const refresh = async () => {
-      if (fetching || document.hidden || operation.current.pending) return;
-      const generation = operation.current.generation;
-      fetching = true;
-      try { const next = await api<EngineOutput>('/api/obs/engine'); if (active && generation === operation.current.generation) { setStatus(next); setError(next.error || ''); } }
-      catch { if (active && generation === operation.current.generation) { setStatus(null); setError('输出状态暂不可用'); } }
-      finally { fetching = false; }
-    };
-    void refresh();
-    const timer = window.setInterval(() => void refresh(), 2000);
-    document.addEventListener('visibilitychange', refresh);
-    return () => { active = false; window.clearInterval(timer); document.removeEventListener('visibilitychange', refresh); };
-  }, []);
-  const canOperate = local && status?.connected && !error && !pending;
-  async function output(action: OutputAction) {
-    if (operation.current.pending) return;
-    operation.current.pending = true; operation.current.generation++;
-    setPending(true);
-    try {
-      const result = await api<EngineOutput>('/api/obs/engine/output', { method: 'POST', body: JSON.stringify({ action }) });
-      setStatus(result); setError(result.error || '');
-      const active = action.endsWith('virtual-camera') ? result.virtualCamActive : action.endsWith('stream') ? result.streamActive : result.recordActive;
-      if (active !== action.startsWith('start')) throw new Error('输出状态尚未确认，请在连接与输出核对');
-      const messages: Record<OutputAction, string> = { 'start-stream': '推流已开始', 'stop-stream': '推流已停止', 'start-record': '视频录制已开始', 'stop-record': '视频录制已停止', 'start-virtual-camera': '节目画面与完整混音已送出，请在直播伴侣核对音画并开播', 'stop-virtual-camera': '伴侣音画已停止，直播间请在伴侣中结束直播' };
-      notify(messages[action]);
-    } catch (failure) { notify(failure instanceof Error ? failure.message : '输出操作失败','error'); }
-    finally { operation.current.pending = false; operation.current.generation++; setPending(false); }
-  }
-  const confirmed = !!status?.connected && !error;
-  const companion = status?.destination === 'douyin';
-  const cameraActive = status?.virtualCamActive === true || status?.companionAudio?.managing === true || status?.companionAudio?.active === true;
-  const cameraReady = status?.mode === 'embedded' && status?.virtualCamera?.driver.installed && !status.virtualCamera.requiresRestart && status?.virtualCamActive === false && !!status?.inputs.length && !!status?.companionAudio?.ready;
-  return <div className="studio-output-dock" aria-label="播出输出控制">
-    <div className="output-indicators">
-      <span className={confirmed && (companion ? cameraActive : status?.streamActive) ? 'on-air' : ''}><i />{companion ? !confirmed || status?.virtualCamActive == null ? '伴侣音画待确认' : cameraActive ? status?.companionAudio?.active && status?.virtualCamActive ? '伴侣音画已送出 · 伴侣中开播' : '伴侣音画异常 · 请核对输出'  : '伴侣音画未送出' : !confirmed ? '推流待确认' : status?.streamActive ? '推流中' : '未推流'}</span>
-      <span className={confirmed && status?.recordActive ? 'recording' : ''}><i />{!confirmed ? '录制待确认' : status?.recordActive ? '录制中' : '未录制'}</span>
-      {error && <span className="output-error" title={error}>{error}</span>}
-    </div>
-    <div className="output-dock-actions">
-      <button className="button small" disabled={pending} onClick={onSettings}><Settings2 size={13} />连接配置</button>
-      {companion ? cameraActive ? <HoldButton disabled={!canOperate} onExecute={() => void output('stop-virtual-camera')}>按住停止伴侣音画</HoldButton> : <button className="button small primary" disabled={cameraReady ? !canOperate : pending} onClick={() => cameraReady ? void output('start-virtual-camera') : onSettings()}><Camera size={13} />{cameraReady ? '启动伴侣音画' : '配置伴侣输出'}</button>
-        : status?.streamActive ? <HoldButton disabled={!canOperate} onExecute={() => void output('stop-stream')}>按住停止推流</HoldButton> : <button className="button small primary" disabled={streamReady ? !canOperate : pending} onClick={() => streamReady ? void output('start-stream') : onSettings()}><Radio size={13} />{streamReady ? '开始推流' : '配置推流'}</button>}
-      <button className={'button small ' + (status?.recordActive ? 'output-stop' : '')} disabled={!canOperate} onClick={() => void output(status?.recordActive ? 'stop-record' : 'start-record')}>{status?.recordActive ? <Square size={12} /> : <Film size={13} />}{status?.recordActive ? '停止录制' : '开始录制'}</button>
-    </div>
-  </div>;
-}
-
-export function WrapUp({ state, send, notify, onSettings, onRecords, onManage, onNextGame=onManage, onReport, streamReady }: StateContext & { onSettings: () => void; onRecords: () => void; onManage: () => void; onNextGame?:()=>void;onReport?:()=>void;streamReady: boolean }) {
-  const [saving, setSaving] = useState(false);
-  const result=currentGameResult(state);
-  return <section className="panel wrap-up"><div className="panel-head"><h2><Trophy size={18} />{state.match.title} · 局间与赛后收尾</h2><span className="badge">第 {state.match.game} 局</span></div><div className="wrap-steps">{[{label:'1 · 胜方',ready:!!result?.winner,text:result?.winner?'已确认本局胜方':'等待确认，下一局暂不可用'},{label:'2 · 终局数据',ready:!!result&&!gameResultAwaitingTerminalSample(result),text:result?gameResultAwaitingTerminalSample(result)?'等待终局采样或裁判确认':'数据已冻结':'等待本局结束'},{label:'3 · 报告核对',ready:state.programScene==='postgame'&&checkValid(state,'program'),text:state.programScene==='postgame'&&checkValid(state,'program')?'本版赛后报告已核对':'准备赛后报告并核对本版节目'},{label:'4 · 本局录像',ready:!!state.production?.videos.some(v=>v.seriesId===state.match.seriesId&&v.game===state.match.game&&v.attempt===(state.production?.attempt??1)&&v.verified),text:state.production?.videos.some(v=>v.seriesId===state.match.seriesId&&v.game===state.match.game&&v.attempt===(state.production?.attempt??1)&&v.file)?'文件已索引，检查可播放性':'等待录制文件'},{label:'5 · 下一步',ready:!!result?.seriesComplete,text:result?.seriesComplete?'系列赛结束，核对后停止输出':'局间持续输出，确认后进入下一局'}].map(item=><div className={item.ready?'ready':''} key={item.label}><strong>{item.label}</strong><small>{item.text}</small></div>)}</div><p>客户端确认对局结束后，系统自动保存本局并冻结选手数据与赛后报告。同一场 BO 继续比赛时，点击下一局进入 BP；本场转播结束后分别停止推流和录制。</p><MatchLifecycle {...{state,send,notify,onRecords,onNextGame}} onReport={onReport||onRecords}/><StudioOutputDock notify={notify} onSettings={onSettings} streamReady={streamReady} /><div className="wrap-up-actions">{!result&&<button className="button primary" disabled={saving||!state.players.length||state.gameTime<=0} onClick={async()=>{setSaving(true);try{await send({type:'finalize-game'});notify('已保存末次观测记录，请核对终局补样与胜方');}catch{/* send reports failures */}finally{setSaving(false);}}}>{saving?'正在结算…':'手动结算当前局并冻结数据'}</button>}<button className="button" disabled={saving} onClick={async () => { setSaving(true); try { await send({ type: 'save-recording' }); notify('对局数据快照已保存，可在比赛记录中导出'); onRecords(); } catch { /* send reports failures */ } finally { setSaving(false); } }}>{saving ? '正在保存…' : '另存当前快照'}</button><button className="button" onClick={onManage}>准备下一场比赛<ArrowRight size={15} /></button></div><p className="muted">自动归档保存比分、选手、事件和经济曲线；视频文件由 OBS 录制保存。未确认胜方时保留当前系列赛比分，请先在结算栏确认胜方，再进入下一局。</p></section>;
-}
+/** Stable page names preserve existing hashes and desktop menu entry points. */
+export type WorkflowPage =
+  | "studio"
+  | "draft"
+  | "data"
+  | "manage"
+  | "settings"
+  | "help"
+  | "wrap";
+export { WrapUp } from "../pages/WrapUp";

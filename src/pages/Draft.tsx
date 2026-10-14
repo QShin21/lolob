@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Check,
   ChevronRight,
@@ -27,7 +27,7 @@ import {
 } from "../components/FearlessControls";
 import "./draft-workbench.css";
 
-export function Draft(ctx: StateContext) {
+export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;sequence:number}}) {
   const { state, champions, send, notify, seat, connected } = ctx;
   const trigger = useRef<HTMLButtonElement | null>(null),
     productionSection = useRef<HTMLDivElement>(null);
@@ -66,6 +66,7 @@ export function Draft(ctx: StateContext) {
         ?.focus();
     });
   };
+  useEffect(()=>{if(ctx.focusTask)openTask(ctx.focusTask.task);},[ctx.focusTask]);
   const editSlot = (next: DraftSlot, button: HTMLButtonElement) => {
     trigger.current = button;
     setSlot(next);

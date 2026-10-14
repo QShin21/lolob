@@ -108,6 +108,7 @@
 .cast-economy .chart-sample-note {
   font-size: 0.85cqw;
   padding-right: 1cqw;
+  color: #a7becb;
 }
 .cast-draft-card.waiting.active-slot {
   outline: 2px solid #d4ef98;

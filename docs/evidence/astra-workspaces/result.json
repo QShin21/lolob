@@ -1,0 +1,267 @@
+{
+  "status": "pass",
+  "baseCommit": "00c6c92e8f07db63656de78644436cbe82aab207",
+  "environment": "Linux Chromium / actual isolated HTTP / demo / no OBS or physical devices",
+  "dir": "/tmp/riftcast-astra-workspaces-Ymagay",
+  "checks": [
+    {
+      "name": "desktop economy note uses fixed media colour",
+      "dark": "rgb(167, 190, 203)",
+      "light": "rgb(167, 190, 203)"
+    },
+    {
+      "name": "data dark 1366x736",
+      "geometry": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "width": 1302,
+          "height": 73,
+          "bottom": 736
+        },
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "width": 268.25,
+          "height": 30,
+          "bottom": 98
+        }
+      }
+    },
+    {
+      "name": "manage dark 1366x736",
+      "geometry": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "width": 1302,
+          "height": 73,
+          "bottom": 736
+        },
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "width": 202.859375,
+          "height": 30,
+          "bottom": 98
+        }
+      }
+    },
+    {
+      "name": "help dark 1366x736",
+      "geometry": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "width": 1302,
+          "height": 73,
+          "bottom": 736
+        },
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "width": 156.015625,
+          "height": 30,
+          "bottom": 98
+        }
+      }
+    },
+    {
+      "name": "wrap dark 1366x736",
+      "geometry": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "width": 1302,
+          "height": 73,
+          "bottom": 736
+        },
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "width": 217.578125,
+          "height": 30,
+          "bottom": 98
+        }
+      }
+    },
+    {
+      "name": "data light 1366x736",
+      "geometry": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "width": 1302,
+          "height": 73,
+          "bottom": 736
+        },
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "width": 268.25,
+          "height": 30,
+          "bottom": 98
+        }
+      }
+    },
+    {
+      "name": "manage light 1366x736",
+      "geometry": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "width": 1302,
+          "height": 73,
+          "bottom": 736
+        },
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "width": 202.859375,
+          "height": 30,
+          "bottom": 98
+        }
+      }
+    },
+    {
+      "name": "help light 1366x736",
+      "geometry": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "width": 1302,
+          "height": 73,
+          "bottom": 736
+        },
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "width": 156.015625,
+          "height": 30,
+          "bottom": 98
+        }
+      }
+    },
+    {
+      "name": "wrap light 1366x736",
+      "geometry": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "width": 1302,
+          "height": 73,
+          "bottom": 736
+        },
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "width": 217.578125,
+          "height": 30,
+          "bottom": 98
+        }
+      }
+    },
+    {
+      "name": "per-team local draft preserved when switching objects"
+    },
+    {
+      "name": "wrap navigation reaches real BP rules without starting a series"
+    },
+    {
+      "name": "help navigates to actual output task"
+    },
+    {
+      "name": "verified current controller dock is in viewport before and after scroll"
+    },
+    {
+      "name": "navigation, theme and local edits did not TAKE or change programme snapshot"
+    }
+  ],
+  "shots": [
+    "data-dark-1366x736",
+    "manage-dark-1366x736",
+    "help-dark-1366x736",
+    "wrap-dark-1366x736",
+    "data-light-1366x736",
+    "manage-light-1366x736",
+    "help-light-1366x736",
+    "wrap-light-1366x736",
+    "manage-team-light-1366x736",
+    "manage-assets-light-1366x736",
+    "manage-records-light-1366x736",
+    "wrap-report-light-1366x736",
+    "wrap-corrections-light-1366x736",
+    "data-light-1920x1080",
+    "manage-light-1920x1080",
+    "help-light-1440x900",
+    "wrap-light-1440x900"
+  ],
+  "errors": [],
+  "actions": [
+    "finalize-game"
+  ]
+}

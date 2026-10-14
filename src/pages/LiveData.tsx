@@ -1,39 +1,628 @@
-import {TaskTabs} from '../components/ConsoleUI';
-import {time} from '../lib';
-import { useState } from 'react';
-import { Activity, Users, ArrowDownToLine, Database, Archive } from 'lucide-react';
-import type { StateContext, Player, Side } from '../../shared/types';
-import { getTeam, gold, playerKda } from '../lib';
-import { ChampionImage, EconomyChart } from '../components/BroadcastCanvas';
-import { PlayerBuild } from '../components/PlayerBuild';
-import { useItemCatalog, dataDragonItemImage } from '../components/useItemCatalog';
-import { EconomySourcePanel } from '../components/EconomySourcePanel';
-import { currentGameResult, frozenGameState, gameResultAwaitingTerminalSample } from '../../shared/game-results';
-import '../components/match-lifecycle.css';
+import { useState } from "react";
+import { Activity, ArrowDownToLine, Search, UserRound } from "lucide-react";
+import type { Player, Side, StateContext } from "../../shared/types";
+import {
+  currentGameResult,
+  frozenGameState,
+  gameResultAwaitingTerminalSample,
+} from "../../shared/game-results";
+import { getTeam, gold, playerKda, time } from "../lib";
+import { ChampionImage, EconomyChart } from "../components/BroadcastCanvas";
+import { TaskTabs } from "../components/ConsoleUI";
+import { EconomySourcePanel } from "../components/EconomySourcePanel";
+import {
+  useItemCatalog,
+  dataDragonItemImage,
+} from "../components/useItemCatalog";
+import "../components/domain-workspace.css";
+import "./data-workspace.css";
 
-export function LiveData({state:sourceState,champions,send,notify}:StateContext) {
-  const result=currentGameResult(sourceState),state=frozenGameState(sourceState);
-  const [tab,setTab]=useState<'overview'|'players'|'events'|'health'>('players'),[ascending,setAscending]=useState(false),[group,setGroup]=useState<'all'|'blue'|'red'|'pair'>('all'),[extra,setExtra]=useState(false);
-  const [ranking,setRanking]=useState<'cs'|'kills'|'equipment'|'level'|'gold'>('cs');
-  const {items,version,status}=useItemCatalog(champions);
-  const equipmentValue=(p:Player):number|null=>p.items.length&&p.items.every(id=>items[id]?.gold!==undefined)?p.items.reduce((sum,id)=>sum+items[id].gold!,0):null;
-  const metric=(p:Player)=>ranking==='equipment'?equipmentValue(p)??-1:state.mode==='live'&&p.statsAvailable===false&&(ranking==='cs'||ranking==='kills')?-1:p[ranking]??-1;
-  const players=state.players.filter(p=>group==='blue'||group==='red'?p.team===group:true).sort((a,b)=>{if(group==='pair'){const roles=['上单','打野','中单','下路','辅助'];return roles.indexOf(a.role)-roles.indexOf(b.role)||a.team.localeCompare(b.team);}const av=metric(a),bv=metric(b);return av<0?(bv<0?0:1):bv<0?-1:(ascending?av-bv:bv-av);});
-  const source=state.mode==='demo'?'演示经济':state.economyFeed?.source==='api'?'游戏 API':state.economyFeed?.source==='ocr'?'观战 HUD 识别':state.economyFeed?.source==='manual'?'人工校准':'待采集';
-  const statsSource=(p:Player)=>state.mode==='demo'?'演示':p.statsAvailable===false?'未提供':p.statsSource==='ocr'?'OCR':p.statsSource==='api'?'API':'待采集';
-  const statsDetail=(p:Player)=>state.mode==='demo'?'虚构演示数据':p.statsAvailable===false?'当前对局未提供有效 KDA 与补刀，等待计分板采样':p.statsSource==='ocr'?`观战计分板 OCR · 采样 ${p.statsSampledAt||'时间未提供'} · ${p.statsSampledAt&&p.statsExpiresAt&&Number.isFinite(Date.parse(p.statsExpiresAt)-Date.parse(p.statsSampledAt))?`${Math.max(0,(Date.parse(p.statsExpiresAt)-Date.parse(p.statsSampledAt))/1000)} 秒有效`:'有效期未提供'}`:p.statsSource==='api'?`局内 API 的 KDA 与补刀${p.statsSampledAt?` · 采样 ${p.statsSampledAt}`:''}`:'等待对局统计采集';
-  const statsAvailable=(p:Player)=>state.mode==='demo'||p.statsAvailable!==false;
-  const teamKills=(side:Side)=>state.mode==='live'&&(!state.players.some(p=>p.team===side)||state.players.some(p=>p.team===side&&p.statsAvailable===false))?'—':state.stats[side].kills;
-  const goldDetail=(p:Player)=>state.mode==='demo'?'虚构演示数据':p.goldSource==='ocr'?`观战计分板 OCR · 采样 ${p.goldSampledAt||'时间未提供'} · 10 秒有效`:p.goldSource==='api'?'客户端金币字段':'等待金币采集';
-  const currentGoldDetail=(p:Player)=>state.mode==='demo'?'虚构演示数据 · 可花费余额':p.goldSource==='ocr'?`${goldDetail(p)} · 可花费余额`:p.currentGold!=null?'客户端当前金币 · 可花费余额':'等待当前金币采集';
-  return <div className={`data-workspace ${extra?'':'hide-extra-columns'}`}><div className="data-view-tabs"><TaskTabs items={[{id:'overview',label:'概览'},{id:'players',label:'十人数据'},{id:'events',label:'事件'},{id:'health',label:'采集状态'}]} value={tab} onChange={setTab} label="数据视图"/></div>
-    {result&&<div className="data-frozen-note"><Archive size={15}/>第 {result.game} 局{gameResultAwaitingTerminalSample(result)?'本局观测数据已保存，等待终局样本':'最终数据已冻结并保存到比赛记录'}。进入下一局后将显示新对局数据。</div>}
-    <div hidden={tab!=='overview'}><div className="data-summary-grid">{(['blue','red']as const).map(side=><div className={`panel data-summary ${side}`} key={side}><div className="eyebrow">{side==='blue'?'蓝方':'红方'} · {getTeam(state,side)?.name} · 赛事战队资料</div><h2>{getTeam(state,side)?.tag}</h2><div><strong>{gold(state.stats[side].gold)}<small>团队累计经济 · {source}</small></strong><strong>{teamKills(side)}<small>击杀</small></strong><strong>{state.stats[side].towers}<small>防御塔</small></strong><strong>{state.stats[side].dragons}<small>巨龙</small></strong></div></div>)}</div>
-    <section className="panel data-economy"><div className="panel-head"><h2><Activity size={17}/>经济差曲线</h2><div className="inline-buttons"><span className="badge">{source}</span><button className="button small" onClick={()=>void send({type:'preview-scene',scene:'economy'}).then(()=>notify('经济曲线已设为预监')).catch(()=>{})}>发送至预监</button></div></div><EconomyChart state={state} interactive/><p className="data-source-note">{state.mode==='demo'?'当前为虚构演示数据。':state.economyFeed?.detail||'连接局内 API 后，可用观战 HUD 识别或人工校准补充双方累计经济。'} 图表保留采样来源；个人经济缺失时显示 —。</p></section>
-    </div><div hidden={tab!=='health'}>{!result&&<details className="economy-details" open><summary>经济采集与校准<span>观战 HUD / 人工输入</span></summary><EconomySourcePanel {...{state,notify}}/></details>}
-</div><div hidden={tab!=='players'}><section className="panel player-data"><div className="panel-head"><h2><Users size={17}/>十人对局数据</h2><select aria-label="数据排序" value={ranking} onChange={e=>setRanking(e.target.value as typeof ranking)}><option value="gold">按累计经济排序</option><option value="cs">按补刀排序</option><option value="kills">按击杀排序</option><option value="equipment">按装备目录价值排序</option><option value="level">按等级排序</option></select></div><div className="table-toolbar"><button className="button small" onClick={()=>setAscending(!ascending)}>{ascending?'升序 ↑':'降序 ↓'}</button><label>显示<select aria-label="选手显示范围" value={group} onChange={e=>setGroup(e.target.value as typeof group)}><option value="all">全场排序</option><option value="blue">蓝方</option><option value="red">红方</option><option value="pair">同分路对位</option></select></label><label><input type="checkbox" checked={extra} onChange={e=>setExtra(e.target.checked)}/>显示当前金币与装备价值</label></div><div className="data-table-scroll"><table><thead><tr><th>选手</th><th>位置</th><th>英雄</th><th>等级</th><th>K / D / A</th><th>补刀</th><th>个人累计经济</th><th>当前金币</th><th>装备目录价值</th><th>装备</th><th>焦点</th></tr></thead><tbody>{players.map(p=><tr key={p.id}><td><strong className={`${p.team}-text`}>{p.name}</strong></td><td>{p.role}</td><td><div className="table-champion"><ChampionImage champions={champions} id={p.championId}/>{p.championName}</div></td><td>{p.level}</td><td title={statsDetail(p)}>{statsAvailable(p)?playerKda(p):'—'}<small className="muted"> · {statsSource(p)}</small></td><td title={statsDetail(p)}>{statsAvailable(p)?p.cs:'—'}</td><td title={goldDetail(p)}>{p.gold==null?'—':p.gold.toLocaleString('zh-CN')}<small className="muted">{state.mode==='demo'?' 演示':p.goldSource==='ocr'?' OCR':p.goldSource==='api'?' API':''}</small></td><td title={currentGoldDetail(p)}>{p.currentGold==null?'—':p.currentGold.toLocaleString('zh-CN')}</td><td>{gold(equipmentValue(p))}</td><td><div className="data-item-icons">{p.items.slice(0,7).map((id,i)=>{const image=items[id]?.image||dataDragonItemImage(version,id);return image?<img key={`${id}-${i}`} src={image} alt={items[id]?.name||'装备'} title={items[id]?.name||'装备素材载入中'} onError={e=>{e.currentTarget.style.visibility='hidden';}}/>:<span key={i}>—</span>;})}</div></td><td><button className="button small" onClick={()=>void send({type:'select-player',playerId:state.selectedPlayerId===p.id?null:p.id}).then(()=>notify(`焦点选手：${p.name}`)).catch(()=>{})}>{state.selectedPlayerId===p.id?'取消':'选中'}</button></td></tr>)}</tbody></table></div><p className="data-source-note">装备目录 {version||'载入中'} · {status==='unavailable'?'素材暂不可用':'官方 Data Dragon 静态购买价'}。累计经济读取有效客户端字段或观战金币列括号内整数；当前金币为可花费余额。KDA 与补刀显示当前 API / OCR 来源，缺少有效统计时显示 — / 未提供；鼠标悬停可查看采样时间。个人 OCR 同步同一画面的金币、KDA 与补刀，10 秒后回退局内 API 统计并清除过期 OCR 金币。等级、符文及装备清单来自局内 API，装备目录价值为当前持有物品的静态购买价总和。战队名称与简称来自赛事设置。</p></section>
-    {state.selectedPlayerId&&<div className="selected-player-actions"><span className="muted">选手焦点横条 / 采访名牌</span><div className="inline-buttons"><button className="button small" onClick={()=>void send({type:'preview-scene',scene:'ranking'}).then(()=>notify('选手出装详情已设为预监')).catch(()=>{})}>出装详情发送至预监</button><button className="button small" onClick={()=>void send({type:'preview-scene',scene:'interview'}).catch(()=>{})}>采访名牌发送至预监</button></div></div>}
-    {state.selectedPlayerId&&<PlayerBuild state={state} champions={champions}/>}</div><section hidden={tab!=='events'} className="panel event-list"><h2>比赛事件 · {state.events.length}</h2>{[...state.events].reverse().map(e=><p key={e.id}><time>{time(e.time)}</time><span className={`${e.team??''}-text`}>{e.text}</span></p>)}{!state.events.length&&<p>尚无本局事件。对局开始后持续更新。</p>}</section>
-    <div className="export-bar"><p className="muted"><Database size={15}/>导出当前对局、经济采样来源、选手与事件。</p><div><a className="button" href={result?`/api/export?format=csv&recordingId=${encodeURIComponent(result.snapshot.id)}`:'/api/export?format=csv'} download><ArrowDownToLine size={15}/>导出 CSV</a><a className="button" href={result?`/api/export?format=json&recordingId=${encodeURIComponent(result.snapshot.id)}`:'/api/export?format=json'} download><ArrowDownToLine size={15}/>导出 JSON</a></div></div>
-  </div>;
+const sampleTime = (value?: string) =>
+  value && Number.isFinite(Date.parse(value))
+    ? new Date(value).toLocaleTimeString("zh-CN", { hour12: false })
+    : "未提供";
+const connectionNames = {
+  lcu: "客户端 BP",
+  live: "局内统计",
+  replay: "回放接口",
+  obs: "OBS 合成",
+};
+const connectionStatus = {
+  connected: "已连接",
+  connecting: "连接中",
+  disconnected: "未连接",
+  error: "异常",
+};
+const sourceNames = {
+  none: "待采集",
+  api: "游戏 API",
+  ocr: "观战 HUD 识别",
+  manual: "人工校准",
+};
+
+export function LiveData({
+  state: sourceState,
+  champions,
+  send,
+  notify,
+}: StateContext) {
+  const result = currentGameResult(sourceState),
+    state = frozenGameState(sourceState);
+  const [tab, setTab] = useState<"players" | "overview" | "events" | "health">(
+    "players",
+  );
+  const [group, setGroup] = useState<"all" | "blue" | "red" | "pair">("pair");
+  const [ranking, setRanking] = useState<
+    "cs" | "kills" | "equipment" | "level" | "gold"
+  >("cs");
+  const [ascending, setAscending] = useState(false),
+    [extra, setExtra] = useState(false),
+    [query, setQuery] = useState("");
+  const [inspectedId, setInspectedId] = useState(""),
+    [error, setError] = useState("");
+  const { items, version, status } = useItemCatalog(champions);
+  const equipmentValue = (p: Player): number | null =>
+    p.items.length && p.items.every((id) => items[id]?.gold !== undefined)
+      ? p.items.reduce((sum, id) => sum + items[id].gold!, 0)
+      : null;
+  const available = (p: Player) =>
+    state.mode === "demo" || p.statsAvailable !== false;
+  const metric = (p: Player) =>
+    ranking === "equipment"
+      ? (equipmentValue(p) ?? -1)
+      : !available(p) && (ranking === "cs" || ranking === "kills")
+        ? -1
+        : (p[ranking] ?? -1);
+  const players = state.players
+    .filter(
+      (p) =>
+        ((group !== "blue" && group !== "red") || p.team === group) &&
+        `${p.name} ${p.role} ${p.championName}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+    )
+    .sort((a, b) => {
+      if (group === "pair") {
+        const roles = ["上单", "打野", "中单", "下路", "辅助"];
+        return (
+          roles.indexOf(a.role) - roles.indexOf(b.role) ||
+          a.team.localeCompare(b.team)
+        );
+      }
+      const av = metric(a),
+        bv = metric(b);
+      return av < 0
+        ? bv < 0
+          ? 0
+          : 1
+        : bv < 0
+          ? -1
+          : ascending
+            ? av - bv
+            : bv - av;
+    });
+  const player = players.find((p) => p.id === inspectedId) ?? players[0];
+  const source =
+    state.mode === "demo"
+      ? "演示经济"
+      : sourceNames[state.economyFeed?.source ?? "none"];
+  const statsSource = (p: Player) =>
+    state.mode === "demo"
+      ? "演示"
+      : !available(p)
+        ? "未提供"
+        : p.statsSource === "ocr"
+          ? "OCR"
+          : p.statsSource === "api"
+            ? "API"
+            : "待采集";
+  const statsDetail = (p: Player) =>
+    `${statsSource(p)} · 采样 ${sampleTime(p.statsSampledAt)} · 有效至 ${sampleTime(p.statsExpiresAt)}`;
+  const teamKills = (side: Side) =>
+    state.mode === "live" &&
+    (!state.players.some((p) => p.team === side) ||
+      state.players.some((p) => p.team === side && !available(p)))
+      ? "—"
+      : state.stats[side].kills;
+  async function act(action: Parameters<typeof send>[0], message: string) {
+    setError("");
+    try {
+      await send(action);
+      notify(message);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "操作失败，输入和当前视图已保留",
+      );
+    }
+  }
+  const exportUrl = (format: string) =>
+    `/api/export?format=${format}${result ? `&recordingId=${encodeURIComponent(result.snapshot.id)}` : ""}`;
+  return (
+    <section
+      className="domain-workspace data-workbench"
+      aria-label="实时数据工作面"
+    >
+      <div className="data-top">
+        <header className="domain-heading">
+          <div>
+            <h1>实时数据</h1>
+            <p>
+              {state.match.title} · 第 {state.match.game} 局 ·{" "}
+              {result
+                ? gameResultAwaitingTerminalSample(result)
+                  ? "观测已保存，等待终局"
+                  : "最终数据已冻结"
+                : state.mode === "demo"
+                  ? "虚构演示数据"
+                  : "当前对局采集"}
+            </p>
+          </div>
+          <span className="data-clock">
+            {time(state.gameTime)}
+            <small>
+              {source} · 样本 {sampleTime(state.economyFeed?.sampledAt)}
+            </small>
+          </span>
+        </header>
+        <TaskTabs
+          items={[
+            { id: "players", label: "十人数据" },
+            { id: "overview", label: "经济与团队" },
+            { id: "events", label: "比赛事件" },
+            { id: "health", label: "来源与校准" },
+          ]}
+          value={tab}
+          onChange={setTab}
+          label="数据视图"
+        />
+      </div>
+      {error && (
+        <div role="alert" className="domain-note error">
+          {error}
+        </div>
+      )}
+      <div className="data-stage" hidden={tab !== "players"}>
+        <section className="data-comparison">
+          <div className="data-tools">
+            <div className="data-toolbar">
+              <h2>
+                <span className="sr-only">十人对局数据</span>
+                <small>{players.length} 人</small>
+              </h2>
+              <label className="domain-search">
+                <Search size={15} />
+                <input
+                  aria-label="搜索选手数据"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="姓名、英雄、分路"
+                />
+              </label>
+            </div>
+            <div className="data-filters">
+              <label>
+                显示
+                <select
+                  aria-label="选手显示范围"
+                  value={group}
+                  onChange={(e) => setGroup(e.target.value as typeof group)}
+                >
+                  <option value="pair">同分路对位</option>
+                  <option value="all">全场排序</option>
+                  <option value="blue">蓝方</option>
+                  <option value="red">红方</option>
+                </select>
+              </label>
+              <select
+                aria-label="数据排序"
+                value={ranking}
+                disabled={group === "pair"}
+                onChange={(e) => setRanking(e.target.value as typeof ranking)}
+              >
+                <option value="gold">按累计经济排序</option>
+                <option value="cs">按补刀排序</option>
+                <option value="kills">按击杀排序</option>
+                <option value="equipment">按装备目录价值排序</option>
+                <option value="level">按等级排序</option>
+              </select>
+              <button
+                className="button small"
+                disabled={group === "pair"}
+                onClick={() => setAscending(!ascending)}
+              >
+                {ascending ? "升序 ↑" : "降序 ↓"}
+              </button>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={extra}
+                  onChange={(e) => setExtra(e.target.checked)}
+                />
+                金币明细 / 装备
+              </label>
+            </div>
+          </div>
+          <div className="data-grid-scroll">
+            <table className="data-grid">
+              <thead>
+                <tr>
+                  <th>选手 / 阵营</th>
+                  <th>英雄 / 分路</th>
+                  <th>等级</th>
+                  <th>K / D / A</th>
+                  <th>补刀</th>
+                  <th>累计经济</th>
+                  {extra && (
+                    <>
+                      <th>当前金币</th>
+                      <th>装备目录价值</th>
+                      <th>装备清单</th>
+                    </>
+                  )}
+                  <th>来源</th>
+                  <th>检查</th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.map((p) => (
+                  <tr
+                    key={p.id}
+                    data-selected={player?.id === p.id}
+                    data-side={p.team}
+                  >
+                    <td>
+                      <strong title={p.name}>{p.name}</strong>
+                      <small>
+                        {getTeam(state, p.team)?.tag} ·{" "}
+                        {p.team === "blue" ? "蓝方" : "红方"}
+                      </small>
+                    </td>
+                    <td>
+                      <div className="data-champion">
+                        <ChampionImage
+                          champions={champions}
+                          id={p.championId}
+                        />
+                        <span>
+                          {p.championName || "未选择"}
+                          <small>{p.role || "待分路"}</small>
+                        </span>
+                      </div>
+                    </td>
+                    <td>{p.level ?? "—"}</td>
+                    <td title={statsDetail(p)}>
+                      {available(p) ? playerKda(p) : "—"}
+                    </td>
+                    <td title={statsDetail(p)}>{available(p) ? p.cs : "—"}</td>
+                    <td
+                      title={`累计经济 · ${p.goldSource || "来源未提供"} · ${sampleTime(p.goldSampledAt)}`}
+                    >
+                      {p.gold == null ? "—" : p.gold.toLocaleString("zh-CN")}
+                    </td>
+                    {extra && (
+                      <>
+                        <td>
+                          {p.currentGold == null
+                            ? "—"
+                            : p.currentGold.toLocaleString("zh-CN")}
+                        </td>
+                        <td>{gold(equipmentValue(p))}</td>
+                        <td>
+                          <div className="data-grid-equipment">
+                            {p.items.slice(0, 7).map((id, i) => {
+                              const src =
+                                items[id]?.image ||
+                                dataDragonItemImage(version, id);
+                              return src ? (
+                                <img
+                                  key={`${id}-${i}`}
+                                  src={src}
+                                  alt={items[id]?.name || `装备 ${id}`}
+                                  title={items[id]?.name || `装备 ${id}`}
+                                  onError={(e) => {
+                                    e.currentTarget.style.visibility = "hidden";
+                                  }}
+                                />
+                              ) : (
+                                <span key={`${id}-${i}`}>—</span>
+                              );
+                            })}
+                            {!p.items.length && "—"}
+                          </div>
+                        </td>
+                      </>
+                    )}
+                    <td>
+                      <span className="data-source-tag">{statsSource(p)}</span>
+                    </td>
+                    <td>
+                      <button
+                        className="button small"
+                        aria-label={`检查 ${p.name}`}
+                        aria-pressed={player?.id === p.id}
+                        onClick={() => setInspectedId(p.id)}
+                      >
+                        检查
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {!players.length && (
+              <div className="domain-empty">
+                {state.players.length
+                  ? "没有匹配的选手，调整搜索或阵营范围。"
+                  : "等待本局名单。连接客户端后，在这里核对十人数据。"}
+              </div>
+            )}
+          </div>
+        </section>
+        <aside
+          className="data-inspector domain-scroll"
+          aria-label="选手数据检查"
+        >
+          {player ? (
+            <>
+              <div className="data-player-heading">
+                <ChampionImage champions={champions} id={player.championId} />
+                <div>
+                  <small>
+                    {getTeam(state, player.team)?.name} · {player.role}
+                  </small>
+                  <h2>{player.name}</h2>
+                  <p>{player.championName || "待选择英雄"}</p>
+                </div>
+              </div>
+              <dl className="domain-facts">
+                <div>
+                  <dt>统计来源</dt>
+                  <dd>{statsSource(player)}</dd>
+                </div>
+                <div>
+                  <dt>统计采样</dt>
+                  <dd>{sampleTime(player.statsSampledAt)}</dd>
+                </div>
+                <div>
+                  <dt>统计有效至</dt>
+                  <dd>{sampleTime(player.statsExpiresAt)}</dd>
+                </div>
+                <div>
+                  <dt>经济来源</dt>
+                  <dd>
+                    {state.mode === "demo"
+                      ? "演示"
+                      : player.goldSource === "ocr"
+                        ? "OCR"
+                        : player.goldSource === "api"
+                          ? "API"
+                          : "未提供"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>经济采样 / 到期</dt>
+                  <dd>
+                    {sampleTime(player.goldSampledAt)} /{" "}
+                    {sampleTime(player.goldExpiresAt)}
+                  </dd>
+                </div>
+              </dl>
+              <h3>装备与符文</h3>
+              <div className="data-inspector-items">
+                {Array.from({ length: 7 }, (_, i) => {
+                  const id = (player.itemSlots ?? player.items)[i],
+                    item = items[id],
+                    src = id
+                      ? item?.image || dataDragonItemImage(version, id)
+                      : undefined;
+                  return (
+                    <div
+                      key={i}
+                      title={item?.name || (id ? `装备 ${id}` : "空装备栏")}
+                    >
+                      {src ? (
+                        <img
+                          src={src}
+                          alt={item?.name || `装备 ${id}`}
+                          onError={(e) => {
+                            e.currentTarget.style.visibility = "hidden";
+                          }}
+                        />
+                      ) : (
+                        <span>—</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <p>{player.runes?.join(" / ") || "客户端未提供符文"}</p>
+              <small>
+                装备目录 {version || "未提供"} ·{" "}
+                {status === "unavailable" ? "素材暂不可用" : "静态购买价"}
+              </small>
+              <div className="data-focus-actions">
+                <strong>
+                  {sourceState.selectedPlayerId === player.id
+                    ? "已设为待播焦点"
+                    : "准备选手焦点"}
+                </strong>
+                <button
+                  className="button"
+                  onClick={() =>
+                    void act(
+                      {
+                        type: "select-player",
+                        playerId:
+                          sourceState.selectedPlayerId === player.id
+                            ? null
+                            : player.id,
+                      },
+                      sourceState.selectedPlayerId === player.id
+                        ? "已清除待播焦点"
+                        : `待播焦点：${player.name}`,
+                    )
+                  }
+                >
+                  {sourceState.selectedPlayerId === player.id
+                    ? "取消待播焦点"
+                    : "设为待播焦点"}
+                </button>
+                <button
+                  className="button small"
+                  disabled={!sourceState.selectedPlayerId}
+                  onClick={() =>
+                    void act(
+                      { type: "preview-scene", scene: "ranking" },
+                      "选手出装详情已设为预监",
+                    )
+                  }
+                >
+                  出装详情发送至预监
+                </button>
+                <button
+                  className="button small"
+                  disabled={!sourceState.selectedPlayerId}
+                  onClick={() =>
+                    void act(
+                      { type: "preview-scene", scene: "interview" },
+                      "采访名牌已设为预监",
+                    )
+                  }
+                >
+                  采访名牌发送至预监
+                </button>
+                <small>
+                  检查选手只改变本页；设置焦点和预监后，再由主导播 TAKE。
+                </small>
+              </div>
+            </>
+          ) : (
+            <div className="domain-empty">
+              <UserRound />
+              <p>本局名单到达后可检查采样、装备与符文。</p>
+            </div>
+          )}
+        </aside>
+      </div>
+      <div className="data-analysis domain-scroll" hidden={tab !== "overview"}>
+        <div className="data-team-comparison">
+          {(["blue", "red"] as const).map((side) => (
+            <section key={side} data-side={side}>
+              <h2>
+                {getTeam(state, side)?.name}
+                <small>{side === "blue" ? "蓝方" : "红方"}</small>
+              </h2>
+              <dl>
+                <div>
+                  <dt>团队累计经济</dt>
+                  <dd>{gold(state.stats[side].gold)}</dd>
+                </div>
+                <div>
+                  <dt>击杀</dt>
+                  <dd>{teamKills(side)}</dd>
+                </div>
+                <div>
+                  <dt>防御塔</dt>
+                  <dd>
+                    {state.mode === "live" &&
+                    state.stats[side].objectivesAvailable === false
+                      ? "—"
+                      : state.stats[side].towers}
+                  </dd>
+                </div>
+                <div>
+                  <dt>巨龙</dt>
+                  <dd>
+                    {state.mode === "live" &&
+                    state.stats[side].objectivesAvailable === false
+                      ? "—"
+                      : state.stats[side].dragons}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+          ))}
+        </div>
+        <div className="data-chart-heading">
+          <h2>
+            <Activity size={17} />
+            经济差曲线
+          </h2>
+          <button
+            className="button small"
+            onClick={() =>
+              void act(
+                { type: "preview-scene", scene: "economy" },
+                "经济曲线已设为预监",
+              )
+            }
+          >
+            发送至预监
+          </button>
+        </div>
+        <EconomyChart state={state} interactive />
+        <p className="data-table-foot">
+          {state.mode === "demo"
+            ? "当前为虚构演示数据。"
+            : state.economyFeed?.detail || "等待有效团队经济。"}{" "}
+          保留采样来源与断采缺口；正值为蓝方领先，负值为红方领先。
+        </p>
+      </div>
+      <div className="data-events domain-scroll" hidden={tab !== "events"}>
+        <header>
+          <h2>比赛事件</h2>
+          <span>{state.events.length} 条 · 最近在前</span>
+        </header>
+        {[...state.events].reverse().map((e) => (
+          <div className="data-event" key={e.id}>
+            <time>{time(e.time)}</time>
+            <span data-side={e.team}>
+              {e.team === "blue" ? "蓝方" : e.team === "red" ? "红方" : "比赛"}
+            </span>
+            <p>{e.text}</p>
+          </div>
+        ))}
+        {!state.events.length && (
+          <div className="domain-empty">尚无本局事件。对局开始后持续更新。</div>
+        )}
+      </div>
+      <div className="data-health domain-scroll" hidden={tab !== "health"}>
+        <div className="data-connection-list">
+          {Object.entries(sourceState.connections).map(([key, c]) => (
+            <div key={key}>
+              <strong>
+                {connectionNames[key as keyof typeof connectionNames]}
+              </strong>
+              <span data-status={c.status}>{connectionStatus[c.status]}</span>
+              <p>{c.detail || "尚无采集说明"}</p>
+              <small>更新 {sampleTime(c.updatedAt)}</small>
+            </div>
+          ))}
+        </div>
+        {result ? (
+          <div className="domain-note">
+            正在查看归档。请进入下一局后校准当前对局；历史记录不使用新采样覆盖。
+          </div>
+        ) : (
+          <EconomySourcePanel state={sourceState} notify={notify} />
+        )}
+      </div>
+      <footer className="domain-footer">
+        <span>
+          累计经济、当前金币、装备价分别展示；缺失为 —。
+          {result ? "导出本局归档" : "导出当前对局"}保留采样来源。
+        </span>
+        <div className="domain-actions">
+          <a className="button small" href={exportUrl("csv")} download>
+            <ArrowDownToLine size={14} />
+            CSV
+          </a>
+          <a className="button small" href={exportUrl("json")} download>
+            <ArrowDownToLine size={14} />
+            JSON
+          </a>
+        </div>
+      </footer>
+    </section>
+  );
 }
