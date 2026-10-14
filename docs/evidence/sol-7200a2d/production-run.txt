@@ -1,0 +1,26 @@
+
+> riftcast-director@0.7.0 verify:production
+> node scripts/verify-production-workflow.mjs
+
+{"error":"TimeoutError: locator.waitFor: Timeout 6000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.data-table-scroll tbody tr').first() to be visible\u001b[22m\n","errors":[],"body":"Rc\n导播台\nBP 阵容\n数据\n赛事\n输出\n收尾\n帮助\n0.7.0\nRIFTCAST\n隔离验证 · 待播标题\nAZR 1 : 0 EMB\n第 2 局\n演示数据\n主机导播\n已同步\n实时数据\n\n隔离验证 · 待播标题 · 第 1 局 · 虚构演示数据\n\n00:00\n演示经济 · 样本 未提供\n十人数据\n经济与团队\n比赛事件\n来源与校准\n十人对局数据\n10 人\n显示\n同分路对位\n全场排序\n蓝方\n红方\n按累计经济排序\n按补刀排序\n按击杀排序\n按装备目录价值排序\n按等级排序\n降序 ↓\n金币明细 / 装备\n选手 / 阵营\t英雄 / 分路\t等级\tK / D / A\t补刀\t累计经济\t来源\t检查\n\n山岚\nAZR · 蓝方\n\t\n—\n待选择\n上单\n\t1\t—\t0\t—\t演示\t检查\n\n赤霄\nEMB · 红方\n\t\n—\n待选择\n上单\n\t1\t—\t0\t—\t演示\t检查\n\n追风\nAZR · 蓝方\n\t\n—\n待选择\n打野\n\t1\t—\t0\t—\t演示\t检查\n\n临渊\nEMB · 红方\n\t\n—\n待选择\n打野\n\t1\t—\t0\t—\t演示\t检查\n\n星河\nAZR · 蓝方\n\t\n—\n待选择\n中单\n\t1\t—\t0\t—\t演示\t检查\n\n长夜\nEMB · 红方\n\t\n—\n待选择\n中单\n\t1\t—\t0\t—\t演示\t检查\n\n流光\nAZR · 蓝方\n\t\n—\n待选择\n下路\n\t1\t—\t0\t—\t演示\t检查\n\n烬羽\nEMB · 红方\n\t\n—\n待选择\n下路\n\t1\t—\t0\t—\t演示\t检查\n\n青禾\nAZR · 蓝方\n\t\n—\n待选择\n辅助\n\t1\t—\t0\t—\t演示\t检查\n\n望舒\nEMB · 红方\n\t\n—\n待选择\n辅助\n\t1\t—\t0\t—\t演示\t检查\n—\n苍穹竞技 · 上单\n山岚\n\n待"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 6000ms exceeded.
+Call log:
+[2m  - waiting for locator('.data-table-scroll tbody tr').first() to be visible[22m
+
+    at /workspace/lolob/scripts/verify-production-workflow.mjs:257:61 {
+  log: [
+    "  - waiting for locator('.data-table-scroll tbody tr').first() to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

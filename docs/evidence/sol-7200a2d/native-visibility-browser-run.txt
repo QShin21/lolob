@@ -1,0 +1,18 @@
+9:37:34 AM [vite] (client) Re-optimizing dependencies because vite config has changed
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('dialog').getByRole('button', { name: '取消', exact: true })[22m
+
+    at closeEditor (/workspace/lolob/scripts/verify-native-preview-visibility.mjs:106:112)
+    at /workspace/lolob/scripts/verify-native-preview-visibility.mjs:165:9 {
+  log: [
+    "  - waiting for getByRole('dialog').getByRole('button', { name: '取消', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

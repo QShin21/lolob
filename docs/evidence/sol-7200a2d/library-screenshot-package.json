@@ -1,0 +1,13 @@
+{
+  "library_file_id": "libfile_28189f9c68dc81919cfc3155f4e8b4cf",
+  "file_id": "file_00000000ccd081f5ac472ca07239278e",
+  "file_name": "lolob-7200a2d-17张合成界面截图.zip",
+  "path": "/lolob-7200a2d-17张合成界面截图.zip",
+  "version": 0,
+  "local_path": "/workspace/lolob/verification-output/lolob-7200a2d-17张合成界面截图.zip",
+  "xattr_exit_code": 0,
+  "source": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "images": 17,
+  "origin": "Astra implementation self-review; not independent Sol acceptance",
+  "sha256": "fd07cb233df98b82c9545617624b637acc82afe1d4e3aa94c161116b26191391"
+}

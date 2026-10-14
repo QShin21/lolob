@@ -1,0 +1,3535 @@
+{
+  "source": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "environment": "Linux Chromium; real isolated HTTP/WS/React; synthetic data, faults and output responses; no physical OBS/devices",
+  "work": "/tmp/lolob-sol-workspaces-nhSZ9w",
+  "outcomes": [
+    {
+      "id": "visual-data-dark-1366x736",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 340.25,
+          "bottom": 98,
+          "width": 256.25,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "right": 1366,
+          "bottom": 736,
+          "width": 1302,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "十人数据",
+            "rect": {
+              "x": 999.9375,
+              "y": 75.5,
+              "right": 1073.953125,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "经济与团队",
+            "rect": {
+              "x": 1076.953125,
+              "y": 75.5,
+              "right": 1163.96875,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛事件",
+            "rect": {
+              "x": 1166.96875,
+              "y": 75.5,
+              "right": 1240.984375,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "来源与校准",
+            "rect": {
+              "x": 1243.984375,
+              "y": 75.5,
+              "right": 1331,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-manage-dark-1366x736",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 286.859375,
+          "bottom": 98,
+          "width": 202.859375,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "right": 1366,
+          "bottom": 736,
+          "width": 1302,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "赛事赛程 · 3",
+            "rect": {
+              "x": 84,
+              "y": 131,
+              "right": 184.578125,
+              "bottom": 167,
+              "width": 100.578125,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "战队与选手 · 4",
+            "rect": {
+              "x": 187.578125,
+              "y": 131,
+              "right": 300.625,
+              "bottom": 167,
+              "width": 113.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "图片素材 · 0",
+            "rect": {
+              "x": 303.625,
+              "y": 131,
+              "right": 403.671875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛记录 · 0",
+            "rect": {
+              "x": 406.671875,
+              "y": 131,
+              "right": 506.71875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-help-dark-1366x736",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 240.015625,
+          "bottom": 98,
+          "width": 156.015625,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "right": 1366,
+          "bottom": 736,
+          "width": 1302,
+          "height": 73
+        },
+        "tabs": []
+      }
+    },
+    {
+      "id": "visual-wrap-dark-1366x736",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 301.578125,
+          "bottom": 98,
+          "width": 217.578125,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "right": 1366,
+          "bottom": 736,
+          "width": 1302,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "胜方与终局",
+            "rect": {
+              "x": 97,
+              "y": 210.5,
+              "right": 184.015625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "报告核对",
+            "rect": {
+              "x": 187.015625,
+              "y": 210.5,
+              "right": 261.03125,
+              "bottom": 246.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "录像与归档",
+            "rect": {
+              "x": 264.03125,
+              "y": 210.5,
+              "right": 351.046875,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "重赛与修订",
+            "rect": {
+              "x": 354.046875,
+              "y": 210.5,
+              "right": 441.0625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-data-dark-1440x900",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "document": [
+          1440,
+          900
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 340.25,
+          "bottom": 98,
+          "width": 256.25,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 827,
+          "right": 1440,
+          "bottom": 900,
+          "width": 1376,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "十人数据",
+            "rect": {
+              "x": 1073.9375,
+              "y": 75.5,
+              "right": 1147.953125,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "经济与团队",
+            "rect": {
+              "x": 1150.953125,
+              "y": 75.5,
+              "right": 1237.96875,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛事件",
+            "rect": {
+              "x": 1240.96875,
+              "y": 75.5,
+              "right": 1314.984375,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "来源与校准",
+            "rect": {
+              "x": 1317.984375,
+              "y": 75.5,
+              "right": 1405,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-manage-dark-1440x900",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "document": [
+          1440,
+          900
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 286.859375,
+          "bottom": 98,
+          "width": 202.859375,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 827,
+          "right": 1440,
+          "bottom": 900,
+          "width": 1376,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "赛事赛程 · 3",
+            "rect": {
+              "x": 84,
+              "y": 131,
+              "right": 184.578125,
+              "bottom": 167,
+              "width": 100.578125,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "战队与选手 · 4",
+            "rect": {
+              "x": 187.578125,
+              "y": 131,
+              "right": 300.625,
+              "bottom": 167,
+              "width": 113.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "图片素材 · 0",
+            "rect": {
+              "x": 303.625,
+              "y": 131,
+              "right": 403.671875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛记录 · 0",
+            "rect": {
+              "x": 406.671875,
+              "y": 131,
+              "right": 506.71875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-help-dark-1440x900",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "document": [
+          1440,
+          900
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 240.015625,
+          "bottom": 98,
+          "width": 156.015625,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 827,
+          "right": 1440,
+          "bottom": 900,
+          "width": 1376,
+          "height": 73
+        },
+        "tabs": []
+      }
+    },
+    {
+      "id": "visual-wrap-dark-1440x900",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "document": [
+          1440,
+          900
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 301.578125,
+          "bottom": 98,
+          "width": 217.578125,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 827,
+          "right": 1440,
+          "bottom": 900,
+          "width": 1376,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "胜方与终局",
+            "rect": {
+              "x": 97,
+              "y": 210.5,
+              "right": 184.015625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "报告核对",
+            "rect": {
+              "x": 187.015625,
+              "y": 210.5,
+              "right": 261.03125,
+              "bottom": 246.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "录像与归档",
+            "rect": {
+              "x": 264.03125,
+              "y": 210.5,
+              "right": 351.046875,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "重赛与修订",
+            "rect": {
+              "x": 354.046875,
+              "y": 210.5,
+              "right": 441.0625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-data-dark-1920x1080",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "document": [
+          1920,
+          1080
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 340.25,
+          "bottom": 98,
+          "width": 256.25,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 1007,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1856,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "十人数据",
+            "rect": {
+              "x": 1553.9375,
+              "y": 75.5,
+              "right": 1627.953125,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "经济与团队",
+            "rect": {
+              "x": 1630.953125,
+              "y": 75.5,
+              "right": 1717.96875,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛事件",
+            "rect": {
+              "x": 1720.96875,
+              "y": 75.5,
+              "right": 1794.984375,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "来源与校准",
+            "rect": {
+              "x": 1797.984375,
+              "y": 75.5,
+              "right": 1885,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-manage-dark-1920x1080",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "document": [
+          1920,
+          1080
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 286.859375,
+          "bottom": 98,
+          "width": 202.859375,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 1007,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1856,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "赛事赛程 · 3",
+            "rect": {
+              "x": 84,
+              "y": 131,
+              "right": 184.578125,
+              "bottom": 167,
+              "width": 100.578125,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "战队与选手 · 4",
+            "rect": {
+              "x": 187.578125,
+              "y": 131,
+              "right": 300.625,
+              "bottom": 167,
+              "width": 113.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "图片素材 · 0",
+            "rect": {
+              "x": 303.625,
+              "y": 131,
+              "right": 403.671875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛记录 · 0",
+            "rect": {
+              "x": 406.671875,
+              "y": 131,
+              "right": 506.71875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-help-dark-1920x1080",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "document": [
+          1920,
+          1080
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 240.015625,
+          "bottom": 98,
+          "width": 156.015625,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 1007,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1856,
+          "height": 73
+        },
+        "tabs": []
+      }
+    },
+    {
+      "id": "visual-wrap-dark-1920x1080",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "document": [
+          1920,
+          1080
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 301.578125,
+          "bottom": 98,
+          "width": 217.578125,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 1007,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1856,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "胜方与终局",
+            "rect": {
+              "x": 97,
+              "y": 210.5,
+              "right": 184.015625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "报告核对",
+            "rect": {
+              "x": 187.015625,
+              "y": 210.5,
+              "right": 261.03125,
+              "bottom": 246.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "录像与归档",
+            "rect": {
+              "x": 264.03125,
+              "y": 210.5,
+              "right": 351.046875,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "重赛与修订",
+            "rect": {
+              "x": 354.046875,
+              "y": 210.5,
+              "right": 441.0625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-data-light-1366x736",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 340.25,
+          "bottom": 98,
+          "width": 256.25,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "right": 1366,
+          "bottom": 736,
+          "width": 1302,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "十人数据",
+            "rect": {
+              "x": 999.9375,
+              "y": 75.5,
+              "right": 1073.953125,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "经济与团队",
+            "rect": {
+              "x": 1076.953125,
+              "y": 75.5,
+              "right": 1163.96875,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛事件",
+            "rect": {
+              "x": 1166.96875,
+              "y": 75.5,
+              "right": 1240.984375,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "来源与校准",
+            "rect": {
+              "x": 1243.984375,
+              "y": 75.5,
+              "right": 1331,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-manage-light-1366x736",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 286.859375,
+          "bottom": 98,
+          "width": 202.859375,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "right": 1366,
+          "bottom": 736,
+          "width": 1302,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "赛事赛程 · 3",
+            "rect": {
+              "x": 84,
+              "y": 131,
+              "right": 184.578125,
+              "bottom": 167,
+              "width": 100.578125,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "战队与选手 · 4",
+            "rect": {
+              "x": 187.578125,
+              "y": 131,
+              "right": 300.625,
+              "bottom": 167,
+              "width": 113.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "图片素材 · 0",
+            "rect": {
+              "x": 303.625,
+              "y": 131,
+              "right": 403.671875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛记录 · 0",
+            "rect": {
+              "x": 406.671875,
+              "y": 131,
+              "right": 506.71875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-help-light-1366x736",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 240.015625,
+          "bottom": 98,
+          "width": 156.015625,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "right": 1366,
+          "bottom": 736,
+          "width": 1302,
+          "height": 73
+        },
+        "tabs": []
+      }
+    },
+    {
+      "id": "visual-wrap-light-1366x736",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "document": [
+          1366,
+          736
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 301.578125,
+          "bottom": 98,
+          "width": 217.578125,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 663,
+          "right": 1366,
+          "bottom": 736,
+          "width": 1302,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "胜方与终局",
+            "rect": {
+              "x": 97,
+              "y": 210.5,
+              "right": 184.015625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "报告核对",
+            "rect": {
+              "x": 187.015625,
+              "y": 210.5,
+              "right": 261.03125,
+              "bottom": 246.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "录像与归档",
+            "rect": {
+              "x": 264.03125,
+              "y": 210.5,
+              "right": 351.046875,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "重赛与修订",
+            "rect": {
+              "x": 354.046875,
+              "y": 210.5,
+              "right": 441.0625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-data-light-1440x900",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "document": [
+          1440,
+          900
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 340.25,
+          "bottom": 98,
+          "width": 256.25,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 827,
+          "right": 1440,
+          "bottom": 900,
+          "width": 1376,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "十人数据",
+            "rect": {
+              "x": 1073.9375,
+              "y": 75.5,
+              "right": 1147.953125,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "经济与团队",
+            "rect": {
+              "x": 1150.953125,
+              "y": 75.5,
+              "right": 1237.96875,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛事件",
+            "rect": {
+              "x": 1240.96875,
+              "y": 75.5,
+              "right": 1314.984375,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "来源与校准",
+            "rect": {
+              "x": 1317.984375,
+              "y": 75.5,
+              "right": 1405,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-manage-light-1440x900",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "document": [
+          1440,
+          900
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 286.859375,
+          "bottom": 98,
+          "width": 202.859375,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 827,
+          "right": 1440,
+          "bottom": 900,
+          "width": 1376,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "赛事赛程 · 3",
+            "rect": {
+              "x": 84,
+              "y": 131,
+              "right": 184.578125,
+              "bottom": 167,
+              "width": 100.578125,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "战队与选手 · 4",
+            "rect": {
+              "x": 187.578125,
+              "y": 131,
+              "right": 300.625,
+              "bottom": 167,
+              "width": 113.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "图片素材 · 0",
+            "rect": {
+              "x": 303.625,
+              "y": 131,
+              "right": 403.671875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛记录 · 0",
+            "rect": {
+              "x": 406.671875,
+              "y": 131,
+              "right": 506.71875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-help-light-1440x900",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "document": [
+          1440,
+          900
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 240.015625,
+          "bottom": 98,
+          "width": 156.015625,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 827,
+          "right": 1440,
+          "bottom": 900,
+          "width": 1376,
+          "height": 73
+        },
+        "tabs": []
+      }
+    },
+    {
+      "id": "visual-wrap-light-1440x900",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "document": [
+          1440,
+          900
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 301.578125,
+          "bottom": 98,
+          "width": 217.578125,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 827,
+          "right": 1440,
+          "bottom": 900,
+          "width": 1376,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "胜方与终局",
+            "rect": {
+              "x": 97,
+              "y": 210.5,
+              "right": 184.015625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "报告核对",
+            "rect": {
+              "x": 187.015625,
+              "y": 210.5,
+              "right": 261.03125,
+              "bottom": 246.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "录像与归档",
+            "rect": {
+              "x": 264.03125,
+              "y": 210.5,
+              "right": 351.046875,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "重赛与修订",
+            "rect": {
+              "x": 354.046875,
+              "y": 210.5,
+              "right": 441.0625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-data-light-1920x1080",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "document": [
+          1920,
+          1080
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 340.25,
+          "bottom": 98,
+          "width": 256.25,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 1007,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1856,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "十人数据",
+            "rect": {
+              "x": 1553.9375,
+              "y": 75.5,
+              "right": 1627.953125,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "经济与团队",
+            "rect": {
+              "x": 1630.953125,
+              "y": 75.5,
+              "right": 1717.96875,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛事件",
+            "rect": {
+              "x": 1720.96875,
+              "y": 75.5,
+              "right": 1794.984375,
+              "bottom": 111.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "来源与校准",
+            "rect": {
+              "x": 1797.984375,
+              "y": 75.5,
+              "right": 1885,
+              "bottom": 111.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-manage-light-1920x1080",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "document": [
+          1920,
+          1080
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 286.859375,
+          "bottom": 98,
+          "width": 202.859375,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 1007,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1856,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "赛事赛程 · 3",
+            "rect": {
+              "x": 84,
+              "y": 131,
+              "right": 184.578125,
+              "bottom": 167,
+              "width": 100.578125,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "战队与选手 · 4",
+            "rect": {
+              "x": 187.578125,
+              "y": 131,
+              "right": 300.625,
+              "bottom": 167,
+              "width": 113.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "图片素材 · 0",
+            "rect": {
+              "x": 303.625,
+              "y": 131,
+              "right": 403.671875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "比赛记录 · 0",
+            "rect": {
+              "x": 406.671875,
+              "y": 131,
+              "right": 506.71875,
+              "bottom": 167,
+              "width": 100.046875,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "visual-help-light-1920x1080",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "document": [
+          1920,
+          1080
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 240.015625,
+          "bottom": 98,
+          "width": 156.015625,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 1007,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1856,
+          "height": 73
+        },
+        "tabs": []
+      }
+    },
+    {
+      "id": "visual-wrap-light-1920x1080",
+      "status": "pass",
+      "detail": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "document": [
+          1920,
+          1080
+        ],
+        "heading": {
+          "x": 84,
+          "y": 68,
+          "right": 301.578125,
+          "bottom": 98,
+          "width": 217.578125,
+          "height": 30
+        },
+        "footer": {
+          "x": 64,
+          "y": 1007,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1856,
+          "height": 73
+        },
+        "tabs": [
+          {
+            "label": "胜方与终局",
+            "rect": {
+              "x": 97,
+              "y": 210.5,
+              "right": 184.015625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "报告核对",
+            "rect": {
+              "x": 187.015625,
+              "y": 210.5,
+              "right": 261.03125,
+              "bottom": 246.5,
+              "width": 74.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "录像与归档",
+            "rect": {
+              "x": 264.03125,
+              "y": 210.5,
+              "right": 351.046875,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          },
+          {
+            "label": "重赛与修订",
+            "rect": {
+              "x": 354.046875,
+              "y": 210.5,
+              "right": 441.0625,
+              "bottom": 246.5,
+              "width": 87.015625,
+              "height": 36
+            },
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "navigation-theme-never-publishes",
+      "status": "pass"
+    },
+    {
+      "id": "data-ten-five-pairs-search-sorting",
+      "status": "pass"
+    },
+    {
+      "id": "data-optional-columns-local-inspection",
+      "status": "pass"
+    },
+    {
+      "id": "data-focus-preview-cancel-save-boundary",
+      "status": "pass"
+    },
+    {
+      "id": "data-selection-state-survives-page-change",
+      "status": "pass"
+    },
+    {
+      "id": "data-export-current-json-csv",
+      "status": "pass"
+    },
+    {
+      "id": "team-cancel-preserves-server-and-identities",
+      "status": "pass"
+    },
+    {
+      "id": "team-draft-survives-object-page-theme",
+      "status": "pass"
+    },
+    {
+      "id": "team-inline-validation-retains-input",
+      "status": "pass"
+    },
+    {
+      "id": "team-cas-conflict-explicit-rebase",
+      "status": "pass"
+    },
+    {
+      "id": "team-server-failure-and-one-submit-retry",
+      "status": "pass"
+    },
+    {
+      "id": "team-transport-disconnect-recovery-retains-draft",
+      "status": "pass"
+    },
+    {
+      "id": "team-referenced-delete-is-blocked",
+      "status": "pass"
+    },
+    {
+      "id": "new-team-cancel-does-not-create",
+      "status": "pass"
+    },
+    {
+      "id": "schedule-draft-cancel-save-and-load-safety",
+      "status": "pass"
+    },
+    {
+      "id": "schedule-search-empty-and-new-cancel",
+      "status": "pass"
+    },
+    {
+      "id": "assets-empty-state",
+      "status": "pass"
+    },
+    {
+      "id": "assets-four-formats-real-upload-progress",
+      "status": "pass"
+    },
+    {
+      "id": "assets-invalid-size-content-and-retry",
+      "status": "pass"
+    },
+    {
+      "id": "asset-search-category-crop-and-reference-boundary",
+      "status": "pass"
+    },
+    {
+      "id": "records-empty-title-survives-category-change",
+      "status": "pass"
+    },
+    {
+      "id": "records-failure-input-and-double-submit",
+      "status": "fail",
+      "error": "Expected values to be strictly equal:\n\n3 !== 2\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n3 !== 2\n\n    at file:///workspace/lolob/docs/evidence/sol-7200a2d/workspaces-browser.mjs:106:1086\n    at async check (file:///workspace/lolob/docs/evidence/sol-7200a2d/workspaces-browser.mjs:59:53)\n    at async file:///workspace/lolob/docs/evidence/sol-7200a2d/workspaces-browser.mjs:106:2"
+    },
+    {
+      "id": "records-real-pointer-double-click",
+      "status": "pass"
+    },
+    {
+      "id": "records-download-contract",
+      "status": "pass"
+    },
+    {
+      "id": "help-empty-search-state-persists-without-actions",
+      "status": "pass"
+    },
+    {
+      "id": "help-shortcuts-read-actual-configuration",
+      "status": "pass"
+    },
+    {
+      "id": "help-real-task-navigation-without-side-effects",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-empty-result-and-reason-draft-persistence",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-finalize-failure-and-double-submit",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-winner-single-score-and-report-preview-boundary",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-frozen-export-and-data-identity",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-correction-reason-hold-and-audit",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-next-game-preserves-archive-and-pgm",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-remake-hold-keeps-attempt-audit",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-new-series-navigation-only",
+      "status": "pass"
+    },
+    {
+      "id": "schedule-held-load-is-explicit-pending",
+      "status": "pass"
+    },
+    {
+      "id": "long-content-stays-within-viewport",
+      "status": "pass"
+    },
+    {
+      "id": "wrap-output-facts-stops-and-partial-recovery-synthetic",
+      "status": "pass"
+    },
+    {
+      "id": "empty-live-data-report-and-source-errors",
+      "status": "pass"
+    },
+    {
+      "id": "live-missing-statistics-stay-unknown",
+      "status": "pass"
+    },
+    {
+      "id": "partial-terminal-reason-required-and-survives-page",
+      "status": "pass"
+    },
+    {
+      "id": "readonly-management-and-wrap-actions-disabled",
+      "status": "pass"
+    },
+    {
+      "id": "no-take-and-no-physical-device-write",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "service": "demo",
+      "path": "/api/control/seat"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "select-player"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "preview-scene"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "select-player"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "set-teams"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "set-teams"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "set-teams"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "set-schedule"
+    },
+    {
+      "service": "demo",
+      "path": "/api/assets"
+    },
+    {
+      "service": "demo",
+      "path": "/api/assets"
+    },
+    {
+      "service": "demo",
+      "path": "/api/assets"
+    },
+    {
+      "service": "demo",
+      "path": "/api/assets"
+    },
+    {
+      "service": "demo",
+      "path": "/api/assets"
+    },
+    {
+      "service": "demo",
+      "path": "/api/assets"
+    },
+    {
+      "service": "demo",
+      "path": "/api/assets"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "save-recording"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "save-recording"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "save-recording"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "save-recording"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "finalize-game"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "finalize-game"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "finalize-game"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "correct-result"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "next-game"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "production"
+    },
+    {
+      "service": "demo",
+      "path": "/api/action",
+      "type": "load-match"
+    },
+    {
+      "service": "demo",
+      "path": "/api/obs/engine/output"
+    },
+    {
+      "service": "demo",
+      "syntheticOutput": "stop-stream"
+    },
+    {
+      "service": "demo",
+      "path": "/api/obs/engine/output"
+    },
+    {
+      "service": "demo",
+      "syntheticOutput": "stop-virtual-camera"
+    },
+    {
+      "service": "demo",
+      "path": "/api/obs/engine/output"
+    },
+    {
+      "service": "demo",
+      "syntheticOutput": "stop-record"
+    },
+    {
+      "service": "empty",
+      "path": "/api/control/seat"
+    },
+    {
+      "service": "partial",
+      "path": "/api/control/seat"
+    },
+    {
+      "service": "partial",
+      "path": "/api/action",
+      "type": "finalize-game"
+    },
+    {
+      "service": "partial",
+      "path": "/api/action",
+      "type": "finalize-game"
+    },
+    {
+      "service": "partial",
+      "path": "/api/action",
+      "type": "production"
+    }
+  ],
+  "geometry": [
+    {
+      "id": "data-dark-1366x736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "document": [
+        1366,
+        736
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 340.25,
+        "bottom": 98,
+        "width": 256.25,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 663,
+        "right": 1366,
+        "bottom": 736,
+        "width": 1302,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "十人数据",
+          "rect": {
+            "x": 999.9375,
+            "y": 75.5,
+            "right": 1073.953125,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "经济与团队",
+          "rect": {
+            "x": 1076.953125,
+            "y": 75.5,
+            "right": 1163.96875,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛事件",
+          "rect": {
+            "x": 1166.96875,
+            "y": 75.5,
+            "right": 1240.984375,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "来源与校准",
+          "rect": {
+            "x": 1243.984375,
+            "y": 75.5,
+            "right": 1331,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "manage-dark-1366x736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "document": [
+        1366,
+        736
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 286.859375,
+        "bottom": 98,
+        "width": 202.859375,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 663,
+        "right": 1366,
+        "bottom": 736,
+        "width": 1302,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "赛事赛程 · 3",
+          "rect": {
+            "x": 84,
+            "y": 131,
+            "right": 184.578125,
+            "bottom": 167,
+            "width": 100.578125,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "战队与选手 · 4",
+          "rect": {
+            "x": 187.578125,
+            "y": 131,
+            "right": 300.625,
+            "bottom": 167,
+            "width": 113.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "图片素材 · 0",
+          "rect": {
+            "x": 303.625,
+            "y": 131,
+            "right": 403.671875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛记录 · 0",
+          "rect": {
+            "x": 406.671875,
+            "y": 131,
+            "right": 506.71875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "help-dark-1366x736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "document": [
+        1366,
+        736
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 240.015625,
+        "bottom": 98,
+        "width": 156.015625,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 663,
+        "right": 1366,
+        "bottom": 736,
+        "width": 1302,
+        "height": 73
+      },
+      "tabs": []
+    },
+    {
+      "id": "wrap-dark-1366x736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "document": [
+        1366,
+        736
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 301.578125,
+        "bottom": 98,
+        "width": 217.578125,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 663,
+        "right": 1366,
+        "bottom": 736,
+        "width": 1302,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "胜方与终局",
+          "rect": {
+            "x": 97,
+            "y": 210.5,
+            "right": 184.015625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "报告核对",
+          "rect": {
+            "x": 187.015625,
+            "y": 210.5,
+            "right": 261.03125,
+            "bottom": 246.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "录像与归档",
+          "rect": {
+            "x": 264.03125,
+            "y": 210.5,
+            "right": 351.046875,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "重赛与修订",
+          "rect": {
+            "x": 354.046875,
+            "y": 210.5,
+            "right": 441.0625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "data-dark-1440x900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        900
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 340.25,
+        "bottom": 98,
+        "width": 256.25,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 827,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1376,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "十人数据",
+          "rect": {
+            "x": 1073.9375,
+            "y": 75.5,
+            "right": 1147.953125,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "经济与团队",
+          "rect": {
+            "x": 1150.953125,
+            "y": 75.5,
+            "right": 1237.96875,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛事件",
+          "rect": {
+            "x": 1240.96875,
+            "y": 75.5,
+            "right": 1314.984375,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "来源与校准",
+          "rect": {
+            "x": 1317.984375,
+            "y": 75.5,
+            "right": 1405,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "manage-dark-1440x900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        900
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 286.859375,
+        "bottom": 98,
+        "width": 202.859375,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 827,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1376,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "赛事赛程 · 3",
+          "rect": {
+            "x": 84,
+            "y": 131,
+            "right": 184.578125,
+            "bottom": 167,
+            "width": 100.578125,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "战队与选手 · 4",
+          "rect": {
+            "x": 187.578125,
+            "y": 131,
+            "right": 300.625,
+            "bottom": 167,
+            "width": 113.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "图片素材 · 0",
+          "rect": {
+            "x": 303.625,
+            "y": 131,
+            "right": 403.671875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛记录 · 0",
+          "rect": {
+            "x": 406.671875,
+            "y": 131,
+            "right": 506.71875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "help-dark-1440x900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        900
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 240.015625,
+        "bottom": 98,
+        "width": 156.015625,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 827,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1376,
+        "height": 73
+      },
+      "tabs": []
+    },
+    {
+      "id": "wrap-dark-1440x900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        900
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 301.578125,
+        "bottom": 98,
+        "width": 217.578125,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 827,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1376,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "胜方与终局",
+          "rect": {
+            "x": 97,
+            "y": 210.5,
+            "right": 184.015625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "报告核对",
+          "rect": {
+            "x": 187.015625,
+            "y": 210.5,
+            "right": 261.03125,
+            "bottom": 246.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "录像与归档",
+          "rect": {
+            "x": 264.03125,
+            "y": 210.5,
+            "right": 351.046875,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "重赛与修订",
+          "rect": {
+            "x": 354.046875,
+            "y": 210.5,
+            "right": 441.0625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "data-dark-1920x1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "document": [
+        1920,
+        1080
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 340.25,
+        "bottom": 98,
+        "width": 256.25,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 1007,
+        "right": 1920,
+        "bottom": 1080,
+        "width": 1856,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "十人数据",
+          "rect": {
+            "x": 1553.9375,
+            "y": 75.5,
+            "right": 1627.953125,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "经济与团队",
+          "rect": {
+            "x": 1630.953125,
+            "y": 75.5,
+            "right": 1717.96875,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛事件",
+          "rect": {
+            "x": 1720.96875,
+            "y": 75.5,
+            "right": 1794.984375,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "来源与校准",
+          "rect": {
+            "x": 1797.984375,
+            "y": 75.5,
+            "right": 1885,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "manage-dark-1920x1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "document": [
+        1920,
+        1080
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 286.859375,
+        "bottom": 98,
+        "width": 202.859375,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 1007,
+        "right": 1920,
+        "bottom": 1080,
+        "width": 1856,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "赛事赛程 · 3",
+          "rect": {
+            "x": 84,
+            "y": 131,
+            "right": 184.578125,
+            "bottom": 167,
+            "width": 100.578125,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "战队与选手 · 4",
+          "rect": {
+            "x": 187.578125,
+            "y": 131,
+            "right": 300.625,
+            "bottom": 167,
+            "width": 113.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "图片素材 · 0",
+          "rect": {
+            "x": 303.625,
+            "y": 131,
+            "right": 403.671875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛记录 · 0",
+          "rect": {
+            "x": 406.671875,
+            "y": 131,
+            "right": 506.71875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "help-dark-1920x1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "document": [
+        1920,
+        1080
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 240.015625,
+        "bottom": 98,
+        "width": 156.015625,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 1007,
+        "right": 1920,
+        "bottom": 1080,
+        "width": 1856,
+        "height": 73
+      },
+      "tabs": []
+    },
+    {
+      "id": "wrap-dark-1920x1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "document": [
+        1920,
+        1080
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 301.578125,
+        "bottom": 98,
+        "width": 217.578125,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 1007,
+        "right": 1920,
+        "bottom": 1080,
+        "width": 1856,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "胜方与终局",
+          "rect": {
+            "x": 97,
+            "y": 210.5,
+            "right": 184.015625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "报告核对",
+          "rect": {
+            "x": 187.015625,
+            "y": 210.5,
+            "right": 261.03125,
+            "bottom": 246.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "录像与归档",
+          "rect": {
+            "x": 264.03125,
+            "y": 210.5,
+            "right": 351.046875,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "重赛与修订",
+          "rect": {
+            "x": 354.046875,
+            "y": 210.5,
+            "right": 441.0625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "data-light-1366x736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "document": [
+        1366,
+        736
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 340.25,
+        "bottom": 98,
+        "width": 256.25,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 663,
+        "right": 1366,
+        "bottom": 736,
+        "width": 1302,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "十人数据",
+          "rect": {
+            "x": 999.9375,
+            "y": 75.5,
+            "right": 1073.953125,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "经济与团队",
+          "rect": {
+            "x": 1076.953125,
+            "y": 75.5,
+            "right": 1163.96875,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛事件",
+          "rect": {
+            "x": 1166.96875,
+            "y": 75.5,
+            "right": 1240.984375,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "来源与校准",
+          "rect": {
+            "x": 1243.984375,
+            "y": 75.5,
+            "right": 1331,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "manage-light-1366x736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "document": [
+        1366,
+        736
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 286.859375,
+        "bottom": 98,
+        "width": 202.859375,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 663,
+        "right": 1366,
+        "bottom": 736,
+        "width": 1302,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "赛事赛程 · 3",
+          "rect": {
+            "x": 84,
+            "y": 131,
+            "right": 184.578125,
+            "bottom": 167,
+            "width": 100.578125,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "战队与选手 · 4",
+          "rect": {
+            "x": 187.578125,
+            "y": 131,
+            "right": 300.625,
+            "bottom": 167,
+            "width": 113.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "图片素材 · 0",
+          "rect": {
+            "x": 303.625,
+            "y": 131,
+            "right": 403.671875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛记录 · 0",
+          "rect": {
+            "x": 406.671875,
+            "y": 131,
+            "right": 506.71875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "help-light-1366x736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "document": [
+        1366,
+        736
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 240.015625,
+        "bottom": 98,
+        "width": 156.015625,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 663,
+        "right": 1366,
+        "bottom": 736,
+        "width": 1302,
+        "height": 73
+      },
+      "tabs": []
+    },
+    {
+      "id": "wrap-light-1366x736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "document": [
+        1366,
+        736
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 301.578125,
+        "bottom": 98,
+        "width": 217.578125,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 663,
+        "right": 1366,
+        "bottom": 736,
+        "width": 1302,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "胜方与终局",
+          "rect": {
+            "x": 97,
+            "y": 210.5,
+            "right": 184.015625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "报告核对",
+          "rect": {
+            "x": 187.015625,
+            "y": 210.5,
+            "right": 261.03125,
+            "bottom": 246.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "录像与归档",
+          "rect": {
+            "x": 264.03125,
+            "y": 210.5,
+            "right": 351.046875,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "重赛与修订",
+          "rect": {
+            "x": 354.046875,
+            "y": 210.5,
+            "right": 441.0625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "data-light-1440x900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        900
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 340.25,
+        "bottom": 98,
+        "width": 256.25,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 827,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1376,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "十人数据",
+          "rect": {
+            "x": 1073.9375,
+            "y": 75.5,
+            "right": 1147.953125,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "经济与团队",
+          "rect": {
+            "x": 1150.953125,
+            "y": 75.5,
+            "right": 1237.96875,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛事件",
+          "rect": {
+            "x": 1240.96875,
+            "y": 75.5,
+            "right": 1314.984375,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "来源与校准",
+          "rect": {
+            "x": 1317.984375,
+            "y": 75.5,
+            "right": 1405,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "manage-light-1440x900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        900
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 286.859375,
+        "bottom": 98,
+        "width": 202.859375,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 827,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1376,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "赛事赛程 · 3",
+          "rect": {
+            "x": 84,
+            "y": 131,
+            "right": 184.578125,
+            "bottom": 167,
+            "width": 100.578125,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "战队与选手 · 4",
+          "rect": {
+            "x": 187.578125,
+            "y": 131,
+            "right": 300.625,
+            "bottom": 167,
+            "width": 113.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "图片素材 · 0",
+          "rect": {
+            "x": 303.625,
+            "y": 131,
+            "right": 403.671875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛记录 · 0",
+          "rect": {
+            "x": 406.671875,
+            "y": 131,
+            "right": 506.71875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "help-light-1440x900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        900
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 240.015625,
+        "bottom": 98,
+        "width": 156.015625,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 827,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1376,
+        "height": 73
+      },
+      "tabs": []
+    },
+    {
+      "id": "wrap-light-1440x900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        900
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 301.578125,
+        "bottom": 98,
+        "width": 217.578125,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 827,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1376,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "胜方与终局",
+          "rect": {
+            "x": 97,
+            "y": 210.5,
+            "right": 184.015625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "报告核对",
+          "rect": {
+            "x": 187.015625,
+            "y": 210.5,
+            "right": 261.03125,
+            "bottom": 246.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "录像与归档",
+          "rect": {
+            "x": 264.03125,
+            "y": 210.5,
+            "right": 351.046875,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "重赛与修订",
+          "rect": {
+            "x": 354.046875,
+            "y": 210.5,
+            "right": 441.0625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "data-light-1920x1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "document": [
+        1920,
+        1080
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 340.25,
+        "bottom": 98,
+        "width": 256.25,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 1007,
+        "right": 1920,
+        "bottom": 1080,
+        "width": 1856,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "十人数据",
+          "rect": {
+            "x": 1553.9375,
+            "y": 75.5,
+            "right": 1627.953125,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "经济与团队",
+          "rect": {
+            "x": 1630.953125,
+            "y": 75.5,
+            "right": 1717.96875,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛事件",
+          "rect": {
+            "x": 1720.96875,
+            "y": 75.5,
+            "right": 1794.984375,
+            "bottom": 111.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "来源与校准",
+          "rect": {
+            "x": 1797.984375,
+            "y": 75.5,
+            "right": 1885,
+            "bottom": 111.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "manage-light-1920x1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "document": [
+        1920,
+        1080
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 286.859375,
+        "bottom": 98,
+        "width": 202.859375,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 1007,
+        "right": 1920,
+        "bottom": 1080,
+        "width": 1856,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "赛事赛程 · 3",
+          "rect": {
+            "x": 84,
+            "y": 131,
+            "right": 184.578125,
+            "bottom": 167,
+            "width": 100.578125,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "战队与选手 · 4",
+          "rect": {
+            "x": 187.578125,
+            "y": 131,
+            "right": 300.625,
+            "bottom": 167,
+            "width": 113.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "图片素材 · 0",
+          "rect": {
+            "x": 303.625,
+            "y": 131,
+            "right": 403.671875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "比赛记录 · 0",
+          "rect": {
+            "x": 406.671875,
+            "y": 131,
+            "right": 506.71875,
+            "bottom": 167,
+            "width": 100.046875,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    },
+    {
+      "id": "help-light-1920x1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "document": [
+        1920,
+        1080
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 240.015625,
+        "bottom": 98,
+        "width": 156.015625,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 1007,
+        "right": 1920,
+        "bottom": 1080,
+        "width": 1856,
+        "height": 73
+      },
+      "tabs": []
+    },
+    {
+      "id": "wrap-light-1920x1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "document": [
+        1920,
+        1080
+      ],
+      "heading": {
+        "x": 84,
+        "y": 68,
+        "right": 301.578125,
+        "bottom": 98,
+        "width": 217.578125,
+        "height": 30
+      },
+      "footer": {
+        "x": 64,
+        "y": 1007,
+        "right": 1920,
+        "bottom": 1080,
+        "width": 1856,
+        "height": 73
+      },
+      "tabs": [
+        {
+          "label": "胜方与终局",
+          "rect": {
+            "x": 97,
+            "y": 210.5,
+            "right": 184.015625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "报告核对",
+          "rect": {
+            "x": 187.015625,
+            "y": 210.5,
+            "right": 261.03125,
+            "bottom": 246.5,
+            "width": 74.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "录像与归档",
+          "rect": {
+            "x": 264.03125,
+            "y": 210.5,
+            "right": 351.046875,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        },
+        {
+          "label": "重赛与修订",
+          "rect": {
+            "x": 354.046875,
+            "y": 210.5,
+            "right": 441.0625,
+            "bottom": 246.5,
+            "width": 87.015625,
+            "height": 36
+          },
+          "reachable": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Native preview visibility: 11 checks passed. /workspace/lolob/docs/evidence/sol-7200a2d/native-visibility-adapted

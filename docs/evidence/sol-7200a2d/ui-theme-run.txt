@@ -1,0 +1,10 @@
+
+> riftcast-director@0.7.0 verify:ui-theme
+> node scripts/verify-ui-theme.mjs
+
+UI theme: 7 checks passed. Evidence: /workspace/lolob/verification-output/ui-theme-0.7.0
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

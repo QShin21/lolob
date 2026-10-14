@@ -1,0 +1,49 @@
+{
+  "testedSource": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "environment": "Linux / system Chromium; real isolated HTTP; explicitly mocked engine and device scenarios",
+  "startedAt": "2026-10-14T09:34:23.075Z",
+  "work": "/tmp/lolob-sol-7200a2d-w1kNdN",
+  "outcomes": [
+    {
+      "id": "fader-refresh-protection",
+      "description": "During drag, a polling gain change cannot pull the local slider back",
+      "status": "pass",
+      "data": {
+        "held": -43.5,
+        "syntheticPollingGain": -35,
+        "submitted": -43.5,
+        "realAudio": false
+      },
+      "at": "2026-10-14T09:34:28.481Z"
+    },
+    {
+      "id": "fader-keyboard",
+      "description": "Vertical ArrowUp raises gain by one step and does not trigger TAKE",
+      "status": "pass",
+      "data": {
+        "before": -43.5,
+        "after": -43
+      },
+      "at": "2026-10-14T09:34:28.586Z"
+    }
+  ],
+  "errors": [],
+  "geometry": [],
+  "requests": [
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/production",
+      "action": "audio",
+      "keyPresent": false
+    },
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/production",
+      "action": "audio",
+      "keyPresent": false
+    }
+  ],
+  "images": [
+    "fader-held-through-poll.png"
+  ]
+}

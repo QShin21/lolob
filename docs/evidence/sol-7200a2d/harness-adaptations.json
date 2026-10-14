@@ -1,0 +1,46 @@
+{
+  "testedSource": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "production": {
+    "originalSha256": "0320b9c0da7d5627d0a47b739cd3b3437f0782b3e136631c6820d74e28a1bd31",
+    "adaptedSha256": "afd9c21c8d537c43031e24c53a1c7d034c05ae0ee8c7490cb2e8ff8a4a1965ca",
+    "assertionsOriginal": 36,
+    "assertionsAdapted": 36,
+    "changes": [
+      "test location root and import paths",
+      "evidence directory",
+      "obsolete .data-table-scroll -> actual .data-grid-scroll"
+    ]
+  },
+  "native": {
+    "assertionsOriginal": 10,
+    "assertionsAdapted": 10,
+    "changes": [
+      "test location root and import paths",
+      "evidence directory",
+      "obsolete Cancel -> actual named editor close button"
+    ]
+  },
+  "regressions": {
+    "changes": [
+      "expected HEAD updated to tested implementation",
+      "current 747-file hash guard and path",
+      "new evidence directories and temporary scope names"
+    ],
+    "productAssertions": "retained"
+  },
+  "workspaceHarness": {
+    "firstAttempts": "kept separately; not counted as product defects",
+    "fixes": [
+      "real accessible names; scope active workspace",
+      "explicit record selection after a different test creates a newer record",
+      "restore clearly synthetic live source cells after normal service startup clears saved samples",
+      "compare immutable Program configuration and accepted player identities across legitimate telemetry freeze",
+      "wait for at least one response, then assert exactly one request and record"
+    ],
+    "duplicateSaveAssertion": "retained and fails"
+  },
+  "runtime": {
+    "chromium": "/usr/bin/chromium; --no-sandbox required by container",
+    "formalScripts": "physical source/device POSTs blocked; timeout bounded; original assertions unchanged"
+  }
+}

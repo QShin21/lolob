@@ -1,0 +1,100 @@
+{
+  "testedSource": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "implementationUnchanged": true,
+  "sha256Checked": 747,
+  "sha256Mismatches": [],
+  "build": "pass",
+  "unit": {
+    "total": 302,
+    "pass": 294,
+    "fail": 3,
+    "skip": 5,
+    "failures": "2 missing VB-CABLE fixture archives; 1 Windows-x64 installer called in Linux"
+  },
+  "browser": {
+    "total": 189,
+    "pass": 188,
+    "fail": 1,
+    "batches": [
+      {
+        "file": "browser.json",
+        "total": 63,
+        "pass": 63,
+        "fail": 0,
+        "pageErrors": 0
+      },
+      {
+        "file": "program-boundaries/results.json",
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "pageErrors": 0
+      },
+      {
+        "file": "program-lineup/results.json",
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "pageErrors": 0
+      },
+      {
+        "file": "program-roster/results.json",
+        "total": 14,
+        "pass": 14,
+        "fail": 0,
+        "pageErrors": 0
+      },
+      {
+        "file": "supplemental/browser.json",
+        "total": 14,
+        "pass": 14,
+        "fail": 0,
+        "pageErrors": 0
+      },
+      {
+        "file": "audio-extra/browser.json",
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "pageErrors": 0
+      },
+      {
+        "file": "frontend-safety/result.json",
+        "total": 15,
+        "pass": 15,
+        "fail": 0,
+        "pageErrors": 0
+      },
+      {
+        "file": "workspaces/results.json",
+        "total": 67,
+        "pass": 66,
+        "fail": 1,
+        "pageErrors": 0
+      }
+    ]
+  },
+  "formal": {
+    "productionOriginal": "fail: obsolete .data-table-scroll locator",
+    "productionAdapted": "16 groups pass",
+    "uiTheme": "7 groups pass; all 11 scene colours unchanged",
+    "broadcastControls": "7 groups pass; 173 champions decoded",
+    "nativeBrowserOriginal": "fail: obsolete Cancel locator",
+    "nativeBrowserAdapted": "11 groups pass",
+    "customScenesRealObs": "not run",
+    "windowsRelease": "not run"
+  },
+  "library": {
+    "library_file_id": "libfile_28189f9c68dc81919cfc3155f4e8b4cf",
+    "file_id": "file_00000000ccd081f5ac472ca07239278e",
+    "file_name": "lolob-7200a2d-17张合成界面截图.zip",
+    "path": "/lolob-7200a2d-17张合成界面截图.zip",
+    "version": 0,
+    "local_path": "/workspace/lolob/verification-output/lolob-7200a2d-17张合成界面截图.zip",
+    "xattr_exit_code": 0,
+    "source": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+    "images": 17,
+    "origin": "Astra implementation self-review; not independent Sol acceptance",
+    "sha256": "fd07cb233df98b82c9545617624b637acc82afe1d4e3aa94c161116b26191391"
+  }
+}

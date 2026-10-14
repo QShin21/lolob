@@ -1,0 +1,41 @@
+{
+  "source": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "base": "http://127.0.0.1:44355",
+  "dataDir": "/tmp/riftcast-sol-bp-boundaries-JLO4Ly/data",
+  "synthetic": "LCU transport and 180ms source application only; actual production logic, HTTP, WS and renderer",
+  "outcomes": [
+    {
+      "id": "lineup-legitimate-automatic-roster-progress",
+      "status": "pass"
+    },
+    {
+      "id": "lineup-manual-save-still-preserves-current-picture",
+      "status": "pass"
+    },
+    {
+      "id": "lineup-restore-auto-cannot-publish-pending-roster-before-take",
+      "status": "pass",
+      "detail": {
+        "scene": "lineup",
+        "before": "灵罗娃娃",
+        "after": "灵罗娃娃",
+        "takesDuringRestore": 0,
+        "programmeSnapshotHero": "Aatrox",
+        "heldDraft": "Gwen",
+        "pendingDraft": "Aatrox",
+        "currentRosterHero": "Aatrox",
+        "snapshotUnchanged": true
+      }
+    }
+  ],
+  "errors": [],
+  "actions": [
+    {
+      "type": "set-draft"
+    },
+    {
+      "type": "production",
+      "op": "draft-mode"
+    }
+  ]
+}

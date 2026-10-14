@@ -1,0 +1,13 @@
+{
+  "source": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "base": "http://127.0.0.1:44355",
+  "dataDir": "/tmp/riftcast-sol-bp-boundaries-JLO4Ly/data",
+  "health": {
+    "service": "riftcast-director",
+    "version": "0.7.0",
+    "status": "ok",
+    "mode": "live",
+    "lanEnabled": false
+  },
+  "synthetic": "source transport only; no real OBS or client"
+}

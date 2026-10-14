@@ -1,0 +1,1902 @@
+{
+  "testedSource": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "environment": "Linux / system Chromium; real isolated HTTP; explicitly mocked engine and device scenarios",
+  "startedAt": "2026-10-14T09:26:36.428Z",
+  "work": "/tmp/lolob-sol-7200a2d-hsSTEW",
+  "outcomes": [
+    {
+      "id": "source-build-health",
+      "description": "Specified SHA, successful actual HTTP service and browser loaded",
+      "status": "pass",
+      "data": {
+        "health": {
+          "service": "riftcast-director",
+          "version": "0.7.0",
+          "status": "ok",
+          "mode": "demo",
+          "lanEnabled": false
+        },
+        "source": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+        "seatVerified": true
+      },
+      "at": "2026-10-14T09:26:39.140Z"
+    },
+    {
+      "id": "studio-dark-1366-768",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "doc": [
+          1366,
+          768
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 143,
+            "width": 448,
+            "height": 252,
+            "bottom": 395,
+            "right": 529
+          },
+          {
+            "x": 543,
+            "y": 143,
+            "width": 448,
+            "height": 252,
+            "bottom": 395,
+            "right": 991
+          }
+        ],
+        "buttons": [
+          {
+            "x": 806.84375,
+            "y": 446.796875,
+            "width": 173.15625,
+            "height": 38,
+            "bottom": 484.796875,
+            "right": 980
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 706,
+          "width": 1302,
+          "height": 62,
+          "bottom": 768,
+          "right": 1366
+        }
+      },
+      "at": "2026-10-14T09:26:39.402Z"
+    },
+    {
+      "id": "studio-dark-1366-736",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "doc": [
+          1366,
+          736
+        ],
+        "monitors": [
+          {
+            "x": 77,
+            "y": 137,
+            "width": 454,
+            "height": 255.375,
+            "bottom": 392.375,
+            "right": 531
+          },
+          {
+            "x": 545,
+            "y": 137,
+            "width": 454,
+            "height": 255.375,
+            "bottom": 392.375,
+            "right": 999
+          }
+        ],
+        "buttons": [
+          {
+            "x": 816.84375,
+            "y": 442.171875,
+            "width": 173.15625,
+            "height": 38,
+            "bottom": 480.171875,
+            "right": 990
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 674,
+          "width": 1302,
+          "height": 62,
+          "bottom": 736,
+          "right": 1366
+        }
+      },
+      "at": "2026-10-14T09:26:39.684Z"
+    },
+    {
+      "id": "studio-dark-1440-900",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "doc": [
+          1440,
+          900
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 143,
+            "width": 485,
+            "height": 272.8125,
+            "bottom": 415.8125,
+            "right": 566
+          },
+          {
+            "x": 580,
+            "y": 143,
+            "width": 485,
+            "height": 272.8125,
+            "bottom": 415.8125,
+            "right": 1065
+          }
+        ],
+        "buttons": [
+          {
+            "x": 880.84375,
+            "y": 467.609375,
+            "width": 173.15625,
+            "height": 38,
+            "bottom": 505.609375,
+            "right": 1054
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 838,
+          "width": 1376,
+          "height": 62,
+          "bottom": 900,
+          "right": 1440
+        }
+      },
+      "at": "2026-10-14T09:26:39.930Z"
+    },
+    {
+      "id": "studio-dark-1440-868",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1440,
+          868
+        ],
+        "doc": [
+          1440,
+          868
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 143,
+            "width": 485,
+            "height": 272.8125,
+            "bottom": 415.8125,
+            "right": 566
+          },
+          {
+            "x": 580,
+            "y": 143,
+            "width": 485,
+            "height": 272.8125,
+            "bottom": 415.8125,
+            "right": 1065
+          }
+        ],
+        "buttons": [
+          {
+            "x": 880.84375,
+            "y": 467.609375,
+            "width": 173.15625,
+            "height": 38,
+            "bottom": 505.609375,
+            "right": 1054
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 806,
+          "width": 1376,
+          "height": 62,
+          "bottom": 868,
+          "right": 1440
+        }
+      },
+      "at": "2026-10-14T09:26:40.132Z"
+    },
+    {
+      "id": "studio-dark-1920-1080",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "doc": [
+          1920,
+          1080
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 145,
+            "width": 694,
+            "height": 390.375,
+            "bottom": 535.375,
+            "right": 775
+          },
+          {
+            "x": 789,
+            "y": 145,
+            "width": 694,
+            "height": 390.375,
+            "bottom": 535.375,
+            "right": 1483
+          }
+        ],
+        "buttons": [
+          {
+            "x": 1298.828125,
+            "y": 587.171875,
+            "width": 173.171875,
+            "height": 38,
+            "bottom": 625.171875,
+            "right": 1472
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 1018,
+          "width": 1856,
+          "height": 62,
+          "bottom": 1080,
+          "right": 1920
+        }
+      },
+      "at": "2026-10-14T09:26:40.458Z"
+    },
+    {
+      "id": "studio-dark-1920-1048",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1920,
+          1048
+        ],
+        "doc": [
+          1920,
+          1048
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 145,
+            "width": 694,
+            "height": 390.375,
+            "bottom": 535.375,
+            "right": 775
+          },
+          {
+            "x": 789,
+            "y": 145,
+            "width": 694,
+            "height": 390.375,
+            "bottom": 535.375,
+            "right": 1483
+          }
+        ],
+        "buttons": [
+          {
+            "x": 1298.828125,
+            "y": 587.171875,
+            "width": 173.171875,
+            "height": 38,
+            "bottom": 625.171875,
+            "right": 1472
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 986,
+          "width": 1856,
+          "height": 62,
+          "bottom": 1048,
+          "right": 1920
+        }
+      },
+      "at": "2026-10-14T09:26:40.669Z"
+    },
+    {
+      "id": "studio-light-1366-768",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "doc": [
+          1366,
+          768
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 143,
+            "width": 448,
+            "height": 252,
+            "bottom": 395,
+            "right": 529
+          },
+          {
+            "x": 543,
+            "y": 143,
+            "width": 448,
+            "height": 252,
+            "bottom": 395,
+            "right": 991
+          }
+        ],
+        "buttons": [
+          {
+            "x": 806.84375,
+            "y": 446.796875,
+            "width": 173.15625,
+            "height": 38,
+            "bottom": 484.796875,
+            "right": 980
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 706,
+          "width": 1302,
+          "height": 62,
+          "bottom": 768,
+          "right": 1366
+        }
+      },
+      "at": "2026-10-14T09:26:40.967Z"
+    },
+    {
+      "id": "studio-light-1366-736",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1366,
+          736
+        ],
+        "doc": [
+          1366,
+          736
+        ],
+        "monitors": [
+          {
+            "x": 77,
+            "y": 137,
+            "width": 454,
+            "height": 255.375,
+            "bottom": 392.375,
+            "right": 531
+          },
+          {
+            "x": 545,
+            "y": 137,
+            "width": 454,
+            "height": 255.375,
+            "bottom": 392.375,
+            "right": 999
+          }
+        ],
+        "buttons": [
+          {
+            "x": 816.84375,
+            "y": 442.171875,
+            "width": 173.15625,
+            "height": 38,
+            "bottom": 480.171875,
+            "right": 990
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 674,
+          "width": 1302,
+          "height": 62,
+          "bottom": 736,
+          "right": 1366
+        }
+      },
+      "at": "2026-10-14T09:26:41.135Z"
+    },
+    {
+      "id": "studio-light-1440-900",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "doc": [
+          1440,
+          900
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 143,
+            "width": 485,
+            "height": 272.8125,
+            "bottom": 415.8125,
+            "right": 566
+          },
+          {
+            "x": 580,
+            "y": 143,
+            "width": 485,
+            "height": 272.8125,
+            "bottom": 415.8125,
+            "right": 1065
+          }
+        ],
+        "buttons": [
+          {
+            "x": 880.84375,
+            "y": 467.609375,
+            "width": 173.15625,
+            "height": 38,
+            "bottom": 505.609375,
+            "right": 1054
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 838,
+          "width": 1376,
+          "height": 62,
+          "bottom": 900,
+          "right": 1440
+        }
+      },
+      "at": "2026-10-14T09:26:41.329Z"
+    },
+    {
+      "id": "studio-light-1440-868",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1440,
+          868
+        ],
+        "doc": [
+          1440,
+          868
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 143,
+            "width": 485,
+            "height": 272.8125,
+            "bottom": 415.8125,
+            "right": 566
+          },
+          {
+            "x": 580,
+            "y": 143,
+            "width": 485,
+            "height": 272.8125,
+            "bottom": 415.8125,
+            "right": 1065
+          }
+        ],
+        "buttons": [
+          {
+            "x": 880.84375,
+            "y": 467.609375,
+            "width": 173.15625,
+            "height": 38,
+            "bottom": 505.609375,
+            "right": 1054
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 806,
+          "width": 1376,
+          "height": 62,
+          "bottom": 868,
+          "right": 1440
+        }
+      },
+      "at": "2026-10-14T09:26:41.517Z"
+    },
+    {
+      "id": "studio-light-1920-1080",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "doc": [
+          1920,
+          1080
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 145,
+            "width": 694,
+            "height": 390.375,
+            "bottom": 535.375,
+            "right": 775
+          },
+          {
+            "x": 789,
+            "y": 145,
+            "width": 694,
+            "height": 390.375,
+            "bottom": 535.375,
+            "right": 1483
+          }
+        ],
+        "buttons": [
+          {
+            "x": 1298.828125,
+            "y": 587.171875,
+            "width": 173.171875,
+            "height": 38,
+            "bottom": 625.171875,
+            "right": 1472
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 1018,
+          "width": 1856,
+          "height": 62,
+          "bottom": 1080,
+          "right": 1920
+        }
+      },
+      "at": "2026-10-14T09:26:41.755Z"
+    },
+    {
+      "id": "studio-light-1920-1048",
+      "description": "Low-height PGM/PVW, TAKE, music and emergency accessibility",
+      "status": "pass",
+      "data": {
+        "viewport": [
+          1920,
+          1048
+        ],
+        "doc": [
+          1920,
+          1048
+        ],
+        "monitors": [
+          {
+            "x": 81,
+            "y": 145,
+            "width": 694,
+            "height": 390.375,
+            "bottom": 535.375,
+            "right": 775
+          },
+          {
+            "x": 789,
+            "y": 145,
+            "width": 694,
+            "height": 390.375,
+            "bottom": 535.375,
+            "right": 1483
+          }
+        ],
+        "buttons": [
+          {
+            "x": 1298.828125,
+            "y": 587.171875,
+            "width": 173.171875,
+            "height": 38,
+            "bottom": 625.171875,
+            "right": 1472
+          }
+        ],
+        "footer": {
+          "x": 64,
+          "y": 986,
+          "width": 1856,
+          "height": 62,
+          "bottom": 1048,
+          "right": 1920
+        }
+      },
+      "at": "2026-10-14T09:26:42.011Z"
+    },
+    {
+      "id": "theme-state",
+      "description": "Theme and reload preserve Program configuration and issue zero actions",
+      "status": "pass",
+      "at": "2026-10-14T09:26:42.318Z"
+    },
+    {
+      "id": "offline-take",
+      "description": "Disconnected engine visibly blocks TAKE and Ctrl+Enter",
+      "status": "pass",
+      "at": "2026-10-14T09:26:42.400Z"
+    },
+    {
+      "id": "editor-fit-light",
+      "description": "Three-pane editor at low height keeps 16:9 and primary save visible",
+      "status": "pass",
+      "data": {
+        "dialog": {
+          "x": 16,
+          "y": 10,
+          "width": 1334,
+          "height": 716
+        },
+        "artboard": {
+          "x": 277,
+          "y": 182.921875,
+          "width": 748,
+          "height": 420.75
+        }
+      },
+      "at": "2026-10-14T09:26:42.754Z"
+    },
+    {
+      "id": "editor-drag",
+      "description": "CSS drag is converted to 1920x1080 local coordinates, no HTTP save/TAKE",
+      "status": "pass",
+      "data": {
+        "before": {
+          "x": 1200,
+          "y": 460,
+          "width": 480,
+          "height": 300
+        },
+        "after": {
+          "x": 1277,
+          "y": 499,
+          "width": 480,
+          "height": 300
+        },
+        "css": [
+          30,
+          15
+        ],
+        "artboard": {
+          "x": 277,
+          "y": 182.921875,
+          "width": 748,
+          "height": 420.75
+        }
+      },
+      "at": "2026-10-14T09:26:43.042Z"
+    },
+    {
+      "id": "resize-n",
+      "description": "Resize keeps the opposite edge and uses logical canvas coordinates",
+      "status": "pass",
+      "data": {
+        "x": 300,
+        "y": 230,
+        "width": 600,
+        "height": 380
+      },
+      "at": "2026-10-14T09:26:43.284Z"
+    },
+    {
+      "id": "resize-ne",
+      "description": "Resize keeps the opposite edge and uses logical canvas coordinates",
+      "status": "pass",
+      "data": {
+        "x": 300,
+        "y": 230,
+        "width": 640,
+        "height": 380
+      },
+      "at": "2026-10-14T09:26:43.548Z"
+    },
+    {
+      "id": "resize-e",
+      "description": "Resize keeps the opposite edge and uses logical canvas coordinates",
+      "status": "pass",
+      "data": {
+        "x": 300,
+        "y": 250,
+        "width": 640,
+        "height": 360
+      },
+      "at": "2026-10-14T09:26:43.781Z"
+    },
+    {
+      "id": "resize-se",
+      "description": "Resize keeps the opposite edge and uses logical canvas coordinates",
+      "status": "pass",
+      "data": {
+        "x": 300,
+        "y": 250,
+        "width": 640,
+        "height": 380
+      },
+      "at": "2026-10-14T09:26:43.981Z"
+    },
+    {
+      "id": "resize-s",
+      "description": "Resize keeps the opposite edge and uses logical canvas coordinates",
+      "status": "pass",
+      "data": {
+        "x": 300,
+        "y": 250,
+        "width": 600,
+        "height": 380
+      },
+      "at": "2026-10-14T09:26:44.212Z"
+    },
+    {
+      "id": "resize-sw",
+      "description": "Resize keeps the opposite edge and uses logical canvas coordinates",
+      "status": "pass",
+      "data": {
+        "x": 340,
+        "y": 250,
+        "width": 560,
+        "height": 380
+      },
+      "at": "2026-10-14T09:26:44.415Z"
+    },
+    {
+      "id": "resize-w",
+      "description": "Resize keeps the opposite edge and uses logical canvas coordinates",
+      "status": "pass",
+      "data": {
+        "x": 340,
+        "y": 250,
+        "width": 560,
+        "height": 360
+      },
+      "at": "2026-10-14T09:26:44.651Z"
+    },
+    {
+      "id": "resize-nw",
+      "description": "Resize keeps the opposite edge and uses logical canvas coordinates",
+      "status": "pass",
+      "data": {
+        "x": 340,
+        "y": 230,
+        "width": 560,
+        "height": 380
+      },
+      "at": "2026-10-14T09:26:44.863Z"
+    },
+    {
+      "id": "keyboard-and-hotkeys",
+      "description": "1px/Shift10px, IME/modifier protection and modal TAKE isolation",
+      "status": "pass",
+      "at": "2026-10-14T09:26:45.098Z"
+    },
+    {
+      "id": "zoom-50-coordinates",
+      "description": "Zoomed/panned artboard still maps CSS pixels exactly once",
+      "status": "pass",
+      "data": {
+        "artboard": {
+          "x": 171,
+          "y": 122.59375,
+          "width": 960,
+          "height": 540
+        },
+        "after": {
+          "x": 440,
+          "y": 320,
+          "width": 600,
+          "height": 360
+        }
+      },
+      "at": "2026-10-14T09:26:45.374Z"
+    },
+    {
+      "id": "numeric-range",
+      "description": "Negative positions, oversized layers and contain/cover/stretch are retained",
+      "status": "pass",
+      "at": "2026-10-14T09:26:45.526Z"
+    },
+    {
+      "id": "save-staging",
+      "description": "Save edits to an on-air custom scene preserves PGM snapshot and PVW selection",
+      "status": "pass",
+      "data": {
+        "pgmName": "Sol 画布 · 已播构图",
+        "pendingName": "Sol 画布 · 修改待播"
+      },
+      "at": "2026-10-14T09:26:45.727Z"
+    },
+    {
+      "id": "same-scene-service-take",
+      "description": "Offline API commits same-scene snapshot while application remains unconfirmed",
+      "status": "pass",
+      "data": {
+        "status": "requested"
+      },
+      "at": "2026-10-14T09:26:45.759Z"
+    },
+    {
+      "id": "editor-cas",
+      "description": "Concurrent config change keeps local input, blocks save until explicit review",
+      "status": "pass",
+      "at": "2026-10-14T09:26:46.162Z"
+    },
+    {
+      "id": "dpr-2-drag",
+      "description": "Device scale factor 2 does not multiply logical movement",
+      "status": "pass",
+      "data": {
+        "viewportCss": {
+          "x": 277,
+          "y": 182.921875,
+          "width": 748,
+          "height": 420.75
+        },
+        "deviceScaleFactor": 2,
+        "coordinates": {
+          "x": 451,
+          "y": 326,
+          "width": 600,
+          "height": 360
+        }
+      },
+      "at": "2026-10-14T09:26:47.586Z"
+    },
+    {
+      "id": "connected-save-take",
+      "description": "Actual HTTP save/TAKE chain; engine apply is an explicit synthetic stub",
+      "status": "pass",
+      "data": {
+        "application": "applied",
+        "realObs": false
+      },
+      "at": "2026-10-14T09:26:49.025Z"
+    },
+    {
+      "id": "hotkey-single-request",
+      "description": "Repeated TAKE keydown produces one request while preparation is pending",
+      "status": "pass",
+      "at": "2026-10-14T09:26:49.366Z"
+    },
+    {
+      "id": "mock-apply-failure",
+      "description": "Source preparation failure keeps previous Program and shows persistent failed receipt",
+      "status": "pass",
+      "data": {
+        "pendingName": "Sol mock · 失败待播",
+        "programName": "Sol mock · 待播构图"
+      },
+      "at": "2026-10-14T09:26:50.090Z"
+    },
+    {
+      "id": "mock-three-source-types",
+      "description": "Image, window and borrowed OBS source use guarded picker and save only to pending",
+      "status": "pass",
+      "data": {
+        "types": [
+          "image",
+          "window",
+          "image",
+          "window",
+          "obs"
+        ],
+        "realEnumeration": false
+      },
+      "at": "2026-10-14T09:26:51.026Z"
+    },
+    {
+      "id": "upload-and-discard",
+      "description": "Real isolated image upload persists after discarding the local scene",
+      "status": "pass",
+      "at": "2026-10-14T09:26:51.388Z"
+    },
+    {
+      "id": "editor-permission-loss",
+      "description": "Control transfer disables editor writes and preserves its local draft",
+      "status": "pass",
+      "at": "2026-10-14T09:26:51.882Z"
+    },
+    {
+      "id": "output-route-view",
+      "description": "Viewing RTMP does not change target or hide active companion/REC stops",
+      "status": "pass",
+      "at": "2026-10-14T09:26:52.244Z"
+    },
+    {
+      "id": "output-restoration-failure",
+      "description": "Audio managing remains visible; partial stop never reports full restoration",
+      "status": "pass",
+      "data": {
+        "active": false,
+        "managing": true,
+        "recordActive": true
+      },
+      "at": "2026-10-14T09:26:53.535Z"
+    },
+    {
+      "id": "output-status-failure",
+      "description": "Failed status refresh shows unknown signals and disables writes",
+      "status": "pass",
+      "at": "2026-10-14T09:26:53.776Z"
+    },
+    {
+      "id": "output-facts-and-restart",
+      "description": "Installed, available, ready, active, managing and restart facts are independent",
+      "status": "pass",
+      "at": "2026-10-14T09:26:53.994Z"
+    },
+    {
+      "id": "output-partial-start",
+      "description": "Video-only start is visibly failed and cannot claim complete companion output",
+      "status": "pass",
+      "at": "2026-10-14T09:26:54.220Z"
+    },
+    {
+      "id": "rtmp-key-memory",
+      "description": "Synthetic stream key clears on apply and never persists in storage or state",
+      "status": "pass",
+      "data": {
+        "keyCleared": true,
+        "persisted": false,
+        "realRtmp": false
+      },
+      "at": "2026-10-14T09:26:54.438Z"
+    },
+    {
+      "id": "music-default-and-output-lock",
+      "description": "Music default paused/muted -18 dB and changing file blocked by active outputs",
+      "status": "pass",
+      "at": "2026-10-14T09:26:54.965Z"
+    },
+    {
+      "id": "music-transport",
+      "description": "Play, pause and stop issue distinct single-source actions",
+      "status": "pass",
+      "at": "2026-10-14T09:27:01.564Z"
+    },
+    {
+      "id": "audio-stale-and-management",
+      "description": "Stale Program sample is not a meter; managed monitor and tracks remain protected",
+      "status": "pass",
+      "at": "2026-10-14T09:27:01.985Z"
+    },
+    {
+      "id": "bp-search-focus",
+      "description": "Hero dialog opens search, reports duplicate/history bans and returns focus",
+      "status": "pass",
+      "at": "2026-10-14T09:27:05.878Z"
+    },
+    {
+      "id": "bp-cas-local-choice",
+      "description": "Version change retains hero choice and requires explicit review before saving",
+      "status": "pass",
+      "at": "2026-10-14T09:27:10.201Z"
+    },
+    {
+      "id": "bp-save-program-isolation",
+      "description": "Manual hero save described as pending must not update Program before TAKE",
+      "status": "pass",
+      "data": {
+        "pending": "Akali",
+        "program": "Aatrox",
+        "visible": [
+          "暗裔剑魔",
+          "盲僧",
+          "九尾妖狐",
+          "暴走萝莉",
+          "魂锁典狱长",
+          "纳祖芒荣耀",
+          "皮城执法官",
+          "沙漠皇帝",
+          "虚空之女",
+          "深海泰坦"
+        ]
+      },
+      "at": "2026-10-14T09:27:10.677Z"
+    },
+    {
+      "id": "bp-stable-team-history",
+      "description": "History is grouped by stable team identity, including configured GAME5 exception",
+      "status": "pass",
+      "data": {
+        "blueId": "azure",
+        "redId": "ember",
+        "note": "UI rule entry exercised; multi-game/swap semantics covered by actual unit tests, not a full browser match replay"
+      },
+      "at": "2026-10-14T09:27:14.586Z"
+    },
+    {
+      "id": "remote-readonly",
+      "description": "Verified role, permitted tasks, no unauthorized TAKE and narrow-screen fit",
+      "status": "pass",
+      "data": {
+        "role": "readonly",
+        "verified": true,
+        "lan": false
+      },
+      "at": "2026-10-14T09:27:15.252Z"
+    },
+    {
+      "id": "remote-data",
+      "description": "Verified role, permitted tasks, no unauthorized TAKE and narrow-screen fit",
+      "status": "pass",
+      "data": {
+        "role": "data",
+        "verified": true,
+        "lan": false
+      },
+      "at": "2026-10-14T09:27:15.952Z"
+    },
+    {
+      "id": "remote-subtitle",
+      "description": "Verified role, permitted tasks, no unauthorized TAKE and narrow-screen fit",
+      "status": "pass",
+      "data": {
+        "role": "subtitle",
+        "verified": true,
+        "lan": false
+      },
+      "at": "2026-10-14T09:27:16.603Z"
+    },
+    {
+      "id": "remote-replay",
+      "description": "Verified role, permitted tasks, no unauthorized TAKE and narrow-screen fit",
+      "status": "pass",
+      "data": {
+        "role": "replay",
+        "verified": true,
+        "lan": false
+      },
+      "at": "2026-10-14T09:27:17.306Z"
+    },
+    {
+      "id": "remote-director",
+      "description": "Verified role, permitted tasks, no unauthorized TAKE and narrow-screen fit",
+      "status": "pass",
+      "data": {
+        "role": "director",
+        "verified": true,
+        "lan": false
+      },
+      "at": "2026-10-14T09:27:18.037Z"
+    },
+    {
+      "id": "mobile-subtitle-staging",
+      "description": "Subtitle local draft survives PGM/PVW and saves to pending without Program change",
+      "status": "pass",
+      "at": "2026-10-14T09:27:18.263Z"
+    },
+    {
+      "id": "mobile-custom-preview",
+      "description": "Data seat selects dynamic custom preview, without changing Program",
+      "status": "pass",
+      "at": "2026-10-14T09:27:18.395Z"
+    },
+    {
+      "id": "mobile-owner-transfer",
+      "description": "Director role alone cannot TAKE; explicit claim transfers dock and revokes former owner",
+      "status": "pass",
+      "at": "2026-10-14T09:27:19.128Z"
+    },
+    {
+      "id": "role-api-guards",
+      "description": "Real server rejects readonly writes and non-owner director TAKE",
+      "status": "pass",
+      "data": {
+        "rejected": [
+          "readonly write",
+          "subtitle scene",
+          "replay subtitle",
+          "non-owner director TAKE"
+        ]
+      },
+      "at": "2026-10-14T09:27:19.160Z"
+    },
+    {
+      "id": "source-count-limit",
+      "description": "24 layer and 50 scene limits agree in HTTP and disabled UI",
+      "status": "pass",
+      "at": "2026-10-14T09:27:21.103Z"
+    },
+    {
+      "id": "overlay-teamfight-theme",
+      "description": "Teamfight remains transparent and does not gain console text across themes",
+      "status": "pass",
+      "at": "2026-10-14T09:27:21.591Z"
+    },
+    {
+      "id": "mobile-reconnect-seat",
+      "description": "After service restart, stale seat is revalidated before submission and draft survives",
+      "status": "pass",
+      "at": "2026-10-14T09:27:22.812Z"
+    },
+    {
+      "id": "harness-fatal",
+      "status": "harness-error",
+      "error": "scripts/verify-production-workflow.mjs\n+ actual - expected\n\n+ '0320b9c0da7d5627d0a47b739cd3b3437f0782b3e136631c6820d74e28a1bd31'\n- 'a4d84d05555cc03c73f3afe9b6636c2d737fb5f6a38388f6a8137a44d8f53eb7'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: scripts/verify-production-workflow.mjs\n+ actual - expected\n\n+ '0320b9c0da7d5627d0a47b739cd3b3437f0782b3e136631c6820d74e28a1bd31'\n- 'a4d84d05555cc03c73f3afe9b6636c2d737fb5f6a38388f6a8137a44d8f53eb7'\n\n    at file:///workspace/lolob/docs/evidence/sol-7200a2d/browser.mjs:148:283"
+    }
+  ],
+  "errors": [],
+  "geometry": [
+    {
+      "id": "studio-dark-1366-768",
+      "viewport": [
+        1366,
+        768
+      ],
+      "doc": [
+        1366,
+        768
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 143,
+          "width": 448,
+          "height": 252,
+          "bottom": 395,
+          "right": 529
+        },
+        {
+          "x": 543,
+          "y": 143,
+          "width": 448,
+          "height": 252,
+          "bottom": 395,
+          "right": 991
+        }
+      ],
+      "buttons": [
+        {
+          "x": 806.84375,
+          "y": 446.796875,
+          "width": 173.15625,
+          "height": 38,
+          "bottom": 484.796875,
+          "right": 980
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 706,
+        "width": 1302,
+        "height": 62,
+        "bottom": 768,
+        "right": 1366
+      }
+    },
+    {
+      "id": "studio-dark-1366-736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "doc": [
+        1366,
+        736
+      ],
+      "monitors": [
+        {
+          "x": 77,
+          "y": 137,
+          "width": 454,
+          "height": 255.375,
+          "bottom": 392.375,
+          "right": 531
+        },
+        {
+          "x": 545,
+          "y": 137,
+          "width": 454,
+          "height": 255.375,
+          "bottom": 392.375,
+          "right": 999
+        }
+      ],
+      "buttons": [
+        {
+          "x": 816.84375,
+          "y": 442.171875,
+          "width": 173.15625,
+          "height": 38,
+          "bottom": 480.171875,
+          "right": 990
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 674,
+        "width": 1302,
+        "height": 62,
+        "bottom": 736,
+        "right": 1366
+      }
+    },
+    {
+      "id": "studio-dark-1440-900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "doc": [
+        1440,
+        900
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 143,
+          "width": 485,
+          "height": 272.8125,
+          "bottom": 415.8125,
+          "right": 566
+        },
+        {
+          "x": 580,
+          "y": 143,
+          "width": 485,
+          "height": 272.8125,
+          "bottom": 415.8125,
+          "right": 1065
+        }
+      ],
+      "buttons": [
+        {
+          "x": 880.84375,
+          "y": 467.609375,
+          "width": 173.15625,
+          "height": 38,
+          "bottom": 505.609375,
+          "right": 1054
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 838,
+        "width": 1376,
+        "height": 62,
+        "bottom": 900,
+        "right": 1440
+      }
+    },
+    {
+      "id": "studio-dark-1440-868",
+      "viewport": [
+        1440,
+        868
+      ],
+      "doc": [
+        1440,
+        868
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 143,
+          "width": 485,
+          "height": 272.8125,
+          "bottom": 415.8125,
+          "right": 566
+        },
+        {
+          "x": 580,
+          "y": 143,
+          "width": 485,
+          "height": 272.8125,
+          "bottom": 415.8125,
+          "right": 1065
+        }
+      ],
+      "buttons": [
+        {
+          "x": 880.84375,
+          "y": 467.609375,
+          "width": 173.15625,
+          "height": 38,
+          "bottom": 505.609375,
+          "right": 1054
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 806,
+        "width": 1376,
+        "height": 62,
+        "bottom": 868,
+        "right": 1440
+      }
+    },
+    {
+      "id": "studio-dark-1920-1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "doc": [
+        1920,
+        1080
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 145,
+          "width": 694,
+          "height": 390.375,
+          "bottom": 535.375,
+          "right": 775
+        },
+        {
+          "x": 789,
+          "y": 145,
+          "width": 694,
+          "height": 390.375,
+          "bottom": 535.375,
+          "right": 1483
+        }
+      ],
+      "buttons": [
+        {
+          "x": 1298.828125,
+          "y": 587.171875,
+          "width": 173.171875,
+          "height": 38,
+          "bottom": 625.171875,
+          "right": 1472
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 1018,
+        "width": 1856,
+        "height": 62,
+        "bottom": 1080,
+        "right": 1920
+      }
+    },
+    {
+      "id": "studio-dark-1920-1048",
+      "viewport": [
+        1920,
+        1048
+      ],
+      "doc": [
+        1920,
+        1048
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 145,
+          "width": 694,
+          "height": 390.375,
+          "bottom": 535.375,
+          "right": 775
+        },
+        {
+          "x": 789,
+          "y": 145,
+          "width": 694,
+          "height": 390.375,
+          "bottom": 535.375,
+          "right": 1483
+        }
+      ],
+      "buttons": [
+        {
+          "x": 1298.828125,
+          "y": 587.171875,
+          "width": 173.171875,
+          "height": 38,
+          "bottom": 625.171875,
+          "right": 1472
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 986,
+        "width": 1856,
+        "height": 62,
+        "bottom": 1048,
+        "right": 1920
+      }
+    },
+    {
+      "id": "studio-light-1366-768",
+      "viewport": [
+        1366,
+        768
+      ],
+      "doc": [
+        1366,
+        768
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 143,
+          "width": 448,
+          "height": 252,
+          "bottom": 395,
+          "right": 529
+        },
+        {
+          "x": 543,
+          "y": 143,
+          "width": 448,
+          "height": 252,
+          "bottom": 395,
+          "right": 991
+        }
+      ],
+      "buttons": [
+        {
+          "x": 806.84375,
+          "y": 446.796875,
+          "width": 173.15625,
+          "height": 38,
+          "bottom": 484.796875,
+          "right": 980
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 706,
+        "width": 1302,
+        "height": 62,
+        "bottom": 768,
+        "right": 1366
+      }
+    },
+    {
+      "id": "studio-light-1366-736",
+      "viewport": [
+        1366,
+        736
+      ],
+      "doc": [
+        1366,
+        736
+      ],
+      "monitors": [
+        {
+          "x": 77,
+          "y": 137,
+          "width": 454,
+          "height": 255.375,
+          "bottom": 392.375,
+          "right": 531
+        },
+        {
+          "x": 545,
+          "y": 137,
+          "width": 454,
+          "height": 255.375,
+          "bottom": 392.375,
+          "right": 999
+        }
+      ],
+      "buttons": [
+        {
+          "x": 816.84375,
+          "y": 442.171875,
+          "width": 173.15625,
+          "height": 38,
+          "bottom": 480.171875,
+          "right": 990
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 674,
+        "width": 1302,
+        "height": 62,
+        "bottom": 736,
+        "right": 1366
+      }
+    },
+    {
+      "id": "studio-light-1440-900",
+      "viewport": [
+        1440,
+        900
+      ],
+      "doc": [
+        1440,
+        900
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 143,
+          "width": 485,
+          "height": 272.8125,
+          "bottom": 415.8125,
+          "right": 566
+        },
+        {
+          "x": 580,
+          "y": 143,
+          "width": 485,
+          "height": 272.8125,
+          "bottom": 415.8125,
+          "right": 1065
+        }
+      ],
+      "buttons": [
+        {
+          "x": 880.84375,
+          "y": 467.609375,
+          "width": 173.15625,
+          "height": 38,
+          "bottom": 505.609375,
+          "right": 1054
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 838,
+        "width": 1376,
+        "height": 62,
+        "bottom": 900,
+        "right": 1440
+      }
+    },
+    {
+      "id": "studio-light-1440-868",
+      "viewport": [
+        1440,
+        868
+      ],
+      "doc": [
+        1440,
+        868
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 143,
+          "width": 485,
+          "height": 272.8125,
+          "bottom": 415.8125,
+          "right": 566
+        },
+        {
+          "x": 580,
+          "y": 143,
+          "width": 485,
+          "height": 272.8125,
+          "bottom": 415.8125,
+          "right": 1065
+        }
+      ],
+      "buttons": [
+        {
+          "x": 880.84375,
+          "y": 467.609375,
+          "width": 173.15625,
+          "height": 38,
+          "bottom": 505.609375,
+          "right": 1054
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 806,
+        "width": 1376,
+        "height": 62,
+        "bottom": 868,
+        "right": 1440
+      }
+    },
+    {
+      "id": "studio-light-1920-1080",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "doc": [
+        1920,
+        1080
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 145,
+          "width": 694,
+          "height": 390.375,
+          "bottom": 535.375,
+          "right": 775
+        },
+        {
+          "x": 789,
+          "y": 145,
+          "width": 694,
+          "height": 390.375,
+          "bottom": 535.375,
+          "right": 1483
+        }
+      ],
+      "buttons": [
+        {
+          "x": 1298.828125,
+          "y": 587.171875,
+          "width": 173.171875,
+          "height": 38,
+          "bottom": 625.171875,
+          "right": 1472
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 1018,
+        "width": 1856,
+        "height": 62,
+        "bottom": 1080,
+        "right": 1920
+      }
+    },
+    {
+      "id": "studio-light-1920-1048",
+      "viewport": [
+        1920,
+        1048
+      ],
+      "doc": [
+        1920,
+        1048
+      ],
+      "monitors": [
+        {
+          "x": 81,
+          "y": 145,
+          "width": 694,
+          "height": 390.375,
+          "bottom": 535.375,
+          "right": 775
+        },
+        {
+          "x": 789,
+          "y": 145,
+          "width": 694,
+          "height": 390.375,
+          "bottom": 535.375,
+          "right": 1483
+        }
+      ],
+      "buttons": [
+        {
+          "x": 1298.828125,
+          "y": 587.171875,
+          "width": 173.171875,
+          "height": 38,
+          "bottom": 625.171875,
+          "right": 1472
+        }
+      ],
+      "footer": {
+        "x": 64,
+        "y": 986,
+        "width": 1856,
+        "height": 62,
+        "bottom": 1048,
+        "right": 1920
+      }
+    }
+  ],
+  "requests": [
+    {
+      "scope": "offline",
+      "type": "save-custom-scene",
+      "requestId": true,
+      "configVersion": 1
+    },
+    {
+      "scope": "mock",
+      "type": "save-custom-scene",
+      "requestId": true,
+      "configVersion": 1
+    },
+    {
+      "scope": "mock",
+      "type": "take",
+      "requestId": true,
+      "configVersion": 2
+    },
+    {
+      "scope": "mock",
+      "kind": "mock engine preparation",
+      "failure": false
+    },
+    {
+      "scope": "mock",
+      "type": "take",
+      "requestId": true,
+      "configVersion": 2
+    },
+    {
+      "scope": "mock",
+      "kind": "mock engine preparation",
+      "failure": false
+    },
+    {
+      "scope": "mock",
+      "type": "save-custom-scene",
+      "requestId": true,
+      "configVersion": 2
+    },
+    {
+      "scope": "mock",
+      "type": "take",
+      "requestId": true,
+      "configVersion": 3
+    },
+    {
+      "scope": "mock",
+      "kind": "mock engine preparation",
+      "failure": true
+    },
+    {
+      "scope": "mock",
+      "type": "save-custom-scene",
+      "requestId": true,
+      "configVersion": 3
+    },
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/engine/output",
+      "action": "stop-virtual-camera",
+      "keyPresent": false
+    },
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/engine/output",
+      "action": "start-virtual-camera",
+      "keyPresent": false
+    },
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/stream/settings",
+      "keyPresent": true
+    },
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/music/control",
+      "action": "play",
+      "keyPresent": false
+    },
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/music/control",
+      "action": "pause",
+      "keyPresent": false
+    },
+    {
+      "scope": "mock",
+      "endpoint": "/api/obs/music/control",
+      "action": "stop",
+      "keyPresent": false
+    },
+    {
+      "scope": "mock",
+      "kind": "mock engine preparation",
+      "failure": false
+    },
+    {
+      "scope": "mock",
+      "type": "set-draft",
+      "requestId": true,
+      "configVersion": 5
+    },
+    {
+      "scope": "mock",
+      "type": "set-overlay",
+      "requestId": true,
+      "configVersion": 7
+    },
+    {
+      "scope": "mock",
+      "type": "preview-scene",
+      "requestId": true,
+      "configVersion": 8
+    },
+    {
+      "scope": "mock",
+      "kind": "mock engine preparation",
+      "failure": false
+    }
+  ],
+  "images": [
+    "studio-dark-1366x768.png",
+    "studio-dark-1366x736.png",
+    "studio-dark-1440x900.png",
+    "studio-dark-1440x868.png",
+    "studio-dark-1920x1080.png",
+    "studio-dark-1920x1048.png",
+    "studio-light-1366x768.png",
+    "studio-light-1366x736.png",
+    "studio-light-1440x900.png",
+    "studio-light-1440x868.png",
+    "studio-light-1920x1080.png",
+    "studio-light-1920x1048.png",
+    "editor-light-low-height.png",
+    "editor-oversized-local.png",
+    "editor-cas-preserves-draft.png",
+    "editor-dpr-2.png",
+    "mock-save-then-applied.png",
+    "mock-take-failed-keeps-program.png",
+    "mock-source-types-local.png",
+    "editor-control-transfer-preserves-draft.png",
+    "output-other-route-active-low-height.png",
+    "output-restoration-failure.png",
+    "output-status-unavailable.png",
+    "output-independent-facts.png",
+    "output-partial-start-failure.png",
+    "music-paused-muted-output-lock.png",
+    "audio-stale-managed-controls.png",
+    "bp-search-dialog.png",
+    "bp-cas-preserves-choice.png",
+    "bp-program-after-pending-save.png",
+    "remote-readonly-390.png",
+    "remote-readonly-360.png",
+    "remote-data-390.png",
+    "remote-data-360.png",
+    "remote-subtitle-390.png",
+    "remote-subtitle-360.png",
+    "remote-replay-390.png",
+    "remote-replay-360.png",
+    "remote-director-390.png",
+    "remote-director-360.png",
+    "remote-subtitle-saved-pending.png",
+    "remote-data-custom-preview.png",
+    "remote-owner-dark-390x844.png",
+    "remote-owner-dark-360x430.png",
+    "remote-owner-dark-844x390.png",
+    "remote-owner-light-390x844.png",
+    "remote-owner-light-360x430.png",
+    "remote-owner-light-844x390.png",
+    "editor-24-layer-limit.png",
+    "scene-50-limit.png",
+    "overlay-teamfight-transparent.png",
+    "remote-service-restart-stale-seat.png"
+  ]
+}

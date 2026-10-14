@@ -1,0 +1,23 @@
+{
+  "version": "0.7.0",
+  "tests": [
+    "pending title and ticker preserve on-air content",
+    "UI blocks TAKE with a visible reason when OBS is disconnected",
+    "service same-scene TAKE commits staged content, with engine application still unconfirmed",
+    "editing account fields suppresses TAKE hotkeys",
+    "stale team editor is rejected without overwriting new settings",
+    "short clicks do not reset series; held actions start at 0:0",
+    "all bundled hero assets are inventoried without network access",
+    "rundown preparations persist through the actual HTTP service",
+    "1366 pixel console fits without document horizontal overflow",
+    "BP exchanges survive page changes; player table switches between ten and five players",
+    "1080, 1366 and 1920 pixel consoles retain controls and fit document width",
+    "settings, management, data and help render without page overflow",
+    "all eleven audience scenes render; native teamfight overlay remains empty and transparent",
+    "new mobile seat defaults to data role and explains restricted TAKE at 390 pixels",
+    "readonly, subtitle and replay seats retain role-specific controls, identify the controller and expose no TAKE",
+    "verified current controller retains a visible fixed TAKE dock at 390 pixels before and after scrolling"
+  ],
+  "errors": [],
+  "boundary": "Built browser UI and actual isolated service, explicit demo seed and stubbed static metadata. No operator data, real OBS, Riot game, physical camera/microphone, streaming platform or long-run performance was exercised."
+}

@@ -1,0 +1,13 @@
+{
+  "testedSource": "7200a2d14dd07160c8aac9b9639901bc38bbb9cd",
+  "health": {
+    "service": "riftcast-director",
+    "version": "0.7.0",
+    "status": "ok",
+    "mode": "demo",
+    "lanEnabled": false
+  },
+  "port": 38723,
+  "isolatedDataDir": "/tmp/lolob-sol-7200a2d-bLHjxb/mock",
+  "engine": "explicit synthetic hook"
+}

@@ -1,0 +1,10 @@
+{
+  "trigger": "two synchronous DOM click events, delayed response",
+  "requests": 2,
+  "recordsAdded": 2,
+  "titles": [
+    "SOL 归档记录",
+    "SOL 归档记录"
+  ],
+  "requestIds": "distinct by normal send; no retry-id reuse"
+}
