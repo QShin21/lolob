@@ -3,14 +3,15 @@ import {bottomPlayers} from '../../../server/bottom-scoreboard';
 import {lineupRunes} from '../../../shared/lineup-runes';
 import {runeImage} from '../../../shared/player-assets';
 import {championFor,getTeam} from '../../lib';
-import {championArtwork} from '../../../shared/champion-art';
+import banners from '../../../shared/lineup-banner-catalog.json';
+const bannerUrls=new Map(banners.champions.map(c=>[c.id,c.url]));
 import {TeamMark} from './ProgramPrimitives';
 import './rune-lineup.css';
 const roles=['上单','打野','中单','下路','辅助'];
-function Lane({index}:{index:number}){return <svg viewBox="0 0 40 40" aria-label={roles[index]} role="img">{index===1?<path d="M8 7l9 12-2-15 7 12 9-12-5 20 8-9-10 19h-7L5 17l10 8z"/>:index===4?<path d="M4 10l13 3 3 7 3-7 13-3-8 12-5 2-1 12h-4l-1-12-5-2zM15 5h10l-5 7z"/>:<><path fillRule="evenodd" d="M5 5h30v30H5V5zm6 6v18h18V11H11z"/><path d={index===0?'M5 5h30l-7 7H12v16l-7 7z':index===2?'M5 30L30 5h6L11 36H5z':'M35 35H5l7-7h16V12l7-7z'}/></>}</svg>}
+function Lane({index}:{index:number}){return <svg viewBox="0 0 40 40" aria-label={roles[index]} role="img">{index===1?<path d="M8 7l9 12-2-15 7 12 9-12-5 20 8-9-10 19h-7L5 17l10 8z"/>:index===4?<path d="M4 10l13 3 3 7 3-7 13-3-8 12-5 2-1 12h-4l-1-12-5-2zM15 5h10l-5 7z"/>:<>{index===0?<><path d="M5 5h30l-7 7H12v16l-7 7z"/><path d="M17 17h11v11H17zM35 13v22H13l5-5h12V18z" opacity=".3"/></>:index===2?<><path d="M5 5h21l-6 6h-9v9l-6 6zM35 35H14l6-6h9v-9l6-6z" opacity=".3"/><path d="M5 29L29 5h7v6L11 36H5z"/></>:<><path d="M35 35H5l7-7h16V12l7-7z"/><path d="M12 12h11v11H12zM5 27V5h22l-5 5H10v12z" opacity=".3"/></>}</>}</svg>}
 function Row({player,side,champions}:{player?:Player;side:Side;champions:Champion[]}){
  const champion=championFor(champions,player?.championId||'');const runes=lineupRunes(player);
- return <article className={`rl-card ${side}`}><div className="rl-art">{champion&&<img src={championArtwork(champion,'draft')} alt={champion.name}/>}</div><div className="rl-info"><strong title={player?.name}>{player?.name||'待确认选手'}</strong><div className="rl-runes" aria-label={`${player?.name||'选手'}符文`}>{runes.map((id,i)=><span key={i} title={`符文 ${id}`}><img src={runeImage(id)} alt={`符文 ${id}`}/></span>)}</div></div></article>;
+ return <article className={`rl-card ${side}`}><div className="rl-art">{champion&&<img src={bannerUrls.get(champion.id)} alt={champion.name}/>}</div><div className="rl-info"><strong title={player?.name}>{player?.name||'待确认选手'}</strong><div className="rl-runes" aria-label={`${player?.name||'选手'}符文`}>{runes.map((id,i)=><span key={i} title={`符文 ${id}`}><img src={runeImage(id)} alt={`符文 ${id}`}/></span>)}</div></div></article>;
 }
 export function Lineup({state,champions}:{state:BroadcastState;champions:Champion[]}){
  const blue=bottomPlayers(state,'blue'),red=bottomPlayers(state,'red');

@@ -9,7 +9,6 @@ export function selectedRuneIds(full:unknown):number[]|undefined {
  return ids as number[];
 }
 export function lineupRunes(player?:Player):number[]{
- if(player?.fullRuneIds?.length===6&&player.fullRuneIds.every(id=>selected.has(id)))return player.fullRuneIds;
- const ids=[player?.runeSelection?.keystoneId??player?.runeIds?.[0],player?.runeSelection?.primaryTreeId??player?.runeIds?.[1],player?.runeSelection?.secondaryTreeId??player?.runeIds?.[2]];
+ const ids=[player?.runeSelection?.keystoneId??player?.runeIds?.[0],player?.runeSelection?.secondaryTreeId??player?.runeIds?.[2]];
  return [...new Set(ids.filter((id):id is number=>!!id&&catalog.runes.some(r=>r.id===id)))];
 }

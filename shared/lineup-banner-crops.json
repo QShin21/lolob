@@ -1,0 +1,525 @@
+{
+  "width": 1200,
+  "height": 312,
+  "champions": {
+    "Aatrox": {
+      "centerY": 0.25
+    },
+    "Ahri": {
+      "centerY": 0.33
+    },
+    "Akali": {
+      "centerY": 0.23
+    },
+    "Akshan": {
+      "centerY": 0.54
+    },
+    "Alistar": {
+      "centerY": 0.38
+    },
+    "Ambessa": {
+      "centerY": 0.28
+    },
+    "Amumu": {
+      "centerY": 0.38
+    },
+    "Anivia": {
+      "centerY": 0.38
+    },
+    "Annie": {
+      "centerY": 0.38
+    },
+    "Aphelios": {
+      "centerY": 0.29
+    },
+    "Ashe": {
+      "centerY": 0.38
+    },
+    "AurelionSol": {
+      "centerY": 0.38
+    },
+    "Aurora": {
+      "centerY": 0.28
+    },
+    "Azir": {
+      "centerY": 0.28
+    },
+    "Bard": {
+      "centerY": 0.38
+    },
+    "Belveth": {
+      "centerY": 0.28
+    },
+    "Blitzcrank": {
+      "centerY": 0.38
+    },
+    "Brand": {
+      "centerY": 0.38
+    },
+    "Braum": {
+      "centerY": 0.27
+    },
+    "Briar": {
+      "centerY": 0.38
+    },
+    "Caitlyn": {
+      "centerY": 0.27
+    },
+    "Camille": {
+      "centerY": 0.23
+    },
+    "Cassiopeia": {
+      "centerY": 0.38
+    },
+    "Chogath": {
+      "centerY": 0.38
+    },
+    "Corki": {
+      "centerY": 0.38
+    },
+    "Darius": {
+      "centerY": 0.24
+    },
+    "Diana": {
+      "centerY": 0.38
+    },
+    "Draven": {
+      "centerY": 0.38
+    },
+    "DrMundo": {
+      "centerY": 0.28
+    },
+    "Ekko": {
+      "centerY": 0.25
+    },
+    "Elise": {
+      "centerY": 0.26
+    },
+    "Evelynn": {
+      "centerY": 0.28
+    },
+    "Ezreal": {
+      "centerY": 0.38
+    },
+    "Fiddlesticks": {
+      "centerY": 0.38
+    },
+    "Fiora": {
+      "centerY": 0.24
+    },
+    "Fizz": {
+      "centerY": 0.38
+    },
+    "Galio": {
+      "centerY": 0.23
+    },
+    "Gangplank": {
+      "centerY": 0.22
+    },
+    "Garen": {
+      "centerY": 0.38
+    },
+    "Gnar": {
+      "centerY": 0.57
+    },
+    "Gragas": {
+      "centerY": 0.3
+    },
+    "Graves": {
+      "centerY": 0.25
+    },
+    "Gwen": {
+      "centerY": 0.27
+    },
+    "Hecarim": {
+      "centerY": 0.38
+    },
+    "Heimerdinger": {
+      "centerY": 0.38
+    },
+    "Hwei": {
+      "centerY": 0.38
+    },
+    "Illaoi": {
+      "centerY": 0.22
+    },
+    "Irelia": {
+      "centerY": 0.26
+    },
+    "Ivern": {
+      "centerY": 0.23
+    },
+    "Janna": {
+      "centerY": 0.38
+    },
+    "JarvanIV": {
+      "centerY": 0.3
+    },
+    "Jax": {
+      "centerY": 0.38
+    },
+    "Jayce": {
+      "centerY": 0.38
+    },
+    "Jhin": {
+      "centerY": 0.25
+    },
+    "Jinx": {
+      "centerY": 0.29
+    },
+    "Kaisa": {
+      "centerY": 0.26
+    },
+    "Kalista": {
+      "centerY": 0.29
+    },
+    "Karma": {
+      "centerY": 0.27
+    },
+    "Karthus": {
+      "centerY": 0.24
+    },
+    "Kassadin": {
+      "centerY": 0.27
+    },
+    "Katarina": {
+      "centerY": 0.38
+    },
+    "Kayle": {
+      "centerY": 0.38
+    },
+    "Kayn": {
+      "centerY": 0.38
+    },
+    "Kennen": {
+      "centerY": 0.38
+    },
+    "Khazix": {
+      "centerY": 0.38
+    },
+    "Kindred": {
+      "centerY": 0.38
+    },
+    "Kled": {
+      "centerY": 0.38
+    },
+    "KogMaw": {
+      "centerY": 0.62
+    },
+    "KSante": {
+      "centerY": 0.25
+    },
+    "Leblanc": {
+      "centerY": 0.27
+    },
+    "LeeSin": {
+      "centerY": 0.22
+    },
+    "Leona": {
+      "centerY": 0.22
+    },
+    "Lillia": {
+      "centerY": 0.38
+    },
+    "Lissandra": {
+      "centerY": 0.24
+    },
+    "Locke": {
+      "centerY": 0.22
+    },
+    "Lucian": {
+      "centerY": 0.38
+    },
+    "Lulu": {
+      "centerY": 0.38
+    },
+    "Lux": {
+      "centerY": 0.38
+    },
+    "Malphite": {
+      "centerY": 0.51
+    },
+    "Malzahar": {
+      "centerY": 0.3
+    },
+    "Maokai": {
+      "centerY": 0.38
+    },
+    "MasterYi": {
+      "centerY": 0.5
+    },
+    "Mel": {
+      "centerY": 0.24
+    },
+    "Milio": {
+      "centerY": 0.35
+    },
+    "MissFortune": {
+      "centerY": 0.38
+    },
+    "MonkeyKing": {
+      "centerY": 0.38
+    },
+    "Mordekaiser": {
+      "centerY": 0.24
+    },
+    "Morgana": {
+      "centerY": 0.38
+    },
+    "Naafiri": {
+      "centerY": 0.38
+    },
+    "Nami": {
+      "centerY": 0.38
+    },
+    "Nasus": {
+      "centerY": 0.29
+    },
+    "Nautilus": {
+      "centerY": 0.3
+    },
+    "Neeko": {
+      "centerY": 0.34
+    },
+    "Nidalee": {
+      "centerY": 0.26
+    },
+    "Nilah": {
+      "centerY": 0.38
+    },
+    "Nocturne": {
+      "centerY": 0.38
+    },
+    "Nunu": {
+      "centerY": 0.38
+    },
+    "Olaf": {
+      "centerY": 0.38
+    },
+    "Orianna": {
+      "centerY": 0.23
+    },
+    "Ornn": {
+      "centerY": 0.38
+    },
+    "Pantheon": {
+      "centerY": 0.25
+    },
+    "Poppy": {
+      "centerY": 0.38
+    },
+    "Pyke": {
+      "centerY": 0.38
+    },
+    "Qiyana": {
+      "centerY": 0.38
+    },
+    "Quinn": {
+      "centerY": 0.38
+    },
+    "Rakan": {
+      "centerY": 0.38
+    },
+    "Rammus": {
+      "centerY": 0.38
+    },
+    "RekSai": {
+      "centerY": 0.38
+    },
+    "Rell": {
+      "centerY": 0.23
+    },
+    "Renata": {
+      "centerY": 0.2
+    },
+    "Renekton": {
+      "centerY": 0.38
+    },
+    "Rengar": {
+      "centerY": 0.38
+    },
+    "Riven": {
+      "centerY": 0.23
+    },
+    "Rumble": {
+      "centerY": 0.38
+    },
+    "Ryze": {
+      "centerY": 0.38
+    },
+    "Samira": {
+      "centerY": 0.27
+    },
+    "Sejuani": {
+      "centerY": 0.27
+    },
+    "Senna": {
+      "centerY": 0.38
+    },
+    "Seraphine": {
+      "centerY": 0.3
+    },
+    "Sett": {
+      "centerY": 0.22
+    },
+    "Shaco": {
+      "centerY": 0.25
+    },
+    "Shen": {
+      "centerY": 0.23
+    },
+    "Shyvana": {
+      "centerY": 0.27
+    },
+    "Singed": {
+      "centerY": 0.31
+    },
+    "Sion": {
+      "centerY": 0.38
+    },
+    "Sivir": {
+      "centerY": 0.24
+    },
+    "Skarner": {
+      "centerY": 0.24
+    },
+    "Smolder": {
+      "centerY": 0.38
+    },
+    "Sona": {
+      "centerY": 0.25
+    },
+    "Soraka": {
+      "centerY": 0.22
+    },
+    "Swain": {
+      "centerY": 0.23
+    },
+    "Sylas": {
+      "centerY": 0.38
+    },
+    "Syndra": {
+      "centerY": 0.27
+    },
+    "TahmKench": {
+      "centerY": 0.45
+    },
+    "Taliyah": {
+      "centerY": 0.38
+    },
+    "Talon": {
+      "centerY": 0.38
+    },
+    "Taric": {
+      "centerY": 0.24
+    },
+    "Teemo": {
+      "centerY": 0.38
+    },
+    "Thresh": {
+      "centerY": 0.38
+    },
+    "Tristana": {
+      "centerY": 0.38
+    },
+    "Trundle": {
+      "centerY": 0.3
+    },
+    "Tryndamere": {
+      "centerY": 0.38
+    },
+    "TwistedFate": {
+      "centerY": 0.38
+    },
+    "Twitch": {
+      "centerY": 0.38
+    },
+    "Udyr": {
+      "centerY": 0.24
+    },
+    "Urgot": {
+      "centerY": 0.38
+    },
+    "Varus": {
+      "centerY": 0.24
+    },
+    "Vayne": {
+      "centerY": 0.38
+    },
+    "Veigar": {
+      "centerY": 0.38
+    },
+    "Velkoz": {
+      "centerY": 0.38
+    },
+    "Vex": {
+      "centerY": 0.38
+    },
+    "Vi": {
+      "centerY": 0.38
+    },
+    "Viego": {
+      "centerY": 0.24
+    },
+    "Viktor": {
+      "centerY": 0.38
+    },
+    "Vladimir": {
+      "centerY": 0.28
+    },
+    "Volibear": {
+      "centerY": 0.25
+    },
+    "Warwick": {
+      "centerY": 0.52
+    },
+    "Xayah": {
+      "centerY": 0.38
+    },
+    "Xerath": {
+      "centerY": 0.38
+    },
+    "XinZhao": {
+      "centerY": 0.27
+    },
+    "Yasuo": {
+      "centerY": 0.38
+    },
+    "Yone": {
+      "centerY": 0.28
+    },
+    "Yorick": {
+      "centerY": 0.23
+    },
+    "Yunara": {
+      "centerY": 0.29
+    },
+    "Yuumi": {
+      "centerY": 0.31
+    },
+    "Zaahen": {
+      "centerY": 0.24
+    },
+    "Zac": {
+      "centerY": 0.5
+    },
+    "Zed": {
+      "centerY": 0.27
+    },
+    "Zeri": {
+      "centerY": 0.38
+    },
+    "Ziggs": {
+      "centerY": 0.38
+    },
+    "Zilean": {
+      "centerY": 0.38
+    },
+    "Zoe": {
+      "centerY": 0.38
+    },
+    "Zyra": {
+      "centerY": 0.38
+    }
+  }
+}

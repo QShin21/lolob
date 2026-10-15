@@ -22,6 +22,9 @@ module.exports = {
     for (const champion of require('./shared/champion-art-catalog.json').champions) {
       if (!fs.existsSync(path.join(appRoot, 'dist/champion-art', champion.id + '-icon.webp'))) throw new Error('OCR 内置头像缺失: ' + champion.id);
     }
+    for (const banner of require('./shared/lineup-banner-catalog.json').champions) {
+      if (!fs.existsSync(path.join(appRoot, 'dist/lineup-banners', banner.id + '.webp'))) throw new Error('首发横幅缺失: ' + banner.id);
+    }
     for (const rune of require('./shared/rune-catalog.json').runes) {
       if (!fs.existsSync(path.join(appRoot, 'dist/runes', rune.id + '.png'))) throw new Error('内置符文图标缺失: ' + rune.id);
     }

@@ -1,0 +1,2082 @@
+{
+  "width": 1200,
+  "height": 312,
+  "champions": [
+    {
+      "id": "Aatrox",
+      "url": "/lineup-banners/Aatrox.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aatrox_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "686fa40643079add1aec433c3f0d02c46fda002af72ac827e8eb8aebafa7f02d"
+    },
+    {
+      "id": "Ahri",
+      "url": "/lineup-banners/Ahri.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 79,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "e0f1f018234c87157cf23cdc93a7f6b533ff2c9e013b61cb9b9127cb9f30e70a"
+    },
+    {
+      "id": "Akali",
+      "url": "/lineup-banners/Akali.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Akali_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "a36776e23ffaee92c0c8c3b44af459e6722c2041eded18bdc9f8fd2d66ac636b"
+    },
+    {
+      "id": "Akshan",
+      "url": "/lineup-banners/Akshan.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Akshan_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 229,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "214681e28e4b165ccaee6cb90e57a514b43300c581a2ea86c1efd5b2418429ef"
+    },
+    {
+      "id": "Alistar",
+      "url": "/lineup-banners/Alistar.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Alistar_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "88393ee1f9e17c19e67f22f8c5e66fa17d5e6d84ec5bda517251ac7f920efd87"
+    },
+    {
+      "id": "Ambessa",
+      "url": "/lineup-banners/Ambessa.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ambessa_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 43,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "6afeea60742d01fc0e5df66f5afb780605a464c69ee13a83ad4f8a4de678e9db"
+    },
+    {
+      "id": "Amumu",
+      "url": "/lineup-banners/Amumu.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Amumu_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "2a8a9942597e946e04bbe8cc37806257b3916157cceede6124ff33304530fd33"
+    },
+    {
+      "id": "Anivia",
+      "url": "/lineup-banners/Anivia.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Anivia_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "37c79ed80a727f82575f9b554baaba78dbdbf56015a80b24855cf50229e17f06"
+    },
+    {
+      "id": "Annie",
+      "url": "/lineup-banners/Annie.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Annie_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "baa56a2fd1de59ff09b0aa13310c8ee7f81ef926404877f4a41a586244c520ac"
+    },
+    {
+      "id": "Aphelios",
+      "url": "/lineup-banners/Aphelios.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 50,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "2be2e2eb478129ab8650cf58c0420eda164730923dab8132014a5b4f67050eee"
+    },
+    {
+      "id": "Ashe",
+      "url": "/lineup-banners/Ashe.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ashe_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9fd2c38cc7c934cf093a20db35ccd29285b6529ce5cce85bdeefdd280d7c085c"
+    },
+    {
+      "id": "AurelionSol",
+      "url": "/lineup-banners/AurelionSol.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/AurelionSol_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "aebc2fa73a5a24062b06aefd9e26b9193bb463bc3b615620fbe2322d0762d6bb"
+    },
+    {
+      "id": "Aurora",
+      "url": "/lineup-banners/Aurora.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aurora_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 43,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "880e0e0cecfa91d17b25924ca40ca0305f3f71ba05aa26a0294357d0f2313ae0"
+    },
+    {
+      "id": "Azir",
+      "url": "/lineup-banners/Azir.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Azir_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 43,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "0c76ce2a55561d0e667b0af9192fb2e5e4fe3bd5bd532d5ec6bfd78b4c167756"
+    },
+    {
+      "id": "Bard",
+      "url": "/lineup-banners/Bard.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Bard_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "92ed1ecba3ce56cf976c4098153ff1ba81c4d70cdfa18ffa88e57597e580a045"
+    },
+    {
+      "id": "Belveth",
+      "url": "/lineup-banners/Belveth.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Belveth_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 43,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "ede19373a37fe13163b26b6571499b8afca3a03d008609ab7f57578e10afcf2a"
+    },
+    {
+      "id": "Blitzcrank",
+      "url": "/lineup-banners/Blitzcrank.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Blitzcrank_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "df2eee9d65ffa1a3399d1252a351fef6a309babe72de3c7fa6c97a6d18f73197"
+    },
+    {
+      "id": "Brand",
+      "url": "/lineup-banners/Brand.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Brand_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "c5048ebc3b4182044afe9431ffd8bc05ddb9000f2b3d4a762fae951aab8aa078"
+    },
+    {
+      "id": "Braum",
+      "url": "/lineup-banners/Braum.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Braum_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "e5a2c977d0d86709480f44483b7eb291b39065ba22d6bd7e87ebde7984db173d"
+    },
+    {
+      "id": "Briar",
+      "url": "/lineup-banners/Briar.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Briar_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "b25867adedf0944290d974d8095e95c3fd3b31d24b89655ad0a549eabd586a9d"
+    },
+    {
+      "id": "Caitlyn",
+      "url": "/lineup-banners/Caitlyn.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Caitlyn_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "7f26d71c021d12ba14ed8794ccff243414aee3b74cc04840959382d73f916343"
+    },
+    {
+      "id": "Camille",
+      "url": "/lineup-banners/Camille.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Camille_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "25f650fcf56585e35167a65ebf4e9c006e5adb7cde2f78561392aa4b4aeb1c89"
+    },
+    {
+      "id": "Cassiopeia",
+      "url": "/lineup-banners/Cassiopeia.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Cassiopeia_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "eb9ee2a9d21c482d4f3a722edae51d8071725593b97b0bcdb4b78e67d37485de"
+    },
+    {
+      "id": "Chogath",
+      "url": "/lineup-banners/Chogath.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Chogath_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "3639f62be320a42743cb744c3e66c6536b2df482eab6bb5b1ecf0ef00b9fdbb7"
+    },
+    {
+      "id": "Corki",
+      "url": "/lineup-banners/Corki.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Corki_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9cbab39d4f7de14643ebaa733ae05d238b7b2b013af865f9d196f3240129ae62"
+    },
+    {
+      "id": "Darius",
+      "url": "/lineup-banners/Darius.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Darius_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "2d9df174e2d627ea9f318a736d5d3e2167dae7ce474999ffcca72c3204dcd0ea"
+    },
+    {
+      "id": "Diana",
+      "url": "/lineup-banners/Diana.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Diana_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "2e2a99f71e991b8e838fb402337b893e654cb3e364127e91bd26442f0e15672e"
+    },
+    {
+      "id": "Draven",
+      "url": "/lineup-banners/Draven.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Draven_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "c1dd25f1e6fa4df5f0785438dcb99b90a6c2dce99f4ac458df8431e0eb3de13a"
+    },
+    {
+      "id": "DrMundo",
+      "url": "/lineup-banners/DrMundo.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/DrMundo_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 43,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "4b33417b8d6655e226bb693ee28f99f138a44c60bb5bc93b8016bf6bb3b96229"
+    },
+    {
+      "id": "Ekko",
+      "url": "/lineup-banners/Ekko.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ekko_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "4ee1a428456c8f2de0a89a82c3b124f24ab5d01b25c67b372712c93d13b3f5a2"
+    },
+    {
+      "id": "Elise",
+      "url": "/lineup-banners/Elise.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Elise_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 28,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "e9276b8f7c43e6744ac62a40686e89587d84c5cea9026dbe43e319e63b1fe250"
+    },
+    {
+      "id": "Evelynn",
+      "url": "/lineup-banners/Evelynn.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Evelynn_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 43,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "777fda414d9a23131091f3a27a0ec9eced830bdf58708e2e199c840d51b5ae78"
+    },
+    {
+      "id": "Ezreal",
+      "url": "/lineup-banners/Ezreal.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ezreal_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "b653ad969e32feaf6e55dc904f13eacc44fd7c8b28c1b981a1858421f4359127"
+    },
+    {
+      "id": "Fiddlesticks",
+      "url": "/lineup-banners/Fiddlesticks.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Fiddlesticks_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "81e2c40554295762a751be9aba8451e7daea08aa4e2325660b6edc443c80b95f"
+    },
+    {
+      "id": "Fiora",
+      "url": "/lineup-banners/Fiora.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Fiora_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "d175fcd01198f8d2581615bbe63e80cd8c7f58d89c825941ef68f26363f13863"
+    },
+    {
+      "id": "Fizz",
+      "url": "/lineup-banners/Fizz.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Fizz_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "5d1b141aaf8bf34f751b013d3fc3c332ffe48606f92598d2575c6b68bc8725da"
+    },
+    {
+      "id": "Galio",
+      "url": "/lineup-banners/Galio.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Galio_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "c8cf50e61a2b3aa0f3acc951a0e91bcf8de7b5e6b7ed28d8beeb1e957476ae0a"
+    },
+    {
+      "id": "Gangplank",
+      "url": "/lineup-banners/Gangplank.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gangplank_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "c6938ed83865bc8caf488204909a8c7bbeee663f88f901d683f1298df77a9655"
+    },
+    {
+      "id": "Garen",
+      "url": "/lineup-banners/Garen.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Garen_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "06a4610d0ef1fcdcb3c2b03a543ffc0edc21c7a3031c6578c13f9620f5982070"
+    },
+    {
+      "id": "Gnar",
+      "url": "/lineup-banners/Gnar.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gnar_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 251,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "1272ced793bccad4d0ad2ba703550a02748f38e592cfe53655239693c320351b"
+    },
+    {
+      "id": "Gragas",
+      "url": "/lineup-banners/Gragas.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 57,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "48e73f55a332fb9f9cad2357acb66e6a0bb50d1dba7ac40d2a0ed03d8707f52b"
+    },
+    {
+      "id": "Graves",
+      "url": "/lineup-banners/Graves.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Graves_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "a8a736ab510cd8f01c4f5027c42ed31691ff61797064145b4e2257a853f925b6"
+    },
+    {
+      "id": "Gwen",
+      "url": "/lineup-banners/Gwen.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gwen_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "b766acdb1215500064f6c7d5e2ea17a191621801ab694920b9ce0d4619ea8d9a"
+    },
+    {
+      "id": "Hecarim",
+      "url": "/lineup-banners/Hecarim.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Hecarim_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "156aa5770062a4814d73ae9abdea6cc50910639076de6d30cdc68026a63bc18b"
+    },
+    {
+      "id": "Heimerdinger",
+      "url": "/lineup-banners/Heimerdinger.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Heimerdinger_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9c67ae3cdfa0530baf3b3b089815034f29fcfee69c308471ca264fcbf57b5714"
+    },
+    {
+      "id": "Hwei",
+      "url": "/lineup-banners/Hwei.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Hwei_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "f3a4a29337e12aa205d69b086b772ac624940ee72ce555826ae9a2cc7489922c"
+    },
+    {
+      "id": "Illaoi",
+      "url": "/lineup-banners/Illaoi.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Illaoi_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "81c6d1a714ddc808326eae5493d2351cc8ed16304023c0f05604730a566c4aaf"
+    },
+    {
+      "id": "Irelia",
+      "url": "/lineup-banners/Irelia.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Irelia_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 28,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "ee0327325e45a7ab6d25a8511d4f49ceeef6d1be31c3596c79b1d2e8a0d091ff"
+    },
+    {
+      "id": "Ivern",
+      "url": "/lineup-banners/Ivern.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ivern_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "92316fd35d85aacdaecb98954b70171fa076069c3de5eadee26dfef714c01e82"
+    },
+    {
+      "id": "Janna",
+      "url": "/lineup-banners/Janna.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Janna_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "aff9a0e7fce034bb2fab551d457931fc67ad540dbf3885e0dcaea43e9171790a"
+    },
+    {
+      "id": "JarvanIV",
+      "url": "/lineup-banners/JarvanIV.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/JarvanIV_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 57,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "bf24b69648ad0a0cfc2614c440945967178899f4bf0d7955519e2ec58eb761f8"
+    },
+    {
+      "id": "Jax",
+      "url": "/lineup-banners/Jax.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jax_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "a5c5ee337e9dc788f64dfb5ec6cf46b17f46b608c15a34b3c5564844c75db913"
+    },
+    {
+      "id": "Jayce",
+      "url": "/lineup-banners/Jayce.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jayce_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "a98bd66c4ee27d82bdb8f232b3975d4724c7a21ac5b6fcd8f00efd5db3fce609"
+    },
+    {
+      "id": "Jhin",
+      "url": "/lineup-banners/Jhin.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jhin_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "8159d4e70119a1671036ff43ac294f0a3d13deadb238cc195af6fb47509dfb9f"
+    },
+    {
+      "id": "Jinx",
+      "url": "/lineup-banners/Jinx.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 50,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "528dcd6687d976556ee27a8235cdc77066f52e1e8e26b4739600af42d667b7af"
+    },
+    {
+      "id": "Kaisa",
+      "url": "/lineup-banners/Kaisa.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kaisa_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 28,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "a0faa6ec520fdeda99e66af133ba4e0333e1704d99f6e69e9f98f5c37155c788"
+    },
+    {
+      "id": "Kalista",
+      "url": "/lineup-banners/Kalista.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kalista_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 50,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "2344fdb0a82f08c297ec13f477026a402910ccb13dfa6722e732510d3887db83"
+    },
+    {
+      "id": "Karma",
+      "url": "/lineup-banners/Karma.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Karma_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "ad51af5885b915deb0079c47d7e92387a628ef3d9f7d034e90d251808acbffab"
+    },
+    {
+      "id": "Karthus",
+      "url": "/lineup-banners/Karthus.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Karthus_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "ad927dcb4236594408cf95bf3ae3aab79c7f4f576b858511d0f50ec860ca122c"
+    },
+    {
+      "id": "Kassadin",
+      "url": "/lineup-banners/Kassadin.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kassadin_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "e969304937531bc776b2b2861cba52f22524ff25039ae34376d50421386b937f"
+    },
+    {
+      "id": "Katarina",
+      "url": "/lineup-banners/Katarina.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Katarina_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "68b487e4cad5d63e5083071c6310f39d10d691dfeaae01fa4eba9bf6679baa59"
+    },
+    {
+      "id": "Kayle",
+      "url": "/lineup-banners/Kayle.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kayle_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "80fda8d8773ce301a6a31b138bbc205a017fa6de4d62d0aa123f00b207a885b9"
+    },
+    {
+      "id": "Kayn",
+      "url": "/lineup-banners/Kayn.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kayn_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "21bd0901e429b9a4b4f9ef10a62600ff662c58d13147fe086a9d1706ed37e4d8"
+    },
+    {
+      "id": "Kennen",
+      "url": "/lineup-banners/Kennen.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kennen_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "ade73749bc655a1c5af564d766adcf00a917aee9dfaedc4c1525bafce6ed7433"
+    },
+    {
+      "id": "Khazix",
+      "url": "/lineup-banners/Khazix.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Khazix_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "de251bd728cc6c15db0cf8098d1978cd270f64f79d2d92525a7a3dcaff572c3d"
+    },
+    {
+      "id": "Kindred",
+      "url": "/lineup-banners/Kindred.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kindred_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "571ec5014765c31c1641e1c0e1467cc24b566895c3f798f524c92d7ef43b49f0"
+    },
+    {
+      "id": "Kled",
+      "url": "/lineup-banners/Kled.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kled_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "960d3d1cbaa8db2f7d49b0d3727867ee5ba35e244a7b172648eb64a88b85c893"
+    },
+    {
+      "id": "KogMaw",
+      "url": "/lineup-banners/KogMaw.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/KogMaw_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 287,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "ccf36c8469bddb4c90a587e479d4fc8f834ea0fc09fcbf7665b0753f870f852b"
+    },
+    {
+      "id": "KSante",
+      "url": "/lineup-banners/KSante.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/KSante_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "7eb5a2f7bf75d8d1bcd8616ab5f38277065755bc14ab60abf7200453a689a182"
+    },
+    {
+      "id": "Leblanc",
+      "url": "/lineup-banners/Leblanc.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Leblanc_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "5b2a6b7aa4257a27c39a1aec7345084d237596438a08d762753c6b18aa1efcd9"
+    },
+    {
+      "id": "LeeSin",
+      "url": "/lineup-banners/LeeSin.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/LeeSin_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "806b73e43f6f43e067274808e4ced5ffb0ccb3883dda763bd7c471c7ec916c8e"
+    },
+    {
+      "id": "Leona",
+      "url": "/lineup-banners/Leona.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Leona_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "63f0b1cac1abb626125cfe29f3e0d50734adfd446c3fbb7bf6dc4a38bf291235"
+    },
+    {
+      "id": "Lillia",
+      "url": "/lineup-banners/Lillia.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lillia_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "0ff850dc375a16a81b5d9f23227ba1fadccfc4bfe373a778b6d8b750d67380d5"
+    },
+    {
+      "id": "Lissandra",
+      "url": "/lineup-banners/Lissandra.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lissandra_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9d1f636ee165e81f6954d4720c1ca712c63c8d735508557b8b9c6624db7af915"
+    },
+    {
+      "id": "Locke",
+      "url": "/lineup-banners/Locke.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Locke_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "286230e7491001e6396d2537c24b2c19c52dc0eb20cb309453c00251bbde223b"
+    },
+    {
+      "id": "Lucian",
+      "url": "/lineup-banners/Lucian.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lucian_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "1a8774ae3fbd2e306a18588126ea4f165ddef4162284debb159a6245d7fd081d"
+    },
+    {
+      "id": "Lulu",
+      "url": "/lineup-banners/Lulu.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lulu_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "24757c2b5a01e51277e2ebe7ff357bca106116d249407f54f41e37d1967740f4"
+    },
+    {
+      "id": "Lux",
+      "url": "/lineup-banners/Lux.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lux_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "786d680acfea955a359989e20487bb638a8eafb9c0f163feaacdd0fdb38ded6a"
+    },
+    {
+      "id": "Malphite",
+      "url": "/lineup-banners/Malphite.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Malphite_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 208,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "c0de7d8bf3790c4b370349e23f479ba80e947154ce9b46a4d0ea75405894a413"
+    },
+    {
+      "id": "Malzahar",
+      "url": "/lineup-banners/Malzahar.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Malzahar_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 57,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "b364474d5ce404e8cc4935c8574e38e4b0502dca71338fc93bd9734fbd6fbe91"
+    },
+    {
+      "id": "Maokai",
+      "url": "/lineup-banners/Maokai.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Maokai_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "19c060f2872027b8ee08daf8aff7d024835569103e580f97b381bd268b75542a"
+    },
+    {
+      "id": "MasterYi",
+      "url": "/lineup-banners/MasterYi.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/MasterYi_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 201,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "40c50435baf86f77474b859c2ce4164e13f26d21d20ce7c8089a87c955fe9d67"
+    },
+    {
+      "id": "Mel",
+      "url": "/lineup-banners/Mel.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Mel_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "3fe95dfd8501552a9f01551680ca953f674d494b5930d271880f7551b3beb007"
+    },
+    {
+      "id": "Milio",
+      "url": "/lineup-banners/Milio.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Milio_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 93,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "86f98062309aca6708c389b752a8988d9eb43f3c53dbc4185feeb4f1e4e7cf0d"
+    },
+    {
+      "id": "MissFortune",
+      "url": "/lineup-banners/MissFortune.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/MissFortune_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "5d25ddb2b2c0e848337902aa9f38048789d3799fbfb0cca5caa7257107129d7c"
+    },
+    {
+      "id": "MonkeyKing",
+      "url": "/lineup-banners/MonkeyKing.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/MonkeyKing_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "59e578e8429f16c8deae3e28bd1bd5d21df4b36700ba54900cdc3cb3ca345570"
+    },
+    {
+      "id": "Mordekaiser",
+      "url": "/lineup-banners/Mordekaiser.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Mordekaiser_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "29d5f335d6c5d53f26b0941477d2334d811f96a436772e87a6921bd84488628f"
+    },
+    {
+      "id": "Morgana",
+      "url": "/lineup-banners/Morgana.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Morgana_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "53569d59e18e780da6bc4e343eac2e79634b75b8075f726e06039373f3e82390"
+    },
+    {
+      "id": "Naafiri",
+      "url": "/lineup-banners/Naafiri.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Naafiri_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "09082dd3d25e80af7a31eb41dcd398cae77ddf454cac2b78f20baa29e2f86c89"
+    },
+    {
+      "id": "Nami",
+      "url": "/lineup-banners/Nami.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nami_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "6aa16b6aa50db1019d8a1a2111b4fa6fc7df901aa58fed5b16438a72d88198fc"
+    },
+    {
+      "id": "Nasus",
+      "url": "/lineup-banners/Nasus.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nasus_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 50,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "db3578d310ef03fb23f628e9eb6fd0e2a7465659d664e7ac8821eb2307cac89c"
+    },
+    {
+      "id": "Nautilus",
+      "url": "/lineup-banners/Nautilus.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nautilus_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 57,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "838d673f6dacee8327953a37717cf4db30b65364ea2c8b77a7dd1f935f8810de"
+    },
+    {
+      "id": "Neeko",
+      "url": "/lineup-banners/Neeko.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Neeko_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 86,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "88f9f3a3f5bf952ae8d0331c9a02ab181bec04474d120c1a105533fdbbced9c5"
+    },
+    {
+      "id": "Nidalee",
+      "url": "/lineup-banners/Nidalee.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nidalee_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 28,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "d91156506eaef268e359a48dcbf2e8b3b238ec7b880bfcd77141b681b8ce6a9c"
+    },
+    {
+      "id": "Nilah",
+      "url": "/lineup-banners/Nilah.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nilah_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "d55598d319b8190314c5711c93d7ade98a5779ac44ce3a50ab668ef265022cab"
+    },
+    {
+      "id": "Nocturne",
+      "url": "/lineup-banners/Nocturne.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "1f13e003168dd7e4b0d4a2a4f9cf9cc3bf19f8fce9bf69d510bcda2fb55c2935"
+    },
+    {
+      "id": "Nunu",
+      "url": "/lineup-banners/Nunu.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nunu_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9219b6266d1b00e4779b88700ffb0dd13795ace5f5fbd75a4d2f20fc1b6afd41"
+    },
+    {
+      "id": "Olaf",
+      "url": "/lineup-banners/Olaf.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Olaf_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "6a1a909366c2908c6dde5c8eb6012ba3b469689c4253f795d58d7a21b182fa64"
+    },
+    {
+      "id": "Orianna",
+      "url": "/lineup-banners/Orianna.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Orianna_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "337c3b4d54ef7955920e8953528e4fa1e1bfa5cd697286aeb1463877d459f8f2"
+    },
+    {
+      "id": "Ornn",
+      "url": "/lineup-banners/Ornn.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ornn_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "b270ee6ba6c65aba663d348a7cf8086b92b0b393e74a98f98628245f58335da7"
+    },
+    {
+      "id": "Pantheon",
+      "url": "/lineup-banners/Pantheon.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Pantheon_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "7ae23d998cd490c68240eba2e743a1cb1f93bc8b516c081eb6c083737e6035fd"
+    },
+    {
+      "id": "Poppy",
+      "url": "/lineup-banners/Poppy.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Poppy_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9cd970403deeca94a5d17c3b08041cfddcfb19246d901f01361a6d34e07a586f"
+    },
+    {
+      "id": "Pyke",
+      "url": "/lineup-banners/Pyke.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Pyke_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "f355ea288a49a7f28d1c97d6a8422a53b3430ad6fe771b8713d1bbbf43f075fd"
+    },
+    {
+      "id": "Qiyana",
+      "url": "/lineup-banners/Qiyana.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Qiyana_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "d08211bc6f6c847249a54bb4a73d917a0f3f7cf456f7b8d84530dd4826dc01c2"
+    },
+    {
+      "id": "Quinn",
+      "url": "/lineup-banners/Quinn.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Quinn_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "1afee111e104001f48b5f77a19c114ad65f991f7196154a071440a99799c5081"
+    },
+    {
+      "id": "Rakan",
+      "url": "/lineup-banners/Rakan.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rakan_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "c77c86fbc53d8ca794877d83435489efa0685fd7c67d030a409066bd5ae1d2fd"
+    },
+    {
+      "id": "Rammus",
+      "url": "/lineup-banners/Rammus.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rammus_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "a280b2de02ee3c27bbd8e644e72b953f1471089226a15308a335698fff78eb36"
+    },
+    {
+      "id": "RekSai",
+      "url": "/lineup-banners/RekSai.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/RekSai_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "0890def7ca705c32201b7cc2c320e2a147e34cffca3c8de3eb098ebedecd9740"
+    },
+    {
+      "id": "Rell",
+      "url": "/lineup-banners/Rell.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rell_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "e6aff147aa548af4bf30993ad09651984a3a47ab11dd243e780b245145790077"
+    },
+    {
+      "id": "Renata",
+      "url": "/lineup-banners/Renata.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Renata_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "7ed2ec24a4e1c123cd33abb2a6ac52e40fd1a7894362e4307be0f5d37f59632c"
+    },
+    {
+      "id": "Renekton",
+      "url": "/lineup-banners/Renekton.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Renekton_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "1387d50a9d33d3ff9a965dcb6244ff1c5cd26db86bb9c44d18cc845ecc8c1a60"
+    },
+    {
+      "id": "Rengar",
+      "url": "/lineup-banners/Rengar.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rengar_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9edbe3f3d1f835ca382894ea12b1982380e7fb94989cfd00a708e7a270f814d1"
+    },
+    {
+      "id": "Riven",
+      "url": "/lineup-banners/Riven.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Riven_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "ea3d214666823ebde0babfb6b99be66e53a9e1e94c97c042d85e38f5186f39ab"
+    },
+    {
+      "id": "Rumble",
+      "url": "/lineup-banners/Rumble.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rumble_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "bac2fe8a146f6e98b570b6574ca8412afa81f940dd228c0fb039354ad7b320df"
+    },
+    {
+      "id": "Ryze",
+      "url": "/lineup-banners/Ryze.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ryze_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9f6d061ffc2097b819399db3948c96f8282daf9789b2fab3a10c5836c705dc9d"
+    },
+    {
+      "id": "Samira",
+      "url": "/lineup-banners/Samira.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Samira_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9f284a8942cc48f9a59d9cf6ef554651aec8c7c78f5a97b967d829947f38fc43"
+    },
+    {
+      "id": "Sejuani",
+      "url": "/lineup-banners/Sejuani.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sejuani_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "981f0ab4d95f84cc5a72540bad61ac2a6ecabb65a99a194a7e8216bbaa99a942"
+    },
+    {
+      "id": "Senna",
+      "url": "/lineup-banners/Senna.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Senna_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "90ae59b98dcf020d634c98bc54a1273d4663d674cf9e8880839872e71bddae94"
+    },
+    {
+      "id": "Seraphine",
+      "url": "/lineup-banners/Seraphine.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Seraphine_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 57,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "b4f54115b728946f874b51f25df59fc157a7e6ee4771075deb0abe8fa43d7f3b"
+    },
+    {
+      "id": "Sett",
+      "url": "/lineup-banners/Sett.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sett_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "b6cc152a42421a0233b24b6f9d43570f8af891b72eb47a821f3e4571a774a038"
+    },
+    {
+      "id": "Shaco",
+      "url": "/lineup-banners/Shaco.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shaco_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "85236697f609264313ca9e76d91ddfbdb04618a19bfea94b1ecc85fd04975c5a"
+    },
+    {
+      "id": "Shen",
+      "url": "/lineup-banners/Shen.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shen_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "6033ab32058d6f5c9d0dc27a30beabe3decced333f9c2a3b4ebb0690f2b75a64"
+    },
+    {
+      "id": "Shyvana",
+      "url": "/lineup-banners/Shyvana.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shyvana_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9ef05409e6b6b003f8766a0700eb35c7e116e0d69472500788d3c8ba7a098b7c"
+    },
+    {
+      "id": "Singed",
+      "url": "/lineup-banners/Singed.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Singed_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 64,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "3acca5c1ed9b7615688c09441abd64e0aacac1df9083faf6fbd906bae9848ca4"
+    },
+    {
+      "id": "Sion",
+      "url": "/lineup-banners/Sion.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sion_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "092814daaa68c80cbe575c893ea9df9cb99823be26c865055d525ef14f15493d"
+    },
+    {
+      "id": "Sivir",
+      "url": "/lineup-banners/Sivir.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sivir_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "62cebee50c37cd97a0c0111bac9134598657ca043500dc8e0997b23f67e86f0d"
+    },
+    {
+      "id": "Skarner",
+      "url": "/lineup-banners/Skarner.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Skarner_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "4d42b41930345144463311d0af871097169d3156b296921dd002f8158b55f2d4"
+    },
+    {
+      "id": "Smolder",
+      "url": "/lineup-banners/Smolder.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Smolder_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "854bf704483771275dd23151b2db9a4087883338ad9548bcba74d10e7d35fb59"
+    },
+    {
+      "id": "Sona",
+      "url": "/lineup-banners/Sona.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sona_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "cd6f909bd737aca0b5ad5f68f75bd7a55fa349f01445a8fde2b742d22c55c82e"
+    },
+    {
+      "id": "Soraka",
+      "url": "/lineup-banners/Soraka.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Soraka_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "fd5c90ba65faffa914ef6deec75e8799714c873d29fd7676bde1e98e6c673d20"
+    },
+    {
+      "id": "Swain",
+      "url": "/lineup-banners/Swain.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Swain_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "9248326d52f4d2fb3c9b39560f9ea6ac18f0131cfd4e1adbc4483b712b9f4670"
+    },
+    {
+      "id": "Sylas",
+      "url": "/lineup-banners/Sylas.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sylas_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "567b8f849901945a04a1d0ecb48e114183a1ce826da6562fdc88e2c392b8107a"
+    },
+    {
+      "id": "Syndra",
+      "url": "/lineup-banners/Syndra.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Syndra_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "5f72fb895f2eb2e4681609212273f2d77fe3a901225d44dcc92a3b0a695d0fd6"
+    },
+    {
+      "id": "TahmKench",
+      "url": "/lineup-banners/TahmKench.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/TahmKench_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 165,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "f17203fc51e5f7f71a119c1a344542060356d36813a45e32e739fed038eae131"
+    },
+    {
+      "id": "Taliyah",
+      "url": "/lineup-banners/Taliyah.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Taliyah_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "38047d28fa7e017c7cc439e76d326f2c771f1da8a0a5061348bfb72578e6999b"
+    },
+    {
+      "id": "Talon",
+      "url": "/lineup-banners/Talon.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Talon_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "6367d648359088ee4553c7c5deca669b8cf9bbc0dccd79471d0af5c24e783537"
+    },
+    {
+      "id": "Taric",
+      "url": "/lineup-banners/Taric.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Taric_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "d88e87a9c00229a57d2fd05275390628114fa6c11c050e65b69a0144f9c16dc9"
+    },
+    {
+      "id": "Teemo",
+      "url": "/lineup-banners/Teemo.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Teemo_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "1bbb493986280a19990717e20aed15754b462610c28243afbb56daff4132f293"
+    },
+    {
+      "id": "Thresh",
+      "url": "/lineup-banners/Thresh.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Thresh_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "dfb4ff37d54a1cab3852ec079822e6666f63910028a523ba7b898530e2a363a3"
+    },
+    {
+      "id": "Tristana",
+      "url": "/lineup-banners/Tristana.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tristana_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "644a915a46f331de4d4c5fb542aa1e95e80d38e3138979582353411474924e85"
+    },
+    {
+      "id": "Trundle",
+      "url": "/lineup-banners/Trundle.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Trundle_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 57,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "f7076559778d47be7489ce23cb97efd3181943548642141ef994499ce348e4d4"
+    },
+    {
+      "id": "Tryndamere",
+      "url": "/lineup-banners/Tryndamere.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tryndamere_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "06e4ead61e4fea7f68ec1da9aa05ce421684cde38ccd87c7899a66f2b43cea37"
+    },
+    {
+      "id": "TwistedFate",
+      "url": "/lineup-banners/TwistedFate.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/TwistedFate_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "59b056b65f99ace2eaaf9abbdb701d48e7bd78a2d4b66ecf4e3adce6f9eaf1ec"
+    },
+    {
+      "id": "Twitch",
+      "url": "/lineup-banners/Twitch.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Twitch_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "a2e7bc048d54433c069d37c3c15e4fdcd0f1733e3803137b85578017c0095063"
+    },
+    {
+      "id": "Udyr",
+      "url": "/lineup-banners/Udyr.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Udyr_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "cdc13a1ae5b8928173e556f45447da66113b84bd8a0f3cef30413d854372b63f"
+    },
+    {
+      "id": "Urgot",
+      "url": "/lineup-banners/Urgot.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Urgot_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "e9a01ee4451881d128b6748d11966fbdf7b1c65404f23476c0cc478ad3bf7703"
+    },
+    {
+      "id": "Varus",
+      "url": "/lineup-banners/Varus.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Varus_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "24dfc902b85332c21f919ae5ebf76ed857b56bb89beb8d3f58addc6e85b3d712"
+    },
+    {
+      "id": "Vayne",
+      "url": "/lineup-banners/Vayne.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Vayne_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "cce573e75fb920464c7656f7ecd3b4e88f3b35afab98e2be3ad962edc230a28c"
+    },
+    {
+      "id": "Veigar",
+      "url": "/lineup-banners/Veigar.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Veigar_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "2667a04df88a54492dee87c076724857ddfa70fb2f625469eda2f7e88c19c16a"
+    },
+    {
+      "id": "Velkoz",
+      "url": "/lineup-banners/Velkoz.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Velkoz_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "43b72680a919b176571f42e924212a1a11404bf53293d821630c62c4f60a8fbf"
+    },
+    {
+      "id": "Vex",
+      "url": "/lineup-banners/Vex.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Vex_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "6ae02f51b9684c8ac4eafa734e4e33cb7d1f27d5e08749bb7afa95cff73c1346"
+    },
+    {
+      "id": "Vi",
+      "url": "/lineup-banners/Vi.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Vi_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "a7604f8a3cc3713368749393054b98882885550bfec8e8ccdd38e4801a4011d2"
+    },
+    {
+      "id": "Viego",
+      "url": "/lineup-banners/Viego.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Viego_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "e339e7e16cd858a022cdf0ca14c83e836b869347bd8f600828c3fb6ba2275eaf"
+    },
+    {
+      "id": "Viktor",
+      "url": "/lineup-banners/Viktor.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Viktor_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "c1b978d811c967161f11ba3a451ad5996165198186a0f016fa31c5fb4bff94fc"
+    },
+    {
+      "id": "Vladimir",
+      "url": "/lineup-banners/Vladimir.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Vladimir_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 43,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "24ea80cb61609e56f92c92cedd67fc028c8ca9f3d3fdd14838ed6b76b7a874cd"
+    },
+    {
+      "id": "Volibear",
+      "url": "/lineup-banners/Volibear.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Volibear_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 21,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "7c1aa8b859b8c4726b8c7896309d64959970827a0b67df0f2161313fc57dcfc3"
+    },
+    {
+      "id": "Warwick",
+      "url": "/lineup-banners/Warwick.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Warwick_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 215,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "35d987b8d7119820c9a0ff476889907eff7e0b75e13f13d355820093186464b5"
+    },
+    {
+      "id": "Xayah",
+      "url": "/lineup-banners/Xayah.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Xayah_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "6c88c7f3479cbb01cdeca3f3f0a0e2e30dd567f919a0a92c02f20d97356126d2"
+    },
+    {
+      "id": "Xerath",
+      "url": "/lineup-banners/Xerath.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Xerath_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "b514a67e5869e118c3d6aee51938c617bfd0fdcc8e268743700da689ef1ae589"
+    },
+    {
+      "id": "XinZhao",
+      "url": "/lineup-banners/XinZhao.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/XinZhao_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "09cd21751b6a372615a38419ed46529ad0d917ee7cf5244772da1f4fb17581ac"
+    },
+    {
+      "id": "Yasuo",
+      "url": "/lineup-banners/Yasuo.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yasuo_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "24dbf2d30d5a4d3bc343e15486b5e50a89183480d47c87bf584a8ac5134f55a6"
+    },
+    {
+      "id": "Yone",
+      "url": "/lineup-banners/Yone.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yone_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 43,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "8ac851112909519827a25ac36d475f72c7aa7c3f88b4051f48a56d289178b69d"
+    },
+    {
+      "id": "Yorick",
+      "url": "/lineup-banners/Yorick.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yorick_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 7,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "de0377f0a10c1bf4b64e1619a63c61d9b31d584711a9440ba0076f37fe511dd7"
+    },
+    {
+      "id": "Yunara",
+      "url": "/lineup-banners/Yunara.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yunara_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 50,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "d3c0021748fec0ba2462225f5a2721f72a918843303f04c471c146a2e305499b"
+    },
+    {
+      "id": "Yuumi",
+      "url": "/lineup-banners/Yuumi.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yuumi_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 64,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "115e2edbca08e415663c3dd3a43a484a68c83154af03e637c02499b4b5738681"
+    },
+    {
+      "id": "Zaahen",
+      "url": "/lineup-banners/Zaahen.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zaahen_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 14,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "91ec88496fc0f30c0b23f041226aa194b304100cb3ff8123041f63f35b9bebf5"
+    },
+    {
+      "id": "Zac",
+      "url": "/lineup-banners/Zac.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zac_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 201,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "d499dcc030cb8787e9aad8ae1d85f2215f8cec3c91a7791e023bff78ed0554bc"
+    },
+    {
+      "id": "Zed",
+      "url": "/lineup-banners/Zed.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zed_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 36,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "c0e645d9f7768702b43fcfa7c8ef409f50f54b310a7151842abb8d9abc9e9734"
+    },
+    {
+      "id": "Zeri",
+      "url": "/lineup-banners/Zeri.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zeri_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "1c68a7bebaf6b8611303edda393df1da4db6b7ef60541e588170c7d978042b81"
+    },
+    {
+      "id": "Ziggs",
+      "url": "/lineup-banners/Ziggs.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ziggs_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "64b1d50c6eba16f537a1a4ec7ec6025212537a7f5753e12f67882fbcadf26ca4"
+    },
+    {
+      "id": "Zilean",
+      "url": "/lineup-banners/Zilean.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zilean_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "fb0c01fd483437e004207e317c0545488c5cc398d05de8356c0e20cb6fefd59e"
+    },
+    {
+      "id": "Zoe",
+      "url": "/lineup-banners/Zoe.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zoe_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "8a2e9b19d42a93a5fefe71ecb2b6eac0391d18ae4eeb7ad34800f3fb743e028d"
+    },
+    {
+      "id": "Zyra",
+      "url": "/lineup-banners/Zyra.webp",
+      "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zyra_0.jpg",
+      "crop": {
+        "left": 0,
+        "top": 114,
+        "width": 1215,
+        "height": 316
+      },
+      "sha256": "3c818e90bb775e5186e93909a954cc73234e1d9e5a29607e1af040c84d173821"
+    }
+  ]
+}
