@@ -1,14 +1,28 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { createServer } from 'node:net';
 import { mkdtemp, rm, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { WebSocket } from 'ws';
 import { lanAddresses } from './security';
 
+// Let the OS exclude reserved Windows port ranges instead of guessing a port.
+async function availablePort():Promise<number>{
+  const server=createServer();
+  return new Promise((resolve,reject)=>{
+    server.once('error',reject);
+    server.listen(0,'127.0.0.1',()=>{
+      const address=server.address();
+      if(!address||typeof address==='string'){server.close();reject(new Error('Expected an IPv4 test socket'));return;}
+      server.close(error=>error?reject(error):resolve(address.port));
+    });
+  });
+}
+
 test('HTTP / WebSocket service, upload and LAN control credentials work together', {timeout:25000}, async()=>{
-  const dir=await mkdtemp(path.join(tmpdir(),'riftcast-test-'));const port=52000+Math.floor(Math.random()*10000);const base=`http://127.0.0.1:${port}`;
+  const dir=await mkdtemp(path.join(tmpdir(),'riftcast-test-'));const port=await availablePort();const base=`http://127.0.0.1:${port}`;
   const child=spawn(process.execPath,['--import','tsx','server/index.ts'],{cwd:process.cwd(),windowsHide:true,env:{...process.env,PORT:String(port),ENABLE_LAN:'1',RIFTCAST_DATA_DIR:dir,RIFTCAST_AUTO_CONNECT:'0'},stdio:'ignore'});
   let ws:WebSocket|undefined;try{
     let ready=false;for(let i=0;i<60;i++){try{const r=await fetch(`${base}/api/health`);if(r.ok){ready=true;break;}}catch{/* wait for the service to listen */}await new Promise(r=>setTimeout(r,150));}assert.ok(ready,'service must become available');
@@ -39,7 +53,7 @@ test('HTTP / WebSocket service, upload and LAN control credentials work together
 });
 
 test('desktop IPC shutdown flushes the latest recording even while an older snapshot is being written',{timeout:25000},async()=>{
-  const dir=await mkdtemp(path.join(tmpdir(),'riftcast-test-'));const port=52000+Math.floor(Math.random()*10000);const base=`http://127.0.0.1:${port}`;
+  const dir=await mkdtemp(path.join(tmpdir(),'riftcast-test-'));const port=await availablePort();const base=`http://127.0.0.1:${port}`;
   const preload=path.join(dir,'slow-write.cjs');
   await writeFile(preload,`const fs=require('node:fs/promises');const original=fs.open;fs.open=async function(file,...args){const handle=await original.call(this,file,...args);const write=handle.writeFile.bind(handle);handle.writeFile=async function(...values){if(typeof file==='string'&&/state.json.*tmp/.test(file)){process.send?.({type:'test-write-started'});await new Promise(resolve=>setTimeout(resolve,500));}return write(...values);};return handle;};require('node:module').syncBuiltinESMExports();`);
   const child=spawn(process.execPath,['--require',preload,'--import','tsx','server/index.ts'],{cwd:process.cwd(),windowsHide:true,env:{...process.env,PORT:String(port),RIFTCAST_DATA_DIR:dir,ENABLE_LAN:'0'},stdio:['ignore','pipe','pipe','ipc']});
