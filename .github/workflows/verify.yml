@@ -2,7 +2,7 @@ name: Verify
 
 on:
   push:
-    branches: [new, 'work/v0.9.3-ocr-report']
+    branches: [new]
   pull_request:
     branches: [new]
 
@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
     timeout-minutes: 20
     env:
       ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
@@ -26,21 +26,12 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - name: Export isolated review dependencies
-        if: github.ref == 'refs/heads/work/v0.9.3-ocr-report'
-        run: tar czf /tmp/lolob-review-deps.tar.gz node_modules
-      - uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/work/v0.9.3-ocr-report'
-        with:
-          name: lolob-review-deps
-          path: /tmp/lolob-review-deps.tar.gz
-          retention-days: 1
+      - run: node scripts/ensure-vbcable.cjs
       - run: npm run check
-      - run: npm test > /tmp/test-results.txt 2>&1
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: /tmp/test-results.txt
-          retention-days: 7
+      - name: Test
+        shell: pwsh
+        run: |
+          $tests = @(Get-ChildItem server -Filter '*.test.ts' | ForEach-Object FullName)
+          node --import tsx --test --test-concurrency=1 @tests
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - run: npm run build
