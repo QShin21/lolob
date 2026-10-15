@@ -1,0 +1,40 @@
+name: Verify
+
+on:
+  push:
+    branches: [new, 'work/v0.9.3-ocr-report']
+  pull_request:
+    branches: [new]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Export review source
+        if: github.ref == 'refs/heads/work/v0.9.3-ocr-report'
+        run: git archive --format=tar HEAD | gzip > /tmp/lolob-review-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/work/v0.9.3-ocr-report'
+        with:
+          name: lolob-review-source
+          path: /tmp/lolob-review-source.tar.gz
+          retention-days: 1
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
