@@ -2,7 +2,7 @@ import type { BroadcastState, DraftState, GameResult, OverlaySettings, Player, S
 
 export type CheckId = 'identity' | 'game' | 'data' | 'audio' | 'disk' | 'program' | 'platform';
 export type SeatRole = 'readonly' | 'data' | 'subtitle' | 'replay' | 'director';
-export type Telemetry = Pick<BroadcastState, 'players' | 'stats' | 'events' | 'economy' | 'economyFeed' | 'gameTime' | 'gameClock' | 'paused' | 'phase'>;
+export type Telemetry = Pick<BroadcastState, 'players' | 'stats' | 'events' | 'economy' | 'economyFeed' | 'ocrMatch' | 'activeSourceGameId' | 'gameTime' | 'gameClock' | 'paused' | 'phase'>;
 export interface ProgramContent {
   customScenes?: BroadcastState['customScenes'];
   version: number; key: string; takenAt: string;

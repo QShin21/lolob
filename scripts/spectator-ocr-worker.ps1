@@ -19,6 +19,7 @@ Write-WorkerResponse @{type='ready';protocol=1}
 $taskNumeric=@('BlueX','BlueY','BlueWidth','BlueHeight','RedX','RedY','RedWidth','RedHeight','PlayersX','PlayersY','PlayersWidth','PlayersHeight')
 $taskSwitches=@('ReadPlayers','SkipTeam','AutoLocate','Diagnostics')
 $taskPaths=@('ImagePath','ChampionManifest','CapturePath')
+$taskText=@('ObjectivesJson')
 while($null -ne ($taskLine=[Console]::In.ReadLine())) {
   $taskId=$null
   try {
@@ -35,7 +36,7 @@ while($null -ne ($taskLine=[Console]::In.ReadLine())) {
       $taskName=$taskArgument.Substring(1)
       if($taskParameters.ContainsKey($taskName)){throw 'Duplicate argument'}
       if($taskName -in $taskSwitches){$taskParameters[$taskName]=$true;continue}
-      if($taskName -notin $taskNumeric -and $taskName -notin $taskPaths){throw 'Unsupported argument'}
+      if($taskName -notin $taskNumeric -and $taskName -notin $taskPaths -and $taskName -notin $taskText){throw 'Unsupported argument'}
       $taskIndex++;if($taskIndex -ge $taskRequest.args.Count){throw 'Missing argument'}
       $taskValue=$taskRequest.args[$taskIndex]
       if($taskValue -isnot [string] -or $taskValue.Length -gt 4096 -or $taskValue -match '[\r\n\x00]'){throw 'Invalid value'}

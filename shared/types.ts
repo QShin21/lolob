@@ -23,9 +23,20 @@ export interface TeamStats { kills: number; gold: number | null; towers: number;
 export interface GameEvent { id: string; time: number; type: string; text: string; team?: Side }
 export type EconomySource = 'none' | 'api' | 'manual' | 'ocr';
 export interface EconomyRoi { x: number; y: number; width: number; height: number }
-export interface EconomyOcrConfig { enabled: boolean; blue: EconomyRoi; red: EconomyRoi; players?: { enabled: boolean; region: EconomyRoi } }
+export type HudObjective = 'towers' | 'dragons' | 'barons' | 'voidgrubs';
+export interface OcrObservation { value: number; sampledAt: string; gameTime: number; raw?: string }
+export interface OcrPlayerGoldObservation extends OcrObservation { team: Side; championId: string }
+export interface OcrMatchData {
+  key: string; sourceGameId?: string; roster?: string;
+  players: Record<string, OcrPlayerGoldObservation>;
+  objectives: Record<Side, Partial<Record<HudObjective, OcrObservation>>>;
+  teamGold?: { blue: number; red: number; sampledAt: string; gameTime: number };
+  economy: EconomyPoint[];
+}
+export interface ObjectiveOcrFeed { status: 'disabled' | 'waiting' | 'fresh' | 'partial' | 'stale'; detail: string; matched: number; total: number; sampledAt?: string }
+export interface EconomyOcrConfig { enabled: boolean; blue: EconomyRoi; red: EconomyRoi; players?: { enabled: boolean; region: EconomyRoi }; objectives?: { enabled: boolean; regions: Record<Side, Record<HudObjective, EconomyRoi>> } }
 export interface PlayerEconomyFeed { status: 'disabled' | 'waiting' | 'fresh' | 'partial' | 'stale' | 'error'; detail: string; matched: number; statsMatched?: number; total: number; sampledAt?: string; durationMs?: number; intervalMs?: number }
-export interface EconomyFeed { source: EconomySource; status: 'disabled' | 'waiting' | 'fresh' | 'stale' | 'error'; detail: string; blue: number | null; red: number | null; sampledAt?: string; expiresAt?: string; gameTime?: number; raw?: {blue: string; red: string}; players?: PlayerEconomyFeed }
+export interface EconomyFeed { source: EconomySource; status: 'disabled' | 'waiting' | 'fresh' | 'stale' | 'error'; detail: string; blue: number | null; red: number | null; sampledAt?: string; expiresAt?: string; gameTime?: number; raw?: {blue: string; red: string}; players?: PlayerEconomyFeed; objectives?: ObjectiveOcrFeed }
 export interface EconomyPoint { time: number; blue: number; red: number; source?: EconomySource }
 export interface DraftState { bluePicks: string[]; redPicks: string[]; blueBans: string[]; redBans: string[]; bluePreselect?: string[]; redPreselect?: string[]; timer: number; activeTeam: Side; action: string; locked?: boolean }
 export interface DraftHistoryGame { seriesId: string; game: number; blueTeamId: string; redTeamId: string; bluePicks: string[]; redPicks: string[]; recordedAt: string; source: 'lcu' | 'live' | 'manual' | 'demo'; sourceGameId?: string }
@@ -43,7 +54,7 @@ export interface BroadcastState {
   revision: number; mode: SourceMode; phase: Phase; previewScene: Scene; programScene: Scene;
   match: { title: string; subtitle: string; game: number; format: string; blueTeamId: string; redTeamId: string; blueScore: number; redScore: number; seriesId?: string };
   teams: Team[]; schedule: Match[]; players: Player[]; gameTime: number; gameClock?: GameClockSample; paused: boolean;
-  stats: { blue: TeamStats; red: TeamStats }; draft: DraftState; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed;
+  stats: { blue: TeamStats; red: TeamStats }; draft: DraftState; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed; ocrMatch?: OcrMatchData;
   connections: { lcu: Connection; live: Connection; replay: Connection; obs: Connection };
   overlay: OverlaySettings; assets: Asset[]; recordings: Recording[]; selectedPlayerId: string | null;
   draftHistory?: DraftHistoryGame[]; draftHistoryPending?: DraftHistoryGame; nativeHudStatus?: NativeHudStatus;
@@ -51,7 +62,7 @@ export interface BroadcastState {
   settings: { lockfilePath: string; obsUrl: string; obsPassword?: string; pollInterval: number; autoPhase: boolean; gamePath: string; economyOcr?: EconomyOcrConfig };
 }
 export interface Asset { id: string; name: string; url: string; type: string; createdAt: string; width?: number; height?: number; alpha?: boolean; category?: 'logo' | 'player' | 'sponsor' | 'other' }
-export interface Recording { id: string; title: string; createdAt: string; observedAt?: string; sourceGameTime?: number; duration: number; mode: SourceMode; players: Player[]; stats: BroadcastState['stats']; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed; result?: { resultId: string; seriesId: string; game: number; attempt: number; winner: Side | null; winnerTeamId?: string; version: number; terminalComplete: boolean; seriesComplete: boolean; blueScore: number; redScore: number; valid?: boolean; invalidReason?: string } }
+export interface Recording { id: string; title: string; createdAt: string; observedAt?: string; sourceGameTime?: number; duration: number; mode: SourceMode; players: Player[]; stats: BroadcastState['stats']; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed; ocrMatch?: OcrMatchData; result?: { resultId: string; seriesId: string; game: number; attempt: number; winner: Side | null; winnerTeamId?: string; version: number; terminalComplete: boolean; seriesComplete: boolean; blueScore: number; redScore: number; valid?: boolean; invalidReason?: string } }
 export interface GameResult { id: string; key: string; seriesId: string; matchId?: string; game: number; blueTeamId: string; redTeamId: string; winner: Side | null; winnerTeamId?: string; endedAt: string; source: 'live' | 'lcu' | 'manual'; sourceGameId?: string; snapshot: Recording; match: BroadcastState['match']; teams: Team[]; draft: DraftState; seriesComplete: boolean; terminalSampleAccepted?: boolean; terminalSampleComplete?: boolean; selectedPlayerId?: string | null }
 export type BroadcastAction = (
   | { type: 'save-custom-scene'; scene: CustomScene }

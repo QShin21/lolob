@@ -9,6 +9,7 @@
   [double]$RedHeight,
   [switch]$ReadPlayers,
   [switch]$SkipTeam,
+  [string]$ObjectivesJson,
   [double]$PlayersX=0,
   [double]$PlayersY=.4,
   [double]$PlayersWidth=1,
@@ -115,6 +116,7 @@ param(
   [double]$RedHeight,
   [switch]$ReadPlayers,
   [switch]$SkipTeam,
+  [string]$ObjectivesJson,
   [double]$PlayersX=0,
   [double]$PlayersY=.4,
   [double]$PlayersWidth=1,
@@ -275,7 +277,7 @@ param(
         $taskCopies=1;if($taskFallbackCells){$taskCopies=3}
         for($taskCopy=0;$taskCopy -lt $taskCopies;$taskCopy++){$taskMontageGraphics.DrawImage($taskBitmap,(New-Object Drawing.Rectangle(($taskRegion.offsetX+12+$taskCopy*($taskRegion.width+4)),$taskRegion.offsetY,$taskRegion.width,$taskRegion.height)),$taskRegion.x,$taskRegion.y,$taskRegion.width,$taskRegion.height,[Drawing.GraphicsUnit]::Pixel)}
       }
-      [RiftCastNumericFilter]::Clean($taskMontage)
+      if($taskFallbackCells -and $taskFallbackCells[0].kind -like 'hud:*'){[RiftCastNumericFilter]::CleanHud($taskMontage)}else{[RiftCastNumericFilter]::Clean($taskMontage)}
       $taskScale=[Math]::Min(3,[Math]::Min([Windows.Media.Ocr.OcrEngine]::MaxImageDimension/$taskMontageWidth,[Windows.Media.Ocr.OcrEngine]::MaxImageDimension/$taskMontageHeight))
       $taskScaled=New-Object Drawing.Bitmap([int]($taskMontageWidth*$taskScale),[int]($taskMontageHeight*$taskScale));$taskGraphics=[Drawing.Graphics]::FromImage($taskScaled);$taskGraphics.InterpolationMode=[Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
       $taskGraphics.DrawImage($taskMontage,(New-Object Drawing.Rectangle(0,0,$taskScaled.Width,$taskScaled.Height)),0,0,$taskMontage.Width,$taskMontage.Height,[Drawing.GraphicsUnit]::Pixel)
@@ -291,7 +293,7 @@ param(
           $taskPieces=@($taskPieces | Sort-Object x)
           $taskRepeated=(($taskPieces.text -join '').Normalize([Text.NormalizationForm]::FormKC)) -replace '\s',''
           if($Diagnostics){$script:taskGlyphDiagnostics+=@([pscustomobject]@{kind=$taskRegion.kind;repeated=$taskRepeated})}
-          $taskLength=[int]$taskRegion.glyphCount;if($taskRegion.kind -in @('vision','cs') -and $taskRepeated.Length % 3 -eq 0){$taskLength=[int]($taskRepeated.Length/3)}
+          $taskLength=[int]$taskRegion.glyphCount;if(($taskRegion.kind -in @('vision','cs') -or $taskRegion.kind -like 'hud:*') -and $taskRepeated.Length % 3 -eq 0){$taskLength=[int]($taskRepeated.Length/3)}
           if($taskLength -lt 1 -or $taskLength -gt 4){continue}
           if($taskRepeated -notmatch '^\d+$' -or $taskRepeated.Length -ne $taskLength*3){continue}
           $taskValue=$taskRepeated.Substring(0,$taskLength)
@@ -485,6 +487,43 @@ param(
     }
     return [pscustomobject]@{ok=$true;blueText=$taskBlue.text;redText=$taskRed.text;blueRoi=(Pad-GoldRegion $taskBlue);redRoi=(Pad-GoldRegion $taskRed)}
   }
+  function Read-HudObjectives([string]$taskJson) {
+    # Copy all eight digit-only cells from one top-HUD capture into a single OCR montage.
+    # Icons and kills are outside these cells. Repeated pixels must produce three equal strings.
+    $taskRegions=$taskJson | ConvertFrom-Json
+    $taskKeys=@('towers','dragons','barons','voidgrubs')
+    $taskCells=@(foreach($taskSide in @('blue','red')){foreach($taskKey in $taskKeys){
+      $taskBox=$taskRegions.$taskSide.$taskKey
+      foreach($taskField in @('x','y','width','height')){if($null -eq $taskBox.$taskField -or $taskBox.$taskField -is [string]){throw '资源识别区域无效'}}
+      $taskX=[double]$taskBox.x;$taskY=[double]$taskBox.y;$taskW=[double]$taskBox.width;$taskH=[double]$taskBox.height
+      if([double]::IsNaN($taskX+$taskY+$taskW+$taskH) -or $taskX -lt 0 -or $taskY -lt 0 -or $taskW -le 0 -or $taskH -le 0 -or $taskX+$taskW -gt 1 -or $taskY+$taskH -gt .15){throw '资源区域需位于游戏顶部 15% 内'}
+      $taskLeft=[int][Math]::Floor($taskX*$taskClientWidth);$taskTop=[int][Math]::Floor($taskY*$taskClientHeight)
+      [pscustomobject]@{kind="hud:$taskSide`:$taskKey";x=$taskLeft;y=$taskTop;width=[int][Math]::Ceiling($taskW*$taskClientWidth);height=[int][Math]::Ceiling($taskH*$taskClientHeight);glyphCount=0}
+    }})
+    $taskLeft=($taskCells.x | Measure-Object -Minimum).Minimum;$taskTop=($taskCells.y | Measure-Object -Minimum).Minimum
+    $taskRight=($taskCells | ForEach-Object {$_.x+$_.width} | Measure-Object -Maximum).Maximum
+    $taskBottom=($taskCells | ForEach-Object {$_.y+$_.height} | Measure-Object -Maximum).Maximum
+    $taskWidth=[int]($taskRight-$taskLeft);$taskHeight=[int]($taskBottom-$taskTop)
+    if($taskWidth -lt 8 -or $taskHeight -lt 8 -or $taskRight -gt $taskClientWidth -or $taskBottom -gt $taskClientHeight){throw '资源采样区域无效'}
+    $taskScreenX=[int]($taskOrigin.X+$taskLeft);$taskScreenY=[int]($taskOrigin.Y+$taskTop)
+    $taskBitmap=$null;$taskGraphics=$null
+    try{
+      Assert-GoldRegionVisible $taskScreenX $taskScreenY $taskWidth $taskHeight
+      if(-not $ImagePath){$taskDesktop=[Windows.Forms.SystemInformation]::VirtualScreen;if($taskScreenX -lt $taskDesktop.Left -or $taskScreenY -lt $taskDesktop.Top -or $taskScreenX+$taskWidth -gt $taskDesktop.Right -or $taskScreenY+$taskHeight -gt $taskDesktop.Bottom){throw '顶部资源区域未完整显示在屏幕内'}}
+      $taskBitmap=New-Object Drawing.Bitmap($taskWidth,$taskHeight);$taskGraphics=[Drawing.Graphics]::FromImage($taskBitmap)
+      if($ImagePath){$taskGraphics.DrawImage($taskFixtureImage,(New-Object Drawing.Rectangle(0,0,$taskWidth,$taskHeight)),$taskLeft,$taskTop,$taskWidth,$taskHeight,[Drawing.GraphicsUnit]::Pixel)}
+      else{$taskGraphics.CopyFromScreen($taskScreenX,$taskScreenY,0,0,$taskBitmap.Size,[Drawing.CopyPixelOperation]::SourceCopy)}
+      Assert-GoldRegionVisible $taskScreenX $taskScreenY $taskWidth $taskHeight
+      foreach($taskCell in $taskCells){$taskCell.x-=$taskLeft;$taskCell.y-=$taskTop}
+      $taskRead=Read-ScoreboardNumericRows $taskBitmap @() @() ($taskLeft/$taskClientWidth) ($taskTop/$taskClientHeight) $taskCells
+      $taskValues=@{blue=@{};red=@{}}
+      foreach($taskWord in @($taskRead.words)){
+        if($taskWord.field -notmatch '^hud:(blue|red):(towers|dragons|barons|voidgrubs)$' -or $taskWord.text -notmatch '^(0|[1-9][0-9]?)$'){continue}
+        $taskParts=$taskWord.field.Split(':');$taskValues[$taskParts[1]][$taskParts[2]]=$taskWord.text
+      }
+      return $taskValues
+    }finally{if($taskGraphics){$taskGraphics.Dispose()};if($taskBitmap){$taskBitmap.Dispose()}}
+  }
   if($AutoLocate){
     $taskTop=Read-GoldRegion .2 0 .6 .12
     return (Find-GoldRegions $taskTop)
@@ -496,6 +535,9 @@ param(
         $taskRed=Read-GoldRegion $RedX $RedY $RedWidth $RedHeight
         $taskResult.blueText=Select-GoldText $taskBlue;$taskResult.redText=Select-GoldText $taskRed
       }catch{$taskResult.ok=$false;$taskResult.error=$_.Exception.Message}
+    }
+    if($ObjectivesJson){
+      try{$taskResult.objectiveTexts=Read-HudObjectives $ObjectivesJson}catch{$taskResult.objectiveError=$_.Exception.Message}
     }
     if($ReadPlayers){
       try{

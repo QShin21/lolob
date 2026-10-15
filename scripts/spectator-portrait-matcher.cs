@@ -191,6 +191,15 @@ public static class RiftCastPortraitMatcher {
 
 // Numeric OCR excludes saturated annotations and bounty glyphs; neutral digits and pale CS remain.
 public static class RiftCastNumericFilter {
+  // Top HUD digits are saturated cyan/red; the neutral scoreboard filter would erase them.
+  // Applied only to calibrated digit crops, never to icons or full screenshots.
+  public static void CleanHud(System.Drawing.Bitmap image) {
+    for(int y=0;y<image.Height;y++) for(int x=0;x<image.Width;x++) {
+      var c=image.GetPixel(x,y);
+      bool digit=(c.B>115 && c.G>65 && c.B>c.R*1.3) || (c.R>130 && c.R>c.G*1.5 && c.R>c.B*1.3);
+      image.SetPixel(x,y,digit?System.Drawing.Color.White:System.Drawing.Color.Black);
+    }
+  }
   public static void Clean(System.Drawing.Bitmap image) {
     for(int y=0;y<image.Height;y++) for(int x=0;x<image.Width;x++) {
       var c=image.GetPixel(x,y);int max=System.Math.Max(c.R,System.Math.Max(c.G,c.B));int min=System.Math.Min(c.R,System.Math.Min(c.G,c.B));

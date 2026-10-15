@@ -22,7 +22,7 @@ export function ensureProduction(s: BroadcastState): ProductionState {
   return p;
 }
 export function telemetry(s: BroadcastState): Telemetry {
-  return structuredClone({ players: s.players, stats: s.stats, events: s.events, economy: s.economy, economyFeed: s.economyFeed, gameTime: s.gameTime, gameClock: s.gameClock, paused: s.paused, phase: s.phase });
+  return structuredClone({ players: s.players, stats: s.stats, events: s.events, economy: s.economy, economyFeed: s.economyFeed, ocrMatch: s.ocrMatch, activeSourceGameId: s.activeSourceGameId, gameTime: s.gameTime, gameClock: s.gameClock, paused: s.paused, phase: s.phase });
 }
 export function captureProgram(s: BroadcastState): ProgramContent {
   const p = ensureProduction(s);

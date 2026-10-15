@@ -1,5 +1,6 @@
+import { defaultObjectiveRegions, hudObjectives, hudObjectiveLabels } from '../../shared/hud-ocr';
 import { useEffect, useRef, useState } from "react";
-import type { EconomyOcrConfig, EconomyRoi } from "../../shared/types";
+import type { EconomyOcrConfig, EconomyRoi, Side, HudObjective } from "../../shared/types";
 const defaultPlayers = { x: 0, y: 0.4, width: 1, height: 0.6 };
 export function OcrCalibration({
   config,
@@ -11,10 +12,13 @@ export function OcrCalibration({
   const [stamp, setStamp] = useState<number | undefined>(undefined),
     [loaded, setLoaded] = useState(false),
     [error, setError] = useState("");
+  const [target,setTarget]=useState('economy');
+  const objectives=config.objectives??{enabled:config.enabled,regions:defaultObjectiveRegions};
+  const label=(key:string)=>key==='blue'?'蓝方经济':key==='red'?'红方经济':key==='players'?'十人计分板':`${key.startsWith('blue:')?'蓝方':'红方'}${hudObjectiveLabels[key.split(':')[1] as HudObjective]}`;
   const frame = useRef<HTMLDivElement>(null),
     drag = useRef<
       | {
-          key: "blue" | "red" | "players";
+          key: string;
           resize: boolean;
           startX: number;
           startY: number;
@@ -22,7 +26,7 @@ export function OcrCalibration({
         }
       | undefined
     >(undefined);
-  const regions = {
+  const regions:Record<string,EconomyRoi> = target!=='economy'?{[target]:objectives.regions[target.split(':')[0] as Side][target.split(':')[1] as HudObjective]}:{
     blue: config.blue,
     red: config.red,
     players: config.players?.region ?? defaultPlayers,
@@ -52,6 +56,7 @@ export function OcrCalibration({
     return () => { controller.abort(); if (objectUrl) URL.revokeObjectURL(objectUrl); };
   }, [stamp]);
   function update(key: keyof typeof regions, roi: EconomyRoi) {
+    if(key.includes(':')){const [side,field]=key.split(':') as [Side,HudObjective];onChange({...config,objectives:{...objectives,regions:{...objectives.regions,[side]:{...objectives.regions[side],[field]:roi}}}});return;}
     onChange(
       key === "players"
         ? {
@@ -85,8 +90,9 @@ export function OcrCalibration({
               : "连接 OBS 并选择游戏窗口，或完整显示游戏供屏幕采样"}
         </span>
       </div>
+      <label className="field">校准目标<select aria-label="OCR 校准目标" value={target} onChange={e=>{drag.current=undefined;setTarget(e.target.value);}}><option value="economy">双方经济与个人计分板</option>{(['blue','red'] as const).flatMap(side=>hudObjectives.map(key=><option key={`${side}:${key}`} value={`${side}:${key}`}>{label(`${side}:${key}`)}</option>))}</select></label>
       <p>
-        拖动识别框调整位置，拖动右下角调整大小。校准与 OCR 共用原始游戏采样。OBS 采样失败时尝试可见游戏窗口；请保持游戏窗口完整可见且未被遮挡。
+        资源框只包含数字，避开图标。拖动识别框调整位置，拖动右下角调整大小。校准与 OCR 共用原始游戏采样。OBS 采样失败时尝试可见游戏窗口；请保持游戏窗口完整可见且未被遮挡。
       </p>
       {error && (
         <p role="alert" className="request-error">
@@ -113,7 +119,7 @@ export function OcrCalibration({
             return (
               <div
                 key={key}
-                className={`ocr-box ${key}`}
+                className={`ocr-box ${key.split(':')[0]}`}
                 style={{
                   left: `${roi.x * 100}%`,
                   top: `${roi.y * 100}%`,
@@ -173,11 +179,7 @@ export function OcrCalibration({
                   drag.current = undefined;
                 }}
               >
-                {key === "blue"
-                  ? "蓝方经济"
-                  : key === "red"
-                    ? "红方经济"
-                    : "十人计分板"}
+                {label(key)}
                 <i className="ocr-handle" />
               </div>
             );
@@ -185,13 +187,13 @@ export function OcrCalibration({
       </div>
       {loaded && (
         <div className="ocr-crops">
-          {(["blue", "red"] as const).map((key) => (
+          {(target==='economy'?['blue','red']:[target]).map((key) => (
             <div key={key}>
-              <small>{key === "blue" ? "蓝方" : "红方"}区域放大</small>
+              <small>{label(key)}区域放大</small>
               <svg
                 viewBox={`${regions[key].x * 1000} ${regions[key].y * 562.5} ${regions[key].width * 1000} ${regions[key].height * 562.5}`}
                 role="img"
-                aria-label={`${key === "blue" ? "蓝方" : "红方"}经济裁切预览`}
+                aria-label={`${label(key)}裁切预览`}
               >
                 <image
                   href={url}

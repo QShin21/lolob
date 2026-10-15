@@ -1,3 +1,4 @@
+import { currentOcrMatch } from '../shared/hud-ocr';
 import { validateCustomScene, validateSceneId } from './custom-scenes';
 import { bundledChampions } from '../shared/champion-art';
 import { randomUUID } from 'node:crypto';
@@ -119,11 +120,12 @@ function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
 const stringList = (v:unknown):string[]=>{if(!Array.isArray(v)||v.length>5)throw new ValidationError('BP 每侧最多五个英雄');return v.map(i=>str(i,64));};
 export function clearLiveData(s: BroadcastState):void {
   preserveProgram(s);
-  s.players=[];s.gameTime=0;s.events=[];s.economy=[];s.selectedPlayerId=null;delete s.economyFeed;delete s.gameClock;
+  s.players=[];s.gameTime=0;s.events=[];s.economy=[];s.selectedPlayerId=null;delete s.economyFeed;delete s.ocrMatch;delete s.gameClock;
   s.stats={blue:{kills:0,gold:null,towers:0,dragons:0,barons:0},red:{kills:0,gold:null,towers:0,dragons:0,barons:0}};
   s.draft={bluePicks:[],redPicks:[],blueBans:[],redBans:[],timer:0,activeTeam:'blue',action:'等待客户端 BP 数据'};
 }
 export function resetRuntimeState(s: BroadcastState):void {
+  const retainedOcr=currentOcrMatch(s);
   // An in-flight OBS operation cannot survive the service that owned it.
   const application=s.production?.application;
   if(application?.status==='requested'){
@@ -136,7 +138,8 @@ export function resetRuntimeState(s: BroadcastState):void {
   delete s.gameClock;
   delete s.settings.obsPassword;
   delete s.economyFeed;
-  if(s.mode==='live'){if(currentGameResult(s)){const frozen=frozenGameState(s);Object.assign(s,{players:frozen.players,stats:frozen.stats,events:frozen.events,economy:frozen.economy,draft:frozen.draft,gameTime:frozen.gameTime,phase:'postgame',paused:true});}else if(s.production?.draftMode!=='auto'&&s.phase==='draft'){s.players=s.players.map(p=>({...p,statsAvailable:false,gold:null,items:[]}));s.gameTime=0;s.events=[];s.economy=[];s.paused=false;ensureProduction(s).entry='bp';}else{clearLiveData(s);s.phase='pregame';s.paused=false;}}
+  if(s.mode==='live'){if(currentGameResult(s)){const frozen=frozenGameState(s);Object.assign(s,{players:frozen.players,stats:frozen.stats,events:frozen.events,economy:frozen.economy,ocrMatch:frozen.ocrMatch,draft:frozen.draft,gameTime:frozen.gameTime,phase:'postgame',paused:true});}else if(s.production?.draftMode!=='auto'&&s.phase==='draft'){s.players=s.players.map(p=>({...p,statsAvailable:false,gold:null,items:[]}));s.gameTime=0;s.events=[];s.economy=[];s.paused=false;ensureProduction(s).entry='bp';}else{clearLiveData(s);s.phase='pregame';s.paused=false;}}
+  if(retainedOcr&&s.mode==='live')s.ocrMatch=retainedOcr;
   s.connections={lcu:{status:'disconnected',detail:'本地服务已启动 · 等待连接'},live:{status:'disconnected',detail:'本地服务已启动 · 等待连接'},replay:{status:'disconnected',detail:'本地服务已启动 · 等待连接'},obs:{status:'disconnected',detail:'本地服务已启动 · 等待连接'}};
 }
 function prepareMatch(s: BroadcastState):void {
@@ -153,7 +156,7 @@ function prepareMatch(s: BroadcastState):void {
 export function snapshotRecording(state:BroadcastState,options:{id?:string;title?:string;now?:number}={}):Recording {
   const now=options.now??Date.now();
   if(state.mode==='live'&&state.gameClock?.awaitingLiveSample)throw new ValidationError('回放位置已变化，等待当前画面的局内统计重新采样后保存记录');
-  const snapshot:Recording={id:options.id??randomUUID(),title:options.title??`${state.match.title} · 第 ${state.match.game} 局`,createdAt:new Date(now).toISOString(),duration:state.gameTime,mode:state.mode,players:structuredClone(state.players),stats:structuredClone(state.stats),events:structuredClone(state.events),economy:structuredClone(state.economy),...(state.economyFeed?{economyFeed:structuredClone(state.economyFeed)}:{})};
+  const snapshot:Recording={id:options.id??randomUUID(),title:options.title??`${state.match.title} · 第 ${state.match.game} 局`,createdAt:new Date(now).toISOString(),duration:state.gameTime,mode:state.mode,players:structuredClone(state.players),stats:structuredClone(state.stats),events:structuredClone(state.events),economy:structuredClone(state.economy),...(state.economyFeed?{economyFeed:structuredClone(state.economyFeed)}:{}),...(currentOcrMatch(state)?{ocrMatch:structuredClone(currentOcrMatch(state)!)}:{})};
   if(state.mode==='demo')return snapshot;
   const maximumAge=Math.max(10000,state.settings.pollInterval*3);
   const fresh=(value:string|undefined)=>{const time=Date.parse(value??'');return Number.isFinite(time)&&now-time>=-1000&&now-time<=maximumAge;};
