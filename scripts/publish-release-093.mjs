@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { readFile, copyFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
@@ -14,7 +14,10 @@ assert.equal(execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim
 for(const name of [`RiftCast-${version}-Setup-x64.exe`,`RiftCast-${version}-Windows-x64.zip`])assert.ok(manifest.artifacts.some(file=>file.name===name),`Missing ${name}`);
 for(const item of manifest.artifacts){const hash=createHash('sha256');for await(const bytes of fs.createReadStream(path.join(folder,item.name)))hash.update(bytes);assert.equal(hash.digest('hex'),item.sha256);assert.equal(fs.statSync(path.join(folder,item.name)).size,item.bytes);}
 const smoke=JSON.parse(await readFile(`verification-output/release-${version}/packaged-report.json`,'utf8'));assert.equal(smoke.status,'passed');
-const files=[...manifest.artifacts.map(item=>item.name),'release-manifest.json','SHA256SUMS.txt','使用说明.md'];
+const guide=`RiftCast-${version}-Usage.md`;
+await copyFile(path.join(folder,'使用说明.md'),path.join(folder,guide));
+await copyFile(`verification-output/release-${version}/packaged-report.json`,path.join(folder,'verification.json'));
+const files=[...manifest.artifacts.map(item=>item.name),'release-manifest.json','SHA256SUMS.txt',guide,'verification.json'];
 const gh=args=>execFileSync('gh',args,{encoding:'utf8',stdio:['ignore','pipe','inherit'],maxBuffer:4*1024*1024});
 // Publishing is refused when the immutable version already exists; no assets or tags are overwritten.
 const response=await fetch(`https://api.github.com/repos/${repository}/releases/tags/${tag}`,{headers:{Authorization:`Bearer ${process.env.GH_TOKEN}`,Accept:'application/vnd.github+json'}});
