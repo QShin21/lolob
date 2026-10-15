@@ -1,0 +1,6 @@
+FAIL actual-http-assignment-exchange-undo-restore-source: Expected values to be strictly equal:
+
+'LeeSin' !== 'Gwen'
+
+PASS game5-exact-history-uses-stable-team-on-each-swapped-side
+{"checks":2,"passed":1,"failed":1,"errors":0}

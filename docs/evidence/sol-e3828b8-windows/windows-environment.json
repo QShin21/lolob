@@ -1,0 +1,10 @@
+{
+  "activeQaProcesses": [],
+  "node": "v24.12.0",
+  "implementationDirty": null,
+  "chrome": "155.0.8059.40",
+  "platform": "win32/x64",
+  "os": "Microsoft Windows NT 10.0.26200.0",
+  "npm": "11.6.2",
+  "source": "e3828b807774af2ee7ae9af18f383c8fb8b66f12"
+}

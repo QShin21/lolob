@@ -1,0 +1,23 @@
+FAIL normal-live-1920: full synthetic icon slots must render
+FAIL normal-live-1280: full synthetic icon slots must render
+FAIL normal-live-640: full synthetic icon slots must render
+PASS normal-draft-1920
+PASS normal-draft-1280
+PASS normal-draft-640
+PASS transparent-teamfight-1920
+PASS transparent-teamfight-1280
+PASS transparent-teamfight-640
+FAIL pressure-live-1920: full synthetic icon slots must render
+FAIL pressure-live-1280: full synthetic icon slots must render
+FAIL pressure-live-640: full synthetic icon slots must render
+FAIL pressure-draft-1920: protected geometry changed by 28.796875
+FAIL pressure-draft-1280: protected geometry changed by 19.1875
+FAIL pressure-draft-640: protected geometry changed by 9.59375
+PASS missing-live-TAKE-protection
+PASS missing-live-1920
+PASS missing-live-1280
+PASS missing-live-640
+PASS missing-draft-1920
+PASS missing-draft-1280
+PASS missing-draft-640
+{"checks":22,"passed":13,"failed":9,"errors":0,"screenshots":18}

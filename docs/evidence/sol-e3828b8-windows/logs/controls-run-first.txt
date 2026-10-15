@@ -1,0 +1,9 @@
+PASS custom-script-new-source-save-controls
+PASS custom-script-on-air-delete-and-pending-snapshot
+PASS release-script-scoped-music-controls
+PASS release-script-output-view-apply-record-appearance
+PASS record-synchronous-pointer-duplicates-and-tab-switch
+PASS record-lost-receipt-exact-idempotent-retry
+PASS five-seat-real-acl-and-disconnected-subtitle-draft
+PASS updated-script-assertion-retention-audit
+{"checks":8,"passed":8,"failed":0,"errors":0}

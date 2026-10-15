@@ -1,0 +1,29 @@
+{
+  "source": "e3828b807774af2ee7ae9af18f383c8fb8b66f12",
+  "work": "E:\\codexdata\\lolob-release-20261014\\verification-output\\sol-e3828b8-windows\\boundaries-vCk51Z",
+  "results": [
+    {
+      "id": "actual-http-assignment-exchange-undo-restore-source",
+      "status": "pass",
+      "data": {
+        "actualActionQueue": true,
+        "assignmentPair": 2,
+        "sameSceneTake": true,
+        "undoRedo": true,
+        "automaticSourceWaitsForTake": true,
+        "engineAcceptance": "synthetic"
+      }
+    },
+    {
+      "id": "game5-exact-history-uses-stable-team-on-each-swapped-side",
+      "status": "pass",
+      "data": {
+        "archivedGames": 4,
+        "stableTeamChecks": 40,
+        "swaps": "games 2 and 4 exchange blue/red while each team keeps its own picks"
+      }
+    }
+  ],
+  "errors": [],
+  "boundary": "Actual isolated HTTP and renderer; synthetic adapter acceptance. Focus-player archive is additionally covered by the separately run program-render-isolation.test.ts."
+}

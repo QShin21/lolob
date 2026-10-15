@@ -1,0 +1,42 @@
+✔ bottom scoreboard pairs lanes independently of source order (2.9316ms)
+✔ live lead accepts matched fresh API and OCR cumulative gold and rejects stale or mismatched samples (0.8227ms)
+✔ bottom equipment keeps six slots and separates compact inventory trinkets (0.3588ms)
+✔ bottom settings persist independently, migrate older saves, and validate feed sources (3.8565ms)
+✔ manual pending BP holds the latest automatic picture without rewriting the last TAKE (12.2258ms)
+✔ same-scene re-TAKE publishes manual BP; undo and redo restore each visible programme (6.0267ms)
+✔ manual starts a hold before modifying BP (1.3238ms)
+✔ compare starts a hold before modifying BP (1.1342ms)
+✔ clear starts a hold before modifying BP (1.1805ms)
+✔ undo starts a hold before modifying BP (1.0696ms)
+✔ restoring automatic BP is pending until TAKE (manual TAKE=false) (2.428ms)
+✔ restoring automatic BP is pending until TAKE (manual TAKE=true) (3.1036ms)
+✔ pending hold survives serialization/restart and cannot follow a new attempt (3.7395ms)
+✔ unpublished source preparation preserves held BP; publication clears only the completed hold (2.4048ms)
+✔ legacy manual state without a hold falls back to its accepted snapshot, never pending draft (0.769ms)
+✔ all programme renderers consume held identities, including focus-player reports with a newer archive (390.1804ms)
+✔ actual LCU collector: automatic progression, manual comparison, restored roster and source all wait for TAKE (7.4404ms)
+✔ roster identity and membership stay on air while same-ID statistics, items and clocks keep advancing (1.8931ms)
+✔ a restored equal picture still reports that automatic synchronization awaits TAKE (2.1142ms)
+✔ an unavailable automatic sample after restart is not counted as an editorial BP or roster change (0.845ms)
+✔ restore, application failure, re-TAKE and undo/redo preserve roster identity (manual TAKE=false) (5.2978ms)
+✔ restore, application failure, re-TAKE and undo/redo preserve roster identity (manual TAKE=true) (7.5533ms)
+✔ assignment edits hold the current automatic hero, including repeated edits and removal, until TAKE (2.6309ms)
+✔ an unchanged mapping does not pause auto, while reverting a staged mapping still reports its held source (1.4461ms)
+✔ held roster survives save/restart, new attempts and legacy undo without crossing match identity (10.9708ms)
+✔ legacy BP-only holds cannot infer assignments from picks or expose pending player identities (1.4855ms)
+✔ Pack45 stereo device is selected automatically and an existing valid cable never requests elevation (7.1894ms)
+✔ inactive installed driver reports restart or session isolation and is never installed repeatedly (2.9048ms)
+✔ modified installer archive is rejected before extraction or any elevated action (4.3674ms)
+✔ official archive verifies signature, runs encoded fixed installer and restores only original defaults (8.1145ms)
+✔ bad device response and publisher validation failures never trigger installation (5.0115ms)
+✔ existing OBS registration is reused without requesting elevation or changing its path (4.0178ms)
+✔ driver installation uses fixed encoded modules, keeps valid registrations and confirms readback (5.1474ms)
+✔ registration probe failure never triggers an install or requests elevation (0.7035ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 841.7742

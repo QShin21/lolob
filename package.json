@@ -1,6 +1,6 @@
 {
   "name": "riftcast-director",
-  "version": "0.7.0",
+  "version": "0.8.0-rc.1",
   "private": true,
   "type": "module",
   "description": "英雄联盟本地赛事导播工作台",

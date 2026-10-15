@@ -1,0 +1,23 @@
+
+> riftcast-director@0.7.0 verify:frontend-safety
+> node scripts/verify-frontend-safety.mjs
+
+READY e3828b807774af2ee7ae9af18f383c8fb8b66f12: http://127.0.0.1:55717, pure HTTP; no OBS
+PASS escape-empty
+PASS escape-nonempty
+PASS bp-save-only-keeps-rendered-program
+PASS bp-explicit-same-scene-take-publishes
+PASS transport-reconnect-validates-before-enabling
+READY e3828b807774af2ee7ae9af18f383c8fb8b66f12: http://127.0.0.1:55717, pure HTTP; no OBS
+PASS restart-rejects-old-seat-without-submission
+PASS explicit-recovery-keeps-draft-and-does-not-take
+READY e3828b807774af2ee7ae9af18f383c8fb8b66f12: http://127.0.0.1:49621, labelled synthetic engine
+PASS toast-take-hit-dark-1366x736
+PASS toast-take-hit-dark-1366x768
+PASS toast-take-hit-dark-1440x868
+PASS toast-take-hit-dark-1920x1048
+PASS toast-take-hit-light-1366x736
+PASS toast-take-hit-light-1366x768
+PASS toast-take-hit-light-1440x868
+PASS toast-take-hit-light-1920x1048
+{"source":"e3828b807774af2ee7ae9af18f383c8fb8b66f12","passed":15,"failed":0,"errors":0,"evidence":"E:\\codexdata\\lolob-release-20261014\\verification-output\\frontend-safety-e3828b8"}

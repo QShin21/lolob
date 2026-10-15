@@ -1,0 +1,4 @@
+{
+  "exit": 0,
+  "command": "node --check scripts/verify-custom-scenes.mjs; node --check scripts/verify-release.mjs"
+}

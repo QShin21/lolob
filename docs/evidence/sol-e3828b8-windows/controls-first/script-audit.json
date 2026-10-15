@@ -1,0 +1,14 @@
+[
+  {
+    "filename": "scripts/verify-custom-scenes.mjs",
+    "before": 20,
+    "after": 21,
+    "nativeIntegrationExecuted": false
+  },
+  {
+    "filename": "scripts/verify-release.mjs",
+    "before": 42,
+    "after": 43,
+    "nativeIntegrationExecuted": false
+  }
+]

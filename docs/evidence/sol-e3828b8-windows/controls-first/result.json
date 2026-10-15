@@ -1,0 +1,238 @@
+{
+  "source": "e3828b807774af2ee7ae9af18f383c8fb8b66f12",
+  "boundary": "Windows Chrome, actual loopback service / ControlSeats / action queue / CAS / persistence. Explicit synthetic OBS device, source and music replies. No actual OBS, media playback, registration, recording or output.",
+  "work": "E:\\codexdata\\lolob-release-20261014\\verification-output\\sol-e3828b8-windows\\controls-krKhyL",
+  "results": [
+    {
+      "id": "custom-script-new-source-save-controls",
+      "status": "pass",
+      "data": {
+        "upload": "actual isolated HTTP/disk",
+        "sourceEnumeration": "synthetic",
+        "savedSources": 2,
+        "programUnchanged": true
+      }
+    },
+    {
+      "id": "custom-script-on-air-delete-and-pending-snapshot",
+      "status": "pass",
+      "data": {
+        "actualApiRefusal": 400,
+        "programAndRundownGuard": true
+      }
+    },
+    {
+      "id": "release-script-scoped-music-controls",
+      "status": "pass",
+      "data": {
+        "replies": "explicit synthetic",
+        "noActualAudioPlayback": true
+      }
+    },
+    {
+      "id": "release-script-output-view-apply-record-appearance",
+      "status": "pass",
+      "data": {
+        "viewingHasNoMutation": true,
+        "actualThemeControl": true,
+        "allOutputRepliesSynthetic": true
+      }
+    },
+    {
+      "id": "record-synchronous-pointer-duplicates-and-tab-switch",
+      "status": "pass",
+      "data": {
+        "synchronousAndPointerSaves": 2,
+        "actualRecords": 2
+      }
+    },
+    {
+      "id": "record-lost-receipt-exact-idempotent-retry",
+      "status": "pass",
+      "data": {
+        "sameRequestIdVersionTitle": true,
+        "noDuplicate": true
+      }
+    },
+    {
+      "id": "five-seat-real-acl-and-disconnected-subtitle-draft",
+      "status": "pass",
+      "data": {
+        "aclRefusals": 5,
+        "actualControlWsClosed": true,
+        "actualPhoneKeyboard": false
+      }
+    },
+    {
+      "id": "updated-script-assertion-retention-audit",
+      "status": "pass",
+      "data": [
+        {
+          "filename": "scripts/verify-custom-scenes.mjs",
+          "before": 20,
+          "after": 21,
+          "nativeIntegrationExecuted": false
+        },
+        {
+          "filename": "scripts/verify-release.mjs",
+          "before": 42,
+          "after": 43,
+          "nativeIntegrationExecuted": false
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "endpoint": "/api/action",
+      "type": "save-custom-scene",
+      "scene": {
+        "id": "custom:3a9f4543-2d2a-43fa-8bea-2b49d1d98763",
+        "name": "Sol Windows 独立场景",
+        "background": "#101820",
+        "sources": [
+          {
+            "id": "79b99365-4a04-4492-a4ae-db12d519a574",
+            "kind": "image",
+            "name": "sol-fixture.png",
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080,
+            "fit": "contain",
+            "visible": true,
+            "assetId": "fc12c5b9-9d9d-4a60-bf1c-9ba24690dce7"
+          },
+          {
+            "id": "089bca88-ac26-4845-b358-d4f017e7a5b0",
+            "kind": "window",
+            "name": "SOL Synthetic Window",
+            "x": 480,
+            "y": 270,
+            "width": 960,
+            "height": 540,
+            "fit": "contain",
+            "visible": true,
+            "window": "sol-fixture:window:never-capture.exe"
+          }
+        ]
+      },
+      "expectedConfigVersion": 1,
+      "requestId": "86616d74-4b4b-4f16-b7f3-ce113b065dbb"
+    },
+    {
+      "endpoint": "/api/action",
+      "type": "save-custom-scene",
+      "scene": {
+        "id": "custom:3a9f4543-2d2a-43fa-8bea-2b49d1d98763",
+        "name": "Sol Windows 待播改名",
+        "background": "#101820",
+        "sources": [
+          {
+            "id": "79b99365-4a04-4492-a4ae-db12d519a574",
+            "name": "sol-fixture.png",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080,
+            "fit": "contain",
+            "visible": true,
+            "assetId": "fc12c5b9-9d9d-4a60-bf1c-9ba24690dce7"
+          },
+          {
+            "id": "089bca88-ac26-4845-b358-d4f017e7a5b0",
+            "name": "SOL Synthetic Window",
+            "kind": "window",
+            "x": 480,
+            "y": 270,
+            "width": 960,
+            "height": 540,
+            "fit": "contain",
+            "visible": true,
+            "window": "sol-fixture:window:never-capture.exe"
+          }
+        ]
+      },
+      "expectedConfigVersion": 2,
+      "requestId": "cb3005ba-0a91-4620-98a3-d079a0564fbe"
+    },
+    {
+      "endpoint": "/api/obs/music",
+      "synthetic": true
+    },
+    {
+      "endpoint": "/api/obs/music/control",
+      "action": "play",
+      "synthetic": true
+    },
+    {
+      "endpoint": "/api/obs/music/control",
+      "action": "pause",
+      "synthetic": true
+    },
+    {
+      "endpoint": "/api/obs/engine/destination",
+      "destination": "douyin",
+      "synthetic": true
+    },
+    {
+      "endpoint": "/api/obs/engine/output",
+      "action": "start-record",
+      "synthetic": true
+    },
+    {
+      "endpoint": "/api/obs/engine/output",
+      "action": "stop-record",
+      "synthetic": true
+    },
+    {
+      "endpoint": "/api/obs/engine/destination",
+      "destination": "rtmp",
+      "synthetic": true
+    },
+    {
+      "endpoint": "/api/obs/engine/destination",
+      "destination": "douyin",
+      "synthetic": true
+    },
+    {
+      "endpoint": "/api/action",
+      "type": "save-recording",
+      "title": "Sol Windows synchronous duplicate",
+      "requestId": "028f442a-9725-4658-85b6-e026cf9c9b6b",
+      "expectedConfigVersion": 4
+    },
+    {
+      "endpoint": "/api/action",
+      "type": "save-recording",
+      "title": "Sol Windows pointer duplicate",
+      "requestId": "15c22700-9e59-47e5-b90b-f98a4c2adab8",
+      "expectedConfigVersion": 4
+    },
+    {
+      "endpoint": "/api/action",
+      "type": "save-recording",
+      "title": "Sol Windows real commit lost receipt",
+      "requestId": "d322e311-9350-4c89-9a3c-306c9cff9da4",
+      "expectedConfigVersion": 4
+    },
+    {
+      "endpoint": "/api/action",
+      "type": "save-recording",
+      "title": "Sol Windows real commit lost receipt",
+      "requestId": "d322e311-9350-4c89-9a3c-306c9cff9da4",
+      "expectedConfigVersion": 4
+    }
+  ],
+  "shots": [
+    "custom-source-controls.png",
+    "custom-program-reference-guard.png",
+    "scoped-music-controls.png",
+    "output-controls-light.png",
+    "output-controls-dark.png",
+    "record-lost-receipt.png",
+    "remote-subtitle-reconnected.png"
+  ]
+}
