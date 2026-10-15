@@ -85,7 +85,11 @@ try {
   assert.equal(await readFile(path.join(userData, 'data/uploads/preserved.txt'), 'utf8'), 'preserved fixture');
   assert.equal(await readFile(path.join(userData, 'runtime/obs-studio/config/preserved.txt'), 'utf8'), 'preserved OBS fixture');
   checks.push('packaged EXE starts with no Node/npm/compiler on PATH; version and migration match; original data retained');
-  await until(async () => (await api('/api/obs/engine')).connected, 'Bundled real OBS connects', 45000);
+  await until(async () => {
+    const status = await api('/api/obs/engine');
+    return status.connected && typeof status.virtualCamActive === 'boolean' &&
+      ['RiftCast HUD', 'RiftCast 桌面音频', 'RiftCast 解说麦克风'].every(name => status.inputs?.some(input => input.inputName === name));
+  }, 'Bundled real OBS finishes initialization and confirms managed inputs and camera state', 45000);
   const status = await api('/api/obs/engine');
   assert.equal(status.version, '32.2.2'); assert.equal(status.streamActive, false); assert.equal(status.recordActive, false);
   const { ObsClient } = await tsImport('../server/obs-client.ts', import.meta.url);
@@ -116,7 +120,14 @@ try {
   await page.getByRole('tab', { name: '声音', exact: true }).click();
   const audioPanel = page.getByRole('tabpanel', { name: '声音', exact: true });
   await audioPanel.getByText('添加 / 更换音乐', { exact: true }).click();
-  const musicInput=audioPanel.getByLabel('节目音乐文件',{exact:true}); await musicInput.setInputFiles({name:'release-music.wav',mimeType:'audio/wav',buffer:musicBytes});
+  const musicInput = audioPanel.getByLabel('节目音乐文件', { exact: true });
+  // setInputFiles does not wait for enabled controls; respect the same UI gate as a user.
+  await until(() => musicInput.isEnabled(), 'Music file input becomes enabled');
+  const [musicUpload] = await Promise.all([
+    page.waitForResponse(response => response.url() === base + '/api/obs/music' && response.request().method() === 'POST'),
+    musicInput.setInputFiles({ name: 'release-music.wav', mimeType: 'audio/wav', buffer: musicBytes }),
+  ]);
+  assert.equal(musicUpload.status(), 201, 'The UI music upload must be accepted before checking OBS state');
   await until(async()=> (await api('/api/obs/production')).music?.available,'Music upload configures real managed OBS input');
   assert.equal((await api('/api/obs/production')).music.playing,false);
   await audioPanel.getByRole('button',{name:'播放音乐',exact:true}).click(); await until(async()=> (await api('/api/obs/production')).music.playing,'Music playback confirmed');

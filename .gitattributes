@@ -7,3 +7,4 @@
 
 # Preserve exact bytes for this independently hashed Windows evidence set.
 /docs/evidence/sol-e3828b8-windows/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evidence/sol-release-windows/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
