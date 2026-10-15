@@ -200,6 +200,35 @@ public static class RiftCastNumericFilter {
       image.SetPixel(x,y,digit?System.Drawing.Color.White:System.Drawing.Color.Black);
     }
   }
+  // Native HUD 0/1 can be returned as O/I or omitted by language OCR. Recognize
+  // their actual colored pixel shapes instead; blank cells and arbitrary letters
+  // are never converted. Only a complete, tightly matching single glyph qualifies.
+  public static string ReadHudAmbiguousGlyph(System.Drawing.Bitmap image,int left,int top,int width,int height) {
+    if(width<4||height<8||width>256||height>160||left<0||top<0||left+width>image.Width||top+height>image.Height)return null;
+    bool[,] mask=new bool[height,width];int minX=width,minY=height,maxX=-1,maxY=-1;
+    for(int y=0;y<height;y++)for(int x=0;x<width;x++){
+      var c=image.GetPixel(left+x,top+y);
+      bool ink=(c.B>115&&c.G>65&&c.B>c.R*1.3)||(c.R>130&&c.R>c.G*1.5&&c.R>c.B*1.3);
+      mask[y,x]=ink;if(!ink)continue;minX=System.Math.Min(minX,x);minY=System.Math.Min(minY,y);maxX=System.Math.Max(maxX,x);maxY=System.Math.Max(maxY,y);
+    }
+    int w=maxX-minX+1,h=maxY-minY+1;
+    if(w<3||h<8||minX==0||minY==0||maxX==width-1||maxY==height-1)return null;
+    // Digit masks sampled from the supplied native HUD, at their original raster size.
+    int[][] shapes={new int[]{124,254,454,455,387,387,387,387,391,391,455,206,254,56},new int[]{28,30,31,31,28,28,28,28,28,28,28,28,60},new int[]{28,30,31,29,28,28,28,28,28,28,28,28,60}};
+    int[] widths={9,6,6};string[] labels={"0","1","1"};double best=0;string value=null;
+    for(int s=0;s<shapes.Length;s++){
+      int tw=widths[s],th=shapes[s].Length;
+      if(System.Math.Abs((double)w/h-(double)tw/th)>.09)continue;
+      int both=0,first=0,second=0;
+      for(int y=0;y<48;y++)for(int x=0;x<32;x++){
+        bool a=mask[minY+System.Math.Min(h-1,(int)((y+.5)*h/48)),minX+System.Math.Min(w-1,(int)((x+.5)*w/32))];
+        bool b=(shapes[s][System.Math.Min(th-1,(int)((y+.5)*th/48))]&(1<<System.Math.Min(tw-1,(int)((x+.5)*tw/32))))!=0;
+        if(a)first++;if(b)second++;if(a&&b)both++;
+      }
+      double score=2.0*both/(first+second);if(score>best){best=score;value=labels[s];}
+    }
+    return best>=.92?value:null;
+  }
   public static void Clean(System.Drawing.Bitmap image) {
     for(int y=0;y<image.Height;y++) for(int x=0;x<image.Width;x++) {
       var c=image.GetPixel(x,y);int max=System.Math.Max(c.R,System.Math.Max(c.G,c.B));int min=System.Math.Min(c.R,System.Math.Min(c.G,c.B));

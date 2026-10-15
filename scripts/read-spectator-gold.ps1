@@ -294,10 +294,15 @@ param(
           $taskRepeated=(($taskPieces.text -join '').Normalize([Text.NormalizationForm]::FormKC)) -replace '\s',''
           if($Diagnostics){$script:taskGlyphDiagnostics+=@([pscustomobject]@{kind=$taskRegion.kind;repeated=$taskRepeated})}
           $taskLength=[int]$taskRegion.glyphCount;if(($taskRegion.kind -in @('vision','cs') -or $taskRegion.kind -like 'hud:*') -and $taskRepeated.Length % 3 -eq 0){$taskLength=[int]($taskRepeated.Length/3)}
-          if($taskLength -lt 1 -or $taskLength -gt 4){continue}
-          if($taskRepeated -notmatch '^\d+$' -or $taskRepeated.Length -ne $taskLength*3){continue}
-          $taskValue=$taskRepeated.Substring(0,$taskLength)
-          if($taskRepeated.Substring($taskLength,$taskLength) -ne $taskValue -or $taskRepeated.Substring($taskLength*2,$taskLength) -ne $taskValue){continue}
+          $taskValue=$null
+          if($taskLength -ge 1 -and $taskLength -le 4 -and $taskRepeated -match '^\d+$' -and $taskRepeated.Length -eq $taskLength*3){
+            $taskFirst=$taskRepeated.Substring(0,$taskLength)
+            if($taskRepeated.Substring($taskLength,$taskLength) -eq $taskFirst -and $taskRepeated.Substring($taskLength*2,$taskLength) -eq $taskFirst){$taskValue=$taskFirst}
+          }
+          if(-not $taskValue -and $taskRegion.kind -like 'hud:*'){
+            $taskValue=[RiftCastNumericFilter]::ReadHudAmbiguousGlyph($taskBitmap,$taskRegion.x,$taskRegion.y,$taskRegion.width,$taskRegion.height)
+          }
+          if(-not $taskValue){continue}
           [pscustomobject]@{text=$taskValue;field=$taskRegion.kind;x=$taskRegionX+($taskRegion.x+2)/$taskClientWidth;y=$taskRegionY+($taskRegion.y+2)/$taskClientHeight;width=($taskRegion.width-4)/$taskClientWidth;height=($taskRegion.height-4)/$taskClientHeight}
         })
         return [pscustomobject]@{words=$taskFreshWords}

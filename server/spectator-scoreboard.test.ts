@@ -164,12 +164,13 @@ test('Windows OCR reads all ten current(total) rows from an offline native-style
 Add-Type -AssemblyName System.Drawing
 $taskImage=New-Object Drawing.Bitmap(1920,1080)
 $taskGraphics=[Drawing.Graphics]::FromImage($taskImage);$taskGraphics.Clear([Drawing.Color]::Black)
+$taskGraphics.TextRenderingHint=[Drawing.Text.TextRenderingHint]::AntiAliasGridFit
 $taskFont=New-Object Drawing.Font('Arial',24,[Drawing.FontStyle]::Bold,[Drawing.GraphicsUnit]::Pixel)
-$taskScores=@('6/4/16','3/4/14','3/5/12','10/7/7','7/6/17');$taskCs=@('27','12','6','30','22')
+$taskScores=@('6 / 4 / 16','3 / 4 / 14','3 / 5 / 12','10 / 7 / 7','7 / 6 / 17');$taskCs=@('27','12','6','30','22')
 for($taskRow=0;$taskRow -lt 5;$taskRow++){
   $taskY=[single](800+46*$taskRow)
   $taskGraphics.DrawString("$(100+$taskRow)($(9000+$taskRow))",$taskFont,[Drawing.Brushes]::White,[single]570,$taskY)
-  $taskGraphics.DrawString($taskScores[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]790,$taskY)
+  $taskGraphics.DrawString($taskScores[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]775,$taskY)
   $taskGraphics.DrawString($taskCs[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]900,$taskY)
   $taskGraphics.DrawString($taskCs[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]1000,$taskY)
   $taskGraphics.DrawString($taskScores[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]1070,$taskY)
