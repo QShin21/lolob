@@ -172,7 +172,7 @@ for($taskRow=0;$taskRow -lt 5;$taskRow++){
   $taskGraphics.DrawString("$(100+$taskRow)($(9000+$taskRow))",$taskFont,[Drawing.Brushes]::White,[single]570,$taskY)
   $taskGraphics.DrawString($taskScores[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]775,$taskY)
   $taskGraphics.DrawString($taskCs[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]900,$taskY)
-  $taskGraphics.DrawString($taskCs[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]1000,$taskY)
+  $taskGraphics.DrawString($taskCs[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]1015,$taskY)
   $taskGraphics.DrawString($taskScores[$taskRow],$taskFont,[Drawing.Brushes]::White,[single]1070,$taskY)
   $taskGraphics.DrawString("$(200+$taskRow)($(10000+$taskRow))",$taskFont,[Drawing.Brushes]::White,[single]1230,$taskY)
 }
@@ -183,7 +183,7 @@ $taskFont.Dispose();$taskGraphics.Dispose();$taskImage.Dispose()
     const run=promisify(execFile),options={windowsHide:true,timeout:15000};
     await run('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',taskGenerator,'-OutputPath',taskImage],options);
     const taskProduction=path.resolve('scripts/read-spectator-gold.ps1');
-    const {stdout}=await run('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',taskProduction,'-ReadPlayers','-SkipTeam','-ImagePath',taskImage,'-PlayersX','0','-PlayersY','0','-PlayersWidth','1','-PlayersHeight','1'],options);
+    const {stdout}=await run('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',taskProduction,'-ReadPlayers','-SkipTeam','-ImagePath',taskImage,'-PlayersX','0.28','-PlayersY','0.72','-PlayersWidth','0.46','-PlayersHeight','0.25'],options);
     const reading=JSON.parse(stdout.trim());assert.equal(reading.ok,true);assert.equal(reading.playerError,undefined);
     const rows=parseScoreboardWords(reading.playerWords);assert.equal(rows.length,10,JSON.stringify(reading.playerWords));
     for(const team of ['blue','red']as const){const observed=rows.filter(row=>row.team===team);assert.deepEqual(observed.map(row=>row.totalGold),Array.from({length:5},(_,i)=>(team==='blue'?9000:10000)+i));assert.deepEqual(observed.map(row=>row.currentGold),Array.from({length:5},(_,i)=>(team==='blue'?100:200)+i));}
