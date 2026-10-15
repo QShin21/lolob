@@ -1,0 +1,22 @@
+{
+  "status": "failed",
+  "version": "0.8.0-rc.2",
+  "executable": "E:\\codexdata\\lolob-artifact-0.8.0-rc.2-4CCcNt\\zip\\RiftCast.exe",
+  "runAt": "2026-10-15T08:29:14.158Z",
+  "sandbox": "E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.2\\music-diagnostic\\smoke-RwX71W",
+  "reuseDriversOnly": true,
+  "blockedRequests": [],
+  "deviceSnapshots": {},
+  "checks": [
+    "packaged EXE starts with no Node/npm/compiler on PATH; version and migration match; original data retained"
+  ],
+  "errors": [
+    "OBS 拒绝了本次请求"
+  ],
+  "virtualCameraFrameVerified": false,
+  "cameraSamples": {},
+  "companionAudioVerified": false,
+  "companionAudioUnavailableVerified": false,
+  "liveGameVerified": false,
+  "liveStreamVerified": false
+}

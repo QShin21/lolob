@@ -1,0 +1,132 @@
+{
+  "at": "2026-10-15T08:56:09.436Z",
+  "scope": "Independent VM/COM helper contract simulation only. No helper executable, COM write, native application or system audio operation executed.",
+  "wrapperSha256": "96e030779779cc8cfa8561d52643e5522c371d9bc7e754124cb74fb87025fcb8",
+  "cases": [
+    {
+      "name": "child-exit0-restores",
+      "status": "passed",
+      "simulatedAuditStatus": "passed",
+      "restorationVerified": true,
+      "writeCalls": [
+        {
+          "role": 0,
+          "target": "emeet-id"
+        },
+        {
+          "role": 1,
+          "target": "emeet-id"
+        },
+        {
+          "role": 2,
+          "target": "emeet-id"
+        },
+        {
+          "role": 0,
+          "target": "cable-id"
+        },
+        {
+          "role": 1,
+          "target": "cable-id"
+        },
+        {
+          "role": 2,
+          "target": "cable-id"
+        }
+      ],
+      "renderUnchanged": true
+    },
+    {
+      "name": "child-exit1-restores",
+      "status": "passed",
+      "simulatedAuditStatus": "failed",
+      "restorationVerified": true,
+      "writeCalls": [
+        {
+          "role": 0,
+          "target": "emeet-id"
+        },
+        {
+          "role": 1,
+          "target": "emeet-id"
+        },
+        {
+          "role": 2,
+          "target": "emeet-id"
+        },
+        {
+          "role": 0,
+          "target": "cable-id"
+        },
+        {
+          "role": 1,
+          "target": "cable-id"
+        },
+        {
+          "role": 2,
+          "target": "cable-id"
+        }
+      ],
+      "renderUnchanged": true
+    },
+    {
+      "name": "write-succeeded-then-readback-failed-restores",
+      "status": "passed",
+      "simulatedAuditStatus": "failed",
+      "restorationVerified": true,
+      "writeCalls": [
+        {
+          "role": 0,
+          "target": "emeet-id"
+        },
+        {
+          "role": 1,
+          "target": "emeet-id"
+        },
+        {
+          "role": 0,
+          "target": "cable-id"
+        },
+        {
+          "role": 1,
+          "target": "cable-id"
+        }
+      ],
+      "renderUnchanged": true
+    },
+    {
+      "name": "first-restore-fails-still-attempts-other-roles",
+      "status": "passed",
+      "simulatedAuditStatus": "failed",
+      "restorationVerified": false,
+      "writeCalls": [
+        {
+          "role": 0,
+          "target": "emeet-id"
+        },
+        {
+          "role": 1,
+          "target": "emeet-id"
+        },
+        {
+          "role": 2,
+          "target": "emeet-id"
+        },
+        {
+          "role": 0,
+          "target": "cable-id"
+        },
+        {
+          "role": 1,
+          "target": "cable-id"
+        },
+        {
+          "role": 2,
+          "target": "cable-id"
+        }
+      ],
+      "renderUnchanged": true
+    }
+  ],
+  "status": "passed"
+}

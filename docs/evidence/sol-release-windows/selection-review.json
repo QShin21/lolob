@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-15T08:45:29.096Z",
+  "selection": "Explicit 78-file allowlist",
+  "exactHashesVerified": true,
+  "scope": "Reports, scripts, exits, logs and inspected PNG screenshots only",
+  "excluded": [
+    "fixture websocket config/password",
+    "seat session storage",
+    "legacy/user-data trees",
+    "runtime directories",
+    "recordings",
+    "real OBS configuration"
+  ],
+  "literalCredentialPatternsChecked": [
+    "GitHub token forms",
+    "OBS server_password JSON value",
+    "seat-token JSON value"
+  ],
+  "literalValueMatches": 0,
+  "pngsReviewed": [
+    "RC1 successful and first-failure safe UI",
+    "RC2 custom OBS pixels and dark/light/1366 editor",
+    "RC2 native first failure",
+    "RC2 default CABLE protection failure"
+  ],
+  "limits": "Scoped evidence selection and literal-pattern scan; not a general secret-detection guarantee"
+}

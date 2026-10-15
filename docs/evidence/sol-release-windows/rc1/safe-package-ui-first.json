@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-15T07:53:46.887Z",
+  "version": "0.8.0-rc.1",
+  "sourceRevision": "7b1234e8c336a1454e5bad1928f042262368dec2",
+  "status": "failed",
+  "executable": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip\\RiftCast.exe",
+  "userData": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\safe-ui-userdata",
+  "port": 61995,
+  "disabled": {
+    "obsAutostart": "0",
+    "autoConnect": "0",
+    "obsMode": "external",
+    "lan": "0"
+  },
+  "checks": [
+    {
+      "id": "real-packaged-boot-version-and-isolation",
+      "status": "pass",
+      "data": {
+        "metadata": {
+          "packaged": true,
+          "version": "0.8.0-rc.1",
+          "userData": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\safe-ui-userdata",
+          "menu": [
+            "在浏览器打开控制台",
+            "打开输出画面",
+            "",
+            "退出",
+            "刷新",
+            "全屏",
+            "RiftCast 0.8.0-rc.1 · 使用指南与快捷键",
+            "显示模式说明",
+            "打开启动日志",
+            "打开赛事数据目录",
+            "Riot 接口文档",
+            "OBS 开源许可与来源"
+          ]
+        },
+        "health": {
+          "service": "riftcast-director",
+          "version": "0.8.0-rc.1",
+          "status": "ok",
+          "mode": "demo",
+          "lanEnabled": false
+        },
+        "engine": {
+          "mode": "external",
+          "running": false,
+          "connected": false
+        },
+        "noNewObsProcess": true
+      }
+    },
+    {
+      "id": "real-package-help-version-and-pending-save",
+      "status": "fail",
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '帮助与诊断', exact: true })\u001b[22m\n",
+      "stack": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '帮助与诊断', exact: true })\u001b[22m\n\n    at E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.1\\safe-package-ui.mjs:26:163\n    at check (E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.1\\safe-package-ui.mjs:21:50)\n    at E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.1\\safe-package-ui.mjs:26:8"
+    }
+  ],
+  "errors": [],
+  "blockedDevicePosts": [],
+  "actions": [],
+  "beforeObs": [],
+  "limits": "Real packaged UI/service startup, persistence and restart only. No OBS process, driver, camera, microphone/audio transport, capture or local recording acceptance."
+}

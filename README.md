@@ -1,6 +1,8 @@
 # RiftCast · 英雄联盟赛事导播工作台
 
-当前源码版本为 **0.8.0-rc.3 Windows 候选版（2026-10-15）**，源码仓库为 [QShin21/lolob](https://github.com/QShin21/lolob)。本候选版整合工作台、十一种节目包装、自定义场景及五席协作的本轮重构，保留抖音直播伴侣的 Program 视频、最终混音和音乐通道。候选发布仍待最终产物核验、隔离安装及真实音画验证，尚无稳定版验收结论。构建提供 Setup 与完整 ZIP 两种形式；使用方法、数据位置和本轮验证范围见 [Windows 候选版说明](docs/Windows-Release-0.8.0-rc.3.md)，当前阶段见 [重构进度](docs/前端重构进度.md) 和 [Windows 收尾记录](docs/前端重构Windows收尾-20261014.md)。较早版本的功能说明与证据按各自日期保留。
+当前源码版本为 **0.8.0-rc.3 Windows 候选版（2026-10-15）**，源码仓库为 [QShin21/lolob](https://github.com/QShin21/lolob)。本候选版整合工作台、十一种节目包装、自定义场景及五席协作的本轮重构，保留抖音直播伴侣的 Program 视频、最终混音和音乐通道。干净源码 `eab48e2` 正式构建通过，Sol 对本版本产物独立核验 7/7、现有设备可用分支的随包原生验收 17/17 通过；临时录音角色已精确恢复。安装/升级/卸载隔离、长录制、最终音轨实听和真实手机/LoL/平台观众端仍未验证，保持候选版结论。
+
+[v0.8.0-rc.3 Release](https://github.com/QShin21/lolob/releases/tag/v0.8.0-rc.3) 已于 **2026-10-15 17:18:38（上海，09:18:38 UTC）**公开为候选 pre-release（ID 413608496，draft=false、prerelease=true），六个资产的 ID、字节数和 API digest 均保持并核对一致；latest stable v0.4.1 保持。tag `v0.8.0-rc.3` 与该包 sourceRevision 均指向 `eab48e23e624c47fe511dbdefd064f6a6d1fe505`。构建提供 Setup 与完整 ZIP；使用和数据位置见随包冻结的 [Windows 候选版说明](docs/Windows-Release-0.8.0-rc.3.md)，实际最新结果见 [RC3 发布验收报告](docs/前端重构Windows发布验收-0.8.0-rc.3.md) 与 [Sol 独立签认](docs/前端重构Sol独立产物与原生验收-0.8.0-rc.3-Windows.md)。后续报告文档提交单独归档，较早说明与证据按各自日期保留。
 
 抖音伴侣音画使用方式：在「连接与输出 → 输出」查看「抖音直播伴侣」路径，再点击「设为下一次输出」。本轮候选评估只复用已有 OBS Virtual Camera 和 VB-CABLE；设备未就绪时读取原因并停止该项验收，不点击设备准备按钮。核对节目与现有设备后点击「启动伴侣音画」，在伴侣选择 OBS Virtual Camera 和麦克风 CABLE Output，关闭额外系统声和原麦克风。摄像头发送 Program 画面。当前授权仅限隔离原生验收，禁止安装、注册、UAC、重启与真实推流，真实伴侣及观众端效果仍待验证。声音路径和回放音频边界见 [抖音直播伴侣接入](docs/抖音直播伴侣.md)。
 

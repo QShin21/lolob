@@ -1,0 +1,67 @@
+{
+  "at": "2026-10-15T08:36:57.041Z",
+  "status": "failed",
+  "sourceRevision": "daddc81fc5252f639aced2947cbb9a72fdf82941",
+  "version": "0.8.0-rc.2",
+  "scope": "Independent tail groups after preserved companion environment failure; does not prove camera frames or concurrent camera recording",
+  "executable": "E:/codexdata/lolob-artifact-0.8.0-rc.2-4CCcNt/zip/RiftCast.exe",
+  "sandbox": "E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.2\\music-diagnostic-enabled\\smoke-CnUDc4",
+  "checks": [
+    "Existing isolated packaged state restores music and custom scene with all outputs stopped",
+    "Real OBS GetRecordDirectory resolves exactly to preserved fixture videos boundary"
+  ],
+  "errors": [
+    "{\"error\":\"输出引擎正在处理操作，请稍后再试\"}\n\n400 !== 200\n"
+  ],
+  "blockedRequests": [],
+  "observations": {
+    "defaultsBefore": {
+      "render": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "capture": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+    },
+    "audioBefore": {
+      "RiftCast 桌面音频": {
+        "device": "default",
+        "muted": false,
+        "monitor": "OBS_MONITORING_TYPE_NONE",
+        "tracks": {
+          "1": true,
+          "2": true,
+          "3": true,
+          "4": true,
+          "5": true,
+          "6": true
+        }
+      },
+      "RiftCast 解说麦克风": {
+        "device": "default",
+        "muted": true,
+        "monitor": "OBS_MONITORING_TYPE_NONE",
+        "tracks": {
+          "1": true,
+          "2": true,
+          "3": true,
+          "4": true,
+          "5": true,
+          "6": true
+        }
+      },
+      "RiftCast 音乐": {
+        "muted": true,
+        "monitor": "OBS_MONITORING_TYPE_NONE",
+        "tracks": {
+          "1": true,
+          "2": true,
+          "3": true,
+          "4": true,
+          "5": true,
+          "6": true
+        }
+      }
+    },
+    "recordDirectory": "E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.2\\music-diagnostic-enabled\\smoke-CnUDc4\\user-data\\data\\videos"
+  },
+  "virtualCameraFrameVerified": false,
+  "companionAudioVerified": false,
+  "liveStreamVerified": false
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "step": "failure",
+    "at": "2026-10-15T08:29:13.949Z",
+    "dom": {
+      "hash": "",
+      "shell": "app-shell control-room page-studio",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": true,
+          "files": [],
+          "hidden": false
+        }
+      ],
+      "notices": [
+        ""
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "status": "failed",
+  "version": "0.8.0-rc.2",
+  "executable": "E:\\codexdata\\lolob-artifact-0.8.0-rc.2-4CCcNt\\zip\\RiftCast.exe",
+  "runAt": "2026-10-15T08:24:38.445Z",
+  "sandbox": "E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.2\\smoke-iWM5pH",
+  "reuseDriversOnly": true,
+  "blockedRequests": [],
+  "deviceSnapshots": {},
+  "checks": [
+    "packaged EXE starts with no Node/npm/compiler on PATH; version and migration match; original data retained",
+    "bundled OBS 32.2.2 runs from independent user directory; real WebSocket connected; stream and record off",
+    "latest custom scene editor, real image upload and saved scene work in packaged renderer",
+    "prebuilt native helper embeds a visible program projector from the owned real OBS process"
+  ],
+  "errors": [
+    "Music upload configures real managed OBS input"
+  ],
+  "virtualCameraFrameVerified": false,
+  "cameraSamples": {},
+  "companionAudioVerified": false,
+  "companionAudioUnavailableVerified": false,
+  "liveGameVerified": false,
+  "liveStreamVerified": false
+}

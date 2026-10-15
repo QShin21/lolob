@@ -1,0 +1,22 @@
+
+7-Zip 25.01 (x64) : Copyright (c) 1999-2025 Igor Pavlov : 2025-08-03
+
+Scanning the drive for archives:
+1 file, 290409472 bytes (277 MiB)
+
+Testing archive: E:\codexdata\lolob-release-20261014\release\0.8.0-rc.2\RiftCast-0.8.0-rc.2-Setup-x64.exe
+--
+Path = E:\codexdata\lolob-release-20261014\release\0.8.0-rc.2\RiftCast-0.8.0-rc.2-Setup-x64.exe
+Type = Nsis
+Physical Size = 290409472
+Method = Deflate
+Solid = -
+Headers Size = 97564
+Embedded Stub Size = 45568
+SubType = NSIS-3 Unicode
+
+Everything is Ok
+
+Files: 10
+Size:       289926534
+Compressed: 290409472

@@ -1,0 +1,22 @@
+
+7-Zip 25.01 (x64) : Copyright (c) 1999-2025 Igor Pavlov : 2025-08-03
+
+Scanning the drive for archives:
+1 file, 289926525 bytes (277 MiB)
+
+Testing archive: E:\codexdata\lolob-artifact-0.8.0-rc.3-ax1tYg\installer-container\$PLUGINSDIR\app-64.7z
+--
+Path = E:\codexdata\lolob-artifact-0.8.0-rc.3-ax1tYg\installer-container\$PLUGINSDIR\app-64.7z
+Type = 7z
+Physical Size = 289926525
+Headers Size = 78621
+Method = LZMA2:20 LZMA:20 BCJ2
+Solid = -
+Blocks = 7067
+
+Everything is Ok
+
+Folders: 257
+Files: 7068
+Size:       965355494
+Compressed: 289926525

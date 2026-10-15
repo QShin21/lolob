@@ -1,0 +1,48 @@
+{
+  "status": "failed",
+  "version": "0.8.0-rc.2",
+  "executable": "E:\\codexdata\\lolob-artifact-0.8.0-rc.2-4CCcNt\\zip\\RiftCast.exe",
+  "runAt": "2026-10-15T08:32:22.231Z",
+  "sandbox": "E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.2\\music-diagnostic-enabled\\smoke-CnUDc4",
+  "reuseDriversOnly": true,
+  "blockedRequests": [],
+  "deviceSnapshots": {
+    "before": {
+      "camera": {
+        "available": true,
+        "installed": true
+      },
+      "render": {
+        "id": "{0.0.0.00000000}.{129255db-e177-4346-96ae-536542d687e3}",
+        "name": "CABLE Input (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      "capture": {
+        "id": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "name": "CABLE Output (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": true,
+        "cable": true
+      }
+    }
+  },
+  "checks": [
+    "packaged EXE starts with no Node/npm/compiler on PATH; version and migration match; original data retained",
+    "bundled OBS 32.2.2 runs from independent user directory; real WebSocket connected; stream and record off",
+    "latest custom scene editor, real image upload and saved scene work in packaged renderer",
+    "prebuilt native helper embeds a visible program projector from the owned real OBS process",
+    "Packaged UI imports a real WAV, creates the managed music bus, and verifies default pause plus play/pause against actual OBS",
+    "reuse-drivers-only: existing camera registration and CABLE endpoints required; no install/prepare request sent"
+  ],
+  "errors": [
+    "Real virtual camera starts"
+  ],
+  "virtualCameraFrameVerified": false,
+  "cameraSamples": {},
+  "companionAudioVerified": false,
+  "companionAudioUnavailableVerified": false,
+  "liveGameVerified": false,
+  "liveStreamVerified": false
+}

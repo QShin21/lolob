@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "at": "2026-10-15T08:20:56.558Z",
+  "head": "daddc81fc5252f639aced2947cbb9a72fdf82941",
+  "base": "7b1234e8c336a1454e5bad1928f042262368dec2",
+  "version": "0.8.0-rc.2",
+  "dependencyGraphIdentical": true,
+  "dependencies": 515,
+  "productImplementationDelta": [],
+  "qaScriptsDelta": [
+    "scripts/verify-custom-scenes.mjs",
+    "scripts/verify-native-safety.mjs",
+    "scripts/verify-release.mjs"
+  ],
+  "docsLinks": 64,
+  "hashes": {
+    "package.json": "cf7cd4105226eeaebeedae614c0878cddbc43275f1410614899411c1d99d94bc",
+    "package-lock.json": "ec8525ec0ee7f2a930142ed751b20ed117b08d7743616868e12d92ed331357d4",
+    "scripts/verify-release.mjs": "cffeac57d3b7db265aacd93b0d308d4b6f7172b464a3100f7053f580ceaeac1b",
+    "scripts/verify-custom-scenes.mjs": "d411feab01b224259de5aa602190a4f2a2721ea265a3849c5eac8660ecb8989b",
+    "scripts/verify-native-safety.mjs": "37e4c07b50d99b6a5ea06729711fee89411a68d175e70f81eecf7b0318de6977",
+    "README.md": "1ec434a9bad4be40d990cf7ccec9246acb4c82aad1675c75786a0fe6424be960",
+    "docs/Windows-Release-0.8.0-rc.2.md": "d9365f9d629efe415f426d64d742a02b5f51647a8480be4cad0edd518572d416",
+    "docs/前端重构Windows收尾-20261014.md": "047830304b86a6b5f21565575ce7c58028ca3804189bdad71530959043de6216",
+    "docs/前端重构进度.md": "95c2ef350ea79d9e20561e24b5be09317a9278594a4899e37f61f39581710f9c"
+  },
+  "limits": "Native guard review and final committed build source are separately recorded. Review includes staged and untracked QA paths."
+}

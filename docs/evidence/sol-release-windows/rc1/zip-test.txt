@@ -1,0 +1,18 @@
+
+7-Zip 25.01 (x64) : Copyright (c) 1999-2025 Igor Pavlov : 2025-08-03
+
+Scanning the drive for archives:
+1 file, 389572132 bytes (372 MiB)
+
+Testing archive: E:\codexdata\lolob-release-20261014\release\0.8.0-rc.1\RiftCast-0.8.0-rc.1-Windows-x64.zip
+--
+Path = E:\codexdata\lolob-release-20261014\release\0.8.0-rc.1\RiftCast-0.8.0-rc.1-Windows-x64.zip
+Type = zip
+Physical Size = 389572132
+
+Everything is Ok
+
+Folders: 257
+Files: 7067
+Size:       965247646
+Compressed: 389572132

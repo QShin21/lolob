@@ -1,0 +1,123 @@
+{
+  "status": "passed",
+  "version": "0.8.0-rc.3",
+  "executable": "E:\\codexdata\\lolob-artifact-0.8.0-rc.3-ax1tYg\\zip\\RiftCast.exe",
+  "runAt": "2026-10-15T09:02:24.144Z",
+  "sandbox": "E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.3\\smoke-oYlXs9",
+  "reuseDriversOnly": true,
+  "blockedRequests": [],
+  "deviceSnapshots": {
+    "before": {
+      "camera": {
+        "available": true,
+        "installed": true
+      },
+      "render": {
+        "id": "{0.0.0.00000000}.{129255db-e177-4346-96ae-536542d687e3}",
+        "name": "CABLE Input (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      "capture": {
+        "id": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "name": "CABLE Output (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": true,
+        "cable": true
+      }
+    },
+    "after": {
+      "camera": {
+        "available": true,
+        "installed": true
+      },
+      "render": {
+        "id": "{0.0.0.00000000}.{129255db-e177-4346-96ae-536542d687e3}",
+        "name": "CABLE Input (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      "capture": {
+        "id": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "name": "CABLE Output (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": true,
+        "cable": true
+      }
+    }
+  },
+  "checks": [
+    "packaged EXE starts with no Node/npm/compiler on PATH; version and migration match; original data retained",
+    "bundled OBS 32.2.2 runs from independent user directory; real WebSocket connected; stream and record off",
+    "latest custom scene editor, real image upload and saved scene work in packaged renderer",
+    "prebuilt native helper embeds a visible program projector from the owned real OBS process",
+    "Packaged UI imports a real WAV, creates the managed music bus, and verifies default pause plus play/pause against actual OBS",
+    "reuse-drivers-only: existing camera registration and CABLE endpoints required; no install/prepare request sent",
+    "companion UI omits RTMP keys, starts real OBS Virtual Camera, and protects active sources and destination",
+    "Windows video device receives 1920x1080 Program frames, ignores pending Preview, and follows an actual TAKE",
+    "real local recording starts and stops while the companion video output continues",
+    "closing an active companion output warns about loss of video and retains output when cancelled",
+    "companion guide renders in both console themes while Program video retains its broadcast colors",
+    "Hold-to-stop confirms real companion output off; RTMP configuration returns; companion choice is saved",
+    "duplicate EXE launch exits cleanly and preserves the existing director instance",
+    "normal window close saves data and closes owned service/projector",
+    "read-only device status matches before/after; installed-driver reuse branch is additionally covered by driver unit tests",
+    "restart remembers companion destination while all outputs remain stopped",
+    "restart preserves custom scenes and never overwrites existing Release data from the old project"
+  ],
+  "errors": [],
+  "virtualCameraFrameVerified": true,
+  "cameraSamples": {
+    "device": {
+      "label": "OBS Virtual Camera",
+      "settings": {
+        "aspectRatio": 1.7777777777777777,
+        "deviceId": "defdae61b1686d30077cc5626cdc9880f7e9c53c105591b071cfa5e0d57569a9",
+        "frameRate": 30.000030517578125,
+        "groupId": "30c41cfd84c0b5a3582d9f4bfb66426d0872f4665c8df0e37237a358463a29c2",
+        "height": 1080,
+        "resizeMode": "none",
+        "width": 1920
+      }
+    },
+    "blueProgram": {
+      "pixel": [
+        24,
+        79,
+        146,
+        255
+      ],
+      "frames": 15,
+      "width": 1920,
+      "height": 1080
+    },
+    "pendingPreview": {
+      "pixel": [
+        24,
+        79,
+        146,
+        255
+      ],
+      "frames": 40,
+      "width": 1920,
+      "height": 1080
+    },
+    "redProgram": {
+      "pixel": [
+        162,
+        25,
+        34,
+        255
+      ],
+      "frames": 50,
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "companionAudioVerified": false,
+  "companionAudioUnavailableVerified": false,
+  "liveGameVerified": false,
+  "liveStreamVerified": false
+}

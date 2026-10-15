@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "id": 413608496,
+  "assets": 6,
+  "bytes": 680580422,
+  "matches": [
+    [
+      "README-zh-CN.md",
+      "使用说明.md"
+    ],
+    [
+      "release-manifest.json",
+      "release-manifest.json"
+    ],
+    [
+      "RiftCast-0.8.0-rc.3-Setup-x64.exe",
+      "RiftCast-0.8.0-rc.3-Setup-x64.exe"
+    ],
+    [
+      "RiftCast-0.8.0-rc.3-Setup-x64.exe.blockmap",
+      "RiftCast-0.8.0-rc.3-Setup-x64.exe.blockmap"
+    ],
+    [
+      "RiftCast-0.8.0-rc.3-Windows-x64.zip",
+      "RiftCast-0.8.0-rc.3-Windows-x64.zip"
+    ],
+    [
+      "SHA256SUMS.txt",
+      "SHA256SUMS.txt"
+    ]
+  ]
+}

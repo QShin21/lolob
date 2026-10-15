@@ -1,0 +1,81 @@
+{
+  "at": "2026-10-15T08:10:44.434Z",
+  "version": "0.8.0-rc.1",
+  "sourceRevision": "7b1234e8c336a1454e5bad1928f042262368dec2",
+  "status": "passed-so-far",
+  "executable": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip\\RiftCast.exe",
+  "userData": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\safe-ui-userdata",
+  "port": 53614,
+  "disabled": {
+    "obsAutostart": "0",
+    "autoConnect": "0",
+    "obsMode": "external",
+    "lan": "0"
+  },
+  "checks": [
+    {
+      "id": "real-packaged-boot-version-and-isolation",
+      "status": "pass",
+      "data": {
+        "metadata": {
+          "packaged": true,
+          "version": "0.8.0-rc.1",
+          "userData": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\safe-ui-userdata",
+          "menu": [
+            "在浏览器打开控制台",
+            "打开输出画面",
+            "",
+            "退出",
+            "刷新",
+            "全屏",
+            "RiftCast 0.8.0-rc.1 · 使用指南与快捷键",
+            "显示模式说明",
+            "打开启动日志",
+            "打开赛事数据目录",
+            "Riot 接口文档",
+            "OBS 开源许可与来源"
+          ]
+        },
+        "health": {
+          "service": "riftcast-director",
+          "version": "0.8.0-rc.1",
+          "status": "ok",
+          "mode": "demo",
+          "lanEnabled": false
+        },
+        "engine": {
+          "mode": "external",
+          "running": false,
+          "connected": false
+        },
+        "noNewObsProcess": true
+      }
+    },
+    {
+      "id": "real-package-help-version-and-pending-save",
+      "status": "pass",
+      "data": {
+        "actualPackagedSave": true,
+        "programUnchanged": true
+      }
+    },
+    {
+      "id": "normal-close-restart-preserves-private-data-without-OBS",
+      "status": "pass",
+      "data": {
+        "privateStateBytes": 57421,
+        "restarted": true,
+        "noNewObsProcess": true
+      }
+    }
+  ],
+  "errors": [],
+  "blockedDevicePosts": [],
+  "actions": [
+    {
+      "type": "save-custom-scene"
+    }
+  ],
+  "beforeObs": [],
+  "limits": "Real packaged UI/service startup, persistence and restart only. No OBS process, driver, camera, microphone/audio transport, capture or local recording acceptance."
+}

@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "at": "2026-10-15T07:07:45.224Z",
+  "baseImplementation": "e3828b807774af2ee7ae9af18f383c8fb8b66f12",
+  "currentHead": "08be385bce789ca39e2651c8d28302d3ff023e4e",
+  "pendingVersion": "0.8.0-rc.1",
+  "pendingWorkingTree": true,
+  "rootVersionLocations": 3,
+  "dependencyEntries": 515,
+  "fullDependencyGraphIdentical": true,
+  "packageExceptVersionIdentical": true,
+  "implementationDiff": [],
+  "versionReaders": [
+    "src/App.tsx",
+    "src/pages/Help.tsx",
+    "server/index.ts",
+    "electron/main.cjs",
+    "scripts/build-release.mjs",
+    "electron-builder.cjs"
+  ],
+  "archiveFormatRetained": "0.3.0",
+  "docsHashes": {
+    "README.md": "08a85f3a61b4d32dac692b06977c026be66bb17a1fa740b0acbba6433415134b",
+    "docs/Windows-Release-0.8.0-rc.1.md": "d0196c5b7e37f6add3ce1d1abfecaeded4f454c999c48d9a5d989b3899c89d7d",
+    "docs/前端重构Windows收尾-20261014.md": "73c84e5c50bb80cd21a9a47055f5aa5ef58ddc2208236c54fd0cde1d22c96802",
+    "docs/前端重构进度.md": "ba2b0fb9b9abe4aa4a149224cf310f18f033ca471253866914a8a548a1df599f"
+  },
+  "packageHashes": {
+    "package.json": "1c72f347f2ab97dc2f4adff8c8031ef850711cc3e565f988ba61ce4d02ae7f03",
+    "package-lock.json": "3fcc57e44473369fa4e53240bb122c9112ec7fd5b2cf4dd6e49956494236d68f"
+  },
+  "localLinks": 61,
+  "limits": "Static version/document/delta review only. Final committed source and generated artifacts need subsequent verification; no build, OBS, installer or device execution."
+}

@@ -1,0 +1,13 @@
+E:\codexdata\lolob-release-20261014\node_modules\obs-websocket-js\src\base.ts:142
+			throw new OBSWebSocketError(requestStatus.code, requestStatus.comment);
+			      ^
+
+OBSWebSocketError: OBS 拒绝了本次请求
+    at ObsClient.call (E:\codexdata\lolob-release-20261014\node_modules\obs-websocket-js\src\base.ts:142:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async verifyRecordingDirectory (file:///E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.2/verify-release-music-diagnostic.mjs:79:21)
+    at async file:///E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.2/verify-release-music-diagnostic.mjs:108:3 {
+  code: 207
+}
+
+Node.js v24.12.0

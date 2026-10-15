@@ -1,0 +1,32 @@
+{"at":"2026-10-15T09:01:51.360Z","event":"observer-attached","scope":"method/path/time/status/error only; no body, query, headers or secret values"}
+{"at":"2026-10-15T09:01:58.312Z","source":"qa-node","event":"request","id":1,"method":"POST","path":"/api/obs/engine/monitor"}
+{"at":"2026-10-15T09:01:58.315Z","source":"qa-node","event":"response","id":1,"method":"POST","path":"/api/obs/engine/monitor","status":200}
+{"at":"2026-10-15T09:01:58.530Z","source":"browser","event":"request","id":2,"method":"GET","path":"/api/obs/cameras"}
+{"at":"2026-10-15T09:01:58.635Z","source":"browser","event":"response","id":2,"method":"GET","path":"/api/obs/cameras","status":200}
+{"at":"2026-10-15T09:02:01.638Z","source":"browser","event":"request","id":3,"method":"POST","path":"/api/obs/music"}
+{"at":"2026-10-15T09:02:01.647Z","source":"browser","event":"response","id":3,"method":"POST","path":"/api/obs/music","status":201}
+{"at":"2026-10-15T09:02:05.036Z","source":"browser","event":"request","id":4,"method":"POST","path":"/api/obs/music/control"}
+{"at":"2026-10-15T09:02:05.043Z","source":"browser","event":"response","id":4,"method":"POST","path":"/api/obs/music/control","status":200}
+{"at":"2026-10-15T09:02:08.080Z","source":"browser","event":"request","id":5,"method":"POST","path":"/api/obs/music/control"}
+{"at":"2026-10-15T09:02:08.085Z","source":"browser","event":"response","id":5,"method":"POST","path":"/api/obs/music/control","status":200}
+{"at":"2026-10-15T09:02:08.193Z","source":"browser","event":"request","id":6,"method":"POST","path":"/api/obs/engine/destination"}
+{"at":"2026-10-15T09:02:08.199Z","source":"browser","event":"response","id":6,"method":"POST","path":"/api/obs/engine/destination","status":200}
+{"at":"2026-10-15T09:02:08.231Z","source":"browser","event":"request","id":7,"method":"POST","path":"/api/obs/engine/output"}
+{"at":"2026-10-15T09:02:09.206Z","source":"qa-node","event":"request","id":8,"method":"POST","path":"/api/obs/engine/setup"}
+{"at":"2026-10-15T09:02:09.208Z","source":"browser","event":"response","id":7,"method":"POST","path":"/api/obs/engine/output","status":200}
+{"at":"2026-10-15T09:02:09.208Z","source":"qa-node","event":"response","id":8,"method":"POST","path":"/api/obs/engine/setup","status":400}
+{"at":"2026-10-15T09:02:09.209Z","source":"qa-node","event":"response-error","id":8,"path":"/api/obs/engine/setup","status":400,"error":"请先停止伴侣画面输出，再修改来源或输出方式"}
+{"at":"2026-10-15T09:02:09.214Z","source":"qa-node","event":"request","id":9,"method":"POST","path":"/api/obs/engine/destination"}
+{"at":"2026-10-15T09:02:09.216Z","source":"qa-node","event":"response","id":9,"method":"POST","path":"/api/obs/engine/destination","status":400}
+{"at":"2026-10-15T09:02:09.216Z","source":"qa-node","event":"response-error","id":9,"path":"/api/obs/engine/destination","status":400,"error":"请先停止伴侣画面输出，再修改来源或输出方式"}
+{"at":"2026-10-15T09:02:11.236Z","source":"browser","event":"request","id":10,"method":"POST","path":"/api/obs/engine/output"}
+{"at":"2026-10-15T09:02:11.398Z","source":"browser","event":"response","id":10,"method":"POST","path":"/api/obs/engine/output","status":200}
+{"at":"2026-10-15T09:02:11.417Z","source":"browser","event":"request","id":11,"method":"POST","path":"/api/obs/engine/output"}
+{"at":"2026-10-15T09:02:12.212Z","source":"browser","event":"response","id":11,"method":"POST","path":"/api/obs/engine/output","status":200}
+{"at":"2026-10-15T09:02:13.624Z","source":"browser","event":"request","id":12,"method":"POST","path":"/api/obs/engine/output"}
+{"at":"2026-10-15T09:02:13.789Z","source":"browser","event":"response","id":12,"method":"POST","path":"/api/obs/engine/output","status":200}
+{"at":"2026-10-15T09:02:13.867Z","source":"browser","event":"request","id":13,"method":"POST","path":"/api/obs/engine/destination"}
+{"at":"2026-10-15T09:02:13.871Z","source":"browser","event":"response","id":13,"method":"POST","path":"/api/obs/engine/destination","status":200}
+{"at":"2026-10-15T09:02:14.068Z","source":"browser","event":"request","id":14,"method":"POST","path":"/api/obs/engine/destination"}
+{"at":"2026-10-15T09:02:14.072Z","source":"browser","event":"response","id":14,"method":"POST","path":"/api/obs/engine/destination","status":200}
+{"at":"2026-10-15T09:02:17.625Z","event":"observer-attached","scope":"method/path/time/status/error only; no body, query, headers or secret values"}

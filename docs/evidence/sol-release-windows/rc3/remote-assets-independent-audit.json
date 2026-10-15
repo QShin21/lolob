@@ -1,0 +1,72 @@
+{
+  "at": "2026-10-15T09:10:43.269Z",
+  "status": "passed",
+  "releaseId": 413608496,
+  "tag": "v0.8.0-rc.3",
+  "sourceRevision": "eab48e23e624c47fe511dbdefd064f6a6d1fe505",
+  "draft": true,
+  "prerelease": true,
+  "assets": [
+    {
+      "id": 643316141,
+      "remoteName": "README-zh-CN.md",
+      "label": "使用说明.md",
+      "localName": "使用说明.md",
+      "bytes": 13044,
+      "sha256": "8bad6196bc8dc92e5451bb2a1b6891b80fc407454c67ae331a5fa742f7a1cfd7",
+      "digest": "sha256:8bad6196bc8dc92e5451bb2a1b6891b80fc407454c67ae331a5fa742f7a1cfd7",
+      "browserDownloadUrl": "https://github.com/QShin21/lolob/releases/download/untagged-c9c61571e823e2e027e9/README-zh-CN.md"
+    },
+    {
+      "id": 643316082,
+      "remoteName": "release-manifest.json",
+      "label": "",
+      "localName": "release-manifest.json",
+      "bytes": 284169,
+      "sha256": "7d483ba24f10b65a755350942650631b100202801c4338c86c82299fd86daae4",
+      "digest": "sha256:7d483ba24f10b65a755350942650631b100202801c4338c86c82299fd86daae4",
+      "browserDownloadUrl": "https://github.com/QShin21/lolob/releases/download/untagged-c9c61571e823e2e027e9/release-manifest.json"
+    },
+    {
+      "id": 643316068,
+      "remoteName": "RiftCast-0.8.0-rc.3-Setup-x64.exe",
+      "label": "",
+      "localName": "RiftCast-0.8.0-rc.3-Setup-x64.exe",
+      "bytes": 290409455,
+      "sha256": "2dda5ff00d7ce86b1e3139de12c01ce9bcb2ed774d8ddcfcdc72f94e80a35210",
+      "digest": "sha256:2dda5ff00d7ce86b1e3139de12c01ce9bcb2ed774d8ddcfcdc72f94e80a35210",
+      "browserDownloadUrl": "https://github.com/QShin21/lolob/releases/download/untagged-c9c61571e823e2e027e9/RiftCast-0.8.0-rc.3-Setup-x64.exe"
+    },
+    {
+      "id": 643316077,
+      "remoteName": "RiftCast-0.8.0-rc.3-Setup-x64.exe.blockmap",
+      "label": "",
+      "localName": "RiftCast-0.8.0-rc.3-Setup-x64.exe.blockmap",
+      "bytes": 301196,
+      "sha256": "b2f527b521faa99bcb825c826466b810f17a9f09087f57fe92e8ccc7927cdf39",
+      "digest": "sha256:b2f527b521faa99bcb825c826466b810f17a9f09087f57fe92e8ccc7927cdf39",
+      "browserDownloadUrl": "https://github.com/QShin21/lolob/releases/download/untagged-c9c61571e823e2e027e9/RiftCast-0.8.0-rc.3-Setup-x64.exe.blockmap"
+    },
+    {
+      "id": 643316064,
+      "remoteName": "RiftCast-0.8.0-rc.3-Windows-x64.zip",
+      "label": "",
+      "localName": "RiftCast-0.8.0-rc.3-Windows-x64.zip",
+      "bytes": 389572247,
+      "sha256": "eb10d8e1a827f335c1ebb982794a71e23316f19238af06b15ca89de97f106d32",
+      "digest": "sha256:eb10d8e1a827f335c1ebb982794a71e23316f19238af06b15ca89de97f106d32",
+      "browserDownloadUrl": "https://github.com/QShin21/lolob/releases/download/untagged-c9c61571e823e2e027e9/RiftCast-0.8.0-rc.3-Windows-x64.zip"
+    },
+    {
+      "id": 643316081,
+      "remoteName": "SHA256SUMS.txt",
+      "label": "",
+      "localName": "SHA256SUMS.txt",
+      "bytes": 311,
+      "sha256": "624faa61168674ab7ef793e9b1bf15fb7adb93fa076bff8f3ba3e9081da187c6",
+      "digest": "sha256:624faa61168674ab7ef793e9b1bf15fb7adb93fa076bff8f3ba3e9081da187c6",
+      "browserDownloadUrl": "https://github.com/QShin21/lolob/releases/download/untagged-c9c61571e823e2e027e9/SHA256SUMS.txt"
+    }
+  ],
+  "scope": "Authenticated read-only official GitHub REST release metadata and ingestion SHA-256 compared with fresh local hashes. Binary assets were not downloaded again. Draft/publication is mutable after this observation."
+}

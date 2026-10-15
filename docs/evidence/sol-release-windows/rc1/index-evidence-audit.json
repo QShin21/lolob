@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-15T07:10:52.500Z",
+  "status": "passed",
+  "head": "08be385bce789ca39e2651c8d28302d3ff023e4e",
+  "testedSource": "e3828b807774af2ee7ae9af18f383c8fb8b66f12",
+  "verified": 129,
+  "expected": 129,
+  "problems": [],
+  "attributes": "* text=auto eol=lf\n*.cmd text eol=crlf\n*.vbs text eol=crlf\n*.png binary\n*.jpg binary\n*.exe binary\n\n# Preserve exact bytes for this independently hashed Windows evidence set.\n/docs/evidence/sol-e3828b8-windows/** -text\n",
+  "boundary": "Binary bytes from git cat-file on the staged index, matched to the staged evidence manifest. No product test rerun."
+}

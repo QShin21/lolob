@@ -1,0 +1,214 @@
+[
+  {
+    "step": "after-navigation",
+    "at": "2026-10-15T08:30:17.229Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": false
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "step": "after-audio-tab",
+    "at": "2026-10-15T08:30:17.312Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": true,
+          "files": [],
+          "hidden": false
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "step": "before-set-input-files",
+    "at": "2026-10-15T08:30:17.337Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": true,
+          "files": [],
+          "hidden": false
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "event": "request",
+    "at": "2026-10-15T08:30:17.366Z",
+    "pathname": "/api/obs/music",
+    "method": "POST",
+    "contentType": "multipart/form-data; boundary=----WebKitFormBoundaryMuarkqSpbwsJzuwq"
+  },
+  {
+    "step": "after-set-input-files",
+    "at": "2026-10-15T08:30:17.361Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": true,
+          "files": [],
+          "hidden": false
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "event": "response",
+    "at": "2026-10-15T08:30:17.373Z",
+    "pathname": "/api/obs/music",
+    "status": 400,
+    "body": "{\"error\":\"输出引擎正在处理操作，请稍后再试\"}"
+  },
+  {
+    "step": "failure",
+    "at": "2026-10-15T08:30:47.400Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": false
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "输出引擎正在处理操作，请稍后再试×",
+        ""
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  }
+]

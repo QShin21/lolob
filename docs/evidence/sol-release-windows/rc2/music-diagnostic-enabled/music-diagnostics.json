@@ -1,0 +1,297 @@
+[
+  {
+    "step": "after-navigation",
+    "at": "2026-10-15T08:31:42.567Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": false
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "step": "after-audio-tab",
+    "at": "2026-10-15T08:31:42.679Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": true,
+          "files": [],
+          "hidden": false
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "step": "before-set-input-files",
+    "at": "2026-10-15T08:31:42.697Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": true,
+          "files": [],
+          "hidden": false
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "step": "file-input-enabled",
+    "at": "2026-10-15T08:31:45.757Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": false
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "event": "request",
+    "at": "2026-10-15T08:31:45.782Z",
+    "pathname": "/api/obs/music",
+    "method": "POST",
+    "contentType": "multipart/form-data; boundary=----WebKitFormBoundary6oLuYhsX7SYlvasg"
+  },
+  {
+    "step": "after-set-input-files",
+    "at": "2026-10-15T08:31:45.777Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": true,
+          "files": [],
+          "hidden": false
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "自定义场景已保存到待播；选择预监核对实际合成"
+      ]
+    },
+    "productionMusic": {
+      "available": false,
+      "playing": false
+    },
+    "musicInputs": []
+  },
+  {
+    "event": "response",
+    "at": "2026-10-15T08:31:45.799Z",
+    "pathname": "/api/obs/music",
+    "status": 201,
+    "body": "{\"available\":true,\"name\":\"release-music.wav\",\"playing\":false,\"state\":\"OBS_MEDIA_STATE_PAUSED\",\"duration\":-9223372036854.775}"
+  },
+  {
+    "event": "request",
+    "at": "2026-10-15T08:31:48.641Z",
+    "pathname": "/api/obs/music/control",
+    "method": "POST",
+    "contentType": "application/json"
+  },
+  {
+    "event": "response",
+    "at": "2026-10-15T08:31:48.659Z",
+    "pathname": "/api/obs/music/control",
+    "status": 200,
+    "body": "{\"available\":true,\"name\":\"release-music.wav\",\"playing\":false,\"state\":\"OBS_MEDIA_STATE_PAUSED\",\"duration\":1}"
+  },
+  {
+    "event": "request",
+    "at": "2026-10-15T08:31:51.708Z",
+    "pathname": "/api/obs/music/control",
+    "method": "POST",
+    "contentType": "application/json"
+  },
+  {
+    "event": "response",
+    "at": "2026-10-15T08:31:51.717Z",
+    "pathname": "/api/obs/music/control",
+    "status": 200,
+    "body": "{\"available\":true,\"name\":\"release-music.wav\",\"playing\":false,\"state\":\"OBS_MEDIA_STATE_PLAYING\",\"duration\":1}"
+  },
+  {
+    "step": "failure",
+    "at": "2026-10-15T08:32:22.117Z",
+    "dom": {
+      "hash": "#settings",
+      "shell": "app-shell control-room page-settings",
+      "activeTab": "全部",
+      "fileInputs": [
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "节目音乐文件",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "蓝色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        },
+        {
+          "label": "红色方上传选手图片",
+          "disabled": false,
+          "files": [],
+          "hidden": true
+        }
+      ],
+      "notices": [
+        "VB-CABLE 已成为 Windows 默认音频设备。请将默认扬声器和麦克风切回原设备后重新准备，避免重复采集",
+        "VB-CABLE 已成为 Windows 默认音频设备。请将默认扬声器和麦克风切回原设备后重新准备，避免重复采集",
+        "VB-CABLE 已成为 Windows 默认音频设备。请将默认扬声器和麦克风切回原设备后重新准备，避免重复采集"
+      ]
+    },
+    "productionMusic": {
+      "available": true,
+      "name": "release-music.wav",
+      "playing": false,
+      "state": "OBS_MEDIA_STATE_PAUSED",
+      "duration": 1
+    },
+    "musicInputs": [
+      {
+        "inputKind": "ffmpeg_source",
+        "inputKindCaps": 8327,
+        "inputName": "RiftCast 音乐",
+        "inputUuid": "ffaa105b-6dc5-489c-81ed-a7c0fd7c3d36",
+        "unversionedInputKind": "ffmpeg_source"
+      }
+    ]
+  }
+]

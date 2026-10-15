@@ -1,0 +1,146 @@
+{
+  "at": "2026-10-15T07:30:18.959Z",
+  "status": "failed",
+  "version": "0.8.0-rc.1",
+  "sourceRevision": "7b1234e8c336a1454e5bad1928f042262368dec2",
+  "external": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb",
+  "packageRoot": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip",
+  "checks": [
+    {
+      "id": "release-source-and-checksums",
+      "status": "pass",
+      "data": {
+        "sourceFiles": 2204,
+        "sourceDigest": "09df3e8e7bb2a741dee1519214f60ff457b6bbd4149a7ab0de89e43422dbbff4",
+        "artifacts": [
+          {
+            "name": "RiftCast-0.8.0-rc.1-Setup-x64.exe",
+            "bytes": 290409352,
+            "sha256": "77c3c8766f7a4e2b44856214d00622807710dc85d721a1f2a454d9d4a9da31de"
+          },
+          {
+            "name": "RiftCast-0.8.0-rc.1-Setup-x64.exe.blockmap",
+            "bytes": 301120,
+            "sha256": "147489944e3bc6c5adff4dac4e4a811683230db6738d52b82eafe5608e7cda1b"
+          },
+          {
+            "name": "RiftCast-0.8.0-rc.1-Windows-x64.zip",
+            "bytes": 389572132,
+            "sha256": "d93276c329ea88c5de6840428ef9cfe4c1106f3d1684d7f020f90319c8d587ad"
+          }
+        ]
+      }
+    },
+    {
+      "id": "7zip-archive-integrity-and-safe-names",
+      "status": "pass",
+      "data": {
+        "installerExecuted": false
+      }
+    }
+  ],
+  "commands": [
+    {
+      "tool": "7z.exe",
+      "args": [
+        "t",
+        "-bd",
+        "-bb0",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Windows-x64.zip"
+      ],
+      "exit": 0,
+      "log": "zip-test.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-bd",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Windows-x64.zip"
+      ],
+      "exit": 0,
+      "log": "zip-list.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "t",
+        "-bd",
+        "-bb0",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Setup-x64.exe"
+      ],
+      "exit": 0,
+      "log": "setup-test.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-bd",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Setup-x64.exe"
+      ],
+      "exit": 0,
+      "log": "setup-list.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "x",
+        "-y",
+        "-bd",
+        "-bb0",
+        "-oE:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Windows-x64.zip"
+      ],
+      "exit": 0,
+      "log": "zip-extract.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "x",
+        "-y",
+        "-bd",
+        "-bb0",
+        "-oE:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-container",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Setup-x64.exe"
+      ],
+      "exit": 0,
+      "log": "setup-extract.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "t",
+        "-bd",
+        "-bb0",
+        "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-container\\$PLUGINSDIR\\app-64.7z"
+      ],
+      "exit": 0,
+      "log": "installer-payload-test.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "x",
+        "-y",
+        "-bd",
+        "-bb0",
+        "-oE:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-payload",
+        "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-container\\$PLUGINSDIR\\app-64.7z"
+      ],
+      "exit": 0,
+      "log": "installer-payload-extract.txt"
+    }
+  ],
+  "failures": [
+    {
+      "id": "extract-and-byte-compare-three-payloads",
+      "error": "ZIP vs win-unpacked\n+ actual - expected\n... Skipped lines\n\n  {\n    'LICENSE.electron.txt': '5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d',\n    'LICENSES.chromium.html': '7b328b8c7463ac9bfc7dc648c751533517c8441a0b5b21047d6c0b2620e60d70',\n    'RiftCast.exe': 'ca82a9e22f9c364396673bbf002f6006c3cafd9c83af89deabbddbae34127083',\n    'chrome_100_percent.pak': 'ab7c4b7b6cb8832a31d44b95ec50ce52294f49422a3bdde4e21968eca2930cbe',\n...\n    'resources/default_app.asar': '0eb2491b0a9ac94790389d39c09dd5005c6c1f0665842943829bbd0193f6cc4f',\n-   'resources/elevate.exe': '9b1fbf0c11c520ae714af8aa9af12cfd48503eedecd7398d8992ee94d1b4dc37',\n    'resources/licenses/OBS-COPYING': '8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643',\n    'resources/licenses/OBS-Studio-32.2.2-Sources.tar.gz': 'ec81fb66b03e75ddb3076b576f62679c39262e0e9960cef3e17a40dc5d68e6b4',\n    'resources/licenses/RiftCast-Audio-Source/BUILDING.md': '7279875d73adc3ad1f81a653fd59348f298252219e9901fcfa9998af70b15e38',\n    'resources/licenses/RiftCast-Audio-Source/COPYING': '8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643',\n    'resources/licenses/RiftCast-Audio-Source/scripts/build-audio-bridge.cjs': 'b16bd1b542e97a8bf0899dd81c3308dc11ebfa2c8ae1adc8ecd5be9704805bcb',\n",
+      "stack": "AssertionError [ERR_ASSERTION]: ZIP vs win-unpacked\n+ actual - expected\n... Skipped lines\n\n  {\n    'LICENSE.electron.txt': '5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d',\n    'LICENSES.chromium.html': '7b328b8c7463ac9bfc7dc648c751533517c8441a0b5b21047d6c0b2620e60d70',\n    'RiftCast.exe': 'ca82a9e22f9c364396673bbf002f6006c3cafd9c83af89deabbddbae34127083',\n    'chrome_100_percent.pak': 'ab7c4b7b6cb8832a31d44b95ec50ce52294f49422a3bdde4e21968eca2930cbe',\n...\n    'resources/default_app.asar': '0eb2491b0a9ac94790389d39c09dd5005c6c1f0665842943829bbd0193f6cc4f',\n-   'resources/elevate.exe': '9b1fbf0c11c520ae714af8aa9af12cfd48503eedecd7398d8992ee94d1b4dc37',\n    'resources/licenses/OBS-COPYING': '8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643',\n    'resources/licenses/OBS-Studio-32.2.2-Sources.tar.gz': 'ec81fb66b03e75ddb3076b576f62679c39262e0e9960cef3e17a40dc5d68e6b4',\n    'resources/licenses/RiftCast-Audio-Source/BUILDING.md': '7279875d73adc3ad1f81a653fd59348f298252219e9901fcfa9998af70b15e38',\n    'resources/licenses/RiftCast-Audio-Source/COPYING': '8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643',\n    'resources/licenses/RiftCast-Audio-Source/scripts/build-audio-bridge.cjs': 'b16bd1b542e97a8bf0899dd81c3308dc11ebfa2c8ae1adc8ecd5be9704805bcb',\n\n    at file:///E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.1/audit-artifacts.mjs:29:908\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async check (file:///E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.1/audit-artifacts.mjs:18:44)\n    at async file:///E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.1/audit-artifacts.mjs:29:2"
+    }
+  ],
+  "limits": "Archive integrity, PE, byte identity, source provenance and local runtime module loading only. No installer/OBS/audio component/driver execution."
+}

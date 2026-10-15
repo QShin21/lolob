@@ -1,0 +1,12 @@
+PASS real-packaged-boot-version-and-isolation
+FAIL real-package-help-version-and-pending-save: locator.click: Timeout 12000ms exceeded.
+Call log:
+  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '帮助与诊断', exact: true })
+
+locator.click: Timeout 12000ms exceeded.
+Call log:
+  - waiting for getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '帮助与诊断', exact: true })
+
+    at E:\codexdata\lolob-release-20261014\verification-output\release-0.8.0-rc.1\safe-package-ui.mjs:26:163
+    at check (E:\codexdata\lolob-release-20261014\verification-output\release-0.8.0-rc.1\safe-package-ui.mjs:21:50)
+    at E:\codexdata\lolob-release-20261014\verification-output\release-0.8.0-rc.1\safe-package-ui.mjs:26:8

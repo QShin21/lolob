@@ -1,0 +1,95 @@
+{
+  "status": "passed",
+  "at": "2026-10-15T08:20:37.315Z",
+  "files": {
+    "scripts/verify-native-safety.mjs": "37e4c07b50d99b6a5ea06729711fee89411a68d175e70f81eecf7b0318de6977",
+    "scripts/verify-release.mjs": "cffeac57d3b7db265aacd93b0d308d4b6f7172b464a3100f7053f580ceaeac1b",
+    "scripts/verify-custom-scenes.mjs": "d411feab01b224259de5aa602190a4f2a2721ea265a3849c5eac8660ecb8989b"
+  },
+  "requestCases": 14,
+  "requestSamples": [
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/virtual-camera/install",
+      "blocked": true
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/companion/prepare",
+      "blocked": true
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/virtual-camera/register",
+      "blocked": true
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/output",
+      "action": "start-stream",
+      "blocked": true
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/stream/settings",
+      "blocked": true
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/output",
+      "action": "unknown",
+      "blocked": true
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/virtual-camera/install/",
+      "blocked": true
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/virtual-camera/%69nstall",
+      "blocked": true
+    },
+    {
+      "method": "GET",
+      "url": "/api/obs/engine",
+      "blocked": false
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/output",
+      "action": "start-record",
+      "blocked": false
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/output",
+      "action": "stop-record",
+      "blocked": false
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/output",
+      "action": "start-virtual-camera",
+      "blocked": false
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/engine/output",
+      "action": "stop-virtual-camera",
+      "blocked": false
+    },
+    {
+      "method": "POST",
+      "url": "/api/obs/music/control",
+      "action": "pause",
+      "blocked": false
+    }
+  ],
+  "nodeAndUiBlockBeforeTransport": true,
+  "environmentIsolation": true,
+  "actualRecordingDirectoryRejectsOtherPath": true,
+  "explicitNonexistentWindowFixture": true,
+  "fixture": "E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.2\\guard-review-RCcq33",
+  "limits": "Pure helper contract and static runner read. No native or device acceptance."
+}

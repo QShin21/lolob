@@ -1,0 +1,9 @@
+file:///E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.2/verify-release-music-enabled.mjs:40
+async function until(work, label, timeout = 30000) { const end = Date.now() + timeout; while (Date.now() < end) { if (await work()) return; await new Promise(r => setTimeout(r, 150)); } throw new Error(label); }
+                                                                                                                                                                                                ^
+
+Error: Real virtual camera starts
+    at until (file:///E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.2/verify-release-music-enabled.mjs:40:193)
+    at async file:///E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.2/verify-release-music-enabled.mjs:170:3
+
+Node.js v24.12.0

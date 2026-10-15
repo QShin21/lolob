@@ -1,0 +1,5 @@
+
+> riftcast-director@0.8.0-rc.2 verify:custom-scenes
+> node scripts/verify-custom-scenes.mjs
+
+Custom scenes: 9 checks passed, 0 browser errors. E:\codexdata\lolob-release-20261014\verification-output\custom-scenes\run-dDDBjS

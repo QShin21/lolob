@@ -1,0 +1,6 @@
+{
+  "status": "passed",
+  "mutationAttempted": true,
+  "restorationVerified": true,
+  "evidence": "E:\\codexdata\\lolob-release-20261014\\verification-output\\release-0.8.0-rc.3\\capture-defaults-BSQt8k"
+}

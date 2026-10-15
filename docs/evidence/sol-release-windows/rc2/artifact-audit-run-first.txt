@@ -1,0 +1,8 @@
+PASS release-source-and-checksums
+PASS 7zip-archive-integrity-and-safe-names
+PASS extract-and-byte-compare-three-payloads
+PASS package-metadata-and-version-provenance
+PASS production-modules-and-native-sharp-resolve-inside-package
+PASS runtime-native-and-license-sources
+PASS PE-architecture-and-private-data-exclusion
+{"status":"passed","checks":7,"failures":0,"external":"E:\\codexdata\\lolob-artifact-0.8.0-rc.2-4CCcNt","packageRoot":"E:\\codexdata\\lolob-artifact-0.8.0-rc.2-4CCcNt\\zip"}

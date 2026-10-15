@@ -1,0 +1,864 @@
+{
+  "version": "0.8.0-rc.3",
+  "sourceRevision": "eab48e23e624c47fe511dbdefd064f6a6d1fe505",
+  "startedAt": "2026-10-15T09:01:49.042Z",
+  "target": {
+    "id": "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+    "name": "Microphone (EMEET SmartCam C60E 4K)"
+  },
+  "helperSha256": "326d3293e76f220ba586a77d2d1e918480304432cc11de6b7d8549e6d8892308",
+  "wrapperSha256": "0d1c61c5c9f89e5943e010d5f50823c5da33f9a1f35a9f969dd5c5c81375a877",
+  "mutationAttempted": true,
+  "status": "passed",
+  "events": [
+    {
+      "at": "2026-10-15T09:01:49.215Z",
+      "phase": "switched-role-0",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:49.253Z",
+      "phase": "already-target-role-1",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:49.386Z",
+      "phase": "switched-role-2",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:49.462Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:50.502Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:51.544Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:52.592Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:53.630Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:54.690Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:55.738Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:56.798Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:57.844Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:58.891Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:01:59.930Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:00.975Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:02.012Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:03.062Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:04.100Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:05.140Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:06.185Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:07.236Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:08.280Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:09.320Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:10.370Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:11.425Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:12.473Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:13.520Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:14.570Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:15.622Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:16.660Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:17.716Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:18.763Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:19.813Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:20.877Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:21.925Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:22.968Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:24.016Z",
+      "phase": "during-acceptance",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:25.155Z",
+      "phase": "restored-role-0",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:25.225Z",
+      "phase": "restored-role-1",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+      ]
+    },
+    {
+      "at": "2026-10-15T09:02:25.358Z",
+      "phase": "restored-role-2",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+      ]
+    }
+  ],
+  "restoration": {
+    "verified": true,
+    "errors": []
+  },
+  "before": {
+    "cablePresent": true,
+    "defaults": [
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+    ],
+    "defaultRender": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+    "defaultCapture": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+    "endpoints": [
+      {
+        "id": "{0.0.0.00000000}.{09bb15e4-df5b-4179-9493-ee9b46435b3e}",
+        "name": "Playback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{0a965367-da15-4830-9804-416af31f1c70}",
+        "name": "Playback 7/8 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{129255db-e177-4346-96ae-536542d687e3}",
+        "name": "CABLE Input (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{26b6fa47-859e-4cbc-a0cd-4278b67b6cd4}",
+        "name": "3 - P2SA2V (AMD High Definition Audio Device)",
+        "interfaceName": "AMD High Definition Audio Device",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{294918ae-325e-4ef6-bb1a-ece6132699f3}",
+        "name": "Playback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{8dd29f52-3972-4618-ae1f-299886a5dc65}",
+        "name": "CABLE In 16ch (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "name": "Playback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "name": "P275MV PLUS (NVIDIA High Definition Audio)",
+        "interfaceName": "NVIDIA High Definition Audio",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{0a3ed4a1-10b0-4461-adbc-ea8ac84cc62e}",
+        "name": "Loopback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{28186b7e-bd99-4a0b-872f-cd87d3c7a813}",
+        "name": "Loopback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "name": "CABLE Output (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": true,
+        "cable": true
+      },
+      {
+        "id": "{0.0.1.00000000}.{6715c836-0080-4925-8a9a-667899449b98}",
+        "name": "Mobile IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{860bbd24-6e56-4d0e-8c9a-6b8f877355a3}",
+        "name": "Loopback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "name": "Microphone (EMEET SmartCam C60E 4K)",
+        "interfaceName": "EMEET SmartCam C60E 4K",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{b71fb458-0649-42c5-a03c-6dec6e3b3753}",
+        "name": "Analog IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      }
+    ]
+  },
+  "during": {
+    "cablePresent": true,
+    "defaults": [
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+      "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+      "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+      "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}"
+    ],
+    "defaultRender": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+    "defaultCapture": "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+    "endpoints": [
+      {
+        "id": "{0.0.0.00000000}.{09bb15e4-df5b-4179-9493-ee9b46435b3e}",
+        "name": "Playback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{0a965367-da15-4830-9804-416af31f1c70}",
+        "name": "Playback 7/8 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{129255db-e177-4346-96ae-536542d687e3}",
+        "name": "CABLE Input (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{26b6fa47-859e-4cbc-a0cd-4278b67b6cd4}",
+        "name": "3 - P2SA2V (AMD High Definition Audio Device)",
+        "interfaceName": "AMD High Definition Audio Device",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{294918ae-325e-4ef6-bb1a-ece6132699f3}",
+        "name": "Playback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{8dd29f52-3972-4618-ae1f-299886a5dc65}",
+        "name": "CABLE In 16ch (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "name": "Playback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "name": "P275MV PLUS (NVIDIA High Definition Audio)",
+        "interfaceName": "NVIDIA High Definition Audio",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{0a3ed4a1-10b0-4461-adbc-ea8ac84cc62e}",
+        "name": "Loopback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{28186b7e-bd99-4a0b-872f-cd87d3c7a813}",
+        "name": "Loopback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "name": "CABLE Output (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": true,
+        "cable": true
+      },
+      {
+        "id": "{0.0.1.00000000}.{6715c836-0080-4925-8a9a-667899449b98}",
+        "name": "Mobile IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{860bbd24-6e56-4d0e-8c9a-6b8f877355a3}",
+        "name": "Loopback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "name": "Microphone (EMEET SmartCam C60E 4K)",
+        "interfaceName": "EMEET SmartCam C60E 4K",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{b71fb458-0649-42c5-a03c-6dec6e3b3753}",
+        "name": "Analog IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      }
+    ]
+  },
+  "childResult": {
+    "code": 0,
+    "signal": null
+  },
+  "after": {
+    "cablePresent": true,
+    "defaults": [
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+    ],
+    "defaultRender": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+    "defaultCapture": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+    "endpoints": [
+      {
+        "id": "{0.0.0.00000000}.{09bb15e4-df5b-4179-9493-ee9b46435b3e}",
+        "name": "Playback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{0a965367-da15-4830-9804-416af31f1c70}",
+        "name": "Playback 7/8 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{129255db-e177-4346-96ae-536542d687e3}",
+        "name": "CABLE Input (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{26b6fa47-859e-4cbc-a0cd-4278b67b6cd4}",
+        "name": "3 - P2SA2V (AMD High Definition Audio Device)",
+        "interfaceName": "AMD High Definition Audio Device",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{294918ae-325e-4ef6-bb1a-ece6132699f3}",
+        "name": "Playback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{8dd29f52-3972-4618-ae1f-299886a5dc65}",
+        "name": "CABLE In 16ch (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "name": "Playback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "name": "P275MV PLUS (NVIDIA High Definition Audio)",
+        "interfaceName": "NVIDIA High Definition Audio",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{0a3ed4a1-10b0-4461-adbc-ea8ac84cc62e}",
+        "name": "Loopback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{28186b7e-bd99-4a0b-872f-cd87d3c7a813}",
+        "name": "Loopback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "name": "CABLE Output (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": true,
+        "cable": true
+      },
+      {
+        "id": "{0.0.1.00000000}.{6715c836-0080-4925-8a9a-667899449b98}",
+        "name": "Mobile IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{860bbd24-6e56-4d0e-8c9a-6b8f877355a3}",
+        "name": "Loopback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "name": "Microphone (EMEET SmartCam C60E 4K)",
+        "interfaceName": "EMEET SmartCam C60E 4K",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{b71fb458-0649-42c5-a03c-6dec6e3b3753}",
+        "name": "Analog IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      }
+    ]
+  },
+  "finishedAt": "2026-10-15T09:02:25.394Z"
+}

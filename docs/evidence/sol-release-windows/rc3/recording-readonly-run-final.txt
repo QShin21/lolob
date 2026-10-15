@@ -1,0 +1,44 @@
+{
+  "at": "2026-10-15T09:05:33.204Z",
+  "sourceRevision": "eab48e23e624c47fe511dbdefd064f6a6d1fe505",
+  "file": "2026-10-15 17-02-11.mkv",
+  "fixtureDirectory": "E:/codexdata/lolob-release-20261014/verification-output/release-0.8.0-rc.3/smoke-oYlXs9/user-data/data/videos",
+  "bytes": 77063,
+  "sha256": "7ba376c5432c713f0c5709e6ca4309dfe1b465961797738cfc6a4eb656a66aa1",
+  "container": "Matroska EBML",
+  "durationSeconds": 0.133,
+  "tracks": [
+    {
+      "number": 1,
+      "type": 1,
+      "codec": "V_MPEG4/ISO/AVC",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "number": 2,
+      "type": 2,
+      "codec": "A_AAC",
+      "sampleRate": 48000,
+      "channels": 2
+    }
+  ],
+  "chromium": {
+    "duration": 0.133,
+    "width": 1920,
+    "height": 1080,
+    "muted": true,
+    "volume": 0,
+    "frameCallbacks": 2,
+    "decodedVideoFrames": 3,
+    "currentTime": 0.030278,
+    "center": [
+      187,
+      28,
+      40,
+      255
+    ]
+  },
+  "limits": "Read-only fixture inventory/EBML metadata plus muted browser video decoding. No real speaker playback, audio listening or audience proof.",
+  "status": "passed"
+}

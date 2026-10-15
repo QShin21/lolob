@@ -1,0 +1,310 @@
+{
+  "version": "0.8.0-rc.3",
+  "sourceRevision": "eab48e23e624c47fe511dbdefd064f6a6d1fe505",
+  "startedAt": "2026-10-15T08:58:38.778Z",
+  "target": {
+    "id": "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+    "name": "Microphone (EMEET SmartCam C60E 4K)"
+  },
+  "helperSha256": "326d3293e76f220ba586a77d2d1e918480304432cc11de6b7d8549e6d8892308",
+  "wrapperSha256": "96e030779779cc8cfa8561d52643e5522c371d9bc7e754124cb74fb87025fcb8",
+  "mutationAttempted": true,
+  "status": "failed",
+  "events": [
+    {
+      "at": "2026-10-15T08:58:38.953Z",
+      "phase": "switched-role-0",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+      ]
+    },
+    {
+      "at": "2026-10-15T08:58:39.120Z",
+      "phase": "restored-role-0",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+      ]
+    },
+    {
+      "at": "2026-10-15T08:58:39.190Z",
+      "phase": "restored-role-1",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+      ]
+    },
+    {
+      "at": "2026-10-15T08:58:39.261Z",
+      "phase": "restored-role-2",
+      "defaults": [
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+      ]
+    }
+  ],
+  "restoration": {
+    "verified": true,
+    "errors": []
+  },
+  "before": {
+    "cablePresent": true,
+    "defaults": [
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+    ],
+    "defaultRender": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+    "defaultCapture": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+    "endpoints": [
+      {
+        "id": "{0.0.0.00000000}.{09bb15e4-df5b-4179-9493-ee9b46435b3e}",
+        "name": "Playback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{0a965367-da15-4830-9804-416af31f1c70}",
+        "name": "Playback 7/8 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{129255db-e177-4346-96ae-536542d687e3}",
+        "name": "CABLE Input (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{26b6fa47-859e-4cbc-a0cd-4278b67b6cd4}",
+        "name": "3 - P2SA2V (AMD High Definition Audio Device)",
+        "interfaceName": "AMD High Definition Audio Device",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{294918ae-325e-4ef6-bb1a-ece6132699f3}",
+        "name": "Playback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{8dd29f52-3972-4618-ae1f-299886a5dc65}",
+        "name": "CABLE In 16ch (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "name": "Playback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "name": "P275MV PLUS (NVIDIA High Definition Audio)",
+        "interfaceName": "NVIDIA High Definition Audio",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{0a3ed4a1-10b0-4461-adbc-ea8ac84cc62e}",
+        "name": "Loopback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{28186b7e-bd99-4a0b-872f-cd87d3c7a813}",
+        "name": "Loopback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "name": "CABLE Output (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": true,
+        "cable": true
+      },
+      {
+        "id": "{0.0.1.00000000}.{6715c836-0080-4925-8a9a-667899449b98}",
+        "name": "Mobile IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{860bbd24-6e56-4d0e-8c9a-6b8f877355a3}",
+        "name": "Loopback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "name": "Microphone (EMEET SmartCam C60E 4K)",
+        "interfaceName": "EMEET SmartCam C60E 4K",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{b71fb458-0649-42c5-a03c-6dec6e3b3753}",
+        "name": "Analog IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      }
+    ]
+  },
+  "failure": "Capture changed before this role was authorized to switch\n+ actual - expected\n\n+ '{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}'\n- '{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}'\n",
+  "childResult": null,
+  "after": {
+    "cablePresent": true,
+    "defaults": [
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+      "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+      "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}"
+    ],
+    "defaultRender": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+    "defaultCapture": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+    "endpoints": [
+      {
+        "id": "{0.0.0.00000000}.{09bb15e4-df5b-4179-9493-ee9b46435b3e}",
+        "name": "Playback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{0a965367-da15-4830-9804-416af31f1c70}",
+        "name": "Playback 7/8 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{129255db-e177-4346-96ae-536542d687e3}",
+        "name": "CABLE Input (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{26b6fa47-859e-4cbc-a0cd-4278b67b6cd4}",
+        "name": "3 - P2SA2V (AMD High Definition Audio Device)",
+        "interfaceName": "AMD High Definition Audio Device",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{294918ae-325e-4ef6-bb1a-ece6132699f3}",
+        "name": "Playback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{8dd29f52-3972-4618-ae1f-299886a5dc65}",
+        "name": "CABLE In 16ch (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": false,
+        "cable": true
+      },
+      {
+        "id": "{0.0.0.00000000}.{a59319dd-641d-4daf-912d-106f3d0eea40}",
+        "name": "Playback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.0.00000000}.{b1e4f3b1-76a0-4dad-9185-fe5c3f3f0b1c}",
+        "name": "P275MV PLUS (NVIDIA High Definition Audio)",
+        "interfaceName": "NVIDIA High Definition Audio",
+        "capture": false,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{0a3ed4a1-10b0-4461-adbc-ea8ac84cc62e}",
+        "name": "Loopback 1/2 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{28186b7e-bd99-4a0b-872f-cd87d3c7a813}",
+        "name": "Loopback 5/6 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{35ecb8b2-2771-4aa2-bacb-a25a8ca05d41}",
+        "name": "CABLE Output (VB-Audio Virtual Cable)",
+        "interfaceName": "VB-Audio Virtual Cable",
+        "capture": true,
+        "cable": true
+      },
+      {
+        "id": "{0.0.1.00000000}.{6715c836-0080-4925-8a9a-667899449b98}",
+        "name": "Mobile IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{860bbd24-6e56-4d0e-8c9a-6b8f877355a3}",
+        "name": "Loopback 3/4 (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{aacac89b-1344-4a48-aa7e-30e13191c692}",
+        "name": "Microphone (EMEET SmartCam C60E 4K)",
+        "interfaceName": "EMEET SmartCam C60E 4K",
+        "capture": true,
+        "cable": false
+      },
+      {
+        "id": "{0.0.1.00000000}.{b71fb458-0649-42c5-a03c-6dec6e3b3753}",
+        "name": "Analog IN (E1x2 OTG)",
+        "interfaceName": "E1x2 OTG",
+        "capture": true,
+        "cable": false
+      }
+    ]
+  },
+  "finishedAt": "2026-10-15T08:58:39.297Z"
+}

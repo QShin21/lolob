@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "at": "2026-10-15T08:56:27.912Z",
+  "head": "eab48e23e624c47fe511dbdefd064f6a6d1fe505",
+  "base": "daddc81fc5252f639aced2947cbb9a72fdf82941",
+  "version": "0.8.0-rc.3",
+  "dependencyGraphIdentical": true,
+  "originalBusinessAssertionsPreserved": 47,
+  "newAssertions": [
+    "assert.equal(musicUpload.status(), 201, 'The UI music upload must be accepted before checking OBS state')"
+  ],
+  "dependencies": 515,
+  "productImplementationDelta": [],
+  "qaScriptsDelta": [
+    "scripts/verify-release.mjs"
+  ],
+  "docsLinks": 66,
+  "hashes": {
+    "package.json": "359d282b6bc84c2db3150ac15bd21202314ef665df18f966b5d9f3eec74a9f52",
+    "package-lock.json": "c329831ad770ab32ffe8e67b9fc1953b90ed12ed72a8c3732145a3afd6a1ea38",
+    "scripts/verify-release.mjs": "e9de8dd4933bb77aec23cc821a7c93c9946819a6dfdf782e6d4c203440bfe111",
+    "scripts/verify-custom-scenes.mjs": "d411feab01b224259de5aa602190a4f2a2721ea265a3849c5eac8660ecb8989b",
+    "scripts/verify-native-safety.mjs": "37e4c07b50d99b6a5ea06729711fee89411a68d175e70f81eecf7b0318de6977",
+    "README.md": "a49a39243aa4f7023a66234b269534eb9b3a232b05d7452efb834719813808f3",
+    "docs/Windows-Release-0.8.0-rc.3.md": "8bad6196bc8dc92e5451bb2a1b6891b80fc407454c67ae331a5fa742f7a1cfd7",
+    "docs/前端重构Windows收尾-20261014.md": "7efa47babdc237a797091845de8833ea6b76773304c4348c020d5525c01fa0fe",
+    "docs/前端重构进度.md": "881b563643de7a5427103d4735561a1902cc8b526f52e573472df37c6240d1eb"
+  },
+  "limits": "Native guard review and final committed build source are separately recorded. Review includes staged and untracked QA paths."
+}

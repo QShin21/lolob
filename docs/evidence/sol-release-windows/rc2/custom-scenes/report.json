@@ -1,0 +1,33 @@
+{
+  "runAt": "2026-10-15T08:21:37.815Z",
+  "status": "passed",
+  "sandbox": "E:\\codexdata\\lolob-release-20261014\\verification-output\\custom-scenes\\run-dDDBjS\\isolated-fixture",
+  "blockedRequests": [],
+  "checks": [
+    "isolated real OBS connected with streaming and recording off",
+    "actual Windows application window enumerated through OBS",
+    "UI uploads image and saves layered application window without changing program",
+    "real OBS screenshot contains uploaded image pixels",
+    "real OBS screenshot contains captured fixture window pixels",
+    "Enter TAKE switches actual OBS program to custom composition",
+    "edit remains staged, persists to disk and survives browser reload",
+    "closed application window blocks TAKE and retains previous program configuration",
+    "return to builtin program and delete custom scene while keeping uploaded asset"
+  ],
+  "failures": [],
+  "errors": [],
+  "obsVersion": "32.2.2",
+  "pixelSamples": {
+    "blue": [
+      24,
+      79,
+      146
+    ],
+    "green": [
+      74,
+      160,
+      105
+    ]
+  },
+  "liveStreamTested": false
+}

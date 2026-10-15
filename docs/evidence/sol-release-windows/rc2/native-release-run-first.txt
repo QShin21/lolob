@@ -1,0 +1,13 @@
+
+> riftcast-director@0.8.0-rc.2 verify:release
+> node scripts/verify-release.mjs --reuse-drivers-only --executable E:\codexdata\lolob-artifact-0.8.0-rc.2-4CCcNt\zip\RiftCast.exe --playwright C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\node_modules\playwright\index.mjs
+
+file:///E:/codexdata/lolob-release-20261014/scripts/verify-release.mjs:40
+async function until(work, label, timeout = 30000) { const end = Date.now() + timeout; while (Date.now() < end) { if (await work()) return; await new Promise(r => setTimeout(r, 150)); } throw new Error(label); }
+                                                                                                                                                                                                ^
+
+Error: Music upload configures real managed OBS input
+    at until (file:///E:/codexdata/lolob-release-20261014/scripts/verify-release.mjs:40:193)
+    at async file:///E:/codexdata/lolob-release-20261014/scripts/verify-release.mjs:120:3
+
+Node.js v24.12.0

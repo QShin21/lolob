@@ -1,0 +1,280 @@
+{
+  "at": "2026-10-15T07:52:57.763Z",
+  "status": "passed",
+  "version": "0.8.0-rc.1",
+  "sourceRevision": "7b1234e8c336a1454e5bad1928f042262368dec2",
+  "external": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb",
+  "packageRoot": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip",
+  "checks": [
+    {
+      "id": "release-source-and-checksums",
+      "status": "pass",
+      "data": {
+        "sourceFiles": 2204,
+        "sourceDigest": "09df3e8e7bb2a741dee1519214f60ff457b6bbd4149a7ab0de89e43422dbbff4",
+        "artifacts": [
+          {
+            "name": "RiftCast-0.8.0-rc.1-Setup-x64.exe",
+            "bytes": 290409352,
+            "sha256": "77c3c8766f7a4e2b44856214d00622807710dc85d721a1f2a454d9d4a9da31de"
+          },
+          {
+            "name": "RiftCast-0.8.0-rc.1-Setup-x64.exe.blockmap",
+            "bytes": 301120,
+            "sha256": "147489944e3bc6c5adff4dac4e4a811683230db6738d52b82eafe5608e7cda1b"
+          },
+          {
+            "name": "RiftCast-0.8.0-rc.1-Windows-x64.zip",
+            "bytes": 389572132,
+            "sha256": "d93276c329ea88c5de6840428ef9cfe4c1106f3d1684d7f020f90319c8d587ad"
+          }
+        ]
+      }
+    },
+    {
+      "id": "7zip-archive-integrity-and-safe-names",
+      "status": "pass",
+      "data": {
+        "installerExecuted": false
+      }
+    },
+    {
+      "id": "extract-and-byte-compare-three-payloads",
+      "status": "pass",
+      "data": {
+        "files": 7067,
+        "installerFiles": 7068,
+        "zipRoot": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip",
+        "installerRoot": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-payload",
+        "commonFilesByteIdentical": true,
+        "exactTargetDifference": {
+          "file": "resources/elevate.exe",
+          "bytes": 107520,
+          "sha256": "9b1fbf0c11c520ae714af8aa9af12cfd48503eedecd7398d8992ee94d1b4dc37",
+          "source": "C:\\Users\\Administrator\\AppData\\Local\\electron-builder\\Cache\\nsis-3.0.4.1\\nsis-3.0.4.1-1mx3n\\elevate.exe",
+          "reason": "app-builder-lib 26.15.3 CopyElevateHelper defaults true in NSIS target; allowElevation controls a separate installer define; ZIP application has no elevate/updater dependency"
+        }
+      }
+    },
+    {
+      "id": "package-metadata-and-version-provenance",
+      "status": "pass",
+      "data": {
+        "version": "0.8.0-rc.1",
+        "releaseMetadata": {
+          "builtAt": "2026-10-15T07:23:06.541Z",
+          "sourceRevision": "7b1234e8c336a1454e5bad1928f042262368dec2",
+          "workingTreeDirty": false,
+          "sourceDigest": "09df3e8e7bb2a741dee1519214f60ff457b6bbd4149a7ab0de89e43422dbbff4"
+        }
+      }
+    },
+    {
+      "id": "production-modules-and-native-sharp-resolve-inside-package",
+      "status": "pass",
+      "data": {
+        "resolved": {
+          "express": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip\\resources\\app\\node_modules\\express\\index.js",
+          "multer": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip\\resources\\app\\node_modules\\multer\\index.js",
+          "ws": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip\\resources\\app\\node_modules\\ws\\index.js",
+          "obs-websocket-js": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip\\resources\\app\\node_modules\\obs-websocket-js\\dist\\msgpack.cjs",
+          "sharp": "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip\\resources\\app\\node_modules\\sharp\\dist\\index.cjs"
+        },
+        "sharpVersions": {
+          "aom": "3.15.1",
+          "archive": "3.8.9",
+          "cairo": "1.18.6",
+          "cgif": "0.5.4",
+          "exif": "0.6.26",
+          "expat": "2.8.5",
+          "ffi": "3.8.0",
+          "fontconfig": "2.18.3",
+          "freetype": "2.14.3",
+          "fribidi": "1.0.17",
+          "glib": "2.90.0",
+          "harfbuzz": "14.5.0",
+          "heif": "1.23.5",
+          "highway": "1.4.0",
+          "imagequant": "2.4.1",
+          "lcms": "2.19.1",
+          "mozjpeg": "0826579",
+          "pango": "1.58.2",
+          "pixman": "0.46.4",
+          "png": "1.6.58",
+          "proxy-libintl": "0.5",
+          "rsvg": "2.63.2",
+          "tiff": "4.7.2",
+          "uhdr": "2.0.2",
+          "vips": "8.18.7",
+          "webp": "1.6.0",
+          "xml2": "2.15.4",
+          "zlib-ng": "2.3.3",
+          "sharp": "0.35.5"
+        },
+        "nativeModules": [
+          "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip\\resources\\app\\node_modules\\@img\\sharp-win32-x64\\lib\\sharp-win32-x64-0.35.5.node"
+        ]
+      }
+    },
+    {
+      "id": "runtime-native-and-license-sources",
+      "status": "pass",
+      "data": {
+        "obsVersion": "32.2.2",
+        "markerFiles": 5,
+        "projector": {
+          "sourceSha256": "316bb91eb0024ea8e9fb438995fa36d58be0858c4f585b68f39c4437471b1417",
+          "executableSha256": "cc78a66d2ff015ad082a55ee295ce882f9d5910439b67ef67de481660a62bbae",
+          "architecture": "x64",
+          "purpose": "Owned OBS projector positioning for continuous native capture"
+        },
+        "audio": {
+          "sourceSha256": "aeab3bdaf1f8ce8b04dd3c5e9e7bc2bd91b5c5436589d5de461641db987c00b7",
+          "bridgeSha256": "0b8808f3d441b524a52d72c3c11b6fe94724e8eb8e1c6a79b8362b8ca3df5c7a",
+          "toolSha256": "14d07ab75da85ebd58c48f417e9761b14bf345503188497172945c3c463f79e8",
+          "obsSourceSha256": "ec81fb66b03e75ddb3076b576f62679c39262e0e9960cef3e17a40dc5d68e6b4",
+          "architecture": "x64",
+          "protocol": 1
+        },
+        "obsSources": "ec81fb66b03e75ddb3076b576f62679c39262e0e9960cef3e17a40dc5d68e6b4",
+        "vbcable": "b950e39f01af1d04ea623c8f6d8eb9b6ea5c477c637295fabf20631c85116bfb"
+      }
+    },
+    {
+      "id": "PE-architecture-and-private-data-exclusion",
+      "status": "pass",
+      "data": {
+        "architectures": {
+          "RiftCast.exe": {
+            "machine": 34404,
+            "amd64": true
+          },
+          "resources/obs-studio/bin/64bit/obs64.exe": {
+            "machine": 34404,
+            "amd64": true
+          },
+          "resources/obs-studio/bin/64bit/obs.dll": {
+            "machine": 34404,
+            "amd64": true
+          },
+          "resources/obs-studio/bin/64bit/riftcast-audio-bridge.dll": {
+            "machine": 34404,
+            "amd64": true
+          },
+          "resources/app/scripts/bin/obs-projector-window.exe": {
+            "machine": 34404,
+            "amd64": true
+          },
+          "resources/app/scripts/bin/audio-device-tool.exe": {
+            "machine": 34404,
+            "amd64": true
+          },
+          "installer": {
+            "machine": 332,
+            "amd64": false
+          }
+        },
+        "forbiddenFiles": [],
+        "nsisWrapperMayBe32Bit": true
+      }
+    }
+  ],
+  "commands": [
+    {
+      "tool": "7z.exe",
+      "args": [
+        "t",
+        "-bd",
+        "-bb0",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Windows-x64.zip"
+      ],
+      "exit": 0,
+      "log": "zip-test.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-bd",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Windows-x64.zip"
+      ],
+      "exit": 0,
+      "log": "zip-list.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "t",
+        "-bd",
+        "-bb0",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Setup-x64.exe"
+      ],
+      "exit": 0,
+      "log": "setup-test.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-bd",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Setup-x64.exe"
+      ],
+      "exit": 0,
+      "log": "setup-list.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "x",
+        "-y",
+        "-bd",
+        "-bb0",
+        "-oE:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\zip",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Windows-x64.zip"
+      ],
+      "exit": 0,
+      "log": "zip-extract.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "x",
+        "-y",
+        "-bd",
+        "-bb0",
+        "-oE:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-container",
+        "E:\\codexdata\\lolob-release-20261014\\release\\0.8.0-rc.1\\RiftCast-0.8.0-rc.1-Setup-x64.exe"
+      ],
+      "exit": 0,
+      "log": "setup-extract.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "t",
+        "-bd",
+        "-bb0",
+        "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-container\\$PLUGINSDIR\\app-64.7z"
+      ],
+      "exit": 0,
+      "log": "installer-payload-test.txt"
+    },
+    {
+      "tool": "7z.exe",
+      "args": [
+        "x",
+        "-y",
+        "-bd",
+        "-bb0",
+        "-oE:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-payload",
+        "E:\\codexdata\\lolob-artifact-0.8.0-rc.1-rcnpYb\\installer-container\\$PLUGINSDIR\\app-64.7z"
+      ],
+      "exit": 0,
+      "log": "installer-payload-extract.txt"
+    }
+  ],
+  "failures": [],
+  "limits": "No installer, OBS, audio native component, driver, camera or recording execution. Native sharp module was loaded only for generated 3x2 image processing. One exact NSIS helper target difference is verified separately; initial strict equality failure remains in artifact-audit-first.json."
+}
