@@ -22,3 +22,12 @@ export function bottomItemSlots(player?:Player):number[] {
   const trinket=trinketIndex<0?0:items.splice(trinketIndex,1)[0];
   return [...Array.from({length:6},(_,i)=>items[i]||0),trinket];
 }
+
+/** Highest total purchase value first; CSS mirrors this inside-out order on each team. */
+export function bottomEquipment(player:Player|undefined,prices:Record<number,{gold?:number}>):{id:number;slot:number;count?:number}[]{
+  return bottomItemSlots(player).slice(0,6).map((id,slot)=>({id,slot,count:player?.itemCounts?.[slot]})).sort((a,b)=>{
+    if(!a.id||!b.id)return Number(!a.id)-Number(!b.id)||a.slot-b.slot;
+    const value=(id:number)=>Number.isFinite(prices[id]?.gold)?prices[id].gold!:-1;
+    return value(b.id)-value(a.id)||a.slot-b.slot;
+  });
+}

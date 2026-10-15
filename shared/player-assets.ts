@@ -1,3 +1,4 @@
+import runeCatalog from './rune-catalog.json';
 import { cachedResource } from './resource-url';
 import type { SummonerSpell } from './types';
 
@@ -43,5 +44,6 @@ const runePaths: Record<number, string> = {
   8351:'Styles/Inspiration/GlacialAugment/GlacialAugment.png',8360:'Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png',8369:'Styles/Inspiration/FirstStrike/FirstStrike.png',
 };
 export function runeImage(id?: number): string | undefined {
+  if(id&&runeCatalog.runes.some(r=>r.id===id))return `/runes/${id}.png`;
   return id && runePaths[id] ? cachedResource(`https://ddragon.leagueoflegends.com/cdn/img/perk-images/${runePaths[id]}`) : undefined;
 }

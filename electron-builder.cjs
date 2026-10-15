@@ -18,6 +18,13 @@ module.exports = {
       if (!runtimeRequire.resolve(dependency).toLowerCase().startsWith(bundledPrefix)) throw new Error(`运行时依赖 ${dependency} 缺失，已阻止生成安装包。`);
     }
     runtimeRequire('sharp');
+    const fs = require('node:fs');
+    for (const champion of require('./shared/champion-art-catalog.json').champions) {
+      if (!fs.existsSync(path.join(appRoot, 'dist/champion-art', champion.id + '-icon.webp'))) throw new Error('OCR 内置头像缺失: ' + champion.id);
+    }
+    for (const rune of require('./shared/rune-catalog.json').runes) {
+      if (!fs.existsSync(path.join(appRoot, 'dist/runes', rune.id + '.png'))) throw new Error('内置符文图标缺失: ' + rune.id);
+    }
     if (!Object.keys(require.cache).some(file => file.toLowerCase().startsWith(bundledPrefix) && file.endsWith('.node'))) throw new Error('图片处理原生组件缺失，已阻止生成安装包。');
   },
   files: [

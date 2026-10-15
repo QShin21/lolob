@@ -42,15 +42,4 @@ export function DraftOverlay({ state, champions }: { state: BroadcastState; cham
   return <div className="cast-draft"><div className="arena-draft-history"><DraftHistory state={state} champions={champions} side="blue" /><span className="arena-draft-history-gap" /><DraftHistory state={state} champions={champions} side="red" /></div><div className="arena-draft-tray"><DraftTeam state={state} champions={champions} side="blue" /><aside className={`cast-draft-center ${state.draft.activeTeam}`}><ArenaMark /><MatchStrip state={state} /><div className="cast-draft-timer"><strong>{Math.max(0, Math.ceil(state.draft.timer))}</strong><small>{state.draft.locked ? '阵容已锁定' : state.draft.action || '等待 BP'}</small><span>{getTeam(state, state.draft.activeTeam)?.tag || sideName(state.draft.activeTeam)}</span></div><small>{state.match.format} · 第 {state.match.game} 局</small></aside><DraftTeam state={state} champions={champions} side="red" /></div></div>;
 }
 
-export function Lineup({ state, champions }: { state: BroadcastState; champions: Champion[] }) {
-  return <section className="arena-full cast-lineup legacy-lineup"><ArenaHeader state={state} title="首发阵容与对位" />
-    <div className="cast-lineup-sides">{(['blue', 'red'] as Side[]).map(side => {
-      const team = getTeam(state, side), players = sidePlayers(state, side);
-      return <section className={`cast-lineup-side ${side}`} key={side}><h2><TeamMark team={team} /><strong>{team?.tag}</strong><span>{team?.name}</span></h2>
-        <div className="cast-lineup-five">{Array.from({ length: 5 }, (_, i) => { const p = players[i]; return <article key={i}>
-          <div className="cast-lineup-photo"><Portrait state={state} player={p} side={side} champions={champions} /><span>{p?.role && p.role !== '待分路' ? p.role : '分路待确认'}</span></div>
-          <strong>{p?.name || '待确认选手'}</strong><small>{championFor(champions, p?.championId || '')?.name || '英雄待定'}</small>
-        </article>; })}</div></section>;
-    })}</div><footer className="cast-lineup-bottom"><b>{getTeam(state, 'blue')?.tag}</b><span>{state.match.blueScore} — {state.match.redScore}<small>{state.match.format} · GAME {state.match.game}</small></span><b>{getTeam(state, 'red')?.tag}</b></footer>
-  </section>;
-}
+export {Lineup} from './RuneLineup';

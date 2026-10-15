@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { BroadcastState, Champion, Player, Side } from '../../shared/types';
 import { runeImage, summonerSpellImage } from '../../shared/player-assets';
 import { resolvedPlayerFeed, playerFeedControl } from '../../shared/player-feeds';
-import { bottomGoldDifference, bottomItemSlots, bottomPlayers } from '../../server/bottom-scoreboard';
+import { bottomGoldDifference, bottomEquipment, bottomItemSlots, bottomPlayers } from '../../server/bottom-scoreboard';
 import { championFor, playerCs, playerKda, playerVision, playerGoldText } from '../lib';
 import { dataDragonItemImage, type ItemAssets } from './useItemCatalog';
 import { useUltimateIcons } from './useUltimateIcons';
@@ -66,7 +66,7 @@ function Inventory({player,items,version}:{player?:Player;items:ItemAssets;versi
   const questKnown=quest?.completed!=null;
   const questLabel=questKnown?`分路任务${quest?.completed?'已完成':'进行中'}${quest?.progress!=null?` ${quest.progress}${quest.maxProgress!=null?` / ${quest.maxProgress}`:''}`:''}`:'分路任务状态未提供';
   return <div className="lb-inventory" aria-label="装备、分路任务与饰品">
-    <div className="lb-items">{slots.slice(0,6).map(itemIcon)}</div>
+    <div className="lb-items">{bottomEquipment(player,items).map(({id,slot})=>itemIcon(id,slot))}</div>
     {questKnown&&<div className={`lb-quest ${questKnown?quest?.completed?'is-complete':'is-pending':'is-unavailable'}`} aria-label={questLabel} title={questLabel}>
       {quest?.icon?<Icon src={quest.icon} label={questLabel}/>:<span className="lb-quest-mark">{questKnown?quest?.completed?'✓':'◇':'?'}</span>}
     </div>}

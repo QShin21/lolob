@@ -5,7 +5,7 @@
 .lb-pair{display:grid;grid-template-columns:47% 6% 47%;min-height:0;background:#000;border-bottom:1px solid #737a74}.lb-pair:last-child{border-bottom:0}
 /* Reallocate only the inside of each fixed row: full-width name, then ability/vitals.
    The 928 × 251 mask, five rows, player feeds and corner HUD coordinates stay fixed. */
-.lb-player-row{display:grid;grid-template-columns:39% 4% 5% 10% 23% 19%;align-items:center;min-width:0;height:100%;color:#f3f3f1;background:#000}.lb-player-row.red{grid-template-columns:19% 23% 10% 5% 4% 39%}
+.lb-player-row{display:grid;grid-template-columns:33% 4% 5% 10% 31% 17%;align-items:center;min-width:0;height:100%;color:#f3f3f1;background:#000}.lb-player-row.red{grid-template-columns:17% 31% 10% 5% 4% 33%}
 .lb-inventory{grid-column:1;grid-row:1}.lb-runes{grid-column:2;grid-row:1}.lb-spells{grid-column:3;grid-row:1}.lb-champion{grid-column:4;grid-row:1}.lb-identity{grid-column:5;grid-row:1}.lb-stat-column{grid-column:6;grid-row:1}
 .lb-player-row.red .lb-inventory{grid-column:6}.lb-player-row.red .lb-runes{grid-column:5}.lb-player-row.red .lb-spells{grid-column:4}.lb-player-row.red .lb-champion{grid-column:3}.lb-player-row.red .lb-identity{grid-column:2}.lb-player-row.red .lb-stat-column{grid-column:1}
 .lb-icon{display:block;position:relative;width:100%;height:100%;min-width:0;flex:0 0 auto;overflow:hidden;background:#0c100e;border:0;border-radius:0}.lb-icon img{width:100%;height:100%;object-fit:cover;display:block}.lb-icon-fallback{position:absolute;inset:0;display:grid;place-items:center;color:#575e5d;font:700 .57cqw/1 Arial,sans-serif}
@@ -31,7 +31,9 @@
 .cast-canvas.cast-scene-live>.cast-sponsor{display:none}.cast-canvas.cast-scene-live>.cast-ticker{bottom:23.20370%;left:15.9375%;right:15.9375%;width:auto}.cast-canvas.cast-scene-live>.cast-demo{bottom:auto;top:10%}.cast-canvas.cast-scene-live>.cast-source-status{bottom:auto;top:12%}.cast-canvas.cast-scene-gold-ranking>.cast-ticker,.cast-canvas.cast-scene-economy>.cast-ticker,.cast-canvas.cast-scene-ranking>.cast-ticker{right:15.3%}
 
 /* Three independent OCR values retain their native meanings and exact integers. */
-.lb-identity-line{height:1cqw}.cast-canvas .lb-player-name{font-size:1.05cqw}
-.cast-canvas .lb-player-gold{display:block;flex:none;font:700 .64cqw/1.1 Arial,sans-serif;color:#e2c58c;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lb-identity-line{height:1.05cqw;flex:none}.cast-canvas .lb-player-name{font-size:1.05cqw}
+.cast-canvas .lb-player-gold{display:block;flex:none;font:700 1.05cqw/1 Arial,sans-serif;color:#e2c58c;font-variant-numeric:tabular-nums;white-space:nowrap}
 .lb-status-line{height:.6cqw}.lb-vitals{grid-template-rows:.08cqw .16cqw .13cqw;gap:.035cqw}
 .lb-player-row.red .lb-player-gold{text-align:right}
+
+.lb-identity{height:100%}.lb-status-line{height:.35cqw;flex:none}.lb-vitals{grid-template-rows:.06cqw .10cqw .09cqw;gap:.025cqw}

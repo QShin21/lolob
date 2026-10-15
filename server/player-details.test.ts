@@ -43,7 +43,7 @@ test('scoreboard reads explicit vision, rune roles, item counts and compatible d
   assert.deepEqual(result.runeSelection,{secondaryTreeId:8300});assert.equal(result.experience,180);assert.equal(result.maxExperience,550);
   assert.deepEqual(result.ultimate,{state:'cooldown',cooldownRemaining:42,level:1});
   assert.deepEqual(result.roleQuest,{completed:false,progress:330,maxProgress:600});
-  assert.ok(runeImage(result.runeSelection?.secondaryTreeId)?.endsWith('7203_Whimsy.png'));
+  assert.equal(runeImage(result.runeSelection?.secondaryTreeId),'/runes/8300.png');
   assert.equal(runeImage(999999),undefined);
 });
 
