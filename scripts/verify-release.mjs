@@ -10,10 +10,12 @@ import { promisify } from 'node:util';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tsImport } from 'tsx/esm/api';
 import sharp from 'sharp';
+import { isolatedNativeEnvironment, nativeRequestGuard, assertFixtureRecordingPath } from './verify-native-safety.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const option = name => { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : undefined; };
+const reuseDriversOnly = process.argv.includes('--reuse-drivers-only');
 let executable = option('--executable') || process.env.RIFTCAST_RELEASE_EXECUTABLE;
 const evidence = path.join(root, 'verification-output', `release-${pkg.version}`);
 await mkdir(evidence, { recursive: true });
@@ -26,6 +28,8 @@ if (!executable) {
   executable = path.join(isolatedApp, 'RiftCast.exe');
 }
 const checks = [], errors = [], cameraSamples = {};
+const blockedRequests = [], deviceSnapshots = {};
+const guard = nativeRequestGuard(blockedRequests, reuseDriversOnly);
 let virtualCameraFrameVerified = false;
 let companionAudioUnavailableVerified = false;
 let application, page;
@@ -38,6 +42,7 @@ const portServer = createServer(); await new Promise(r => portServer.listen(0, '
 const port = portServer.address().port; await new Promise(r => portServer.close(r));
 const base = `http://127.0.0.1:${port}`;
 async function api(route, body, allowFailure = false) {
+  guard.assertAllowed(body ? 'POST' : 'GET', route, body);
   if (route === '/api/action' && body) {
     const state = await api('/api/state');
     body = { ...body, expectedConfigVersion: state.production.configVersion, requestId: randomUUID() };
@@ -54,15 +59,21 @@ const { createSeed } = await tsImport('../server/state.ts', import.meta.url);
 const seed = createSeed(); seed.match.title = 'Release 迁移验证'; seed.demoPaused = true;
 const sourceState = JSON.stringify(seed, null, 2);
 await writeFile(path.join(source, 'data/state.json'), sourceState);
+await writeFile(path.join(source, 'data/obs-engine.json'), JSON.stringify({ mode: 'embedded', selection: { gameWindow: 'RiftCast test:fixture:nonexistent.exe', desktopDevice: 'default', micDevice: 'default', micEnabled: false, outputFps: 30 } }));
 await writeFile(path.join(source, 'data/uploads/preserved.txt'), 'preserved fixture');
 await writeFile(path.join(source, 'runtime/obs-studio/config/preserved.txt'), 'preserved OBS fixture');
-const env = { ...process.env, PATH: `${process.env.SystemRoot}\\System32;${process.env.SystemRoot};${process.env.SystemRoot}\\System32\\WindowsPowerShell\\v1.0`, PORT: String(port), RIFTCAST_USER_DATA_DIR: userData, RIFTCAST_IMPORT_FROM: source, RIFTCAST_OBS_AUTOSTART: '1', RIFTCAST_AUTO_CONNECT: '0', RIFTCAST_OFFLINE: '1' };
-for (const key of ['ELECTRON_RUN_AS_NODE', 'RIFTCAST_DATA_DIR', 'RIFTCAST_OBS_RUNTIME_DIR', 'RIFTCAST_DEV']) delete env[key];
-const report = () => ({ status: errors.length ? 'failed' : 'passed', version: pkg.version, executable, runAt: new Date().toISOString(), sandbox, checks, errors, virtualCameraFrameVerified, cameraSamples, companionAudioVerified: false, companionAudioUnavailableVerified, liveGameVerified: false, liveStreamVerified: false });
+const env = { ...await isolatedNativeEnvironment(sandbox), PATH: `${process.env.SystemRoot}\\System32;${process.env.SystemRoot};${process.env.SystemRoot}\\System32\\WindowsPowerShell\\v1.0`, PORT: String(port), RIFTCAST_USER_DATA_DIR: userData, RIFTCAST_IMPORT_FROM: source, RIFTCAST_OBS_MODE: 'embedded', RIFTCAST_OBS_AUTOSTART: '1' };
+const report = () => ({ status: errors.length || blockedRequests.length ? 'failed' : 'passed', version: pkg.version, executable, runAt: new Date().toISOString(), sandbox, reuseDriversOnly, blockedRequests, deviceSnapshots, checks, errors, virtualCameraFrameVerified, cameraSamples, companionAudioVerified: false, companionAudioUnavailableVerified, liveGameVerified: false, liveStreamVerified: false });
+let recordingObs;
+async function verifyRecordingDirectory() {
+  const directory = await recordingObs.call('GetRecordDirectory');
+  await assertFixtureRecordingPath(directory.recordDirectory, path.join(userData, 'data', 'videos'));
+}
 try {
   assert.ok(fs.existsSync(executable));
   assert.ok(!path.resolve(executable).toLowerCase().startsWith(root.toLowerCase() + path.sep), 'Release verification must run outside the source tree');
   application = await _electron.launch({ executablePath: executable, args: [], env, timeout: 45000 });
+  await guard.attach(application.context());
   page = await application.firstWindow({ timeout: 45000 });
   page.on('pageerror', error => errors.push(error.message));
   await page.waitForLoadState('domcontentloaded');
@@ -77,6 +88,11 @@ try {
   await until(async () => (await api('/api/obs/engine')).connected, 'Bundled real OBS connects', 45000);
   const status = await api('/api/obs/engine');
   assert.equal(status.version, '32.2.2'); assert.equal(status.streamActive, false); assert.equal(status.recordActive, false);
+  const { ObsClient } = await tsImport('../server/obs-client.ts', import.meta.url);
+  recordingObs = new ObsClient();
+  const obsCredentials = JSON.parse(await readFile(path.join(userData, 'runtime/obs-studio/config/obs-studio/plugin_config/obs-websocket/config.json'), 'utf8'));
+  await recordingObs.connect(`ws://127.0.0.1:${obsCredentials.server_port}`, obsCredentials.server_password);
+  await verifyRecordingDirectory();
   checks.push('bundled OBS 32.2.2 runs from independent user directory; real WebSocket connected; stream and record off');
   await page.getByRole('button', { name: '新建场景', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: '新建自定义场景' });
@@ -125,8 +141,16 @@ try {
   await outputPanel.getByRole('region', { name: 'Program 到直播伴侣的音画路径', exact: true }).waitFor({ state: 'visible' });
   assert.equal(await outputPanel.getByLabel('RTMP 服务器', { exact: true }).count(), 0);
   assert.equal((await api('/api/obs/engine')).virtualCamera.driver.installed, true, 'OBS Virtual Camera must be registered on the acceptance host');
-  // Existing valid registrations are reused; this call must not need a UAC prompt.
-  await api('/api/obs/engine/virtual-camera/install', {});
+  if (reuseDriversOnly) {
+    const existing = await api('/api/obs/engine');
+    assert.equal(existing.companionAudio?.installed, true, 'An existing accessible VB-CABLE is required; do not install or skip missing devices');
+    deviceSnapshots.before = { camera: existing.virtualCamera.driver, render: existing.companionAudio.render, capture: existing.companionAudio.capture };
+    assert.ok(deviceSnapshots.before.render?.id && deviceSnapshots.before.capture?.id, 'Both existing CABLE endpoints must be readable');
+    checks.push('reuse-drivers-only: existing camera registration and CABLE endpoints required; no install/prepare request sent');
+  } else {
+    // Legacy explicit preparation coverage; this mode is outside reuse-only authorization.
+    await api('/api/obs/engine/virtual-camera/install', {});
+  }
   const audioReady = (await api('/api/obs/engine')).companionAudio?.ready;
   if (audioReady) {
   await outputPanel.getByRole('button', { name: '启动伴侣音画', exact: true }).click();
@@ -190,6 +214,7 @@ try {
   await writeFile(path.join(evidence, 'virtual-camera-program.png'), Buffer.from(cameraPng, 'base64'));
   virtualCameraFrameVerified = true;
   checks.push('Windows video device receives 1920x1080 Program frames, ignores pending Preview, and follows an actual TAKE');
+  await verifyRecordingDirectory();
   await outputPanel.getByRole('button', { name: '开始本机录制', exact: true }).click();
   await until(async () => (await api('/api/obs/engine')).recordActive, 'Recording coexists with virtual camera');
   assert.equal((await api('/api/obs/engine')).virtualCamActive, true);
@@ -226,6 +251,7 @@ try {
     const refused=await api('/api/obs/engine/output',{action:'start-virtual-camera'},true); assert.match(refused.error || '', /VB-CABLE|音频|驱动|重启/);
     const safe=await api('/api/obs/engine'); assert.equal(safe.virtualCamActive,false); assert.equal(safe.companionAudio.active,false);
     companionAudioUnavailableVerified=true; checks.push('Native final-mix library loads in packaged OBS; inaccessible audio endpoint rejects start and preserves both outputs stopped');
+    await verifyRecordingDirectory();
     await outputPanel.getByRole('button',{name:'开始本机录制',exact:true}).click(); await until(async()=> (await api('/api/obs/engine')).recordActive,'Independent local recording');
     await outputPanel.getByRole('button',{name:'停止本机录制',exact:true}).click(); await until(async()=> !(await api('/api/obs/engine')).recordActive,'Recording stops');
     checks.push('Local recording remains available when companion audio is unavailable');
@@ -241,6 +267,7 @@ try {
   await chooseDestination('douyin');
   await until(async () => (await api('/api/obs/engine')).destination === 'douyin', 'Persist companion mode for restart');
   checks.push(audioReady ? 'Hold-to-stop confirms real companion output off; RTMP configuration returns; companion choice is saved' : 'Both companion outputs remain stopped; RTMP configuration returns; companion choice is saved');
+  await recordingObs.disconnect(); recordingObs = undefined;
   const duplicate = spawn(executable, [], { env, windowsHide: true, stdio: 'ignore' });
   await new Promise((resolve, reject) => { const timer = setTimeout(() => { duplicate.kill(); reject(new Error('Duplicate launch did not exit')); }, 10000); duplicate.once('error', reject); duplicate.once('exit', code => { clearTimeout(timer); code === 0 ? resolve() : reject(new Error(`Duplicate launch exit ${code}`)); }); });
   assert.equal((await api('/api/health')).version, pkg.version);
@@ -255,6 +282,7 @@ try {
   // A newer legacy file must never overwrite data that this Release has already saved.
   seed.match.title = '旧项目后续变化'; await writeFile(path.join(source, 'data/state.json'), JSON.stringify(seed));
   application = await _electron.launch({ executablePath: executable, args: [], env, timeout: 45000 });
+  await guard.attach(application.context());
   page = await application.firstWindow({ timeout: 45000 });
   page.on('pageerror', error => errors.push(error.message));
   await until(async () => { try { return (await api('/api/health')).version === pkg.version; } catch { return false; } }, 'Restart ready');
@@ -264,9 +292,15 @@ try {
   const resumed = await api('/api/obs/engine');
   assert.equal(resumed.destination, 'douyin'); assert.equal(resumed.virtualCamActive, false);
   assert.equal(resumed.streamActive, false); assert.equal(resumed.recordActive, false);
+  if (reuseDriversOnly) {
+    deviceSnapshots.after = { camera: resumed.virtualCamera.driver, render: resumed.companionAudio.render, capture: resumed.companionAudio.capture };
+    assert.deepEqual(deviceSnapshots.after, deviceSnapshots.before, 'Existing camera registration and CABLE endpoints must remain unchanged after restart');
+    checks.push('read-only device status matches before/after; installed-driver reuse branch is additionally covered by driver unit tests');
+  }
   checks.push('restart remembers companion destination while all outputs remain stopped');
   checks.push('restart preserves custom scenes and never overwrites existing Release data from the old project');
   assert.deepEqual(errors, []);
+  assert.deepEqual(blockedRequests, [], 'No forbidden device preparation or platform-output request may be attempted');
   await application.close(); application = undefined;
   await writeFile(path.join(evidence, 'smoke-report.json'), JSON.stringify(report(), null, 2) + '\n');
   console.log(JSON.stringify(report(), null, 2));
@@ -276,6 +310,7 @@ try {
   await writeFile(path.join(evidence, 'smoke-report.json'), JSON.stringify(report(), null, 2) + '\n');
   throw error;
 } finally {
+  await recordingObs?.disconnect().catch(() => {});
   if (application) {
     // Cleanup is confined to this isolated test instance, including failures during asynchronous startup.
     await application.evaluate(({ dialog }) => { dialog.showMessageBox = async () => ({ response: 1, checkboxChecked: false }); }).catch(() => {});

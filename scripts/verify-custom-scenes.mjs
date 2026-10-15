@@ -1,27 +1,35 @@
 // Isolated browser + real OBS integration. Never reads or mutates the operator's data/config.
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, writeFile, readdir, link, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile, readdir, link } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createServer } from 'node:net';
 import { tsImport } from 'tsx/esm/api';
 import sharp from 'sharp';
+import { isolatedNativeEnvironment, applyRunnerEnvironment, nativeRequestGuard } from './verify-native-safety.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const evidence = path.join(root, 'verification-output', 'custom-scenes');
-await mkdir(evidence, { recursive: true });
-const sandbox = await mkdtemp(path.join(evidence, 'isolated-'));
+const evidenceRoot = path.join(root, 'verification-output', 'custom-scenes');
+await mkdir(evidenceRoot, { recursive: true });
+const evidence = await mkdtemp(path.join(evidenceRoot, 'run-'));
+const sandbox = path.join(evidence, 'isolated-fixture');
+await mkdir(sandbox);
 const checks = [], errors = [], failures = [];
+const blockedRequests = [], guard = nativeRequestGuard(blockedRequests);
+const playwrightModule = process.env.RIFTCAST_PLAYWRIGHT_MODULE;
+const chromiumExecutable = process.env.RIFTCAST_CHROMIUM_EXECUTABLE;
+const runnerEnv = { ...await isolatedNativeEnvironment(sandbox), RIFTCAST_OBS_MODE: 'embedded', RIFTCAST_OBS_RUNTIME_DIR: path.join(sandbox, 'runtime', 'obs-studio'), RIFTCAST_USER_DATA_DIR: path.join(sandbox, 'user-data') };
+applyRunnerEnvironment(runnerEnv);
 let engine, service, browser, fixtureBrowser, page;
 const { ObsClient } = await tsImport('../server/obs-client.ts', import.meta.url);
 const { ObsEngine } = await tsImport('../server/obs-engine.ts', import.meta.url);
 const obs = new ObsClient();
-const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
+const { chromium } = await import(playwrightModule ? pathToFileURL(playwrightModule).href : 'playwright');
 const until = async (fn, label, count = 100) => { for (let i = 0; i < count; i++) { if (await fn()) return; await new Promise(r => setTimeout(r, 100)); } throw new Error(label); };
 async function freePort() { const s = createServer(); await new Promise(r => s.listen(0, '127.0.0.1', r)); const port = s.address().port; await new Promise(r => s.close(r)); return port; }
 const port = await freePort(), base = `http://127.0.0.1:${port}`;
-async function api(route, body) { const response = await fetch(base + route, { ...(body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(15000) }); const result = await response.json(); if (!response.ok) throw new Error(result.error); return result; }
+async function api(route, body) { guard.assertAllowed(body ? 'POST' : 'GET', route, body); const response = await fetch(base + route, { ...(body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(15000) }); const result = await response.json(); if (!response.ok) throw new Error(result.error); return result; }
 async function linkTree(source, destination) {
   await mkdir(destination, { recursive: true });
   for (const entry of await readdir(source, { withFileTypes: true })) {
@@ -37,7 +45,7 @@ try {
   await mkdir(engineData); await mkdir(serviceData);
   await writeFile(path.join(engineData, 'obs-engine.json'), JSON.stringify({ mode: 'embedded', selection: { gameWindow: 'RiftCast test:fixture:nonexistent.exe', desktopDevice: 'default', micDevice: 'default', micEnabled: false, outputFps: 30 } }));
   service = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], { cwd: root, windowsHide: true,
-    env: { ...process.env, PORT: String(port), RIFTCAST_DATA_DIR: serviceData, RIFTCAST_OBS_MODE: 'external', RIFTCAST_OBS_AUTOSTART: '0', RIFTCAST_AUTO_CONNECT: '0', RIFTCAST_OFFLINE: '1' }, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
+    env: { ...runnerEnv, PORT: String(port), RIFTCAST_DATA_DIR: serviceData, RIFTCAST_OBS_MODE: 'external', RIFTCAST_OBS_AUTOSTART: '0' }, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
   await until(async () => { try { return (await fetch(base + '/api/health')).ok; } catch { return false; } }, 'service ready');
   await api('/api/action', { type: 'demo-pause', paused: true });
   engine = new ObsEngine(obs, { root: sandbox, dataDir: engineData, overlayUrl: base + '/overlay', onConnection() {} });
@@ -50,7 +58,7 @@ try {
   const originalProgram = (await obs.call('GetCurrentProgramScene')).sceneName;
   checks.push('isolated real OBS connected with streaming and recording off');
   // A dedicated test window provides known pixels for actual Windows capture.
-  fixtureBrowser = await chromium.launch({ executablePath: process.env.RIFTCAST_CHROMIUM_EXECUTABLE, headless: false, args: ['--window-position=30,30', '--window-size=720,480'] });
+  fixtureBrowser = await chromium.launch({ executablePath: chromiumExecutable, env: runnerEnv, headless: false, args: ['--window-position=30,30', '--window-size=720,480'] });
   const fixture = await fixtureBrowser.newPage({ viewport: { width: 640, height: 360 } });
   await fixture.setContent('<title>RiftCast Custom Scene Test</title><body style="margin:0;background:#12bc68;color:white;font:36px sans-serif"><h1>RiftCast window fixture</h1><p>Custom scene capture</p></body>');
   await fixture.bringToFront();
@@ -58,8 +66,9 @@ try {
   await until(async () => { choices = await api('/api/obs/custom-sources'); return choices.windows.some(w => w.name.includes('RiftCast Custom Scene Test')); }, 'fixture window is discoverable');
   const windowChoice = choices.windows.find(w => w.name.includes('RiftCast Custom Scene Test'));
   checks.push('actual Windows application window enumerated through OBS');
-  browser = await chromium.launch({ executablePath: process.env.RIFTCAST_CHROMIUM_EXECUTABLE, headless: true, args: ['--disable-gpu'] });
+  browser = await chromium.launch({ executablePath: chromiumExecutable, env: runnerEnv, headless: true, args: ['--disable-gpu'] });
   page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: 'zh-CN' });
+  await guard.attach(page.context());
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/api/resources/asset**', route => route.fulfill({ contentType: 'application/json', body: '{"data":{}}' }));
   await page.goto(base);
@@ -165,23 +174,20 @@ try {
   assert.equal((await api('/api/state')).assets.length, 1);
   checks.push('return to builtin program and delete custom scene while keeping uploaded asset');
   assert.deepEqual(errors, []);
-  await writeFile(path.join(evidence, 'report.json'), JSON.stringify({ runAt: new Date().toISOString(), status: failures.length ? 'failed' : 'passed', checks, failures, errors, obsVersion: (await obs.call('GetVersion')).obsVersion, pixelSamples: { blue, green }, liveStreamTested: false }, null, 2));
+  assert.deepEqual(blockedRequests, [], 'No device preparation or platform-output request may be attempted');
+  await writeFile(path.join(evidence, 'report.json'), JSON.stringify({ runAt: new Date().toISOString(), status: failures.length ? 'failed' : 'passed', sandbox, blockedRequests, checks, failures, errors, obsVersion: (await obs.call('GetVersion')).obsVersion, pixelSamples: { blue, green }, liveStreamTested: false }, null, 2));
   assert.deepEqual(failures, [], 'Window capture must supply real pixels for this integration to pass');
-  await rm(path.join(evidence,'failure.json'),{force:true});await rm(path.join(evidence,'failure.png'),{force:true});
-  await rm(path.join(evidence,'capture-diagnostics.log'),{force:true});
   console.log(`Custom scenes: ${checks.length} checks passed, ${errors.length} browser errors. ${evidence}`);
 } catch (error) {
   const logs=path.join(sandbox,'runtime/obs-studio/config/obs-studio/logs');
   const latest=(await readdir(logs).catch(()=>[])).filter(f=>f.endsWith('.txt')).sort().at(-1);
   if(latest){const log=await readFile(path.join(logs,latest),'utf8');await writeFile(path.join(evidence,'capture-diagnostics.log'),log.split(/\r?\n/).filter((line,index,lines)=>/capture|window|winrt|custom|自定义|failed|error|scene.*switch/i.test(line)||lines.slice(Math.max(0,index-9),index).some(l=>l.includes('update settings:'))).join('\n'));}
-  await writeFile(path.join(evidence, 'failure.json'), JSON.stringify({ message: error.message, stack: error.stack, checks, errors }, null, 2));
+  await writeFile(path.join(evidence, 'failure.json'), JSON.stringify({ message: error.message, stack: error.stack, sandbox, blockedRequests, checks, errors }, null, 2));
   await page?.screenshot({ path: path.join(evidence, 'failure.png') }).catch(() => {});
   throw error;
 } finally {
   await browser?.close(); await fixtureBrowser?.close();
   if (service?.exitCode === null) { service.send({ type: 'riftcast-shutdown' }); await new Promise(resolve => { const t = setTimeout(() => { service.kill(); resolve(); }, 5000); service.once('exit', () => { clearTimeout(t); resolve(); }); }); }
   await engine?.close();
-  const absolute = path.resolve(sandbox);
-  assert.ok(absolute.startsWith(evidence + path.sep) && path.basename(absolute).startsWith('isolated-'));
-  await rm(absolute, { recursive: true, force: true, maxRetries: 10, retryDelay: 500 });
+  // Retain this run's fixture/config/logs and every earlier run for diagnosis.
 }
