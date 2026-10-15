@@ -166,7 +166,9 @@ $taskImage=New-Object Drawing.Bitmap(1920,1080)
 $taskGraphics=[Drawing.Graphics]::FromImage($taskImage);$taskGraphics.Clear([Drawing.Color]::Black)
 $taskGraphics.TextRenderingHint=[Drawing.Text.TextRenderingHint]::AntiAliasGridFit
 $taskFont=New-Object Drawing.Font('Arial',24,[Drawing.FontStyle]::Bold,[Drawing.GraphicsUnit]::Pixel)
-$taskScores=@('6 / 4 / 16','3 / 4 / 14','3 / 5 / 12','10 / 7 / 7','7 / 6 / 17');$taskCs=@('27','12','6','30','22')
+# Keep this synthetic gold-column fixture free of ambiguous fraction-like glyphs.
+# KDA parsing ambiguity is exercised by the dedicated parser tests.
+$taskScores=@('6 / 4 / 16','6 / 4 / 16','3 / 5 / 12','10 / 7 / 7','7 / 6 / 17');$taskCs=@('27','12','6','30','22')
 for($taskRow=0;$taskRow -lt 5;$taskRow++){
   $taskY=[single](800+46*$taskRow)
   $taskGraphics.DrawString("$(100+$taskRow)($(9000+$taskRow))",$taskFont,[Drawing.Brushes]::White,[single]570,$taskY)
