@@ -1,0 +1,2 @@
+.cast-canvas .fit-name{display:block;min-width:0;width:100%;white-space:nowrap;overflow:visible;text-overflow:clip;line-height:1.3;height:1.3em;flex-shrink:1}.fit-name>span{display:inline-block;white-space:pre;transform-origin:left center;max-width:none}.red .fit-name{text-align:right}.red .fit-name>span{transform-origin:right center}.cast-canvas .cast-draft-player.fit-name{-webkit-line-clamp:unset;overflow:visible}
+.cast-canvas .fit-name{position:relative}.fit-name>span{position:absolute;left:0;top:0}.red .fit-name>span{left:auto;right:0}

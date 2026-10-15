@@ -1,3 +1,4 @@
+import {FitName} from './FitName';
 import { useEffect, useState } from 'react';
 import type { BroadcastState, Champion, Player, Side } from '../../shared/types';
 import { runeImage, summonerSpellImage } from '../../shared/player-assets';
@@ -41,7 +42,7 @@ function Identity({player,ultimateIcon}:{player?:Player;ultimateIcon?:string}) {
   const status=state==='ready'?'终极技能就绪':state==='unlearned'?'终极技能尚未学习':state==='cooldown'?`终极技能冷却${ultimate?.cooldownRemaining!=null?` ${Math.ceil(ultimate.cooldownRemaining)} 秒`:''}`:'终极技能状态未提供';
   return <div className="lb-identity">
     <div className="lb-identity-line">
-      <strong className="lb-player-name" title={player?.name}>{player?.name||'—'}</strong>
+      <FitName className="lb-player-name">{player?.name||'—'}</FitName>
     </div>
     <span className="lb-player-gold" aria-label={`剩余金币（总经济） ${playerGoldText(player)}`} title="剩余金币（总经济）">{playerGoldText(player)}</span>
     <div className="lb-status-line">

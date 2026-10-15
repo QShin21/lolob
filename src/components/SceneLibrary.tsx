@@ -1,3 +1,4 @@
+import {PostgamePageControl} from './PostgamePageControl';
 import { useRef, useState } from "react";
 import type { BroadcastState, Champion, Scene, CustomScene, StateContext } from "../../shared/types";
 import { sceneDetails, sceneInfo } from "../lib";
@@ -75,7 +76,8 @@ export function SceneLibrary(props: {
       </div>
       {editor && <CustomSceneEditor {...props} initial={editor === 'new' ? undefined : editor} onClose={() => setEditor(null)} />}
       {deleting && <div className="custom-delete-prompt" role="alert"><span><strong>{deleteReason || `删除「${deleting.name}」？`}</strong><small>已上传素材和借用的 OBS 输入都会保留。</small>{deleteError && <small>{deleteError}</small>}</span><button className="button small" disabled={busy} onClick={() => setDeleting(null)}>取消</button><button className="button small" disabled={busy || !canEdit || !!deleteReason} onClick={async () => { if (deletingActive.current || deleteReason || !canEdit) return; deletingActive.current = true; setBusy(true); setDeleteError(''); try { await props.send({ type: 'delete-custom-scene', id: deleting.id }); setDeleting(null); props.notify('自定义场景已删除'); } catch (e) { setDeleteError(e instanceof Error ? e.message : '删除未完成，请核对引用与权限后重试'); } finally { deletingActive.current = false; setBusy(false); } }}>确认删除</button></div>}
-      <div className="scene-bank-grid">
+      <PostgamePageControl state={props.state} send={props.send} />
+<div className="scene-bank-grid">
         {visibleScenes.map((scene, index) => (
           <div className="scene-bank-item" key={scene}>
             <SceneCard {...props} scene={scene} />

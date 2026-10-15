@@ -1,3 +1,4 @@
+import {PostgamePageControl} from '../components/PostgamePageControl';
 import { useEffect, useRef, useState } from "react";
 import { Archive, ArrowRight, Check, Circle, Film, Trophy } from "lucide-react";
 import type { BroadcastAction, StateContext } from "../../shared/types";
@@ -361,6 +362,7 @@ export function WrapUp({
                 </div>
                 {result ? (
                   <>
+<PostgamePageControl state={state} send={send} />
                     <BroadcastCanvas
                       state={{ ...view, selectedPlayerId: null }}
                       champions={champions}

@@ -83,6 +83,7 @@ const bool = (value:unknown):boolean => { if(typeof value!=='boolean')throw new 
 const oneOf = <T extends string>(value:unknown,choices:readonly T[]):T => {if(typeof value!=='string'||!choices.includes(value as T))throw new ValidationError('未知选项');return value as T;};
 const imageUrl = (value:unknown):string => {const url=str(value,2048);if(!/^\/uploads\/[a-z0-9-]+\.(png|jpg|webp|gif)$/.test(url)&&!/^https:\/\//.test(url))throw new ValidationError('图片地址须为已上传素材或 HTTPS 地址');return url;};
 function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
+  if(p.postgamePage!==undefined){if(p.postgamePage!==1&&p.postgamePage!==2)throw new ValidationError('赛后页码无效');s.overlay.postgamePage=p.postgamePage;}
   if(p.scheduleView!==undefined){const v=record(p.scheduleView);const day=str(v.day,10);if(day&&!/^\d{4}-\d{2}-\d{2}$/.test(day))throw new ValidationError('赛程日期格式无效');s.overlay.scheduleView={page:Math.floor(num(v.page,0,1000)),filter:oneOf(v.filter,['all','upcoming','day'] as const),day};}
   if(p.interview!==undefined){const v=record(p.interview);s.overlay.interview={name:str(v.name,80),team:str(v.team,80),role:str(v.role,80),topic:str(v.topic,120),dock:oneOf(v.dock,['left','right'] as const)};}
   if(p.patchVersion!==undefined)s.overlay.patchVersion=str(p.patchVersion,20);
