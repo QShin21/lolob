@@ -1,0 +1,20 @@
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import assert from 'node:assert/strict';
+import {createServer} from 'vite';
+import react from '@vitejs/plugin-react';
+import {tsImport} from 'tsx/esm/api';
+const {chromium}=await import(pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href);
+const {createSeed}=await tsImport('../server/state.ts',import.meta.url);
+const {parseScoreboardRows}=await tsImport('../server/spectator-scoreboard.ts',import.meta.url);
+const fixture=JSON.parse(await readFile('server/fixtures/scoreboard-081.json','utf8'));
+const rows=parseScoreboardRows(fixture.playerWords,fixture.playerPortraits);
+const state=createSeed();state.players=state.players.map((p,i)=>({...p,visionScore:rows[i].visionScore,currentGold:rows[i].currentGold,gold:rows[i].totalGold,cs:rows[i].cs}));
+const dir=path.resolve('verification-output/ocr-0.8.1/ui');await mkdir(dir,{recursive:true});
+await writeFile(path.join(dir,'index.html'),'<html><body style="margin:0"><div id="root"></div><script type="module" src="./entry.tsx"></script></body></html>');
+await writeFile(path.join(dir,'entry.tsx'),`import React from 'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import '/src/design-tokens.css';import '/src/styles.css';createRoot(document.getElementById('root')).render(<BroadcastCanvas state={${JSON.stringify(state)}} champions={[]} scene="live" output/>);`);
+const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:5198,strictPort:true,watch:{ignored:['**/verification-output/**','**/runtime/**']}}});await vite.listen();let browser;
+try{browser=await chromium.launch({headless:true,channel:'msedge'});const page=await browser.newPage({viewport:{width:1920,height:1080}});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route('**/api/**',r=>r.fulfill({json:{}}));await page.goto('http://127.0.0.1:5198/verification-output/ocr-0.8.1/ui/index.html');await page.locator('.lb-player-gold').last().waitFor();
+const displayed=Array.from({length:5},(_,i)=>[rows[i],rows[i+5]]).flat();
+assert.deepEqual(await page.locator('.lb-player-gold').allTextContents(),displayed.map(r=>`${r.currentGold}(${r.totalGold})`));assert.deepEqual(await page.locator('.lb-vision-score').allTextContents(),displayed.map(r=>String(r.visionScore)));assert.deepEqual(await page.locator('.lb-cs').allTextContents(),displayed.map(r=>String(r.cs)));assert.deepEqual(errors,[]);await page.screenshot({path:path.join(dir,'scoreboard.png')});console.log('All ten displayed gold, CS and vision values verified');}finally{await browser?.close();await vite.close();}

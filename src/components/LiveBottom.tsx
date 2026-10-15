@@ -3,7 +3,7 @@ import type { BroadcastState, Champion, Player, Side } from '../../shared/types'
 import { runeImage, summonerSpellImage } from '../../shared/player-assets';
 import { resolvedPlayerFeed, playerFeedControl } from '../../shared/player-feeds';
 import { bottomGoldDifference, bottomItemSlots, bottomPlayers } from '../../server/bottom-scoreboard';
-import { championFor, playerCs, playerKda } from '../lib';
+import { championFor, playerCs, playerKda, playerVision, playerGoldText } from '../lib';
 import { dataDragonItemImage, type ItemAssets } from './useItemCatalog';
 import { useUltimateIcons } from './useUltimateIcons';
 import './live-bottom.css';
@@ -43,6 +43,7 @@ function Identity({player,ultimateIcon}:{player?:Player;ultimateIcon?:string}) {
     <div className="lb-identity-line">
       <strong className="lb-player-name" title={player?.name}>{player?.name||'—'}</strong>
     </div>
+    <span className="lb-player-gold" aria-label={`剩余金币（总经济） ${playerGoldText(player)}`} title="剩余金币（总经济）">{playerGoldText(player)}</span>
     <div className="lb-status-line">
       {state!=='unknown'&&<span className={`lb-ultimate ${state}`} title={status} aria-label={status}>
         <Icon src={ultimate?.icon||ultimateIcon} label="终极技能" missing="R"/>
@@ -69,15 +70,15 @@ function Inventory({player,items,version}:{player?:Player;items:ItemAssets;versi
     {questKnown&&<div className={`lb-quest ${questKnown?quest?.completed?'is-complete':'is-pending':'is-unavailable'}`} aria-label={questLabel} title={questLabel}>
       {quest?.icon?<Icon src={quest.icon} label={questLabel}/>:<span className="lb-quest-mark">{questKnown?quest?.completed?'✓':'◇':'?'}</span>}
     </div>}
-    <div className="lb-trinket" title={player?.visionScore!=null?`视野得分 ${player.visionScore}`:'视野得分未提供'}>
-      <span className="lb-vision-score">{player?.visionScore!=null?Math.round(player.visionScore):'—'}</span>
+    <div className="lb-trinket" title={playerVision(player)!=='—'?`视野得分 ${playerVision(player)}`:'视野得分未提供'}>
+      <span className="lb-vision-score">{playerVision(player)}</span>
       <Icon src={items[slots[6]]?.image||dataDragonItemImage(version,slots[6])} label={slots[6]?(items[slots[6]]?.name||'饰品'):'空饰品栏'}/>
     </div>
   </div>;
 }
 function PlayerRow({player,champions,items,version,side,ultimateIcon}:{player?:Player;champions:Champion[];items:ItemAssets;version:string;side:Side;ultimateIcon?:string}) {
   const champion=championFor(champions,player?.championId||'');
-  return <div className={`lb-player-row ${side} ${player?.isDead?'is-dead':''}`} aria-label={`${player?.name||'等待选手'} 英雄、状态、装备、KDA 与补刀`}>
+  return <div className={`lb-player-row ${side} ${player?.isDead?'is-dead':''}`} aria-label={`${player?.name||'等待选手'} 英雄、状态、装备、视野、剩余金币、总经济、KDA 与补刀`}>
     <Inventory player={player} items={items} version={version}/><Runes player={player}/><Spells player={player} version={version}/>
     <div className="lb-champion" title={`${player?.name||'等待选手'} · ${champion?.name||'英雄待定'}`}>
       {champion&&<img src={champion.image} alt={champion.name}/>}

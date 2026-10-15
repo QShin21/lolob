@@ -1,8 +1,8 @@
 import type { Player, Side } from '../shared/types';
 
 /** Normalized OCR word bounds in the game client area. */
-export interface ScoreboardWord { text: string; x: number; y: number; width: number; height: number }
-export interface PlayerScoreboardRow { team: Side; kills: number; deaths: number; assists: number; cs: number; currentGold?: number; totalGold?: number; raw: string; rowIndex?: number; championId?: string; identitySource?: 'portrait' | 'roster-elimination' }
+export interface ScoreboardWord { text: string; x: number; y: number; width: number; height: number; field?: string }
+export interface PlayerScoreboardRow { team: Side; kills: number; deaths: number; assists: number; cs: number; visionScore?: number; currentGold?: number; totalGold?: number; raw: string; rowIndex?: number; championId?: string; identitySource?: 'portrait' | 'roster-elimination' }
 export interface PlayerGoldRow extends PlayerScoreboardRow { currentGold: number; totalGold: number }
 export interface ScoreboardPortrait { team: Side; championId: string; x: number; y: number; width: number; height: number; score: number; margin: number; method?: 'full' | 'outer-gray' }
 
@@ -34,7 +34,7 @@ export function parseScoreboardRows(value: unknown, portraitValue?: unknown): Pl
     (portrait.method !== 'outer-gray' || (portrait.score >= .94 && portrait.margin >= .12)) &&
     (portrait.team === 'blue' ? portrait.x + portrait.width <= .5 : portrait.x >= .5)) : [];
   for (const team of ['blue', 'red'] as const) {
-    const members = words.filter(word => word.height>=mainHeight*.65 && (team === 'blue' ? word.x + word.width / 2 < .5 : word.x + word.width / 2 > .5)).sort((a, b) => (a.y + a.height / 2) - (b.y + b.height / 2));
+    const members = words.filter(word => word.field !== 'vision' && word.height>=mainHeight*.65 && (team === 'blue' ? word.x + word.width / 2 < .5 : word.x + word.width / 2 > .5)).sort((a, b) => (a.y + a.height / 2) - (b.y + b.height / 2));
     const lines: ScoreboardWord[][] = [];
     for (const word of members) {
       const center = word.y + word.height / 2;
@@ -75,6 +75,12 @@ export function parseScoreboardRows(value: unknown, portraitValue?: unknown): Pl
       const parsed:PlayerScoreboardRow={team,kills:Number(score[0]),deaths:Number(score[1]),assists:Number(score[2]),cs:Number(cs.word.text),raw:text};
       const gold=amounts.length===1?parsePlayerGoldRow(`${amounts[0][0]} ${scores[0][0]} ${cs.word.text}`, team):undefined;
       if(gold){parsed.currentGold=gold.currentGold;parsed.totalGold=gold.totalGold;}
+      // Vision is lower within the row and outside the gold column. Only the dedicated
+      // three-read-agreement OCR cells qualify; arbitrary adjacent digits never do.
+      const vision = words.filter(word => word.field === 'vision' && /^\d{1,4}$/.test(word.text) &&
+        (team === 'blue' ? word.x + word.width < (amountBounds?.left ?? scoreBounds.left) : word.x > (amountBounds?.right ?? scoreBounds.right)) &&
+        word.y + word.height / 2 >= centerY - mainHeight * .2 && word.y + word.height / 2 <= centerY + mainHeight * 1.4);
+      if (vision.length === 1) parsed.visionScore = Number(vision[0].text);
       parsed.rowIndex=result.filter(row=>row.team===team).length;
       if(rowPortrait){parsed.championId=rowPortrait.championId;parsed.identitySource='portrait';}
       result.push(parsed);

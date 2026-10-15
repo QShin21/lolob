@@ -200,16 +200,21 @@ param(
       $taskOrdered=@($taskLine.Group | Sort-Object x)
       $taskText=($taskOrdered.text -join ' ').Normalize([Text.NormalizationForm]::FormKC)
       $taskOffset=0;$taskSpans=@(foreach($taskWord in $taskOrdered){$taskLength=$taskWord.text.Normalize([Text.NormalizationForm]::FormKC).Length;[pscustomobject]@{word=$taskWord;start=$taskOffset;end=$taskOffset+$taskLength};$taskOffset+=$taskLength+1})
-      foreach($taskScore in [regex]::Matches($taskText,'(?<!\d)\d{1,3}\s*/\s*\d{1,3}\s*/\s*\d{1,3}(?!\d)')){
+      $taskAnchorMatches=[regex]::Matches($taskText,'(?<!\d)\d{1,3}\s*/\s*\d{1,3}\s*/\s*\d{1,3}(?!\d)')
+      if($taskAnchorMatches.Count -eq 0){$taskAnchorMatches=[regex]::Matches($taskText,'(?<!\d)\d{1,6}\s*\(\s*\d{1,6}\s*\)(?!\d)')}
+      foreach($taskScore in $taskAnchorMatches){
         $taskScoreWords=@($taskSpans | Where-Object {$_.start -lt $taskScore.Index+$taskScore.Length -and $_.end -gt $taskScore.Index} | ForEach-Object {$_.word})
         $taskLeft=($taskScoreWords.x | Measure-Object -Minimum).Minimum;$taskRight=($taskScoreWords | ForEach-Object {$_.x+$_.width} | Measure-Object -Maximum).Maximum
         $taskTop=($taskScoreWords.y | Measure-Object -Minimum).Minimum;$taskBottom=($taskScoreWords | ForEach-Object {$_.y+$_.height} | Measure-Object -Maximum).Maximum
         $taskAnchor=New-Object RiftCastScoreboardAnchor
         if(($taskLeft+$taskRight)/2 -lt .5){$taskAnchor.Team='blue'}else{$taskAnchor.Team='red'}
-        $taskAnchor.Y=(($taskTop+$taskBottom)/2-$taskRegionY)*$taskClientHeight;$taskAnchor.Height=($taskBottom-$taskTop)*$taskClientHeight
+        $taskAnchor.Y=(($taskTop+$taskBottom)/2-$taskRegionY)*$taskClientHeight;$taskAnchor.Height=(@($taskScoreWords | Where-Object {$_.text -match "\d"} | ForEach-Object {$_.height} | Sort-Object)[0])*$taskClientHeight
         $taskAnchor
       }
     })
+    $taskUniqueAnchors=New-Object System.Collections.Generic.List[object]
+    foreach($taskCandidate in $taskAnchors){if(@($taskUniqueAnchors | Where-Object {$_.Team -eq $taskCandidate.Team -and [Math]::Abs($_.Y-$taskCandidate.Y) -lt [Math]::Max($_.Height,$taskCandidate.Height)*.65}).Count -eq 0){$taskUniqueAnchors.Add($taskCandidate)}}
+    $taskAnchors=@($taskUniqueAnchors.ToArray());$script:taskCurrentAnchors=$taskAnchors
     if($Diagnostics){$script:taskPortraitDiagnostics=@{anchors=@($taskAnchors | Select-Object Team,Y,Height);templates=$taskPortraitTemplates.Count}}
     if($taskAnchors.Count -gt 10){return @()}
     return @([RiftCastPortraitMatcher]::Find($taskBitmap,$taskPortraitTemplates,$taskAnchors,(.5-$taskRegionX)*$taskClientWidth))
@@ -233,21 +238,24 @@ param(
       if($taskCenters.Count -ne 5){return $null}
       $taskRegions=@(foreach($taskTeam in @('blue','red')){
         $taskSideScores=@($taskScores | Where-Object {$_.team -eq $taskTeam});$taskSidePortraits=@($taskMatches | Where-Object {$_.Team -eq $taskTeam})
-        if($taskSideScores.Count -lt 3 -or $taskSidePortraits.Count -lt 3){continue}
+        if($taskSideScores.Count -lt 3 -or $taskSidePortraits.Count -lt 2){continue}
         $taskFont=@($taskSideScores.height | Sort-Object)[[int][Math]::Floor($taskSideScores.Count/2)]
         $taskScoreLeft=@($taskSideScores.left | Sort-Object)[[int][Math]::Floor($taskSideScores.Count/2)]
         $taskScoreRight=@($taskSideScores.right | Sort-Object)[[int][Math]::Floor($taskSideScores.Count/2)]
         $taskPortraitLeft=@($taskSidePortraits.X | Sort-Object)[[int][Math]::Floor($taskSidePortraits.Count/2)]
         $taskPortraitRight=@($taskSidePortraits | ForEach-Object {$_.X+$_.Width} | Sort-Object)[[int][Math]::Floor($taskSidePortraits.Count/2)]
         $taskLeft=$(if($taskTeam -eq 'blue'){$taskScoreLeft-$taskFont*.2}else{$taskPortraitRight+$taskFont*.2})
-        $taskRight=$(if($taskTeam -eq 'blue'){$taskPortraitLeft-$taskFont*.2}else{$taskScoreRight+$taskFont*.2})
+        $taskRight=$(if($taskTeam -eq 'blue'){$taskPortraitLeft-$taskFont*.2}else{$taskScoreRight+$taskFont*.8})
         $taskGoldLeft=$(if($taskTeam -eq 'blue'){$taskScoreLeft-$taskFont*13}else{$taskScoreRight+$taskFont*1.2})
         $taskGoldRight=$(if($taskTeam -eq 'blue'){$taskScoreLeft-$taskFont*1.2}else{$taskScoreRight+$taskFont*13})
+        $taskSpan=$(if($taskTeam -eq 'blue'){$taskPortraitLeft-$taskScoreLeft}else{$taskScoreRight-$taskPortraitRight})
+        if($taskTeam -eq 'blue'){$taskVisionCenter=$taskPortraitLeft-$taskSpan*2.78;$taskBlueVision=$taskVisionCenter;$taskBluePortraitRight=$taskPortraitRight}else{$taskVisionCenter=$taskBluePortraitRight+$taskPortraitLeft-$taskBlueVision}
         foreach($taskCenter in $taskCenters){
-          $taskTop=[Math]::Max(0,[Math]::Floor($taskCenter-$taskFont*.68));$taskBottom=[Math]::Min($taskBitmap.Height,[Math]::Ceiling($taskCenter+$taskFont*.68))
-          foreach($taskColumns in @(@{kind='stats';left=$taskLeft;right=$taskRight},@{kind='gold';left=$taskGoldLeft;right=$taskGoldRight})){
+          $taskTop=[Math]::Max(0,[Math]::Floor($taskCenter-$taskFont*.52));$taskBottom=[Math]::Min($taskBitmap.Height,[Math]::Ceiling($taskCenter+$taskFont*.68))
+          foreach($taskColumns in @(@{kind='stats';left=$taskLeft;right=$taskRight},@{kind='gold';left=$taskGoldLeft;right=$taskGoldRight},@{kind='vision';left=$taskVisionCenter-$taskFont;right=$taskVisionCenter+$taskFont})){
             $taskL=[Math]::Max(0,[Math]::Floor($taskColumns.left));$taskR=[Math]::Min($taskBitmap.Width,[Math]::Ceiling($taskColumns.right))
-            if($taskR-$taskL -gt 12 -and $taskBottom-$taskTop -gt 12){[pscustomobject]@{kind=$taskColumns.kind;x=$taskL;y=$taskTop;width=$taskR-$taskL;height=$taskBottom-$taskTop}}
+            if($taskColumns.kind -eq 'vision'){$taskVTop=[int]($taskCenter+$taskFont*.1);$taskVBottom=[Math]::Min($taskBitmap.Height,[int]($taskCenter+$taskFont*1.8))}else{$taskVTop=$taskTop;$taskVBottom=$taskBottom}
+            if($taskR-$taskL -gt 12 -and $taskVBottom-$taskVTop -gt 12){[pscustomobject]@{kind=$taskColumns.kind;x=$taskL;y=$taskVTop;width=$taskR-$taskL;height=$taskVBottom-$taskVTop}}
           }
         }
       })
@@ -257,12 +265,17 @@ param(
     $taskMontage=$null;$taskMontageGraphics=$null;$taskScaled=$null;$taskGraphics=$null;$taskMemory=$null;$taskRandom=$null;$taskWriter=$null;$taskSoftware=$null
     try{
       $taskMontageWidth=[int](($taskRegions | ForEach-Object {if($taskFallbackCells){($_.width+4)*3}else{$_.width}} | Measure-Object -Maximum).Maximum+24)
-      $taskMontageHeight=24;foreach($taskRegion in $taskRegions){$taskRegion | Add-Member -NotePropertyName offsetY -NotePropertyValue $taskMontageHeight -Force;$taskMontageHeight+=[int]$taskRegion.height+20}
+      $taskColumnWidth=$taskMontageWidth
+      $taskColumns=3;if($taskFallbackCells){$taskColumns=1}
+      $taskHeights=@(24,24,24);$taskCellIndex=0
+      foreach($taskRegion in $taskRegions){$taskCol=$taskCellIndex % $taskColumns;$taskRegion | Add-Member -NotePropertyName offsetY -NotePropertyValue $taskHeights[$taskCol] -Force;$taskRegion | Add-Member -NotePropertyName offsetX -NotePropertyValue ($taskCol*$taskColumnWidth) -Force;$taskHeights[$taskCol]+=[int]$taskRegion.height+20;$taskCellIndex++}
+      $taskMontageHeight=($taskHeights | Measure-Object -Maximum).Maximum;$taskMontageWidth*=$taskColumns
       $taskMontage=New-Object Drawing.Bitmap($taskMontageWidth,$taskMontageHeight);$taskMontageGraphics=[Drawing.Graphics]::FromImage($taskMontage);$taskMontageGraphics.Clear([Drawing.Color]::Black)
       foreach($taskRegion in $taskRegions){
         $taskCopies=1;if($taskFallbackCells){$taskCopies=3}
-        for($taskCopy=0;$taskCopy -lt $taskCopies;$taskCopy++){$taskMontageGraphics.DrawImage($taskBitmap,(New-Object Drawing.Rectangle((12+$taskCopy*($taskRegion.width+4)),$taskRegion.offsetY,$taskRegion.width,$taskRegion.height)),$taskRegion.x,$taskRegion.y,$taskRegion.width,$taskRegion.height,[Drawing.GraphicsUnit]::Pixel)}
+        for($taskCopy=0;$taskCopy -lt $taskCopies;$taskCopy++){$taskMontageGraphics.DrawImage($taskBitmap,(New-Object Drawing.Rectangle(($taskRegion.offsetX+12+$taskCopy*($taskRegion.width+4)),$taskRegion.offsetY,$taskRegion.width,$taskRegion.height)),$taskRegion.x,$taskRegion.y,$taskRegion.width,$taskRegion.height,[Drawing.GraphicsUnit]::Pixel)}
       }
+      [RiftCastNumericFilter]::Clean($taskMontage)
       $taskScale=[Math]::Min(3,[Math]::Min([Windows.Media.Ocr.OcrEngine]::MaxImageDimension/$taskMontageWidth,[Windows.Media.Ocr.OcrEngine]::MaxImageDimension/$taskMontageHeight))
       $taskScaled=New-Object Drawing.Bitmap([int]($taskMontageWidth*$taskScale),[int]($taskMontageHeight*$taskScale));$taskGraphics=[Drawing.Graphics]::FromImage($taskScaled);$taskGraphics.InterpolationMode=[Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
       $taskGraphics.DrawImage($taskMontage,(New-Object Drawing.Rectangle(0,0,$taskScaled.Width,$taskScaled.Height)),0,0,$taskMontage.Width,$taskMontage.Height,[Drawing.GraphicsUnit]::Pixel)
@@ -277,20 +290,31 @@ param(
           $taskPieces=@(foreach($taskLine in $taskRecognized.Lines){foreach($taskWord in $taskLine.Words){$taskBox=$taskWord.BoundingRect;$taskCenterY=($taskBox.Y+$taskBox.Height/2)/$taskScale;if($taskCenterY -ge $taskRegion.offsetY -and $taskCenterY -le $taskRegion.offsetY+$taskRegion.height){[pscustomobject]@{text=$taskWord.Text;x=$taskBox.X}}}})
           $taskPieces=@($taskPieces | Sort-Object x)
           $taskRepeated=(($taskPieces.text -join '').Normalize([Text.NormalizationForm]::FormKC)) -replace '\s',''
-          $taskLength=[int]$taskRegion.glyphCount
+          if($Diagnostics){$script:taskGlyphDiagnostics+=@([pscustomobject]@{kind=$taskRegion.kind;repeated=$taskRepeated})}
+          $taskLength=[int]$taskRegion.glyphCount;if($taskRegion.kind -in @('vision','cs') -and $taskRepeated.Length % 3 -eq 0){$taskLength=[int]($taskRepeated.Length/3)}
+          if($taskLength -lt 1 -or $taskLength -gt 4){continue}
           if($taskRepeated -notmatch '^\d+$' -or $taskRepeated.Length -ne $taskLength*3){continue}
           $taskValue=$taskRepeated.Substring(0,$taskLength)
           if($taskRepeated.Substring($taskLength,$taskLength) -ne $taskValue -or $taskRepeated.Substring($taskLength*2,$taskLength) -ne $taskValue){continue}
-          [pscustomobject]@{text=$taskValue;x=$taskRegionX+($taskRegion.x+2)/$taskClientWidth;y=$taskRegionY+($taskRegion.y+2)/$taskClientHeight;width=($taskRegion.width-4)/$taskClientWidth;height=($taskRegion.height-4)/$taskClientHeight}
+          [pscustomobject]@{text=$taskValue;field=$taskRegion.kind;x=$taskRegionX+($taskRegion.x+2)/$taskClientWidth;y=$taskRegionY+($taskRegion.y+2)/$taskClientHeight;width=($taskRegion.width-4)/$taskClientWidth;height=($taskRegion.height-4)/$taskClientHeight}
         })
         return [pscustomobject]@{words=$taskFreshWords}
       }
       $taskFreshWords=@(foreach($taskLine in $taskRecognized.Lines){foreach($taskWord in $taskLine.Words){
         $taskBox=$taskWord.BoundingRect;$taskBoxY=$taskBox.Y/$taskScale;$taskBoxCenterY=$taskBoxY+$taskBox.Height/$taskScale/2
-        $taskRegion=@($taskRegions | Where-Object {$taskBoxCenterY -ge $_.offsetY -and $taskBoxCenterY -le $_.offsetY+$_.height})
+        $taskRegion=@($taskRegions | Where-Object {$taskBoxCenterY -ge $_.offsetY -and $taskBoxCenterY -le $_.offsetY+$_.height -and $taskBox.X/$taskScale -ge $_.offsetX -and $taskBox.X/$taskScale -lt $_.offsetX+$taskColumnWidth})
         if($taskRegion.Count -ne 1){continue};$taskRegion=$taskRegion[0]
-        [pscustomobject]@{text=$taskWord.Text;line=[array]::IndexOf($taskRegions,$taskRegion);x=$taskRegionX+($taskRegion.x+$taskBox.X/$taskScale-12)/$taskClientWidth;y=$taskRegionY+($taskRegion.y+$taskBoxY-$taskRegion.offsetY)/$taskClientHeight;width=$taskBox.Width/$taskScale/$taskClientWidth;height=$taskBox.Height/$taskScale/$taskClientHeight}
+        [pscustomobject]@{text=$taskWord.Text;field=$taskRegion.kind;line=[array]::IndexOf($taskRegions,$taskRegion);x=$taskRegionX+($taskRegion.x+$taskBox.X/$taskScale-12-$taskRegion.offsetX)/$taskClientWidth;y=$taskRegionY+($taskRegion.y+$taskBoxY-$taskRegion.offsetY)/$taskClientHeight;width=$taskBox.Width/$taskScale/$taskClientWidth;height=$taskBox.Height/$taskScale/$taskClientHeight}
       }})
+      $taskCsCells=@($taskRegions | Where-Object {$_.kind -eq 'stats'} | ForEach-Object {
+        $taskCellWidth=[int]($_.width*.42);$taskCellX=$_.x
+        if($taskRegionX+($_.x+($_.width/2))/$taskClientWidth -lt .5){$taskCellX=$_.x+$_.width-$taskCellWidth}
+        [pscustomobject]@{kind='cs';x=$taskCellX;y=$_.y;width=$taskCellWidth;height=$_.height;glyphCount=0}
+      })
+      $taskCsRead=Read-ScoreboardNumericRows $taskBitmap @() @() $taskRegionX $taskRegionY $taskCsCells
+      foreach($taskCs in @($taskCsRead.words)){$taskFreshWords=@($taskFreshWords | Where-Object {-not ($_.field -eq 'stats' -and $_.x+($_.width/2) -ge $taskCs.x -and $_.x+($_.width/2) -le $taskCs.x+$taskCs.width -and [Math]::Abs($_.y+($_.height/2)-$taskCs.y-($taskCs.height/2)) -lt $taskCs.height)})+@($taskCs)}
+      $taskVisionCells=@($taskRegions | Where-Object {$_.kind -eq 'vision'} | ForEach-Object {[pscustomobject]@{kind='vision';x=$_.x;y=$_.y;width=$_.width;height=$_.height;glyphCount=0}})
+      if($taskVisionCells.Count){$taskVisionRead=Read-ScoreboardNumericRows $taskBitmap @() @() $taskRegionX $taskRegionY $taskVisionCells;$taskFreshWords=@($taskFreshWords | Where-Object {$_.field -ne 'vision'})+@($taskVisionRead.words)}
       return [pscustomobject]@{words=$taskFreshWords}
     }finally{foreach($taskResource in @($taskSoftware,$taskWriter,$taskRandom,$taskMemory,$taskGraphics,$taskScaled,$taskMontageGraphics,$taskMontage)){if($null -ne $taskResource){try{$taskResource.Dispose()}catch{}}}}
   }
@@ -355,13 +379,22 @@ param(
         }
         $taskPortraits=@(foreach($taskMatch in $taskMatches){[pscustomobject]@{team=$taskMatch.Team;championId=$taskMatch.ChampionId;method=$taskMatch.Method;x=$taskX+$taskMatch.X/$taskClientWidth;y=$taskY+$taskMatch.Y/$taskClientHeight;width=$taskMatch.Width/$taskClientWidth;height=$taskMatch.Height/$taskClientHeight;score=$taskMatch.Score;margin=$taskMatch.Margin}})
         $taskGlyphCs=@()
+        $taskCsGeometry=@($taskMatches)
+        foreach($taskAnchor in $script:taskCurrentAnchors){
+          $taskSameSide=@($taskMatches | Where-Object {$_.Team -eq $taskAnchor.Team})
+          if($taskSameSide.Count -lt 3 -or @($taskSameSide | Where-Object {[Math]::Abs($_.Y+$_.Height/2-$taskAnchor.Y) -lt $_.Height*.5}).Count){continue}
+          $taskHint=New-Object RiftCastPortraitMatch;$taskHint.Team=$taskAnchor.Team
+          $taskHint.Width=@($taskSameSide.Width | Sort-Object)[[int][Math]::Floor($taskSameSide.Count/2)];$taskHint.Height=$taskHint.Width
+          $taskHint.X=@($taskSameSide.X | Sort-Object)[[int][Math]::Floor($taskSameSide.Count/2)];$taskHint.Y=[int]($taskAnchor.Y-$taskHint.Height/2)
+          $taskCsGeometry+=@($taskHint)
+        }
         if($taskMatches.Count){
           $taskNativeWords=@(foreach($taskWord in $taskWords){$taskNativeWord=New-Object RiftCastNumericWord;$taskNativeWord.Text=$taskWord.text.Normalize([Text.NormalizationForm]::FormKC);$taskNativeWord.X=($taskWord.x-$taskX)*$taskClientWidth;$taskNativeWord.Y=($taskWord.y-$taskY)*$taskClientHeight;$taskNativeWord.Width=$taskWord.width*$taskClientWidth;$taskNativeWord.Height=$taskWord.height*$taskClientHeight;$taskNativeWord})
-          $taskGlyphCs=@([RiftCastPortraitMatcher]::ReadCs($taskBitmap,$taskNativeWords,$taskMatches))
+          $taskGlyphCs=@([RiftCastPortraitMatcher]::ReadCs($taskBitmap,$taskNativeWords,$taskCsGeometry))
         }
         $taskConflictCs=@()
         foreach($taskCsWord in $taskGlyphCs){
-          $taskFreshWord=[pscustomobject]@{text=$taskCsWord.Text;x=$taskX+$taskCsWord.X/$taskClientWidth;y=$taskY+$taskCsWord.Y/$taskClientHeight;width=$taskCsWord.Width/$taskClientWidth;height=$taskCsWord.Height/$taskClientHeight}
+          $taskFreshWord=[pscustomobject]@{text=$taskCsWord.Text;field="cs";x=$taskX+$taskCsWord.X/$taskClientWidth;y=$taskY+$taskCsWord.Y/$taskClientHeight;width=$taskCsWord.Width/$taskClientWidth;height=$taskCsWord.Height/$taskClientHeight}
           $taskExisting=@($taskWords | Where-Object {[Math]::Abs($_.x+($_.width/2)-$taskFreshWord.x-($taskFreshWord.width/2)) -lt $taskFreshWord.width -and [Math]::Abs($_.y+($_.height/2)-$taskFreshWord.y-($taskFreshWord.height/2)) -lt $taskFreshWord.height*.65})
           $taskExistingNumeric=@($taskExisting | Where-Object {$_.text.Normalize([Text.NormalizationForm]::FormKC) -match '^\d{1,4}$'})
           # Reject numeric disagreements. A glyph match can recover omitted or nonnumeric OCR cells.
@@ -369,7 +402,7 @@ param(
           elseif($taskExistingNumeric.Count -eq 0){$taskWords=@($taskWords | Where-Object {$taskExisting -notcontains $_})+@($taskFreshWord)}
           if($Diagnostics){$script:taskGlyphDiagnostics+=@([pscustomobject]@{text=$taskCsWord.Text;score=$taskCsWord.Score})}
         }
-        $taskMissingCells=@(foreach($taskCell in @([RiftCastPortraitMatcher]::FindCsCells($taskBitmap,$taskMatches))){
+        $taskMissingCells=@(foreach($taskCell in @([RiftCastPortraitMatcher]::FindCsCells($taskBitmap,$taskCsGeometry))){
           $taskCenterX=$taskX+($taskCell.X+$taskCell.Width/2)/$taskClientWidth;$taskCenterY=$taskY+($taskCell.Y+$taskCell.Height/2)/$taskClientHeight
           $taskNearby=@($taskWords | Where-Object {[Math]::Abs($_.x+($_.width/2)-$taskCenterX) -lt $taskCell.Width/$taskClientWidth -and [Math]::Abs($_.y+($_.height/2)-$taskCenterY) -lt $taskCell.Height/$taskClientHeight*.65})
           $taskBlocked=@($taskConflictCs | Where-Object {[Math]::Abs($_.x+($_.width/2)-$taskCenterX) -lt $taskCell.Width/$taskClientWidth -and [Math]::Abs($_.y+($_.height/2)-$taskCenterY) -lt $taskCell.Height/$taskClientHeight*.65})

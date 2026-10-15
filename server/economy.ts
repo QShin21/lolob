@@ -79,6 +79,11 @@ export class EconomyBridge {
       const result={...player};
       if(player.statsSource==='ocr'&&baseline){for(const key of ['kills','deaths','assists','cs','statsAvailable','statsSource','statsSampledAt','statsExpiresAt','statsGameTime']as const){const value=baseline[key];if(value===undefined)delete (result as unknown as Record<string,unknown>)[key];else (result as unknown as Record<string,unknown>)[key]=value;}}
       if(player.goldSource==='ocr'){result.gold=baseline?.gold??null;delete result.goldSource;delete result.goldSampledAt;delete result.goldExpiresAt;delete result.goldGameTime;if(baseline?.currentGold!==undefined)result.currentGold=baseline.currentGold;else delete result.currentGold;if(result.gold!==null){result.goldSampledAt=baseline?.goldSampledAt;result.goldGameTime=baseline?.goldGameTime;}}
+      if(player.visionSource==='ocr'){
+        if(baseline?.visionScore!==undefined){result.visionScore=baseline.visionScore;result.visionSource='api';}else{delete result.visionScore;delete result.visionSource;}
+        delete result.visionSampledAt;delete result.visionExpiresAt;
+      }
+      if(fresh&&sample?.row.visionScore!==undefined)Object.assign(result,{visionScore:sample.row.visionScore,visionSource:'ocr',visionSampledAt:new Date(sample.at).toISOString(),visionExpiresAt:new Date(sample.at+statsTtl).toISOString()});
       if(result.gold!==null)result.goldSource='api';
       if(fresh&&sample)Object.assign(result,{statsAvailable:true,kills:sample.row.kills,deaths:sample.row.deaths,assists:sample.row.assists,cs:sample.row.cs,statsSource:'ocr',statsSampledAt:new Date(sample.at).toISOString(),statsGameTime:sample.gameTime,statsExpiresAt:new Date(sample.at+statsTtl).toISOString()});
       if(freshGold&&goldSample&&result.gold===null){result.gold=goldSample.row.totalGold;result.currentGold=goldSample.row.currentGold;result.goldSource='ocr';result.goldSampledAt=new Date(goldSample.at).toISOString();result.goldGameTime=goldSample.gameTime;result.goldExpiresAt=new Date(goldSample.at+ttl).toISOString();}
@@ -88,7 +93,7 @@ export class EconomyBridge {
   playerStatus(input=this.get().players):PlayerEconomyFeed {
     const players=this.resolvePlayers(input),total=players.length,matched=players.filter(player=>player.gold!==null).length,statsMatched=players.filter(player=>player.statsSource==='ocr').length;
     const enabled=playersEnabled(this.config()),status=this.get().mode!=='live'?'disabled':matched===total&&statsMatched===total&&total>0?'fresh':matched>0||statsMatched>0?'partial':!enabled?'disabled':this.playerError?'error':this.playerSamples.size||this.playerGoldSamples.size?'stale':'waiting';
-    const detail=status==='disabled'?'个人观战识别已关闭':matched>0||statsMatched>0?`计分板 KDA / 补刀 ${statsMatched}/${total}，累计经济 ${matched}/${total}；${matched===0?'装备视图可读取统计，显示金币列后再采集个人经济':'括号内为累计金币，括号外为当前余额'}`:
+    const detail=status==='disabled'?'个人观战识别已关闭':matched>0||statsMatched>0?`计分板 KDA / 补刀 ${statsMatched}/${total}，视野 ${players.filter(player=>player.visionScore!==undefined).length}/${total}，累计经济 ${matched}/${total}；${matched===0?'装备视图可读取统计，显示金币列后再采集个人经济':'括号内为累计金币，括号外为当前余额'}`:
       this.playerError||(status==='stale'?'旧统计已超过 3 秒、旧经济已超过 10 秒，等待新的可见计分板':'显示原生底部计分板，等待英雄头像、KDA 和补刀；金币列可另行采集');
     return {status,detail,matched,statsMatched,total,intervalMs:probeInterval,...(this.probeDurationMs!==undefined?{durationMs:this.probeDurationMs}:{}),...(this.playerSampledAt!==undefined?{sampledAt:new Date(this.playerSampledAt).toISOString()}:{})};
   }

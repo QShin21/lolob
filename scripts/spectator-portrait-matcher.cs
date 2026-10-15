@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -63,7 +63,7 @@ public static class RiftCastPortraitMatcher {
     x=Math.Max(0,x);y=Math.Max(0,y);width=Math.Min(width,image.Width-x);height=Math.Min(height,image.Height-y);
     bool[,] pixels=new bool[width,height];bool[] occupied=new bool[width];
     for(int col=0;col<width;col++)for(int row=0;row<height;row++) {
-      Color value=image.GetPixel(x+col,y+row);bool active=value.R>145&&value.G>145&&(yellowOnly?value.B<Math.Min(value.R,value.G)*.88:value.B>=Math.Min(value.R,value.G)*.92);
+      Color value=image.GetPixel(x+col,y+row);bool active=value.R>145&&value.G>145&&(yellowOnly?value.B>65&&value.B<Math.Min(value.R,value.G)*.88:value.B>=Math.Min(value.R,value.G)*.92);
       pixels[col,row]=active;if(active)occupied[col]=true;
     }
     List<Glyph> result=new List<Glyph>();
@@ -186,5 +186,15 @@ public static class RiftCastPortraitMatcher {
     }
     foreach(RiftCastPortraitMatch found in results){cachedBoxes.RemoveAll(box=>box.Team==found.Team&&Math.Abs(box.Y+box.Height/2-found.Y-found.Height/2)<found.Height*.5);cachedBoxes.Add(found);}
     return results.ToArray();
+  }
+}
+
+// Numeric OCR excludes saturated annotations and bounty glyphs; neutral digits and pale CS remain.
+public static class RiftCastNumericFilter {
+  public static void Clean(System.Drawing.Bitmap image) {
+    for(int y=0;y<image.Height;y++) for(int x=0;x<image.Width;x++) {
+      var c=image.GetPixel(x,y);int max=System.Math.Max(c.R,System.Math.Max(c.G,c.B));int min=System.Math.Min(c.R,System.Math.Min(c.G,c.B));
+      image.SetPixel(x,y, max>145 && min>65 ? System.Drawing.Color.White : System.Drawing.Color.Black);
+    }
   }
 }

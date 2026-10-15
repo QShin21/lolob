@@ -18,6 +18,8 @@ export const getTeam = (state: BroadcastState, side: Side) => state.teams.find(t
 export function championFor(champions: Champion[], id: string) { return champions.find(c => c.id === id || String(c.key) === id); }
 export const playerKda = (p?: Player, compact = false) => !p || p.statsAvailable === false ? '—' : [p.kills, p.deaths, p.assists].join(compact ? '/' : ' / ');
 export const playerCs = (p?: Player) => !p || p.statsAvailable === false ? '—' : p.cs;
+export const playerVision = (p?: Player, now=Date.now()) => p?.visionScore == null || (p.visionSource === 'ocr' && (!p.visionExpiresAt || !Number.isFinite(Date.parse(p.visionExpiresAt)) || Date.parse(p.visionExpiresAt) <= now)) ? '—' : Math.round(p.visionScore);
+export const playerGoldText = (p?: Player, now=Date.now()) => !p || p.gold == null || p.currentGold == null || (p.goldSource === 'ocr' && (!p.goldExpiresAt || !Number.isFinite(Date.parse(p.goldExpiresAt)) || Date.parse(p.goldExpiresAt) <= now)) ? '—' : `${Math.round(p.currentGold)}(${Math.round(p.gold)})`;
 export class ApiError extends Error {
   constructor(message: string, readonly status: number) { super(message); this.name = 'ApiError'; }
 }

@@ -29,3 +29,9 @@
 .lb-patch>div{flex-shrink:0;display:flex;flex-direction:column;gap:.10cqw}.cast-canvas .lb-patch strong{font:900 1.42cqw/1.18 'Microsoft YaHei',sans-serif;letter-spacing:-.04cqw}.lb-patch span{font:400 .94cqw/1 Arial,sans-serif;letter-spacing:-.025cqw}.cast-canvas .lb-patch>b{font:400 3.45cqw/1 'Arial Narrow',Arial,sans-serif;letter-spacing:-.19cqw;white-space:nowrap;min-width:0;flex-shrink:0;margin-left:-.9cqw;transform:scaleX(.88);transform-origin:right center}
 /* Keep corner HUD and player-camera regions separate from the roster. */
 .cast-canvas.cast-scene-live>.cast-sponsor{display:none}.cast-canvas.cast-scene-live>.cast-ticker{bottom:23.20370%;left:15.9375%;right:15.9375%;width:auto}.cast-canvas.cast-scene-live>.cast-demo{bottom:auto;top:10%}.cast-canvas.cast-scene-live>.cast-source-status{bottom:auto;top:12%}.cast-canvas.cast-scene-gold-ranking>.cast-ticker,.cast-canvas.cast-scene-economy>.cast-ticker,.cast-canvas.cast-scene-ranking>.cast-ticker{right:15.3%}
+
+/* Three independent OCR values retain their native meanings and exact integers. */
+.lb-identity-line{height:1cqw}.cast-canvas .lb-player-name{font-size:1.05cqw}
+.cast-canvas .lb-player-gold{display:block;flex:none;font:700 .64cqw/1.1 Arial,sans-serif;color:#e2c58c;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lb-status-line{height:.6cqw}.lb-vitals{grid-template-rows:.08cqw .16cqw .13cqw;gap:.035cqw}
+.lb-player-row.red .lb-player-gold{text-align:right}
