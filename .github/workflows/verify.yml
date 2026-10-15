@@ -25,16 +25,22 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Export review source
+      - run: npm ci
+      - name: Export isolated review dependencies
         if: github.ref == 'refs/heads/work/v0.9.3-ocr-report'
-        run: git archive --format=tar HEAD | gzip > /tmp/lolob-review-source.tar.gz
+        run: tar czf /tmp/lolob-review-deps.tar.gz node_modules
       - uses: actions/upload-artifact@v4
         if: github.ref == 'refs/heads/work/v0.9.3-ocr-report'
         with:
-          name: lolob-review-source
-          path: /tmp/lolob-review-source.tar.gz
+          name: lolob-review-deps
+          path: /tmp/lolob-review-deps.tar.gz
           retention-days: 1
-      - run: npm ci
       - run: npm run check
-      - run: npm test
+      - run: npm test > /tmp/test-results.txt 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: /tmp/test-results.txt
+          retention-days: 7
       - run: npm run build
