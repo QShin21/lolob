@@ -52,6 +52,10 @@ std::wstring windowTitle(HWND hwnd) {
     value.resize(std::max(0, copied));
     return value;
 }
+std::wstring windowKind(HWND hwnd) {
+    if (GetPropW(hwnd, L"RiftCast.ProgramOutput") == reinterpret_cast<HANDLE>(1)) return L"output";
+    return kindFor(windowTitle(hwnd));
+}
 std::uint64_t number(const std::wstring &value, std::uint64_t maximum) {
     if (value.empty() || !std::all_of(value.begin(), value.end(), [](wchar_t c) { return c >= L'0' && c <= L'9'; })) throw std::runtime_error("invalid_number");
     errno = 0; wchar_t *end = nullptr;
@@ -94,7 +98,7 @@ std::wstring requestedKind(const Args &args, bool optional = false) {
     auto found = args.options.find(L"--kind");
     if (found == args.options.end() && optional) return {};
     const auto value = required(args, L"--kind");
-    if (value != L"program" && value != L"preview") throw std::runtime_error("invalid_kind");
+    if (value != L"program" && value != L"preview" && value != L"output") throw std::runtime_error("invalid_kind");
     return value;
 }
 struct Enumeration { DWORD pid; std::wstring kind; std::vector<Window> windows; };
@@ -102,7 +106,7 @@ BOOL CALLBACK enumerate(HWND hwnd, LPARAM data) {
     auto &result = *reinterpret_cast<Enumeration *>(data);
     DWORD pid = 0; GetWindowThreadProcessId(hwnd, &pid);
     if (pid != result.pid) return TRUE;
-    const auto title = windowTitle(hwnd), kind = kindFor(title);
+    const auto title = windowTitle(hwnd), kind = windowKind(hwnd);
     if (kind.empty() || (!result.kind.empty() && result.kind != kind)) return TRUE;
     RECT rect {}; GetWindowRect(hwnd, &rect);
     result.windows.push_back({hwnd, title, kind, rect, IsWindowVisible(hwnd) != FALSE, IsIconic(hwnd) != FALSE});
@@ -117,7 +121,7 @@ Window requireWindow(HWND hwnd, DWORD pid, const std::wstring &kind, bool allowC
     if (!IsWindow(hwnd) || (!allowChild && GetAncestor(hwnd, GA_ROOT) != hwnd)) throw std::runtime_error("invalid_projector_window");
     if (allowChild && (GetWindowLongPtrW(hwnd, GWL_STYLE) & WS_CHILD) && expectedHost && GetParent(hwnd) != expectedHost) throw std::runtime_error("projector_parent_mismatch");
     DWORD actualPid = 0; GetWindowThreadProcessId(hwnd, &actualPid);
-    const auto title = windowTitle(hwnd), actualKind = kindFor(title);
+    const auto title = windowTitle(hwnd), actualKind = windowKind(hwnd);
     if (actualPid != pid || actualKind.empty() || actualKind != kind) throw std::runtime_error("projector_identity_mismatch");
     RECT rect {}; GetWindowRect(hwnd, &rect);
     return {hwnd, title, kind, rect, IsWindowVisible(hwnd) != FALSE, IsIconic(hwnd) != FALSE};
@@ -263,7 +267,7 @@ int wmain(int argc, wchar_t **argv) {
         SetProcessDPIAware();
         const auto args = parse(argc, argv);
         if (args.action == L"self-test") { selfTest(); return 0; }
-        if (args.action != L"list" && args.action != L"find" && args.action != L"park" && args.action != L"embed" && args.action != L"position" && args.action != L"close") throw std::runtime_error("invalid_action");
+        if (args.action != L"list" && args.action != L"find" && args.action != L"park" && args.action != L"embed" && args.action != L"position" && args.action != L"close" && args.action != L"make-output" && args.action != L"show-output") throw std::runtime_error("invalid_action");
         const auto pid = processId(args);
         requireObs(pid);
         const auto kind = requestedKind(args, args.action == L"list");
@@ -273,6 +277,23 @@ int wmain(int argc, wchar_t **argv) {
             std::cout << "{\"obsProcessId\":" << pid << ",\"windows\":[";
             for (std::size_t i = 0; i < result.windows.size(); ++i) { if (i) std::cout << ','; printWindow(result.windows[i]); }
             std::cout << "]}\n";
+        } else if (args.action == L"make-output" || args.action == L"show-output") {
+            const auto hwnd = handle(args, L"--hwnd");
+            if (kind != (args.action == L"make-output" ? L"program" : L"output")) throw std::runtime_error("invalid_kind");
+            requireWindow(hwnd, pid, kind);
+            setStyle(hwnd, GWLP_HWNDPARENT, 0);
+            setStyle(hwnd, GWL_EXSTYLE, (GetWindowLongPtrW(hwnd, GWL_EXSTYLE) & ~(WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE | WS_EX_TOPMOST)) | WS_EX_APPWINDOW);
+            if (!SetWindowTextW(hwnd, L"RiftCast 节目输出") || !SetPropW(hwnd, L"RiftCast.ProgramOutput", reinterpret_cast<HANDLE>(1))) throw std::runtime_error("output_identity_failed");
+            ShowWindow(hwnd, SW_RESTORE);
+            if (args.action == L"make-output") {
+                MONITORINFO monitor {}; monitor.cbSize = sizeof(monitor);
+                GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &monitor);
+                const int width = std::min(1280L, monitor.rcWork.right - monitor.rcWork.left);
+                const int height = std::min(width * 9 / 16 + 40, static_cast<int>(monitor.rcWork.bottom - monitor.rcWork.top));
+                SetWindowPos(hwnd, HWND_NOTOPMOST, monitor.rcWork.left, monitor.rcWork.top, width, height, SWP_FRAMECHANGED);
+            }
+            SetForegroundWindow(hwnd);
+            std::cout << "{\"open\":true}\n";
         } else if (args.action == L"park") park(args, pid, kind);
         else if (args.action == L"embed" || args.action == L"position") embed(args, pid, kind);
         else {
@@ -290,7 +311,7 @@ int wmain(int argc, wchar_t **argv) {
             while (GetTickCount64() < deadline) {
                 DWORD currentPid = 0;
                 GetWindowThreadProcessId(hwnd, &currentPid);
-                if (!IsWindow(hwnd) || currentPid != pid || kindFor(windowTitle(hwnd)) != kind) { pending = false; break; }
+                if (!IsWindow(hwnd) || currentPid != pid || windowKind(hwnd) != kind) { pending = false; break; }
                 Sleep(10);
             }
             std::cout << "{\"closed\":" << (pending ? "false" : "true") << ",\"closeRequested\":true,\"pending\":" << (pending ? "true" : "false") << ",\"hwnd\":\"" << decimal(hwnd) << "\"}\n";

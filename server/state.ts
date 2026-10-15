@@ -123,6 +123,12 @@ export function clearLiveData(s: BroadcastState):void {
   s.draft={bluePicks:[],redPicks:[],blueBans:[],redBans:[],timer:0,activeTeam:'blue',action:'等待客户端 BP 数据'};
 }
 export function resetRuntimeState(s: BroadcastState):void {
+  // An in-flight OBS operation cannot survive the service that owned it.
+  const application=s.production?.application;
+  if(application?.status==='requested'){
+    application.status='failed';
+    application.detail='上次切入因服务重启中断，请核对预监后重新切入';
+  }
   s.overlay.preset='arena';
   initializeDraftHistory(s);
   delete s.nativeHudStatus;

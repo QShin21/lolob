@@ -15,6 +15,7 @@ import { isolatedNativeEnvironment, nativeRequestGuard, assertFixtureRecordingPa
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const option = name => { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : undefined; };
+const windowOnly = process.argv.includes('--window-only');
 const reuseDriversOnly = process.argv.includes('--reuse-drivers-only');
 let executable = option('--executable') || process.env.RIFTCAST_RELEASE_EXECUTABLE;
 const evidence = path.join(root, 'verification-output', `release-${pkg.version}`);
@@ -63,7 +64,7 @@ await writeFile(path.join(source, 'data/obs-engine.json'), JSON.stringify({ mode
 await writeFile(path.join(source, 'data/uploads/preserved.txt'), 'preserved fixture');
 await writeFile(path.join(source, 'runtime/obs-studio/config/preserved.txt'), 'preserved OBS fixture');
 const env = { ...await isolatedNativeEnvironment(sandbox), PATH: `${process.env.SystemRoot}\\System32;${process.env.SystemRoot};${process.env.SystemRoot}\\System32\\WindowsPowerShell\\v1.0`, PORT: String(port), RIFTCAST_USER_DATA_DIR: userData, RIFTCAST_IMPORT_FROM: source, RIFTCAST_OBS_MODE: 'embedded', RIFTCAST_OBS_AUTOSTART: '1' };
-const report = () => ({ status: errors.length || blockedRequests.length ? 'failed' : 'passed', version: pkg.version, executable, runAt: new Date().toISOString(), sandbox, reuseDriversOnly, blockedRequests, deviceSnapshots, checks, errors, virtualCameraFrameVerified, cameraSamples, companionAudioVerified: false, companionAudioUnavailableVerified, liveGameVerified: false, liveStreamVerified: false });
+const report = () => ({ status: errors.length || blockedRequests.length ? 'failed' : 'passed', version: pkg.version, executable, runAt: new Date().toISOString(), sandbox, reuseDriversOnly, windowOnly, blockedRequests, deviceSnapshots, checks, errors, virtualCameraFrameVerified, cameraSamples, companionAudioVerified: false, companionAudioUnavailableVerified, liveGameVerified: false, liveStreamVerified: false });
 let recordingObs;
 async function verifyRecordingDirectory() {
   const directory = await recordingObs.call('GetRecordDirectory');
@@ -148,9 +149,18 @@ try {
     }
   }
   await chooseDestination('douyin');
+  await outputPanel.getByRole('button', { name: '打开节目输出窗口', exact: true }).click();
+  await until(async () => (await page.evaluate(() => window.riftcastDesktop.programWindow('status'))).open, 'Packaged independent output opens');
+  await page.screenshot({ path: path.join(evidence, 'window-output.png'), fullPage: true });
+  await outputPanel.getByRole('button', { name: '关闭节目窗口', exact: true }).click();
+  await until(async () => !(await page.evaluate(() => window.riftcastDesktop.programWindow('status'))).open, 'Packaged output closes');
+  checks.push('packaged output UI opens and closes independent Program window with prebuilt helper');
+  if (!windowOnly) await outputPanel.getByRole('button', { name: '虚拟摄像头', exact: true }).click();
   await until(async () => (await api('/api/obs/engine')).destination === 'douyin', 'Companion destination saved');
   await outputPanel.getByRole('region', { name: 'Program 到直播伴侣的音画路径', exact: true }).waitFor({ state: 'visible' });
   assert.equal(await outputPanel.getByLabel('RTMP 服务器', { exact: true }).count(), 0);
+  let audioReady = false;
+  if (!windowOnly) {
   assert.equal((await api('/api/obs/engine')).virtualCamera.driver.installed, true, 'OBS Virtual Camera must be registered on the acceptance host');
   if (reuseDriversOnly) {
     const existing = await api('/api/obs/engine');
@@ -162,7 +172,7 @@ try {
     // Legacy explicit preparation coverage; this mode is outside reuse-only authorization.
     await api('/api/obs/engine/virtual-camera/install', {});
   }
-  const audioReady = (await api('/api/obs/engine')).companionAudio?.ready;
+  audioReady = (await api('/api/obs/engine')).companionAudio?.ready;
   if (audioReady) {
   await outputPanel.getByRole('button', { name: '启动伴侣音画', exact: true }).click();
   await until(async () => (await api('/api/obs/engine')).virtualCamActive === true, 'Real virtual camera starts');
@@ -253,7 +263,7 @@ try {
   await page.getByRole('tab', { name: '输出', exact: true }).click();
   checks.push('companion guide renders in both console themes while Program video retains its broadcast colors');
   await page.evaluate(() => { const viewer = window.__riftcastCameraAcceptance; viewer.stream.getTracks().forEach(track => track.stop()); viewer.video.srcObject = null; viewer.video.remove(); });
-  const stopCamera = outputPanel.getByRole('button', { name: '按住停止伴侣音画', exact: true });
+  const stopCamera = outputPanel.getByRole('button', { name: '按住停止伴侣送出', exact: true });
   await stopCamera.hover(); await page.mouse.down(); await new Promise(resolve => setTimeout(resolve, 1200)); await page.mouse.up();
   await until(async () => (await api('/api/obs/engine')).virtualCamActive === false, 'Real camera stops');
   } else {
@@ -272,6 +282,7 @@ try {
     await page.getByRole('tab',{name:'工作台外观',exact:true}).click(); await page.locator('input[name=ui-theme][value=dark]').check(); await page.getByRole('tab',{name:'输出',exact:true}).click();
     checks.push('Full-mix preparation and device guidance render in both console themes');
   }
+  } else { checks.push('window-only acceptance leaves virtual camera and audio routes stopped; actual audio requires operator endpoint configuration'); }
   await chooseDestination('rtmp');
   await until(async () => (await api('/api/obs/engine')).destination === 'rtmp', 'RTMP mode remains available');
   await outputPanel.getByLabel('RTMP 服务器', { exact: true }).waitFor();
@@ -303,7 +314,7 @@ try {
   const resumed = await api('/api/obs/engine');
   assert.equal(resumed.destination, 'douyin'); assert.equal(resumed.virtualCamActive, false);
   assert.equal(resumed.streamActive, false); assert.equal(resumed.recordActive, false);
-  if (reuseDriversOnly) {
+  if (reuseDriversOnly && !windowOnly) {
     deviceSnapshots.after = { camera: resumed.virtualCamera.driver, render: resumed.companionAudio.render, capture: resumed.companionAudio.capture };
     assert.deepEqual(deviceSnapshots.after, deviceSnapshots.before, 'Existing camera registration and CABLE endpoints must remain unchanged after restart');
     checks.push('read-only device status matches before/after; installed-driver reuse branch is additionally covered by driver unit tests');

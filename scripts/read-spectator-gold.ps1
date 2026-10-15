@@ -15,6 +15,7 @@
   [double]$PlayersHeight=.6,
   [string]$ChampionManifest,
   [string]$ImagePath,
+  [string]$CapturePath,
   [switch]$AutoLocate,
   [switch]$Diagnostics,
   [switch]$InitializeOnly
@@ -120,6 +121,7 @@ param(
   [double]$PlayersHeight=.6,
   [string]$ChampionManifest,
   [string]$ImagePath,
+  [string]$CapturePath,
   [switch]$AutoLocate,
   [switch]$Diagnostics
 )
@@ -154,6 +156,19 @@ param(
   $taskClientWidth=$taskRect.Right-$taskRect.Left
   $taskClientHeight=$taskRect.Bottom-$taskRect.Top
   if($taskClientWidth -lt 640 -or $taskClientHeight -lt 360){throw '游戏窗口太小，请调整窗口大小后校准。'}
+  }
+  if($CapturePath){
+    if($taskClientWidth -gt 7680 -or $taskClientHeight -gt 4320){throw '游戏采样尺寸过大。'}
+    Assert-GoldRegionVisible $taskOrigin.X $taskOrigin.Y $taskClientWidth $taskClientHeight
+    $taskCapture=New-Object Drawing.Bitmap($taskClientWidth,$taskClientHeight)
+    $taskCaptureGraphics=[Drawing.Graphics]::FromImage($taskCapture)
+    try {
+      if($ImagePath){$taskCaptureGraphics.DrawImageUnscaled($taskFixtureImage,0,0)}
+      else{$taskCaptureGraphics.CopyFromScreen($taskOrigin.X,$taskOrigin.Y,0,0,$taskCapture.Size,[Drawing.CopyPixelOperation]::SourceCopy)}
+      Assert-GoldRegionVisible $taskOrigin.X $taskOrigin.Y $taskClientWidth $taskClientHeight
+      $taskCapture.Save($CapturePath,[Drawing.Imaging.ImageFormat]::Png)
+      return [pscustomobject]@{ok=$true}
+    }finally{$taskCaptureGraphics.Dispose();$taskCapture.Dispose()}
   }
   function Await-WinRt($taskOperation,[Type]$taskResultType) {
     $taskAwait=$taskAsTask.MakeGenericMethod($taskResultType).Invoke($null,@($taskOperation))

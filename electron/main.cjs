@@ -25,6 +25,7 @@ const nativePositionRequests = new Map();
 const closingProjectors = new Map();
 let previewOperations = Promise.resolve();
 let projectorHelperPromise;
+const programWindow = require('./program-window.cjs').createProgramWindow({ monitor: monitorRequest, command: projectorCommand });
 
 function previewOperation(operation) {
   const pending = previewOperations.then(operation);
@@ -94,7 +95,7 @@ async function projectorCommand(command, args) {
           if (typeof value === 'string' && /^[a-z0-9_-]{1,100}$/.test(value)) reason = value;
         } catch {}
         log(`OBS 显示窗口管理失败：${command}，返回码 ${code ?? 'unknown'}，原因 ${reason}`);
-        reject(new Error('OBS 显示窗口管理失败'));
+        reject(Object.assign(new Error('OBS 显示窗口管理失败'), { code: reason }));
       }
     });
   });
@@ -148,6 +149,10 @@ async function closeProjector(prepared) {
 }
 
 function installPreviewBridge() {
+  ipcMain.handle('riftcast:program-window', (event, action) => {
+    if (!trustedRenderer(event.sender, event.senderFrame) || !['open', 'close', 'status'].includes(action)) throw new Error('节目窗口请求无效');
+    return previewOperation(() => programWindow[action]());
+  });
   // Only the two projector windows owned by the embedded OBS can enter this host.
   ipcMain.handle('riftcast:choose-path', async (event, kind) => {
     if (!trustedRenderer(event.sender, event.senderFrame) || !['game','lockfile'].includes(kind)) throw new Error('无效的路径选择请求');
@@ -472,7 +477,7 @@ function createWindow() {
     if (exitApproved || quitting || !ownsService) return;
     event.preventDefault();
     void engineStatus().then(async (status) => {
-      if (!status || (status.mode === 'embedded' && (status.streamActive || status.recordActive || status.virtualCamActive === true || status.companionAudio?.managing || status.companionAudio?.active || (status.running && (!status.connected || status.virtualCamActive === null))))) {
+      if (programWindow.owned || !status || (status.mode === 'embedded' && (status.streamActive || status.recordActive || status.virtualCamActive === true || status.companionAudio?.managing || status.companionAudio?.active || (status.running && (!status.connected || status.virtualCamActive === null))))) {
         const answer = await dialog.showMessageBox(mainWindow, {
           type: 'question', title: '确认退出导播', message: status?.connected ? '退出会停止推流、伴侣音画输出和录制。抖音直播间请先在直播伴侣中结束直播。' : '引擎状态暂时无法确认。退出会关闭本软件启动的 OBS 并停止其输出。',
           buttons: ['返回导播', '停止输出并退出'], defaultId: 0, cancelId: 0,
@@ -484,6 +489,7 @@ function createWindow() {
     });
   });
   mainWindow.on('closed', () => {
+    void previewOperation(() => programWindow.close()).catch(error => log(error.message));
     const projectors = [...nativePreviewSources.values()];
     nativePositionRequests.clear();
     nativePreviewSources.clear();

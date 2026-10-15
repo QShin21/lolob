@@ -1,5 +1,5 @@
 export type OutputDestination = 'rtmp' | 'douyin';
-export type OutputAction = 'start-stream' | 'stop-stream' | 'start-record' | 'stop-record' | 'start-virtual-camera' | 'stop-virtual-camera';
+export type OutputAction = 'start-stream' | 'stop-stream' | 'start-record' | 'stop-record' | 'start-virtual-camera' | 'stop-virtual-camera' | 'start-companion-audio' | 'stop-companion-audio';
 export type VirtualCameraDriverStatus = { available: boolean; installed: boolean; error?: string };
 export type AudioEndpoint = { id: string; name: string; interfaceName: string; capture: boolean; cable: boolean };
 export type AudioDevices = { defaultRender: string; defaultCapture: string; endpoints: AudioEndpoint[]; cablePresent?: boolean; defaults?: string[] };

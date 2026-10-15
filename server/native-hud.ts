@@ -57,8 +57,8 @@ export class NativeHudController {
         this.status(nativeTeamfight ? {status: 'off', detail: teamfightDetail} : {status: mode === 'off' ? 'off' : mode === 'mask' ? 'fallback' : 'waiting', detail: '已恢复该回放原有 HUD 开关'}); return;
       }
       // OCR reads the actual game window; keeping its score visible avoids destroying its input.
-      const preserveScore = state.settings.economyOcr?.enabled === true;
-      const preserveScoreboard = state.settings.economyOcr?.players?.enabled ?? preserveScore;
+      const preserveScore = true;
+      const preserveScoreboard = state.settings.economyOcr?.players?.enabled ?? state.settings.economyOcr?.enabled === true;
       const fields = hiddenFields.filter(key => !(preserveScore && key === 'interfaceScore') && !(preserveScoreboard && key === 'interfaceScoreboard'));
       if ([...hiddenFields,...preservedFields].some(key => typeof render[key] !== 'boolean')) throw new Error('当前版本缺少完整 HUD 开关');
       if (!this.original) this.original = Object.fromEntries([...hiddenFields,...preservedFields,'interfaceAll'].filter(k => typeof render[k] === 'boolean').map(k => [k,render[k]]));
@@ -73,7 +73,7 @@ export class NativeHudController {
         const verified = await this.request(2999, '/replay/render');
         if (Object.entries(desired).some(([key,value]) => verified?.[key] !== value)) throw new Error('回放接口未确认 HUD 开关，使用遮挡备用布局');
       }
-      this.status({status: 'hidden', preserveScore, preserveScoreboard, detail: preserveScoreboard ? '保留原生底部计分板供个人经济 OCR 采集，请在游戏内显示金币列；中央赛事计分板覆盖直播画面，保留游戏目标面板与小地图' : preserveScore ? '回放原生面板已隐藏；保留游戏比分供 OCR 采集，OBS 顶部使用赛事遮挡，保留游戏目标面板与小地图' : '回放原生计分、选手、聊天和时间轴已隐藏；保留游戏目标面板、小地图与场内血条'});
+      this.status({status: 'hidden', preserveScore, preserveScoreboard, detail: '保留原生顶部比分、游戏目标面板与小地图；队名和胜场仅叠加于两端空白区。' + (preserveScoreboard ? '底部计分板供个人 OCR 采集，读取经济时请在游戏内显示金币列。' : '')});
     } catch (e) {
       const detail = this.get().programScene === 'teamfight' ? '团战视图原生 HUD 恢复未确认，请在游戏观战窗口核对并按 A' : '自动隐藏暂不可用，已启用 OBS 遮挡';
       this.status({status: 'fallback', detail: `${detail}：${e instanceof Error ? e.message : '客户端未响应'}`});

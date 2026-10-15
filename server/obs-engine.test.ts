@@ -526,6 +526,20 @@ test('Douyin destination persists and virtual camera starts independently of RTM
   assert.equal(stopped.destination, 'douyin');
 });
 
+test('window route prepares and controls audio without registering or starting a virtual camera', async t => {
+  const { engine, internal, obs } = await fixture(t);
+  internal.connected = true; await engine.setup({});
+  await engine.setDestination({ destination: 'douyin' });
+  internal.cameraDriver.install = async () => { throw new Error('camera installation must not run'); };
+  await engine.prepareCompanion({ video: 'window' });
+  obs.requests = [];
+  assert.equal((await engine.output({ action: 'start-companion-audio' })).companionAudio.active, true);
+  await assert.rejects(engine.setDestination({ destination: 'rtmp' }), /停止伴侣混音/);
+  assert.equal((await engine.output({ action: 'stop-companion-audio' })).companionAudio.active, false);
+  assert.ok(!obs.requests.some(r => ['StartVirtualCam', 'StopVirtualCam', 'StartStream', 'StartRecord'].includes(r.type)));
+  await assert.rejects(engine.prepareCompanion({ video: 'invalid' }), /路径无效/);
+});
+
 test('companion audio failure prevents partial camera start and cleans up the attempted route', async t => {
   const { engine, internal, obs } = await fixture(t); internal.connected = true; await engine.setup({}); await engine.setDestination({ destination: 'douyin' });
   let stopped = 0; internal.companionAudio.start = async () => { throw new Error('mix-device-failed'); };

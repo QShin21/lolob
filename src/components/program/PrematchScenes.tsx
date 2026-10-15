@@ -43,10 +43,14 @@ export function DraftOverlay({ state, champions }: { state: BroadcastState; cham
 }
 
 export function Lineup({ state, champions }: { state: BroadcastState; champions: Champion[] }) {
-  const blue = sidePlayers(state, 'blue'), red = sidePlayers(state, 'red');
-  return <section className="arena-full cast-lineup"><ArenaHeader state={state} title="首发对位" /><div className="arena-lineup-identity"><div className="blue"><TeamMark team={getTeam(state, 'blue')} /><TeamName team={getTeam(state, 'blue')} side="blue" /></div><MatchStrip state={state} /><div className="red"><TeamName team={getTeam(state, 'red')} side="red" /><TeamMark team={getTeam(state, 'red')} /></div></div>
-    <div className="arena-lineup-matchups">{Array.from({ length: 5 }, (_, i) => <div className="arena-lineup-pair" key={i}>{(['blue', 'red'] as Side[]).map((side, index) => {
-      const p = (side === 'blue' ? blue : red)[i], role = blue[i]?.role === red[i]?.role && blue[i]?.role !== '待分路' ? blue[i]?.role : '分路待确认';
-      return <div key={side} className={`arena-lineup-half ${side}`}>{index === 1 && <div className="arena-matchup-role">{role || '分路待确认'}</div>}<article data-side={side}><div className="cast-lineup-photo"><Portrait state={state} player={p} side={side} champions={champions} /></div><div className="arena-lineup-player"><strong>{p?.name || '选手待确认'}</strong><small>{championFor(champions, p?.championId || '')?.name || '英雄待定'}</small></div></article></div>;
-    })}</div>)}</div><footer className="arena-footnote"><span>首发阵容</span><span>{state.match.subtitle}</span></footer></section>;
+  return <section className="arena-full cast-lineup legacy-lineup"><ArenaHeader state={state} title="首发阵容与对位" />
+    <div className="cast-lineup-sides">{(['blue', 'red'] as Side[]).map(side => {
+      const team = getTeam(state, side), players = sidePlayers(state, side);
+      return <section className={`cast-lineup-side ${side}`} key={side}><h2><TeamMark team={team} /><strong>{team?.tag}</strong><span>{team?.name}</span></h2>
+        <div className="cast-lineup-five">{Array.from({ length: 5 }, (_, i) => { const p = players[i]; return <article key={i}>
+          <div className="cast-lineup-photo"><Portrait state={state} player={p} side={side} champions={champions} /><span>{p?.role && p.role !== '待分路' ? p.role : '分路待确认'}</span></div>
+          <strong>{p?.name || '待确认选手'}</strong><small>{championFor(champions, p?.championId || '')?.name || '英雄待定'}</small>
+        </article>; })}</div></section>;
+    })}</div><footer className="cast-lineup-bottom"><b>{getTeam(state, 'blue')?.tag}</b><span>{state.match.blueScore} — {state.match.redScore}<small>{state.match.format} · GAME {state.match.game}</small></span><b>{getTeam(state, 'red')?.tag}</b></footer>
+  </section>;
 }

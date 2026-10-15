@@ -221,6 +221,43 @@ try {
     assert.equal((await obs.call('GetStreamStatus')).outputActive, false);
     assert.equal((await obs.call('GetRecordStatus')).outputActive, false);
     checks.push('real HWND child styles verified; actual OBS streaming/recording remained off');
+    const opened = await page.evaluate(() => window.riftcastDesktop.programWindow('open'));
+    assert.equal(opened.open, true);
+    const output = (await active('output'))[0];
+    assert.equal(output.title, 'RiftCast 节目输出');
+    assert.equal(output.style & 0x40000000, 0, 'output stays top-level');
+    assert.ok((output.exStyle & 0x40000) !== 0, 'output appears as an application window');
+    assert.equal(output.ownerHwnd, '0');
+    await page.evaluate(() => window.riftcastDesktop.programWindow('open'));
+    assert.equal((await active('output')).length, 1, 'opening again reuses output');
+    // Capture the native GPU window through Windows, not the OBS screenshot RPC.
+    const capture = await electron.evaluate(async ({ desktopCapturer }, hwnd) => {
+      const sources = await desktopCapturer.getSources({ types: ['window'], thumbnailSize: { width: 960, height: 540 } });
+      const source = sources.find(source => source.id === `window:${hwnd}:0`);
+      if (!source) throw new Error('program output missing from capture enumeration');
+      return { name: source.name, image: source.thumbnail.toPNG().toString('base64') };
+    }, output.hwnd);
+    await writeFile(path.join(evidence, 'program-window-capture.png'), Buffer.from(capture.image, 'base64'));
+    const sharp = (await import('sharp')).default;
+    const { data, info } = await sharp(Buffer.from(capture.image, 'base64')).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+    let teal = 0;
+    for (let i = 0; i < data.length; i += info.channels) if (data[i] < data[i+1] * .6 && data[i+1] > 35 && data[i+2] > data[i+1] && data[i+2] < data[i+1] * 1.5) teal++;
+    assert.ok(teal > info.width * info.height * .2, 'Windows capture contains the actual teal program fixture');
+    checks.push('independent application HWND appears in Windows capture with actual program pixels; reopen is idempotent');
+    if (process.argv.includes('--companion-preview')) {
+      console.log('Program output ready for Companion preview. Create verification-output/native-preview-visibility/desktop/continue.txt to finish. No stream or audio is started.');
+      const deadline = Date.now() + 600000;
+      while (Date.now() < deadline) {
+        if (await readFile(path.join(evidence, 'continue.txt')).then(() => true, () => false)) break;
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+    await page.reload(); await present();
+    assert.equal((await active('output'))[0].hwnd, output.hwnd, 'navigation preserves program output');
+    checks.push('renderer reload preserves independent output and reacquires separate embedded monitor');
+    await page.evaluate(() => window.riftcastDesktop.programWindow('close'));
+    await absent('output'); await present();
+    checks.push('closing output preserves embedded monitor');
     // Renderer destruction must reclaim the HWND independently of visibility.
     await page.evaluate(() => document.getElementById('root').remove()); await absent();
     checks.push('detached renderer surface releases actual native window');

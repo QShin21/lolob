@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { EconomyOcrConfig, EconomyRoi } from "../../shared/types";
 const defaultPlayers = { x: 0, y: 0.4, width: 1, height: 0.6 };
 export function OcrCalibration({
@@ -27,7 +27,30 @@ export function OcrCalibration({
     red: config.red,
     players: config.players?.region ?? defaultPlayers,
   };
-  const url = stamp ? `/api/obs/game-frame?t=${stamp}` : "";
+  const [url, setUrl] = useState("");
+  useEffect(() => {
+    if (!stamp) return;
+    const controller = new AbortController();
+    let objectUrl = "";
+    setUrl("");
+    void (async () => {
+      try {
+        const response = await fetch(`/api/obs/game-frame?t=${stamp}`, { signal: controller.signal });
+        if (!response.ok) {
+          const detail = await response.json().catch(() => ({}));
+          throw new Error(detail.error || `游戏采样失败（${response.status}）`);
+        }
+        const blob = await response.blob();
+        if (!blob.type.startsWith('image/')) throw new Error('采样接口未返回图片');
+        if (controller.signal.aborted) return;
+        objectUrl = URL.createObjectURL(blob);
+        setUrl(objectUrl);
+      } catch (e) {
+        if (!controller.signal.aborted) setError(e instanceof Error ? e.message : '采样失败');
+      }
+    })();
+    return () => { controller.abort(); if (objectUrl) URL.revokeObjectURL(objectUrl); };
+  }, [stamp]);
   function update(key: keyof typeof regions, roi: EconomyRoi) {
     onChange(
       key === "players"
@@ -59,12 +82,11 @@ export function OcrCalibration({
             ? `画面采集于 ${new Date(stamp!).toLocaleTimeString("zh-CN")}`
             : stamp && !error
               ? "正在读取游戏捕获…"
-              : "先连接 OBS 并选择游戏窗口"}
+              : "连接 OBS 并选择游戏窗口，或完整显示游戏供屏幕采样"}
         </span>
       </div>
       <p>
-        拖动识别框调整位置，拖动右下角调整大小。此图来自 OBS
-        游戏捕获；使用屏幕回退采集时，请在原生游戏画面核对百分比坐标。
+        拖动识别框调整位置，拖动右下角调整大小。校准与 OCR 共用原始游戏采样。OBS 采样失败时尝试可见游戏窗口；请保持游戏窗口完整可见且未被遮挡。
       </p>
       {error && (
         <p role="alert" className="request-error">
@@ -72,14 +94,14 @@ export function OcrCalibration({
         </p>
       )}
       <div className="ocr-frame" ref={frame}>
-        {stamp && (
+        {url && (
           <img
             src={url}
             alt="OCR 校准用当前游戏捕获"
             onLoad={() => setLoaded(true)}
             onError={() =>
               setError(
-                "当前游戏采样图不可用。检查 OBS 连接与捕获源，然后重新载入。",
+                "游戏采样图解码失败，请重新载入。",
               )
             }
           />

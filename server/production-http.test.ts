@@ -44,7 +44,7 @@ test('HTTP seats enforce stale forms, idempotent submissions and explicit owners
     assert.equal((await api.post('/api/obs/production',{action:'save-clip'},data.token)).status,400);
     const second=await api.post('/api/control/seat',{name:'备份导播'}).then(r=>r.json());assert.equal((await next('take',{},second.token)).status,400);
     assert.equal((await api.post('/api/control/claim',{reason:'主导播交接'},second.token)).status,200);
-    assert.equal((await next('take',{},owner.token)).status,400);assert.equal((await next('take',{},second.token)).status,200);
+    assert.equal((await next('set-phase',{phase:'draft'},owner.token)).status,400);assert.equal((await next('set-phase',{phase:'draft'},second.token)).status,200);
     const saved=JSON.parse(await readFile(path.join(api.dir,'state.json'),'utf8'));assert.ok(saved.production.audit.some((a:any)=>a.type==='claim-control'&&a.actor==='备份导播'&&a.reason==='主导播交接'));
     const inventory=await fetch(api.base+'/api/resources/inventory').then(r=>r.json());assert.equal(inventory.champions,173);assert.deepEqual(inventory.missing,[]);
     const archive=await fetch(api.base+'/api/archive').then(r=>r.json());assert.equal(archive.version,'0.3.0');assert.equal(JSON.stringify(archive).includes(second.token),false);

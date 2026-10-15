@@ -32,8 +32,8 @@ test('automatic HUD hides only broadcast interface panels and preserves the nati
   assert.equal(f.state.nativeHudStatus?.status, 'hidden');
   assert.equal(f.posts().length, 1);
   const patch = f.posts()[0].body!;
-  assert.deepEqual(Object.keys(patch).sort(), [...hiddenFields].sort());
-  for (const key of hiddenFields) assert.equal(f.current.render[key], false);
+  assert.deepEqual(Object.keys(patch).sort(), hiddenFields.filter(key => key !== 'interfaceScore').sort());
+  for (const key of hiddenFields) assert.equal(f.current.render[key], key === 'interfaceScore');
   for (const key of ['interfaceTarget', 'interfaceMinimap', 'healthBarChampions', 'healthBarStructures', 'healthBarWards', 'healthBarPets', 'healthBarMinions', 'fogOfWar', 'environment', 'characters', 'champions', 'minions', 'particles']) assert.equal(f.current.render[key], saved[key]);
   assert.ok(f.calls.every(call => ['/replay/game', '/replay/render'].includes(call.endpoint)));
   await f.controller.tick(true);
@@ -78,7 +78,7 @@ test('OCR keeps visible team and player score sources while other native panels 
   assert.equal(f.current.render.interfaceMinimap, true);
   f.state.settings.economyOcr.enabled = false;
   await f.controller.tick(true);
-  assert.equal(f.current.render.interfaceScore, false);
+  assert.equal(f.current.render.interfaceScore, true);
   assert.equal(f.current.render.interfaceScoreboard, false);
   f.state.settings.economyOcr.enabled = true;
   await f.controller.tick(true);
@@ -93,7 +93,7 @@ test('player OCR independently preserves the expanded scoreboard and restores th
   const f = fixture(saved);
   f.state.settings.economyOcr = {enabled:false,blue:{x:0,y:0,width:.1,height:.1},red:{x:.9,y:0,width:.1,height:.1},players:{enabled:true,region:{x:.25,y:.65,width:.5,height:.35}}};
   await f.controller.tick(true);
-  assert.equal(f.current.render.interfaceScore,false);
+  assert.equal(f.current.render.interfaceScore,true);
   assert.equal(f.current.render.interfaceScoreboard,true);
   f.state.settings.economyOcr.players!.enabled=false;
   await f.controller.tick(true);
@@ -356,7 +356,7 @@ test('an unconfirmed restoration keeps the original switches and retries instead
   await f.controller.tick(true);
   assert.equal(f.state.nativeHudStatus?.status, 'fallback');
   assert.match(f.state.nativeHudStatus?.detail ?? '', /未确认.*恢复/);
-  assert.equal(f.current.render.interfaceScore, false);
+  assert.equal(f.current.render.interfaceScore, true);
   f.current.acceptWrites = true;
   await f.controller.tick(true);
   assert.deepEqual(f.current.render, saved);

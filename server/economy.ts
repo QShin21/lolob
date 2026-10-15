@@ -54,7 +54,7 @@ export class EconomyBridge {
     await warmSpectatorOcrWorker();if(playersEnabled(config))await prepareChampionPortraitManifest(this.get().players);
     if(this.closed)throw new Error('采样已关闭');if(!sourceReady())return unavailable;
     const capturedAt=this.now(),capturedGameTime=this.get().gameTime;
-    let frame:Buffer|undefined;try{frame=await options.frame?.();}catch{/* A visible game window remains available when the embedded capture is disconnected. */}
+    const frame=await options.frame?.();
     if(this.closed)throw new Error('采样已关闭');
     if(!frame){const at=this.now(),gameTime=this.get().gameTime;return {...await readSpectatorGold(config,this.get().players,undefined,()=>this.closed),capturedAt:at,capturedGameTime:gameTime};}
     const directory=await mkdtemp(path.join(os.tmpdir(),'riftcast-game-ocr-'));

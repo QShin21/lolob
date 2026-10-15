@@ -5,6 +5,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import type { BroadcastState } from '../shared/types';
 import { createSeed } from './state';
 
@@ -22,7 +23,9 @@ async function startService(directory: string) {
   // Broadcast HTTP does not depend on an external champion-catalog download or its shutdown timing.
   const offlineCatalog = path.join(directory, 'offline-catalog.cjs');
   await writeFile(offlineCatalog, "const originalFetch=globalThis.fetch;globalThis.fetch=(resource,options)=>{const url=typeof resource==='string'?resource:resource?.url??String(resource);return url.startsWith('https://ddragon.leagueoflegends.com/')?Promise.reject(new Error('Offline catalog in isolated broadcast test')):originalFetch(resource,options);};", 'utf8');
-  const child = spawn(process.execPath, ['--require', offlineCatalog, '--import', 'tsx', 'server/index.ts'], {
+  const obsHook=path.join(directory,'obs-hook.mjs');
+  await writeFile(obsHook,`import {Adapters} from '${pathToFileURL(path.join(process.cwd(),'server/adapters.ts')).href}';Adapters.prototype.initializeObsEngine=async function(){this.commit(s=>{s.connections.obs.status='connected';});};Adapters.prototype.syncPlayerFeeds=async()=>({applied:true});Adapters.prototype.productionApply=async()=>{};`);
+  const child = spawn(process.execPath, ['--require', offlineCatalog, '--import', 'tsx', '--import', pathToFileURL(obsHook).href, 'server/index.ts'], {
     cwd: process.cwd(), windowsHide: true,
     env: { ...process.env, PORT: String(port), ENABLE_LAN: '1', RIFTCAST_DATA_DIR: directory, RIFTCAST_OBS_MODE: 'external', RIFTCAST_OBS_AUTOSTART: '0', RIFTCAST_AUTO_CONNECT: '0' },
     stdio: ['ignore', 'pipe', 'pipe', 'ipc'],

@@ -168,16 +168,18 @@ export class ObsEngine {
     });
     return restart ? this.start() : this.status();
   }
-  async prepareCompanion() {
+  async prepareCompanion(input: unknown = {}) {
+    const video = record(input).video ?? 'camera';
+    if (video !== 'camera' && video !== 'window') throw new ValidationError('伴侣视频路径无效');
     if (this.mode !== 'embedded' || this.selection.destination !== 'douyin') throw new ValidationError('请先选择抖音直播伴侣输出');
     let restart = false;
     await this.exclusive(async () => {
       if (this.connected) await this.requireStopped();
       else if (isRunning(this.child)) throw new ValidationError('引擎状态未确认，请重新连接后准备音画');
       const camera = await this.cameraDriver.status(true);
-      await this.cameraDriver.install();
+      if (video === 'camera') await this.cameraDriver.install();
       await this.companionAudio.driver.install();
-      restart = isRunning(this.child) && (!camera.installed || this.virtualCameraAvailable === false);
+      restart = video === 'camera' && isRunning(this.child) && (!camera.installed || this.virtualCameraAvailable === false);
       if (restart) { await this.obs.disconnect().catch(() => {}); await this.stopOwnedProcess(); }
     });
     if (restart) await this.start();
@@ -698,6 +700,17 @@ export class ObsEngine {
       else if (action === 'stop-stream') { await this.call('StopStream'); await this.waitOutput('stream', false); }
       else if (action === 'start-record') { await this.call('StartRecord'); await this.waitOutput('record', true); }
       else if (action === 'stop-record') { const result=await this.call('StopRecord');this.recordingPath=result.outputPath; await this.waitOutput('record', false); }
+      else if (action === 'start-companion-audio') {
+        if (this.mode !== 'embedded' || this.selection.destination !== 'douyin') throw new ValidationError('请先选择抖音直播伴侣输出');
+        const { inputs } = await this.call('GetInputList');
+        if (!inputs.some(item => item.inputName === hudInput)) throw new ValidationError('请先应用内置引擎的游戏画面与音频设置');
+        try { await this.companionAudio.start(); }
+        catch (error) { await this.companionAudio.stop().catch(() => {}); throw error; }
+      }
+      else if (action === 'stop-companion-audio') {
+        if (this.mode !== 'embedded') throw new ValidationError('节目混音请使用内置 OBS 引擎');
+        await this.companionAudio.stop();
+      }
       else if (action === 'start-virtual-camera') {
         if (this.mode !== 'embedded' || this.selection.destination !== 'douyin') throw new ValidationError('请在连接与输出中选择抖音直播伴侣输出');
         const driver = await this.cameraDriver.status(true);

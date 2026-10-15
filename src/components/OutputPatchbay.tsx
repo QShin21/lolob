@@ -29,7 +29,7 @@ type Props = {
   selectDestination: (value: OutputDestination) => void;
   applyDestination: () => void;
   output: (action: OutputAction) => void;
-  prepare: () => void;
+  prepare: (video: 'window' | 'camera') => void;
   installCamera: () => void;
   onOpenStudio?: () => void;
   onSection?: (section: 'video' | 'audio' | 'output') => void;
@@ -39,6 +39,27 @@ export function OutputPatchbay(p: Props) {
   const { status, connected, busy, local, activeOutput, canConfigure, canOutput } = p;
   // Inspecting a route is local UI. Changing the engine destination remains an explicit guarded request.
   const [route, setRoute] = useState<OutputDestination>(p.destination);
+  const [video, setVideo] = useState<'window' | 'camera'>('window');
+  const [programWindow, setProgramWindow] = useState({ open: false, minimized: false });
+  const [windowBusy, setWindowBusy] = useState(false);
+  const [windowError, setWindowError] = useState('');
+  useEffect(() => {
+    let active = true;
+    const refresh = async () => {
+      try { const result = await window.riftcastDesktop?.programWindow('status'); if (active && result) setProgramWindow({ open: result.open, minimized: !!result.minimized }); }
+      catch { if (active) setWindowError('节目窗口状态读取失败，请重试打开窗口'); }
+    };
+    void refresh(); const timer = setInterval(() => void refresh(), 2000);
+    return () => { active = false; clearInterval(timer); };
+  }, []);
+  async function controlWindow(action: 'open' | 'close') {
+    setWindowBusy(true); setWindowError('');
+    try {
+      const result = await window.riftcastDesktop!.programWindow(action);
+      setProgramWindow({ open: result.open, minimized: !!result.minimized });
+    } catch (error) { setWindowError(error instanceof Error ? error.message : '节目窗口操作失败'); }
+    finally { setWindowBusy(false); }
+  }
   useEffect(() => setRoute(p.destination), [p.destination]);
   const audio = status?.companionAudio;
   const camera = status?.virtualCamera;
@@ -46,7 +67,8 @@ export function OutputPatchbay(p: Props) {
   const configured = route === p.destination;
   const cameraKnown = status?.virtualCamActive != null;
   const companionActive = !!status?.virtualCamActive || !!audio?.active || !!audio?.managing;
-  const companionReady = !!camera?.driver.installed && !camera.requiresRestart && !!audio?.ready;
+  const windowMode = video === 'window';
+  const companionReady = (windowMode ? programWindow.open && !programWindow.minimized : !!camera?.driver.installed && !camera.requiresRestart) && !!audio?.ready;
   const destinationReady = configured && (companion ? companionReady : p.destinationApplied);
   const selectionLocked = !local || !!p.controlReason || busy || !status || activeOutput
     || status.mode === 'embedded' && !cameraKnown;
@@ -57,8 +79,10 @@ export function OutputPatchbay(p: Props) {
       : !configured ? '将此路径设为下一次输出后，再准备启动。'
       : !p.sourcesLoaded ? '先在画面设置中应用游戏与音频来源。'
       : p.dirty ? '画面与音频来源有未应用修改。'
-      : companion && !cameraKnown ? '虚拟摄像头状态未知，请刷新引擎状态。'
-      : companion && camera?.requiresRestart ? '摄像头已注册，等待在停播窗口重新加载引擎。'
+      : companion && !windowMode && !cameraKnown ? '虚拟摄像头状态未知，请刷新引擎状态。'
+      : companion && !windowMode && camera?.requiresRestart ? '摄像头已注册，等待在停播窗口重新加载引擎。'
+      : companion && windowMode && !programWindow.open ? '请先打开独立节目窗口，并在伴侣添加窗口素材。'
+      : companion && windowMode && programWindow.minimized ? '请恢复节目窗口，保持窗口在桌面上。'
       : companion && audio?.needsRestart ? '音频设备等待 Windows 重启后加载。'
       : !destinationReady ? companion ? '设备尚未就绪，请展开设备准备查看原因。' : '先应用本次 RTMP 服务器和推流码。'
       : '');
@@ -72,7 +96,7 @@ export function OutputPatchbay(p: Props) {
       <OutputSignals status={connected ? status : null} /></div>
       <div className="patchbay-stop-actions">
         {!!status?.streamActive && <HoldButton disabled={!canOutput} onExecute={() => p.output('stop-stream')}>按住停止 RTMP</HoldButton>}
-        {companionActive && <HoldButton disabled={!canOutput} onExecute={() => p.output('stop-virtual-camera')}>{audio?.managing && !audio.active ? '按住重试停止并恢复音频' : '按住停止伴侣音画'}</HoldButton>}
+        {companionActive && <HoldButton disabled={!canOutput} onExecute={() => p.output(status?.virtualCamActive ? 'stop-virtual-camera' : 'stop-companion-audio')}>{audio?.managing && !audio.active ? '按住重试停止并恢复音频' : '按住停止伴侣送出'}</HoldButton>}
         <button className="button" disabled={!canOutput || !status?.recordActive && (!p.sourcesLoaded || p.dirty)} onClick={() => p.output(status?.recordActive ? 'stop-record' : 'start-record')}>
           {status?.recordActive ? '停止本机录制' : '开始本机录制'}
         </button>
@@ -81,6 +105,24 @@ export function OutputPatchbay(p: Props) {
       {p.receipt && <p className="patchbay-receipt" role="status"><Check size={15} /><span><b>最近操作回执</b>{p.receipt}</span></p>}
       {audio?.managing && !audio.active && <p className="patchbay-warning" role="alert">音频桥未活动，但路由仍由 RiftCast 托管。请重试停止并恢复；恢复失败的记录会保留。</p>}
     </section>
+
+    {companion && <section className="patchbay-receiver-check" aria-label="伴侣视频接入方式">
+      <h3>视频接入方式</h3>
+      <div className="patchbay-buttons">
+        <button className="button" aria-pressed={windowMode} disabled={companionActive} onClick={() => setVideo('window')}>窗口采集（推荐）</button>
+        <button className="button" aria-pressed={!windowMode} disabled={companionActive} onClick={() => setVideo('camera')}>虚拟摄像头</button>
+      </div>
+      {windowMode && <>
+        <p>在直播伴侣添加「窗口」素材，选择「RiftCast 节目输出」。窗口连续显示正式节目，预监内容经 TAKE 后才会进入。保持窗口打开且不要最小化；建议放在第二块屏幕，采集客户区并关闭鼠标显示。</p>
+        <div className="patchbay-buttons">
+          <button className="button primary" disabled={!window.riftcastDesktop || !canOutput || windowBusy || status?.mode !== 'embedded'} onClick={() => void controlWindow('open')}>{windowBusy ? '处理中…' : programWindow.open ? '显示 / 恢复节目窗口' : '打开节目输出窗口'}</button>
+          <button className="button" disabled={!programWindow.open || windowBusy || !canOutput} onClick={() => void controlWindow('close')}>关闭节目窗口</button>
+          <span role="status">{programWindow.open ? programWindow.minimized ? '窗口已最小化，请恢复' : '节目窗口已打开' : '节目窗口未打开'}</span>
+        </div>
+        {!window.riftcastDesktop && <p>请使用 RiftCast 桌面版打开节目窗口。</p>}
+        {windowError && <p role="alert">{windowError}</p>}
+      </>}
+    </section>}
 
     <div className="patchbay-path-choice">
       <div className="patchbay-path-tabs" role="group" aria-label="查看输出路径">
@@ -111,9 +153,9 @@ export function OutputPatchbay(p: Props) {
         <div className="patchbay-route-line">
           <div className="patchbay-route-origin"><Camera size={17} /><strong>视频</strong><small>当前正式节目</small></div>
           <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
-          <div className="patchbay-route-node"><strong>{companion ? 'OBS Virtual Camera' : 'OBS 视频编码'}</strong><small>{companion ? !connected || !cameraKnown ? '运行状态待确认' : status?.virtualCamActive ? '视频正在送出' : '摄像头已停止' : '随 RTMP 推流启动'}</small></div>
+          <div className="patchbay-route-node"><strong>{companion ? windowMode ? 'RiftCast 节目输出' : 'OBS Virtual Camera' : 'OBS 视频编码'}</strong><small>{companion ? windowMode ? programWindow.open ? '独立节目窗口已打开' : '窗口未打开' : !connected || !cameraKnown ? '运行状态待确认' : status?.virtualCamActive ? '视频正在送出' : '摄像头已停止' : '随 RTMP 推流启动'}</small></div>
           <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
-          <div className="patchbay-route-node"><strong>{companion ? '伴侣摄像头' : 'RTMP 接收地址'}</strong><small>{companion ? '手动选择 OBS Virtual Camera' : '平台接收情况待人工核对'}</small></div>
+          <div className="patchbay-route-node"><strong>{companion ? windowMode ? '伴侣窗口素材' : '伴侣摄像头' : 'RTMP 接收地址'}</strong><small>{companion ? windowMode ? '选择 RiftCast 节目输出' : '手动选择 OBS Virtual Camera' : '平台接收情况待人工核对'}</small></div>
         </div>
         <div className="patchbay-route-line">
           <div className="patchbay-route-origin"><Volume2 size={17} /><strong>音轨 1</strong><small>最终 Program 混音</small></div>
@@ -126,17 +168,17 @@ export function OutputPatchbay(p: Props) {
     </section>
 
     <section className="patchbay-start-strip" aria-label="启动选定输出">
-      <div><strong>{companion ? '启动伴侣音画' : '开始 RTMP 推流'}</strong><p>{selectedActive ? companion ? '已有伴侣链路活动；停止与恢复入口在上方运行栏。' : 'RTMP 正在运行。' : startReason || '启动会将当前正式节目的画面与声音送出。'}</p></div>
+      <div><strong>{companion ? windowMode ? '启动伴侣节目混音' : '启动伴侣音画' : '开始 RTMP 推流'}</strong><p>{selectedActive ? companion ? '已有伴侣链路活动；停止与恢复入口在上方运行栏。' : 'RTMP 正在运行。' : startReason || '启动会将当前正式节目的画面与声音送出。'}</p></div>
       <button className="button" onClick={() => p.onSection?.('audio')} disabled={!p.onSection}>核对混音与音乐</button>
-      <button className="button primary" disabled={!canStart} onClick={() => p.output(companion ? 'start-virtual-camera' : 'start-stream')}>
-        <PlayMark />{busy && (p.pending === 'start-virtual-camera' || p.pending === 'start-stream') ? '等待引擎回执…' : companion ? '启动伴侣音画' : '开始 RTMP 推流'}
+      <button className="button primary" disabled={!canStart} onClick={() => p.output(companion ? windowMode ? 'start-companion-audio' : 'start-virtual-camera' : 'start-stream')}>
+        <PlayMark />{busy && (p.pending === 'start-virtual-camera' || p.pending === 'start-stream') ? '等待引擎回执…' : companion ? windowMode ? '启动伴侣节目混音' : '启动伴侣音画' : '开始 RTMP 推流'}
       </button>
     </section>
 
     <div className="patchbay-check-and-meter">
       <div className="patchbay-receiver-check">
         <h3>在接收端核对</h3>
-        <p>{companion ? '伴侣摄像头选择 OBS Virtual Camera，麦克风选择 CABLE Output。使用基础双声道端点，避免选择额外的 16ch 端点。' : '打开直播平台预览，核对当前比赛画面、游戏声、解说和音乐，再检查直播间。'}</p>
+        <p>{companion ? (windowMode ? '窗口素材选择 RiftCast 节目输出；' : '伴侣摄像头选择 OBS Virtual Camera；') + '麦克风选择 CABLE Output。使用基础双声道端点，避免选择额外的 16ch 端点。' : '打开直播平台预览，核对当前比赛画面、游戏声、解说和音乐，再检查直播间。'}</p>
         {companion && <p>麦克风音量设为 100%；按接入策略关闭重复系统声、原麦克风及降噪 / 自动增益，试听后由操作者在伴侣开播。</p>}
         <span className="patchbay-manual-status">平台开播 / 接收状态：待人工核对</span>
       </div>
@@ -146,14 +188,14 @@ export function OutputPatchbay(p: Props) {
     {companion ? <details className="patchbay-device-preparation" open={!companionReady || !!audio?.error || !!camera?.error || !!camera?.driver.error}>
       <summary><strong>设备准备与恢复</strong><span>{companionReady ? '设备已就绪，可按需检查' : '查看未就绪原因与准备入口'}</span></summary>
       <div className="patchbay-device-grid">
-        <section><h4>OBS Virtual Camera</h4><dl>
+        {!windowMode && <section><h4>OBS Virtual Camera</h4><dl>
           <Fact label="当前引擎支持" value={camera?.supported} />
           <Fact label="安装组件可用" value={camera?.driver.available} />
           <Fact label="驱动已注册" value={camera?.driver.installed} />
           <Fact label="运行状态可查询" value={connected ? cameraKnown : undefined} />
           <Fact label="正在送出视频" value={connected && cameraKnown ? !!status?.virtualCamActive : undefined} />
           <Fact label="需要重新加载引擎" value={camera?.requiresRestart} />
-        </dl>{(camera?.error || camera?.driver.error) && <p className="patchbay-error" role="alert">{camera.error || camera.driver.error}</p>}</section>
+        </dl>{(camera?.error || camera?.driver.error) && <p className="patchbay-error" role="alert">{camera.error || camera.driver.error}</p>}</section>}
         <section><h4>Program 音频桥</h4><dl>
           <Fact label="当前引擎支持" value={audio?.supported} />
           <Fact label="混音组件已加载" value={audio?.available} />
@@ -165,12 +207,12 @@ export function OutputPatchbay(p: Props) {
         </dl>{audio?.error && <p className="patchbay-error" role="alert">{audio.error}</p>}</section>
       </div>
       <div className="patchbay-prepare-controls">
-        <div><strong>首次准备可能要求 Windows 管理员授权</strong><p>检查或安装虚拟摄像头和基础版 VB-CABLE，复用有效组件；音频驱动安装后可能需要重启。准备不会在伴侣中开播。</p></div>
+        <div><strong>首次准备可能要求 Windows 管理员授权</strong><p>窗口模式检查基础版 VB-CABLE；摄像头模式同时准备虚拟摄像头。复用有效组件；音频驱动安装后可能需要重启。准备不会在伴侣中开播。</p></div>
         <div className="patchbay-buttons">
-          <button className="button" disabled={setupBlocked || !status?.available || !!audio?.needsRestart} onClick={p.prepare}>
-            <Volume2 size={15} />{p.pending === 'prepare-companion' ? '正在准备…' : '准备完整音画设备'}
+          <button className="button" disabled={setupBlocked || !status?.available || !!audio?.needsRestart} onClick={() => p.prepare(video)}>
+            <Volume2 size={15} />{p.pending === 'prepare-companion' ? '正在准备…' : windowMode ? '准备节目音频设备' : '准备完整音画设备'}
           </button>
-          <button className="button small" disabled={setupBlocked || !camera?.driver.available} onClick={p.installCamera}>仅准备虚拟摄像头</button>
+          {!windowMode && <button className="button small" disabled={setupBlocked || !camera?.driver.available} onClick={p.installCamera}>仅准备虚拟摄像头</button>}
         </div>
         <p className="patchbay-setup-limit">{activeOutput ? '活动输出或录制期间不能准备设备。' : audio?.needsRestart ? '先保存工作并由操作者重启 Windows，再刷新设备状态。' : !local ? '设备准备仅允许在导播主机操作。' : p.controlReason || '取消授权、驱动待加载或恢复失败时，按上方具体错误处理。'}</p>
         <small>VB-CABLE：<a href="https://vb-audio.com/Cable/" target="_blank" rel="noreferrer">VB-Audio 官方来源</a> / <a href="https://vb-audio.com/Services/licensing.htm" target="_blank" rel="noreferrer">许可说明</a>。原游戏输出与真实麦克风须保持正确，避免形成反馈回路。</small>

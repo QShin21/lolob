@@ -98,12 +98,13 @@ app.post('/api/action',async(req,res,next)=>{
     if(action.expectedConfigVersion!==undefined&&action.expectedConfigVersion!==ensureProduction(state).configVersion){res.status(409).json({error:'配置已被其他席位修改，请核对最新版本后重新保存',version:state.production!.configVersion});return;}
     if(!isLoopback(req.socket.remoteAddress)&&type==='set-settings')throw new ValidationError('连接设置仅支持在导播主机修改');
     const previousDynamic=state.production?.dynamicPreview,previousMode=state.mode,previousProgramScene=state.programScene;
+    const applies=type==='take'||type==='production'&&command?.op==='immediate';
+    if(applies&&state.connections.obs.status!=='connected')throw new ValidationError('请先连接 OBS，再核对预监后切入');
     const nextState=applyAction(state,action),p=ensureProduction(nextState);
     if(type==='set-settings'){const patch=record(action.patch);if(patch.obsPassword!==undefined)adapters.setPassword(String(patch.obsPassword));}
     if(p.audit.at(-1))p.audit.at(-1)!.actor=seat.name;
     if(type==='production'&&command?.op==='check'){const check=p.checks[command.id as keyof typeof p.checks];if(check)check.actor=seat.name;}
     if(type==='correct-result'&&p.corrections.at(-1))p.corrections.at(-1)!.actor=seat.name;
-    const applies=type==='take'||type==='production'&&command?.op==='immediate';
     const cadence=type==='production'&&command?.op==='settings';
     if(applies&&state.connections.obs.status==='connected'){
       const application=p.application;
@@ -154,7 +155,7 @@ app.post('/api/obs/engine/start',async(_req,res)=>res.json(await adapters.obsEng
 app.post('/api/obs/engine/mode',async(req,res)=>res.json(await adapters.obsEngineMode(req.body)));
 app.post('/api/obs/engine/destination',async(req,res)=>res.json(await adapters.obsEngineDestination(req.body)));
 app.post('/api/obs/engine/virtual-camera/install',async(_req,res)=>res.json(await adapters.obsEngineInstallVirtualCamera()));
-app.post('/api/obs/engine/companion/prepare',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress))throw new ValidationError('音画设备准备请在导播主机操作');res.json(await adapters.obsEnginePrepareCompanion());});
+app.post('/api/obs/engine/companion/prepare',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress))throw new ValidationError('音画设备准备请在导播主机操作');res.json(await adapters.obsEnginePrepareCompanion(req.body));});
 const musicUpload=multer({storage:multer.memoryStorage(),limits:{fileSize:32*1024*1024,files:1,fields:0}});
 app.post('/api/obs/music',musicUpload.single('file'),async(req,res)=>{if(!isLoopback(req.socket.remoteAddress))throw new ValidationError('节目音乐请在导播主机操作');if(!req.file)throw new ValidationError('请选择音乐文件');res.status(201).json(await adapters.obsMusicImport(req.file.buffer,req.file.originalname));});
 app.post('/api/obs/music/control',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress))throw new ValidationError('节目音乐请在导播主机操作');res.json(await adapters.obsMusicControl(req.body));});

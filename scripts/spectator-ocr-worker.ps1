@@ -18,7 +18,7 @@ Write-WorkerResponse @{type='ready';protocol=1}
 
 $taskNumeric=@('BlueX','BlueY','BlueWidth','BlueHeight','RedX','RedY','RedWidth','RedHeight','PlayersX','PlayersY','PlayersWidth','PlayersHeight')
 $taskSwitches=@('ReadPlayers','SkipTeam','AutoLocate','Diagnostics')
-$taskPaths=@('ImagePath','ChampionManifest')
+$taskPaths=@('ImagePath','ChampionManifest','CapturePath')
 while($null -ne ($taskLine=[Console]::In.ReadLine())) {
   $taskId=$null
   try {

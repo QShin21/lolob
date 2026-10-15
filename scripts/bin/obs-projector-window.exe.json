@@ -1,6 +1,6 @@
 {
-  "sourceSha256": "316bb91eb0024ea8e9fb438995fa36d58be0858c4f585b68f39c4437471b1417",
-  "executableSha256": "cc78a66d2ff015ad082a55ee295ce882f9d5910439b67ef67de481660a62bbae",
+  "sourceSha256": "e13ffd0574af72beb064d698151c2b6a4baa7c09dafd479d7072ddbfc6f93fe7",
+  "executableSha256": "aa784621f9125efd5b7d85dc2bd9b58280ef606969ece1ccee45604c536b0560",
   "architecture": "x64",
   "purpose": "Owned OBS projector positioning for continuous native capture"
 }

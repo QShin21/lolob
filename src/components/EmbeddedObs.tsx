@@ -132,11 +132,15 @@ export function EmbeddedObs({ section='video',onSection,controlReason='',notify,
       const next = await api<ObsEngineStatus>('/api/obs/engine/output', { method: 'POST', body: JSON.stringify({ action }) });
       publishStatus(next);
       const started = action.startsWith('start');
-      const confirmed = action.endsWith('virtual-camera')
+      const confirmed = action.endsWith('companion-audio')
+        ? started ? next.companionAudio?.active === true : next.companionAudio?.active === false && !next.companionAudio?.managing
+        : action.endsWith('virtual-camera')
         ? started ? next.virtualCamActive === true && next.companionAudio?.active === true : next.virtualCamActive === false && next.companionAudio?.active === false && next.companionAudio?.managing === false
         : (action.endsWith('stream') ? next.streamActive : next.recordActive) === started;
       if (!next.connected || !confirmed || next.error || action.endsWith('virtual-camera') && next.companionAudio?.error) throw new Error(next.error || next.companionAudio?.error || '输出尚未完整确认，请核对各路状态');
-      const message = action.endsWith('virtual-camera')
+      const message = action.endsWith('companion-audio')
+        ? started ? '节目混音已送至 CABLE Output，请在伴侣试听' : '节目混音已停止并恢复音频路由'
+        : action.endsWith('virtual-camera')
         ? started ? '节目视频和最终混音已送出，请在伴侣核对后开播' : '伴侣音画已停止并退出托管；外部直播间请在伴侣结束'
         : 'OBS 已确认' + (started ? '启动' : '停止') + (action.endsWith('stream') ? ' RTMP' : '本机录制');
       setReceipt(message); notify(message);
@@ -192,7 +196,7 @@ export function EmbeddedObs({ section='video',onSection,controlReason='',notify,
       selectDestination={value => void run('output-destination', '/api/obs/engine/destination', { destination: value }, '下一次输出路径已保存；当前输出状态请单独核对')}
       applyDestination={() => void applyDestination()}
       output={action => void output(action)}
-      prepare={() => void run('prepare-companion', '/api/obs/engine/companion/prepare', {}, '设备准备请求已完成，请核对状态、错误与重启要求')}
+      prepare={video => void run('prepare-companion', '/api/obs/engine/companion/prepare', { video }, '设备准备请求已完成，请核对状态、错误与重启要求')}
       installCamera={() => void run('install-camera', '/api/obs/engine/virtual-camera/install', {}, '摄像头准备请求已完成，请核对驱动注册与重新加载要求')}
     /> : <>
       {section === 'video' && <div className="engine-mode-row">
