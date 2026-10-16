@@ -1,8 +1,10 @@
+import { StylePackManager } from './StylePackManager';
+import { styleRef } from '../../shared/style-packs';
 import {PostgamePageControl} from './PostgamePageControl';
 import { useRef, useState } from "react";
 import type { BroadcastState, Champion, Scene, CustomScene, StateContext } from "../../shared/types";
 import { sceneDetails, sceneInfo } from "../lib";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Palette, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { CustomSceneEditor } from "./CustomSceneEditor";
 import { TaskTabs } from "./ConsoleUI";
 import { SceneCard } from "./SceneCard";
@@ -26,6 +28,7 @@ export function SceneLibrary(props: {
   champions: Champion[];
   onSelect: (scene: Scene) => void;
 } & Pick<StateContext, 'send' | 'notify' | 'seat' | 'connected'>) {
+  const [styleManager, setStyleManager] = useState(false);
   const [editor, setEditor] = useState<CustomScene | 'new' | null>(null);
   const [deleting, setDeleting] = useState<CustomScene | null>(null);
   const [busy, setBusy] = useState(false);
@@ -72,8 +75,10 @@ export function SceneLibrary(props: {
           label="场景阶段"
         />
 
+        <button className="button small" title={`待播风格：${styleRef(props.state.overlay.stylePack).name}`} onClick={() => setStyleManager(true)}><Palette size={15}/>风格包</button>
         <button className="button small primary" disabled={!canEdit || custom.length >= 50} title={custom.length >= 50 ? '最多 50 个自定义场景' : !canEdit ? '由当前主导播编辑' : '新建自定义场景'} onClick={() => setEditor('new')}><Plus size={15} />新建场景</button>
       </div>
+      {styleManager && <StylePackManager {...props} onClose={() => setStyleManager(false)}/>}
       {editor && <CustomSceneEditor {...props} initial={editor === 'new' ? undefined : editor} onClose={() => setEditor(null)} />}
       {deleting && <div className="custom-delete-prompt" role="alert"><span><strong>{deleteReason || `删除「${deleting.name}」？`}</strong><small>已上传素材和借用的 OBS 输入都会保留。</small>{deleteError && <small>{deleteError}</small>}</span><button className="button small" disabled={busy} onClick={() => setDeleting(null)}>取消</button><button className="button small" disabled={busy || !canEdit || !!deleteReason} onClick={async () => { if (deletingActive.current || deleteReason || !canEdit) return; deletingActive.current = true; setBusy(true); setDeleteError(''); try { await props.send({ type: 'delete-custom-scene', id: deleting.id }); setDeleting(null); props.notify('自定义场景已删除'); } catch (e) { setDeleteError(e instanceof Error ? e.message : '删除未完成，请核对引用与权限后重试'); } finally { deletingActive.current = false; setBusy(false); } }}>确认删除</button></div>}
       <PostgamePageControl state={props.state} send={props.send} />

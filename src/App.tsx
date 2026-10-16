@@ -16,6 +16,7 @@ import { Studio } from './pages/Studio';
 import { Remote } from './pages/Remote';
 import { Help } from './pages/Help';
 import { version } from '../package.json';
+import { loadStylePack } from './components/useStylePack';
 import type { SettingsSection } from './pages/Settings';
 const Draft = lazy(() => import('./pages/Draft').then(m => ({ default: m.Draft })));
 const LiveData = lazy(() => import('./pages/LiveData').then(m => ({ default: m.LiveData })));
@@ -60,6 +61,8 @@ export default function App() {
     document.body.classList.toggle('overlay-body', output); document.documentElement.classList.toggle('overlay-document', output);
     return () => { document.body.classList.remove('overlay-body'); document.documentElement.classList.remove('overlay-document'); };
   }, [output]);
+  // Warm the pending art in independent OBS browser sources before the director takes it.
+  useEffect(() => { if (output) void loadStylePack(state?.overlay.stylePack).catch(() => {}); }, [output, state?.overlay.stylePack?.id, state?.overlay.stylePack?.revision]);
   useDirectorKeys({ ...broadcast, state: state ?? undefined }, page === 'studio', !output && !remote);
   // Before any snapshot exists, the browser source stays empty. Never expose
   // workstation branding, connection controls, or demo state to the audience.

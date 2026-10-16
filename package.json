@@ -1,6 +1,6 @@
 {
   "name": "riftcast-director",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "private": true,
   "type": "module",
   "description": "英雄联盟本地赛事导播工作台",
@@ -26,7 +26,9 @@
     "verify:broadcast-controls": "node scripts/verify-broadcast-controls.mjs",
     "desktop": "electron .",
     "test": "tsx --test server/*.test.ts",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "verify:style-packs": "node scripts/verify-style-packs.mjs",
+    "export:style-pack": "node scripts/export-style-pack.mjs"
   },
   "dependencies": {
     "express": "^5.1.0",
@@ -36,7 +38,8 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "sharp": "0.35.5",
-    "ws": "^8.18.3"
+    "ws": "^8.18.3",
+    "unzipper": "0.12.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",

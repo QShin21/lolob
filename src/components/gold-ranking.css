@@ -16,7 +16,7 @@
 .cast-gold-identity { display:flex; align-items:center; gap:.5cqw; min-width:0; }
 .cast-gold-identity strong { font-size:1.15cqw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .cast-gold-identity small { margin-left:auto; color:var(--cast-side); font-size:.8cqw; max-width:5cqw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.cast-gold-bar { height:.3cqw; background:#2a3e4b; display:block; overflow:hidden; }
+.cast-gold-bar { height:.3cqw; background:var(--art-c2a3e4b, #2a3e4b); display:block; overflow:hidden; }
 .cast-gold-bar i { display:block; height:100%; background:var(--cast-side,var(--cast-accent)); transition:width 240ms ease; }
 .cast-gold-amount { font-size:1.55cqw; text-align:right; font-variant-numeric:tabular-nums; }
 .cast-gold-columns .is-unavailable .cast-gold-amount { color:var(--cast-muted); }

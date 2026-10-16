@@ -1,3 +1,5 @@
+import { StylePackStore } from './style-packs';
+import { BUILTIN_STYLE_REF, STYLE_PACK_MAX_BYTES, styleRef } from '../shared/style-packs';
 import express from 'express';
 import multer from 'multer';
 import { WebSocketServer, WebSocket } from 'ws';
@@ -32,6 +34,13 @@ const lan=process.env.ENABLE_LAN==='1';const controlToken=randomBytes(18).toStri
 await mkdir(uploadDir,{recursive:true});
 let state=createSeed();
 try{const saved=JSON.parse(await readFile(stateFile,'utf8'))as BroadcastState;if(saved&&saved.match&&saved.overlay&&saved.settings&&Array.isArray(saved.players)&&Array.isArray(saved.teams)&&['demo','live'].includes(saved.mode))state=normalizeSavedState(saved);}catch{/* first run uses explicit demo mode */}
+const stylePacks=new StylePackStore(path.join(dataDir,'style-packs'));
+await stylePacks.initialize();
+for(const overlay of [state.overlay,state.production?.program?.overlay,state.production?.previousProgram?.content.overlay]){
+  if(!overlay)continue;
+  try{const pack=stylePacks.get(styleRef(overlay.stylePack));overlay.stylePack={id:pack.id,revision:pack.revision,name:pack.name};}
+  catch{stylePacks.warnings.push('已保存的风格包暂不可用，已回退到简陋包');overlay.stylePack={...BUILTIN_STYLE_REF};}
+}
 resetRuntimeState(state);
 delete ensureProduction(state).control;
 const seats=new ControlSeats();
@@ -100,7 +109,9 @@ app.post('/api/action',async(req,res,next)=>{
     const previousDynamic=state.production?.dynamicPreview,previousMode=state.mode,previousProgramScene=state.programScene;
     const applies=type==='take'||type==='production'&&command?.op==='immediate';
     if(applies&&state.connections.obs.status!=='connected')throw new ValidationError('请先连接 OBS，再核对预监后切入');
-    const nextState=applyAction(state,action),p=ensureProduction(nextState);
+    let installedStyle;
+    if(type==='set-style-pack'){try{const pack=stylePacks.get({id:String(action.id),revision:String(action.revision),name:'lookup'});installedStyle={id:pack.id,revision:pack.revision,name:pack.name};}catch(e){throw new ValidationError(e instanceof Error?e.message:'风格包不可用');}}
+    const nextState=applyAction(state,action,installedStyle),p=ensureProduction(nextState);
     if(type==='set-settings'){const patch=record(action.patch);if(patch.obsPassword!==undefined)adapters.setPassword(String(patch.obsPassword));}
     if(p.audit.at(-1))p.audit.at(-1)!.actor=seat.name;
     if(type==='production'&&command?.op==='check'){const check=p.checks[command.id as keyof typeof p.checks];if(check)check.actor=seat.name;}
@@ -177,6 +188,18 @@ const upload=multer({storage:multer.memoryStorage(),limits:{fileSize:8*1024*1024
 app.post('/api/assets',upload.single('file'),async(req,res)=>{if(!req.file)throw new ValidationError('请选择图片文件');const info=inspectImage(req.file.buffer);if(req.file.mimetype!==info.mime)throw new ValidationError('图片签名与文件类型不符');const id=randomUUID();const file=`${id}.${info.extension}`;await writeFile(path.join(uploadDir,file),req.file.buffer);const asset={id,name:path.basename(req.file.originalname.replaceAll('\\','/')).slice(0,100),url:`/uploads/${file}`,type:info.mime,width:info.width,height:info.height,category:['logo','player','sponsor','other'].includes(req.body.category)?req.body.category:'other',createdAt:new Date().toISOString()};commit(s=>{s.assets.unshift(asset);s.assets=s.assets.slice(0,1000);});res.status(201).json(asset);});
 app.use('/uploads',express.static(uploadDir,{index:false,dotfiles:'deny',maxAge:'1d',setHeaders:res=>res.setHeader('Content-Security-Policy',"default-src 'none'")}));
 app.get('/api/export',(req,res)=>{const format=req.query.format??'json';if(!['json','csv'].includes(String(format)))throw new ValidationError('导出格式需为 json 或 csv');let recording:Recording|undefined;if(req.query.recordingId){recording=state.recordings.find(r=>r.id===req.query.recordingId)??state.gameResults?.find(r=>r.snapshot.id===req.query.recordingId)?.snapshot??state.production?.invalidAttempts.find(r=>r.result?.snapshot.id===req.query.recordingId)?.result?.snapshot;if(!recording)throw new ValidationError('记录不存在');}else recording=snapshotRecording(state,{id:'current',title:state.match.title});res.setHeader('Content-Disposition',`attachment; filename="riftcast-${recording.id.replace(/[^a-z0-9-]/gi,'')}.${format}"`);if(format==='csv'){res.type('text/csv; charset=utf-8').send(csvRecording(recording));return;}res.json(recording);});
+// Immutable, independently cached art assets are kept out of high-frequency state broadcasts.
+app.get('/api/style-packs',(_req,res)=>{res.setHeader('Cache-Control','no-store');res.json({packs:stylePacks.list(),warnings:stylePacks.warnings});});
+const packRef=(req:express.Request)=>({id:String(req.params.id),revision:String(req.params.revision),name:'lookup'});
+app.get('/api/style-packs/:id/:revision/assets/:asset',async(req,res)=>{try{const bytes=await stylePacks.asset(packRef(req),String(req.params.asset));res.setHeader('Cache-Control','public,max-age=31536000,immutable');res.setHeader('Content-Security-Policy',"default-src 'none'");res.type('image/png').send(bytes);}catch{res.status(404).json({error:'贴图不存在或已损坏'});}});
+app.get('/api/style-packs/:id/:revision/export',async(req,res)=>{try{const ref=packRef(req),bytes=await stylePacks.export(ref);res.setHeader('Content-Disposition',`attachment; filename="${ref.id}.riftstyle.zip"`);res.type('application/zip').send(bytes);}catch(e){throw new ValidationError(e instanceof Error?e.message:'风格包不可用');}});
+app.get('/api/style-packs/:id/:revision',(req,res)=>{try{res.setHeader('Cache-Control','public,max-age=31536000,immutable');res.json(stylePacks.get(packRef(req)));}catch{res.status(404).json({error:'风格包不存在或已损坏'});}});
+const styleUpload=multer({storage:multer.memoryStorage(),limits:{fileSize:STYLE_PACK_MAX_BYTES,files:1,fields:0,parts:2}});
+let styleUploadBusy=false;
+app.post('/api/style-packs/import',(req,res,next)=>{if(styleUploadBusy){res.status(409).json({error:'已有风格包正在导入'});return;}styleUploadBusy=true;res.once('close',()=>{styleUploadBusy=false;});next();},styleUpload.single('file'),async(req,res)=>{
+  if(!req.file)throw new ValidationError('请选择 .riftstyle.zip 或 .zip 风格包');
+  try{const pack=await stylePacks.import(req.file.buffer);res.status(201).json(pack);}catch(e){throw new ValidationError(e instanceof Error?e.message:'风格包导入失败');}
+});
 app.use('/api',(_req,res)=>res.status(404).json({error:'接口不存在'}));
 app.use(express.static(path.join(root,'dist'),{index:false}));
 app.get(/.*/,(_req,res)=>res.sendFile(path.join(root,'dist','index.html'),error=>{if(error&&!res.headersSent)res.status(503).type('text').send('前端尚未构建。请执行 npm run build，或使用 npm run dev 开发模式。');}));

@@ -1,3 +1,4 @@
+import { useStylePack, stylePackAppearance } from './useStylePack';
 import { useEffect, useState, type CSSProperties } from 'react';
 import type { BroadcastState, Champion, Scene } from '../../shared/types';
 import { currentGameResult, frozenGameState, reportGameResult } from '../../shared/game-results';
@@ -14,6 +15,7 @@ import { Interview } from './program/InterviewScene';
 import './broadcast-skins.css';
 import './program/program-scenes.css';
 import './observer-graphics.css';
+import './style-pack-surfaces.css';
 export { ChampionImage } from './program/ProgramPrimitives';
 export { EconomyChart, economySource } from './EconomyChart';
 
@@ -23,6 +25,7 @@ function CapturePreview({ scene }: { scene: Scene }) {
 export function BroadcastCanvas({state:sourceState,champions,scene,output=false,bus='preview'}:{state:BroadcastState;champions:Champion[];scene:Scene;output?:boolean;bus?:'program'|'preview'}) {
  const frozenResult=bus!=='program'&&['ranking','postgame'].includes(scene)?currentGameResult(sourceState)||reportGameResult(sourceState):undefined;
  const state=frozenResult?frozenGameState(sourceState,frozenResult):sourceState;
+ const look=useStylePack(state.overlay.stylePack),appearance=stylePackAppearance(look.pack,scene,state.overlay.accent);
  const [now,setNow]=useState(Date.now());const {version,items}=useItemCatalog(scene==='teamfight'?[]:champions,state.production?.versions.resources);
  useEffect(()=>{if(scene!=='standby'&&scene!=='live')return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[scene]);
  // The game's A view supplies the teamfight HUD. Keep the OBS layer fully transparent.
@@ -32,7 +35,7 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  const overlayScene=['draft','live','gold-ranking','economy','ranking','interview'].includes(scene),selected=state.players.some(p=>p.id===state.selectedPlayerId);
  const feed=scene==='draft'||scene==='lineup'?state.connections.lcu:state.connections.live;
  const sourceIssue=!frozenResult&&state.mode==='live'&&['live','teamfight','gold-ranking','draft','lineup','economy','ranking'].includes(scene)&&feed.status!=='connected';
- return <div className={`broadcast-container cast-container skin-arena ${output?'is-output':''}`} style={{'--broadcast-accent':state.overlay.accent} as CSSProperties}><div className={`broadcast-canvas cast-canvas cast-scene-${scene} ${state.overlay.ticker?'has-ticker':''} ${overlayScene&&output?'transparent cast-transparent':''}`} style={{'--hud-scale':state.overlay.scale} as CSSProperties}>
+ return <div className={`broadcast-container cast-container skin-arena ${output?'is-output':''}`} data-style-pack={look.pack.id} data-style-revision={look.pack.revision} data-style-status={look.error?'error':look.loading?'loading':'ready'} data-pack-background={appearance.background} data-pack-textures={appearance.textures} data-pack-body={look.pack.fonts.body} data-pack-display={look.pack.fonts.display} style={appearance.style}><div className={`broadcast-canvas cast-canvas cast-scene-${scene} ${state.overlay.ticker?'has-ticker':''} ${overlayScene&&output?'transparent cast-transparent':''}`} style={{'--hud-scale':state.overlay.scale} as CSSProperties}>
  {overlayScene&&!output&&<CapturePreview scene={scene}/>}
  {liveScene&&<NativeHudLayer state={state}/>}
  {scene==='live'&&<LiveBottom state={state} champions={champions} items={items} version={version}/>}
@@ -46,6 +49,8 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  {scene==='schedule'&&<Schedule state={state}/>}
  {scene==='postgame'&&<Postgame state={state} champions={champions} items={items} version={version}/>}
  {scene==='interview'&&<Interview state={state}/>}
+ {appearance.frame&&<img className="style-pack-frame" src={appearance.frame} alt="" aria-hidden="true"/>}
+ {!output&&(look.error||look.loading)&&<span className="style-pack-preview-status" role="status">{look.error?`${look.error}；保留 ${look.pack.name}`:'风格包贴图加载中'}</span>}
  {(state.overlay.sponsor||state.overlay.sponsorLogo)&&<div className="cast-sponsor">{state.overlay.sponsorLogo?<img src={state.overlay.sponsorLogo} alt={state.overlay.sponsor||'赞助商标志'}/>:<span>{state.overlay.sponsor}</span>}</div>}
  {state.overlay.ticker&&<div className="cast-ticker"><b>{state.match.title}</b><span>{state.overlay.tickerText}</span></div>}
  {state.mode==='demo'&&<span className="cast-demo">DEMO · 演示数据</span>}

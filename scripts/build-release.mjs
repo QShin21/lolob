@@ -7,6 +7,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { build as bundle } from 'esbuild';
 import sharp from 'sharp';
+import { tsImport } from 'tsx/esm/api';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -73,6 +74,8 @@ const manifest = { product: 'RiftCast', version: pkg.version, platform: 'Windows
 await writeFile(path.join(buildRoot, 'release-manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 const { build } = require('electron-builder');
 await build({ config: { ...require('../electron-builder.cjs'), extraMetadata: { riftcastRelease: { builtAt: manifest.builtAt, sourceRevision: manifest.sourceRevision, workingTreeDirty: manifest.workingTreeDirty, sourceDigest: manifest.sourceDigest } } }, publish: 'never' });
+const { builtinStyleArchive } = await tsImport('../server/style-packs.ts', import.meta.url);
+await writeFile(path.join(output, `RiftCast-${pkg.version}-Jianlou.riftstyle.zip`), builtinStyleArchive());
 const artifacts = [];
 for (const name of await readdir(output)) if (/\.(exe|zip|blockmap)$/.test(name)) { const file = path.join(output, name); artifacts.push({ name, bytes: (await stat(file)).size, sha256: await digest(file) }); }
 await writeFile(path.join(output, 'release-manifest.json'), JSON.stringify({ ...manifest, artifacts }, null, 2) + '\n');

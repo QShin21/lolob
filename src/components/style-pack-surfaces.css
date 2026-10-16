@@ -1,0 +1,18 @@
+/* Only programme elements inside a pack-scoped canvas can consume artwork. */
+.cast-container[data-pack-background=true] :is(.cast-canvas,.arena-full,.rune-lineup,.postgame-report){background-image:var(--pack-background);background-size:100% 100%;background-repeat:no-repeat}
+.cast-container[data-pack-background=true] .cast-canvas.cast-transparent{background-image:none}
+.cast-container[data-pack-textures~=header] :is(.arena-header,.arena-analysis-heading,.pr-header,.rl-header){background-image:var(--pack-header);background-size:100% 100%}
+.cast-container[data-pack-textures~=panel] :is(.cast-analysis,.cast-interview,.pb-output,.cast-gold-ranking){background-image:var(--pack-panel);background-size:100% 100%}
+.cast-container[data-pack-textures~=cardBlue] :is(.cast-draft-team.blue,.rl-card.blue){background-image:var(--pack-cardBlue);background-size:100% 100%}
+.cast-container[data-pack-textures~=cardRed] :is(.cast-draft-team.red,.rl-card.red){background-image:var(--pack-cardRed);background-size:100% 100%}
+.cast-container[data-pack-textures~=scoreboard] .lb-scoreboard{background-image:var(--pack-scoreboard);background-size:100% 100%}
+.cast-container[data-pack-textures~=rowBlue] .lb-player-row.blue{background-image:var(--pack-rowBlue);background-size:100% 100%}
+.cast-container[data-pack-textures~=rowRed] .lb-player-row.red{background-image:var(--pack-rowRed);background-size:100% 100%}
+.cast-container[data-pack-textures~=nameplate] :is(.lb-nameplate,.cast-interview-name,.lt-native-team){background-image:var(--pack-nameplate);background-size:100% 100%}
+.cast-container[data-pack-textures~=ticker] .cast-ticker{background-image:var(--pack-ticker);background-size:100% 100%}
+.cast-container[data-pack-textures~=paper] .arena-start{background-image:var(--pack-paper);background-size:100% 100%}
+.cast-container[data-pack-textures~=draftCenter] .cast-draft-center{background-image:var(--pack-draftCenter);background-size:100% 100%}
+.cast-container[data-pack-body=modern] .cast-canvas *,.cast-container[data-pack-body=serif] .cast-canvas *{font-family:var(--cast-font)}
+.cast-container[data-pack-display=modern] .cast-canvas :is(h2,h3,strong,b),.cast-container[data-pack-display=serif] .cast-canvas :is(h2,h3,strong,b){font-family:var(--cast-display)}
+.cast-canvas>.style-pack-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:8;pointer-events:none}
+.style-pack-preview-status{position:absolute;top:1%;left:1%;z-index:9;max-width:60%;font-size:.85cqw;background:#101923;color:#edf1ed;padding:.4cqw;pointer-events:none}

@@ -1,3 +1,5 @@
+import { BUILTIN_STYLE_REF, styleRef } from '../shared/style-packs';
+import type { StylePackRef } from '../shared/style-packs';
 import { currentOcrMatch } from '../shared/hud-ocr';
 import { validateCustomScene, validateSceneId } from './custom-scenes';
 import { bundledChampions } from '../shared/champion-art';
@@ -46,7 +48,7 @@ export function createSeed(): BroadcastState {
     draft:{bluePicks:players.slice(0,5).map(p=>p.championId),redPicks:players.slice(5).map(p=>p.championId),blueBans:['Yone','Renekton','Leblanc','Kalista','Rumble'],redBans:['Ashe','Sejuani','Orianna','Rell','Poppy'],timer:24,activeTeam:'blue',action:'选择英雄'},events,
     economy:Array.from({length:20},(_,i)=>({time:i*60,blue:2500+i*2215+Math.round(Math.sin(i/3)*400),red:2500+i*2007+Math.round(Math.cos(i/4)*360)})),
     connections:{lcu:{status:'disconnected',detail:'尚未连接客户端'},live:{status:'disconnected',detail:'等待游戏进入对局'},replay:{status:'disconnected',detail:'仅回放模式支持播放控制'},obs:{status:'disconnected',detail:'连接 OBS WebSocket 5.x'}},
-    overlay:{preset:'arena',scoreboard:true,players:true,objectives:true,ticker:false,goldDiff:true,sponsor:'RIFTCAST',tickerText:'峡谷邀请赛 · 欢迎来到比赛直播间',accent:'#83e6c5',scale:1,countdownEnd:null,nativeHud:'auto',patchVersion:'26.18',bottomTitle:'2026 DEMACIA CUP GLOBAL INVITATIONAL',playerFeeds:{blue:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''},red:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''}}},assets:[],recordings:[],selectedPlayerId:null,
+    overlay:{stylePack:{...BUILTIN_STYLE_REF},preset:'arena',scoreboard:true,players:true,objectives:true,ticker:false,goldDiff:true,sponsor:'RIFTCAST',tickerText:'峡谷邀请赛 · 欢迎来到比赛直播间',accent:'#83e6c5',scale:1,countdownEnd:null,nativeHud:'auto',patchVersion:'26.18',bottomTitle:'2026 DEMACIA CUP GLOBAL INVITATIONAL',playerFeeds:{blue:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''},red:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''}}},assets:[],recordings:[],selectedPlayerId:null,
     settings:{lockfilePath:'',obsUrl:'ws://127.0.0.1:4455',pollInterval:1500,autoPhase:true,gamePath:''},
     draftHistory:[{seriesId:'demo-seed-series',game:1,blueTeamId:'azure',redTeamId:'ember',bluePicks:fallbackChampionData.slice(10,15).map(c=>c[0]),redPicks:fallbackChampionData.slice(15,20).map(c=>c[0]),recordedAt:'2026-10-03T11:00:00.000Z',source:'demo'}],
   };
@@ -67,6 +69,7 @@ export function normalizeSavedState(saved: BroadcastState): BroadcastState {
   restored.customScenes=[];
   for(const scene of (Array.isArray(saved.customScenes)?saved.customScenes:[]).slice(0,50)){try{restored.customScenes.push(validateCustomScene(scene,restored));}catch{/* Invalid saved custom scenes cannot become executable OBS sources. */}}
   for(const key of ['previewScene','programScene'] as const){try{validateSceneId(restored[key],restored);}catch{restored[key]='standby';}}
+  restored.overlay.stylePack=styleRef(restored.overlay.stylePack);
   restored.overlay.playerFeedPairs=playerFeedPairs(saved.overlay);
   restored.overlay.playerFeedControl=playerFeedControl(saved.overlay);
   delete restored.overlay.playerFeedControl.nextSwitchAt;
@@ -198,7 +201,7 @@ export function snapshotRecording(state:BroadcastState,options:{id?:string;title
   snapshot.economy=snapshot.economy.filter(point=>Number.isFinite(point.time)&&point.time<=state.gameTime+1);
   return snapshot;
 }
-export function applyAction(current:BroadcastState,input:unknown):BroadcastState {
+export function applyAction(current:BroadcastState,input:unknown,installedStyle?:StylePackRef):BroadcastState {
   const a=record(input);const type=str(a.type,40);const s=structuredClone(current);
   s.overlay.preset='arena';
   initializeDraftHistory(s);
@@ -207,6 +210,10 @@ export function applyAction(current:BroadcastState,input:unknown):BroadcastState
   if(type==='set-draft'){holdProgramDraft(s);production.draftUndo.push(structuredClone(s.draft));production.draftUndo=production.draftUndo.slice(-30);production.draftMode='manual';}
   if(type==='set-overlay')applyBottomOverlay(s,record(a.patch));
   switch(type as BroadcastAction['type']) {
+    case 'set-style-pack': {
+      if(!installedStyle||installedStyle.id!==a.id||installedStyle.revision!==a.revision)throw new ValidationError('请先导入并核对风格包');
+      s.overlay.stylePack={id:installedStyle.id,revision:installedStyle.revision,name:installedStyle.name};break;
+    }
     case 'set-mode': {const next=oneOf(a.mode,['demo','live']);if(next!==s.mode){preserveProgram(s);s.mode=next;delete s.finishedGameId;delete s.reportGameId;delete s.awaitingNextGame;delete s.activeSourceGameId;startDraftSeries(s);production.scores={};production.baseScores={};production.attempt=1;if(next==='live'){clearLiveData(s);s.paused=false;s.phase='pregame';}else {const d=createSeed();Object.assign(s,{players:d.players,stats:d.stats,events:d.events,economy:d.economy,draft:d.draft,gameTime:d.gameTime,phase:d.phase,paused:false});if(s.match.game>1)s.draftHistory!.push({...d.draftHistory![0],seriesId:s.match.seriesId!,game:s.match.game-1,blueTeamId:s.match.blueTeamId,redTeamId:s.match.redTeamId});captureManualDraft(s);}ensureProduction(s);}break;}
     case 'set-phase':s.phase=oneOf(a.phase,phases);if(s.phase==='live')captureManualDraft(s);break;
     case 'save-custom-scene': {
@@ -287,7 +294,7 @@ export function applyAction(current:BroadcastState,input:unknown):BroadcastState
     for(const player of s.players){const old=current.teams.find(t=>t.id===current.match[`${player.team}TeamId`])?.players.find(p=>p.name===player.name);const member=s.teams.find(t=>t.id===s.match[`${player.team}TeamId`])?.players.find(p=>old?.id?p.id===old.id:p.role===player.role);if(member)Object.assign(player,{name:member.name,role:member.role,portrait:member.portrait});}
   }
   if(type==='set-schedule')for(const match of s.schedule){const result=s.gameResults?.filter(r=>r.matchId===match.id&&r.winnerTeamId).sort((a,b)=>a.game-b.game).at(-1);if(result){if(![result.blueTeamId,result.redTeamId].includes(match.blueTeamId)||![result.blueTeamId,result.redTeamId].includes(match.redTeamId))throw new ValidationError('已归档对阵请新建赛程，结果修订使用纠正流程');match.blueScore=match.blueTeamId===result.blueTeamId?result.match.blueScore:result.match.redScore;match.redScore=match.redTeamId===result.redTeamId?result.match.redScore:result.match.blueScore;match.status=result.seriesComplete?'finished':'live';}}
-  if(['save-custom-scene','delete-custom-scene','set-overlay','set-match','set-teams','set-schedule','set-settings','set-mode','set-draft','set-player-feed-control','select-player','next-game','load-match','correct-result'].includes(type)||type==='production'&&!['check','mark','confirm-picture','immediate','pause','resume','ack-alert'].includes(String(record(a.command).op)))production.configVersion++;
+  if(['set-style-pack','save-custom-scene','delete-custom-scene','set-overlay','set-match','set-teams','set-schedule','set-settings','set-mode','set-draft','set-player-feed-control','select-player','next-game','load-match','correct-result'].includes(type)||type==='production'&&!['check','mark','confirm-picture','immediate','pause','resume','ack-alert'].includes(String(record(a.command).op)))production.configVersion++;
   if(type!=='production'&&type!=='set-settings')audit(s,type);
   s.revision=current.revision+1;return s;
 }

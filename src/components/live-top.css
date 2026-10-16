@@ -1,8 +1,8 @@
 .lt-native-extension{position:absolute;inset:0;z-index:3;pointer-events:none;background:transparent}
 /* Native 16:9 spectator bar spans x=19.8..80.2%; reserve its empty end caps. */
-.lt-native-team{position:absolute;top:.45%;left:20.5%;width:3.8%;height:4.65%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3cqw;overflow:hidden;color:#f4f8fa;text-shadow:0 1px 3px #000}
+.lt-native-team{position:absolute;top:.45%;left:20.5%;width:3.8%;height:4.65%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3cqw;overflow:hidden;color:var(--art-cf4f8fa, #f4f8fa);text-shadow:0 1px 3px var(--art-c000, #000)}
 .lt-native-team.red{left:auto;right:20.5%}
 .cast-canvas .lt-native-team strong{max-width:100%;font:800 1.15cqw/1.15 'Bahnschrift','Microsoft YaHei',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lt-native-team>span{display:flex;justify-content:center;gap:.18cqw}
-.lt-native-team i{width:.38cqw;height:.38cqw;border:1px solid #c5d3d6;background:transparent;box-sizing:border-box}
-.lt-native-team.blue .won{background:#36c8ff;border-color:#36c8ff}.lt-native-team.red .won{background:#ff555b;border-color:#ff555b}
+.lt-native-team i{width:.38cqw;height:.38cqw;border:1px solid var(--art-cc5d3d6, #c5d3d6);background:transparent;box-sizing:border-box}
+.lt-native-team.blue .won{background:var(--art-c36c8ff, #36c8ff);border-color:var(--art-c36c8ff, #36c8ff)}.lt-native-team.red .won{background:var(--art-cff555b, #ff555b);border-color:var(--art-cff555b, #ff555b)}
