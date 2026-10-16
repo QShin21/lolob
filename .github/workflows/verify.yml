@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: windows-2022
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
       ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
@@ -26,12 +26,18 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: node scripts/ensure-vbcable.cjs
-      - run: npm run check
-      - name: Test
-        shell: pwsh
+      - name: Export reproducible review inputs
+        if: github.ref == 'refs/heads/new'
         run: |
-          $tests = @(Get-ChildItem server -Filter '*.test.ts' | ForEach-Object FullName)
-          node --import tsx --test --test-concurrency=1 @tests
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git archive --format=tar HEAD | gzip > /tmp/lolob-review-source.tar.gz
+          tar -czf /tmp/lolob-review-dependencies.tar.gz node_modules
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/new'
+        with:
+          name: lolob-review-inputs
+          path: /tmp/lolob-review-*.tar.gz
+          retention-days: 1
+          compression-level: 0
+      - run: npm run check
+      - run: npm test
       - run: npm run build

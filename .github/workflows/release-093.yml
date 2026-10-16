@@ -1,11 +1,6 @@
 name: Release 0.9.3
 
 on:
-  push:
-    branches: ['work/v0.9.3-ocr-report']
-    paths:
-      - '.github/patches/093-edits-*.json'
-      - '.github/workflows/release-093.yml'
   workflow_dispatch:
 
 permissions:
@@ -17,7 +12,7 @@ concurrency:
 
 jobs:
   release:
-    if: github.repository == 'QShin21/lolob' && github.ref == 'refs/heads/work/v0.9.3-ocr-report'
+    if: github.repository == 'QShin21/lolob' && github.ref == 'refs/heads/new'
     runs-on: windows-2022
     timeout-minutes: 60
     defaults:
@@ -27,51 +22,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: work/v0.9.3-ocr-report
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-      - name: Apply verified source edits atomically
+      - name: Verify version and source branch
         run: |
-          @'
-          const fs = require('node:fs');
-          const crypto = require('node:crypto');
-          const cp = require('node:child_process');
-          const assert = require('node:assert/strict');
-          const hash = b => crypto.createHash('sha256').update(b).digest('hex');
-          const folder = '.github/patches';
-          const patches = fs.existsSync(folder) ? fs.readdirSync(folder).filter(n => /^093-edits-\d+\.json$/.test(n)).sort() : [];
-          const ready = new Map();
-          for (const name of patches) {
-            const patch = JSON.parse(fs.readFileSync(`${folder}/${name}`, 'utf8'));
-            assert.equal(patch.format, 1); assert.equal(patch.version, '0.9.3');
-            for (const file of patch.files) {
-              assert.match(file.path, /^(?:README\.md|package(?:-lock)?\.json|(?:scripts|server|shared|src)\/[a-zA-Z0-9_./-]+)$/);
-              assert.ok(!file.path.includes('..')); assert.ok(!ready.has(file.path));
-              const before = fs.readFileSync(file.path); assert.equal(hash(before), file.before, `Source changed: ${file.path}`);
-              const parts = []; let cursor = 0;
-              for (const [start, end, text] of file.edits) {
-                assert.ok(Number.isInteger(start) && start >= cursor && end >= start && end <= before.length);
-                assert.equal(typeof text, 'string'); parts.push(before.subarray(cursor, start), Buffer.from(text)); cursor = end;
-              }
-              parts.push(before.subarray(cursor)); const after = Buffer.concat(parts);
-              assert.equal(hash(after), file.after, `Edit checksum mismatch: ${file.path}`); ready.set(file.path, after);
-            }
-          }
-          if (patches.length) {
-            for (const [file, bytes] of ready) fs.writeFileSync(file, bytes);
-            for (const name of patches) fs.unlinkSync(`${folder}/${name}`);
-            const git = args => cp.execFileSync('git', args, {stdio:'inherit'});
-            git(['config','user.name','github-actions[bot]']);
-            git(['config','user.email','41898282+github-actions[bot]@users.noreply.github.com']);
-            git(['add','--',...ready.keys(),...patches.map(n=>`${folder}/${n}`)]);
-            git(['commit','-m','feat: 0.9.3 retained HUD OCR gold and four-objective postgame reports']);
-            git(['push','origin','HEAD:work/v0.9.3-ocr-report']);
-          }
-          assert.equal(JSON.parse(fs.readFileSync('package.json')).version, '0.9.3');
-          '@ | node
+          node -e "require('node:assert/strict').equal(require('./package.json').version, '0.9.3')"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git fetch origin new
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced concurrently; build its latest revision' }
       - run: npm ci
       - name: Prepare pinned VB-CABLE archive for tests (download only)
         run: node scripts/ensure-vbcable.cjs
@@ -91,18 +51,14 @@ jobs:
           "RIFTCAST_PLAYWRIGHT_MODULE=$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/index.mjs" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
       - name: Verify report layouts
         run: node scripts/verify-report-093.mjs
-      - name: Fast-forward verified source to new
-        run: |
-          git fetch origin new work/v0.9.3-ocr-report
-          git merge-base --is-ancestor origin/new HEAD
-          if ($LASTEXITCODE -ne 0) { throw 'new advanced concurrently; reconcile before release' }
-          if ((git rev-parse origin/work/v0.9.3-ocr-report) -ne (git rev-parse HEAD)) { throw 'Work branch advanced concurrently; rerun its latest revision' }
-          git push origin HEAD:new
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build Windows Setup and ZIP
         run: npm run release:win
       - name: Verify isolated packaged report
         run: node scripts/verify-packaged-report-093.mjs
+      - name: Confirm exact new revision before publication
+        run: |
+          git fetch origin new
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced while building; publication stopped' }
       - name: Publish verified release and check remote digests
         env:
           GH_TOKEN: ${{ github.token }}
