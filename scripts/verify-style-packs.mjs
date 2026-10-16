@@ -13,7 +13,7 @@ import { isolatedNativeEnvironment, nativeRequestGuard } from './verify-native-s
 import { reportFixture } from './report-093-fixture.mjs';
 import { stylePackFixture } from './style-pack-fixture.mjs';
 const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
-const { STYLE_SCENES } = await tsImport('../shared/style-packs.ts', import.meta.url);
+const { STYLE_SCENES, BUILTIN_STYLE_REF } = await tsImport('../shared/style-packs.ts', import.meta.url);
 const { bundledChampions } = await tsImport('../shared/champion-art.ts', import.meta.url);
 const version = JSON.parse(await readFile('package.json','utf8')).version;
 const dir = path.resolve('verification-output', `release-${version}`, 'styles');
@@ -49,13 +49,13 @@ try {
   await stage.click();
   await page.waitForFunction(()=>document.querySelector('.style-pack-buses')?.textContent.includes('新风格待 TAKE'));
   const staged=await state(),ref=staged.overlay.stylePack;
-  assert.equal(ref.id,'verification-cup');assert.equal(staged.production.program.overlay.stylePack.id,'jianlou');
+  assert.equal(ref.id,'verification-cup');assert.equal(staged.production.program.overlay.stylePack.id,BUILTIN_STYLE_REF.id);
   assert.deepEqual(staged.gameResults,before.gameResults);assert.deepEqual(staged.customScenes,before.customScenes);
   assert.deepEqual(Object.keys(ref).sort(),['id','name','revision']);
   await page.screenshot({path:path.join(dir,'manager-imported.png')});
   checks.push('real scene-library ZIP import and stage preserve program, archived match data and custom scenes; state carries only immutable reference');
   const preview=await context.newPage();await preview.goto(base+'/overlay?preview=1');await preview.locator('[data-style-pack=verification-cup][data-style-status=ready]').waitFor();
-  const program=await context.newPage();await program.goto(base+'/overlay');await program.locator('[data-style-pack=jianlou]').waitFor();
+  const program=await context.newPage();await program.goto(base+'/overlay');await program.locator('[data-style-pack=glacier-aurora]').waitFor();
   checks.push('independent browser preview loads imported art while on-air browser retains builtin art until TAKE');
   await preview.close();await program.close();
   const exported=await fetch(`${base}/api/style-packs/${ref.id}/${ref.revision}/export`);assert.equal(exported.status,200);assert.match(exported.headers.get('content-type'),/zip/);
@@ -77,7 +77,7 @@ try {
   for(const styled of [false,true])for(const scene of STYLE_SCENES){
     console.log(`Checking ${styled?'imported':'builtin'}/${scene}`);
     await render.goto(`${origin}/verification-output/release-${version}/styles/index.html?scene=${scene}${styled?'&styled=1':''}`);
-    await render.locator('.cast-canvas').waitFor();if(scene!=='teamfight')await render.locator(`[data-style-pack=${styled?'verification-cup':'jianlou'}][data-style-status=ready]`).waitFor();
+    await render.locator('.cast-canvas').waitFor();if(scene!=='teamfight')await render.locator(`[data-style-pack=${styled?'verification-cup':BUILTIN_STYLE_REF.id}][data-style-status=ready]`).waitFor();
     await render.evaluate(()=>document.fonts.ready);await render.waitForTimeout(100);
     if(['draft','live','economy','ranking','interview','teamfight','gold-ranking'].includes(scene))assert.equal(await render.locator('.cast-canvas').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
     if(scene==='teamfight')assert.equal(await render.locator('.cast-canvas').innerHTML(),'');
@@ -90,14 +90,14 @@ try {
         for(const slot of root.dataset.packTextures.split(' ').filter(Boolean))for(const el of root.querySelectorAll(targets[slot]))checked.push({slot,image:getComputedStyle(el).backgroundImage});
         return checked;
       });
-      for(const surface of surfaces)assert.match(surface.image,styled?/\/api\/style-packs\/verification-cup\//:/data:image\/png/,`${scene}/${surface.slot} must use the selected texture`);
+      for(const surface of surfaces)assert.match(surface.image,new RegExp('/api/style-packs/'+(styled?'verification-cup':BUILTIN_STYLE_REF.id)+'/'),`${scene}/${surface.slot} must use the selected texture`);
     }
     await render.screenshot({path:path.join(dir,`${styled?'imported':'builtin'}-${scene}.png`),omitBackground:true});
     checks.push(`${styled?'imported':'builtin'}/${scene}: rendered, transparent capture area preserved`);
   }
   await browser.close();browser=undefined;await vite.close();vite=undefined;
-  await stop();await start();const restored=await state();assert.deepEqual(restored.overlay.stylePack,ref);assert.equal(restored.production.program.overlay.stylePack.id,'jianlou');
-  assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,2);
+  await stop();await start();const restored=await state();assert.deepEqual(restored.overlay.stylePack,ref);assert.equal(restored.production.program.overlay.stylePack.id,BUILTIN_STYLE_REF.id);
+  assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,6);
   checks.push('real service restart restores both immutable style versions and separate preview/program selection');
   assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);
   await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors,blocked},null,2));console.log(checks.join('\n'));

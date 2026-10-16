@@ -1,8 +1,10 @@
 import path from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import { BUILTIN_RUNTIME_STYLE, BUILTIN_STYLE_PACK, FULL_STYLE_SCENES, STYLE_SCENES, STYLE_SURFACES, styleSummary, validStyleRef } from '../shared/style-packs';
+import { BUILTIN_STYLE_RECORDS, BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_REF, builtinStyle, BUILTIN_STYLE_PACK, FULL_STYLE_SCENES, STYLE_SCENES, STYLE_SURFACES, styleSummary, validStyleRef } from '../shared/style-packs';
 import type { RuntimeStylePack, StylePack, StylePackRef, StylePackSummary, StyleSurface } from '../shared/style-packs';
 import { readStyleZip, writeStyleZip } from './style-pack-zip';
 
@@ -54,11 +56,28 @@ export function validateStyleManifest(input: unknown): StylePack {
   return { format: 'riftcast-style-pack', schemaVersion: 1, id: m.id, name: text(m.name, 80), version, author: text(m.author, 80, true), description: text(m.description, 500, true), canvas: { width: 1920, height: 1080 }, palette, fonts: fonts as StylePack['fonts'], textures: surfaces(m.textures, true), scenes: result, assets };
 }
 
-export function builtinStyleArchive(): Buffer {
-  const manifest = structuredClone(BUILTIN_STYLE_PACK), files: Record<string, Buffer> = {};
-  for (const [id, data] of Object.entries(manifest.assets)) { manifest.assets[id] = `assets/${id}.png`; files[manifest.assets[id]] = Buffer.from(data.split(',')[1], 'base64'); }
-  files['manifest.json'] = Buffer.from(JSON.stringify(manifest, null, 2) + '\n');
-  files['README.md'] = Buffer.from('RiftCast 风格包 v1\n\n本包为简陋包原始外观。制作新风格时先将 manifest.json 的 id 改为唯一英文标识，并填写 name、version。替换 assets 内的贴图，编辑 palette 与固定贴图槽。将 manifest.json 和 assets 文件夹一同压缩到 ZIP 根目录，场景库 > 风格包 > 导入。\n\n画布 1920×1080。局内、BP、采访背景保留透明，teamfight 保留全透明。图片支持 PNG、JPEG、静态 WebP；透明装饰请用 PNG。禁止脚本、外链、SVG、字体文件。仅外观变化，英雄、队伍、选手、比分仍由实时数据绘制。先准备到预监，核对后 TAKE。\n');
+const applicationRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+function builtinRecord(ref: Pick<StylePackRef, 'id' | 'revision'>) {
+  return BUILTIN_STYLE_RECORDS.find(entry => entry.manifest.id === ref.id && entry.revision === ref.revision);
+}
+function builtinAsset(ref: StylePackRef, id: string): Buffer {
+  const entry = builtinRecord(ref), file = entry?.manifest.assets[id];
+  if (!entry || !file || !identifier.test(id)) throw new Error('内置贴图不存在');
+  const relative = path.join('style-packs', ref.id, ref.revision, file);
+  // Vite copies the original PNG files into dist; packaged service lives in server/.
+  const candidate = ['dist', 'public'].map(dir => path.join(applicationRoot, dir, relative)).find(existsSync);
+  if (!candidate) throw new Error(`内置风格包资源缺失：${entry.manifest.name}/${id}，请修复应用安装`);
+  const bytes = readFileSync(candidate);
+  if (digest(bytes) !== entry.hashes[file]) throw new Error(`内置风格包资源损坏：${entry.manifest.name}/${id}，请修复应用安装`);
+  return bytes;
+}
+export function builtinStyleArchive(ref: StylePackRef = BUILTIN_STYLE_REF): Buffer {
+  const entry = builtinRecord(ref);
+  if (!entry) throw new Error('内置风格包不存在');
+  const manifest = entry.manifest;
+  const files: Record<string, Buffer> = { 'manifest.json': Buffer.from(JSON.stringify(manifest, null, 2) + '\n') };
+  for (const [id, file] of Object.entries(manifest.assets)) files[file] = builtinAsset(ref, id);
+  files['README.md'] = Buffer.from(`${manifest.name} / RiftCast 1.0.0\n\n内置风格包，可独立导入或用于制作派生美术。派生包请修改 manifest.json 的 id、name 和 version。图片、配色与固定版式共同形成节目外观，赛事数据继续动态绘制。先准备到预监，检查后 TAKE。\n`);
   return writeStyleZip(files);
 }
 
@@ -72,8 +91,11 @@ export class StylePackStore {
   constructor(readonly directory: string) {}
   private key(ref: Pick<StylePackRef, 'id' | 'revision'>) { return `${ref.id}--${ref.revision}`; }
   async initialize(): Promise<void> {
+    // Fail before startup on an incomplete application package; do not silently lose shipped art.
+    for (const pack of BUILTIN_RUNTIME_STYLES) for (const id of Object.keys(pack.assets)) builtinAsset(pack, id);
     await mkdir(this.directory, { recursive: true });
     for (const entry of (await readdir(this.directory, { withFileTypes: true })).filter(e => e.isDirectory() && /^[a-z][a-z0-9-]{0,47}--[a-f0-9]{64}$/.test(e.name)).slice(0, 50)) {
+      if (entry.name.startsWith('jianlou--')) continue; // Retired package is not installed or advertised.
       try {
         const dir = path.join(this.directory, entry.name), bytes = await readFile(path.join(dir, 'record.json'));
         if (bytes.length > 256 * 1024) throw new Error('记录过大');
@@ -81,14 +103,14 @@ export class StylePackStore {
         for (const file of Object.values(manifest.assets)) { const bytes = await readFile(path.join(dir, file)); if (bytes.length > 8 * 1024 * 1024) throw new Error('图片过大'); hashes[file] = digest(bytes); }
         const revision = revisionFor(manifest, hashes);
         if (manifest.id === 'jianlou' || revision !== stored.revision || this.key({ id: manifest.id, revision }) !== entry.name) throw new Error('文件校验失败');
-        this.installed.set(entry.name, { manifest, hashes, revision });
+        if (!builtinStyle({ id: manifest.id, revision })) this.installed.set(entry.name, { manifest, hashes, revision });
       } catch { this.warnings.push(`风格包 ${entry.name.slice(0, 48)} 已损坏，暂不可用；请重新导入原包`); }
     }
   }
-  list(): StylePackSummary[] { return [styleSummary(BUILTIN_RUNTIME_STYLE), ...[...this.installed.values()].map(s => styleSummary(this.runtime(s)))]; }
+  list(): StylePackSummary[] { return [...BUILTIN_RUNTIME_STYLES.map(styleSummary), ...[...this.installed.values()].map(s => styleSummary(this.runtime(s)))]; }
   get(ref: StylePackRef): RuntimeStylePack {
     if (!validStyleRef(ref)) throw new Error('风格包引用无效');
-    if (ref.id === 'jianlou') return BUILTIN_RUNTIME_STYLE;
+    const builtin = builtinStyle(ref); if (builtin) return builtin;
     const pack = this.installed.get(this.key(ref)); if (!pack) throw new Error('风格包不存在或已损坏，请重新导入');
     return this.runtime(pack);
   }
@@ -97,14 +119,15 @@ export class StylePackStore {
     return { ...manifest, revision: stored.revision, builtin: false, assets: Object.fromEntries(Object.keys(manifest.assets).map(id => [id, `/api/style-packs/${manifest.id}/${stored.revision}/assets/${id}`])) };
   }
   async asset(ref: StylePackRef, id: string): Promise<Buffer> {
-    this.get(ref); const stored = this.installed.get(this.key(ref)), file = stored?.manifest.assets[id];
+    this.get(ref); if (builtinStyle(ref)) return builtinAsset(ref, id);
+    const stored = this.installed.get(this.key(ref)), file = stored?.manifest.assets[id];
     if (!file || !identifier.test(id)) throw new Error('贴图不存在');
     const bytes = await readFile(path.join(this.directory, this.key(ref), file));
     if (digest(bytes) !== stored!.hashes[file]) throw new Error('贴图已损坏，请重新导入风格包');
     return bytes;
   }
   async export(ref: StylePackRef): Promise<Buffer> {
-    this.get(ref); if (ref.id === 'jianlou') return builtinStyleArchive();
+    this.get(ref); if (builtinStyle(ref)) return builtinStyleArchive(ref);
     const stored = this.installed.get(this.key(ref))!, files: Record<string, Buffer> = { 'manifest.json': Buffer.from(JSON.stringify(stored.manifest, null, 2) + '\n') };
     for (const [id, file] of Object.entries(stored.manifest.assets)) files[file] = await this.asset(ref, id);
     return writeStyleZip(files);
@@ -119,11 +142,7 @@ export class StylePackStore {
     const manifest = validateStyleManifest(JSON.parse(raw.toString('utf8')));
     const claimed = new Set(['manifest.json', 'README.md', ...Object.values(manifest.assets)]);
     for (const filename of entries.keys()) if (!claimed.has(filename)) throw new Error(`存在未声明的素材：${filename}`);
-    if (manifest.id === 'jianlou') {
-      const original = await readStyleZip(builtinStyleArchive());
-      if (JSON.stringify(manifest) === JSON.stringify(validateStyleManifest(JSON.parse(original.get('manifest.json')!.toString()))) && Object.values(manifest.assets).every(file => entries.get(file)?.equals(original.get(file)!))) return styleSummary(BUILTIN_RUNTIME_STYLE);
-      throw new Error('jianlou 为内置简陋包保留标识，请为新风格修改 manifest.json 的 id');
-    }
+    if (manifest.id === 'jianlou') throw new Error('简陋包已退役，请使用冰川极光或其他风格包');
     const files: Record<string, Buffer> = {}, hashes: Record<string, string> = {}; let pixels = 0, bytes = 0;
     for (const [id, file] of Object.entries(manifest.assets)) {
       const input = entries.get(file); if (!input) throw new Error(`缺少贴图：${file}`);
@@ -140,6 +159,8 @@ export class StylePackStore {
       const filename = `assets/${id}.png`; manifest.assets[id] = filename; files[filename] = png; hashes[filename] = digest(png);
     }
     const revision = revisionFor(manifest, hashes), stored = { manifest, hashes, revision }, key = this.key({ id: manifest.id, revision });
+    const builtin = builtinStyle({ id: manifest.id, revision });
+    if (builtin) return styleSummary(builtin);
     if (this.installed.has(key)) return styleSummary(this.runtime(this.installed.get(key)!));
     if (this.installed.size >= 50) throw new Error('已安装 50 个风格版本，请在停播后备份并清理数据目录');
     const temporary = path.join(this.directory, `.import-${randomUUID()}`), destination = path.join(this.directory, key);

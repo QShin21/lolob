@@ -1,10 +1,10 @@
 import { tsImport } from 'tsx/esm/api';
 import sharp from 'sharp';
-const { builtinStyleArchive } = await tsImport('../server/style-packs.ts', import.meta.url);
+const { syntheticStyleArchive } = await tsImport('../server/style-pack-fixture.ts', import.meta.url);
 const { readStyleZip, writeStyleZip } = await tsImport('../server/style-pack-zip.ts', import.meta.url);
 /** Synthetic contrast artwork. Test fixture only, not a second shipped design. */
 export async function stylePackFixture() {
-  const files = Object.fromEntries(await readStyleZip(builtinStyleArchive()));
+  const files = Object.fromEntries(await readStyleZip(await syntheticStyleArchive()));
   const manifest = JSON.parse(files['manifest.json'].toString());
   manifest.id = 'verification-cup'; manifest.name = '验证用赛事风格'; manifest.version = '1.0.0';
   manifest.description = 'Synthetic verification fixture';

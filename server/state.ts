@@ -77,6 +77,12 @@ export function normalizeSavedState(saved: BroadcastState): BroadcastState {
   restored.production={...productionDefaults(),...saved.production};
   if (restored.production.program) restored.production.program = { ...captureProgram(restored), ...restored.production.program };
   ensureProduction(restored);
+  // Configuration-only migration covers both buses and the undo/redo snapshot.
+  if (restored.production.program) restored.production.program = { ...restored.production.program,
+    overlay: { ...restored.production.program.overlay, stylePack: styleRef(restored.production.program.overlay?.stylePack) } };
+  const previous = restored.production.previousProgram;
+  if (previous) restored.production.previousProgram = { ...previous, content: { ...previous.content,
+    overlay: { ...previous.content.overlay, stylePack: styleRef(previous.content.overlay?.stylePack) } } };
   return restored;
 }
 export class ValidationError extends Error {}

@@ -19,6 +19,13 @@ module.exports = {
     }
     runtimeRequire('sharp');
     const fs = require('node:fs');
+    const { createHash } = require('node:crypto');
+    for (const entry of require('./shared/style-pack-catalog.json').entries) {
+      for (const [file, expected] of Object.entries(entry.hashes)) {
+        const location = path.join(appRoot, 'dist/style-packs', entry.manifest.id, entry.revision, file);
+        if (!fs.existsSync(location) || createHash('sha256').update(fs.readFileSync(location)).digest('hex') !== expected) throw new Error('内置风格贴图缺失或损坏: ' + entry.manifest.name + '/' + file);
+      }
+    }
     for (const champion of require('./shared/champion-art-catalog.json').champions) {
       if (!fs.existsSync(path.join(appRoot, 'dist/champion-art', champion.id + '-icon.webp'))) throw new Error('OCR 内置头像缺失: ' + champion.id);
     }

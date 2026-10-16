@@ -29,6 +29,7 @@ jobs:
       - name: Prepare pinned archive used by driver wrapper tests (download only)
         run: node scripts/ensure-vbcable.cjs
       - run: npm run check
+      - run: npm run verify:builtin-assets
       - name: Run tests
         shell: bash
         run: |
@@ -38,6 +39,7 @@ jobs:
       - name: Verify report fixture through service restart
         run: node scripts/verify-report-fixture-093.mjs
       - run: npm run build
+      - run: npm run verify:builtin-contracts
       - name: Upload test evidence
         if: always()
         uses: actions/upload-artifact@v4

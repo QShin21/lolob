@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Download, Upload, X, Palette } from 'lucide-react';
 import type { BroadcastState, Champion, StateContext, BuiltinScene } from '../../shared/types';
-import { BUILTIN_RUNTIME_STYLE, STYLE_PACK_MAX_BYTES, STYLE_SCENES, sameStyle, styleRef, styleSummary } from '../../shared/style-packs';
+import { BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_REF, STYLE_PACK_MAX_BYTES, STYLE_SCENES, sameStyle, styleRef, styleSummary } from '../../shared/style-packs';
 import type { StylePackSummary } from '../../shared/style-packs';
 import { api, sceneInfo } from '../lib';
 import { BroadcastCanvas } from './BroadcastCanvas';
@@ -11,7 +11,7 @@ import './style-pack-manager.css';
 type Props = { state: BroadcastState; champions: Champion[]; onClose: () => void } & Pick<StateContext, 'send' | 'notify' | 'seat' | 'connected'>;
 export function StylePackManager({ state, champions, send, notify, seat, connected, onClose }: Props) {
   const dialog = useRef<HTMLDialogElement>(null), fileInput = useRef<HTMLInputElement>(null), working = useRef(false);
-  const [packs, setPacks] = useState<StylePackSummary[]>([styleSummary(BUILTIN_RUNTIME_STYLE)]);
+  const [packs, setPacks] = useState<StylePackSummary[]>(BUILTIN_RUNTIME_STYLES.map(styleSummary));
   const [selected, setSelected] = useState(styleRef(state.overlay.stylePack));
   const [scene, setScene] = useState<BuiltinScene>(state.previewScene.startsWith('custom:') ? 'standby' : state.previewScene as BuiltinScene);
   const [busy, setBusy] = useState(false), [loading, setLoading] = useState(true), [error, setError] = useState(''), [warnings, setWarnings] = useState<string[]>([]), [ready, setReady] = useState(false);
@@ -61,13 +61,13 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
     <div className="style-pack-buses"><span>当前节目：<b>{onAir.name}</b></span><span>待播配置：<b>{active.name}</b></span>{!sameStyle(active, onAir) && <strong>新风格待 TAKE</strong>}</div>
     <div className="style-pack-layout">
       <aside><div className="style-pack-import"><button className="button primary" disabled={!canEdit || busy || loading} onClick={() => fileInput.current?.click()}><Upload size={15}/>{busy ? '处理中…' : '导入风格包'}</button><input ref={fileInput} type="file" accept=".zip,application/zip" aria-label="导入 ZIP 风格包" hidden onChange={e => { const file = e.target.files?.[0]; e.target.value = ''; void importFile(file); }}/><small>ZIP · 最多 48 MiB</small></div>
-        <div className="style-pack-list" aria-label="已安装风格包">{packs.map(pack => <button key={`${pack.id}/${pack.revision}`} className="style-pack-choice" aria-pressed={sameStyle(pack, selected)} disabled={busy} onClick={() => setSelected(pack)}><strong>{pack.name}</strong><span>{pack.builtin ? '内置 · ' : ''}v{pack.version} · {pack.author || '未署名'}</span><small>{pack.id} · {pack.revision.slice(0, 10)}</small>{sameStyle(pack, active) && <b>待播使用中</b>}</button>)}</div>
+        <div className="style-pack-list" aria-label="已安装风格包">{packs.map(pack => <button key={`${pack.id}/${pack.revision}`} className="style-pack-choice" aria-pressed={sameStyle(pack, selected)} disabled={busy} onClick={() => setSelected(pack)}><strong>{pack.name}</strong><span>{pack.builtin ? (sameStyle(pack, BUILTIN_STYLE_REF) ? '内置 · 默认 · ' : '内置 · ') : ''}v{pack.version} · {pack.author || '未署名'}</span><small>{pack.id} · {pack.revision.slice(0, 10)}</small>{sameStyle(pack, active) && <b>待播使用中</b>}</button>)}</div>
         {loading && <p role="status">正在读取已安装风格包…</p>}
       </aside>
       <section className="style-pack-detail"><div className="style-pack-preview-heading"><div><h3>{selectedInfo?.name ?? selected.name}</h3><p>{selectedInfo?.description}</p></div><label>预览节目<select aria-label="风格包预览节目" value={scene} onChange={e => setScene(e.target.value as BuiltinScene)}>{STYLE_SCENES.map(s => <option key={s} value={s}>{sceneInfo[s].name}</option>)}</select></label></div>
         <div className="style-pack-preview"><BroadcastCanvas state={previewState} champions={champions} scene={scene}/></div>
         <p>此处仅查看效果。导入后选择“准备到预监”，再回导播台核对并 TAKE；正在播出的风格保持不变。</p>
-        <p>美术制作：导出“简陋包”，解压后修改清单标识与图片，再将清单和 assets 文件夹压缩为 ZIP 导入。</p>
+        <p>美术制作：导出任一内置风格包，解压后修改清单标识与图片，再将清单和 assets 文件夹压缩为 ZIP 导入。</p>
         {scene === 'teamfight' && <p>团战节目使用游戏原生画面，风格包保持透明。</p>}
         {!canEdit && <p>导入和切换由当前主导播操作；此席位可查看与导出。</p>}
         {warnings.map((w, i) => <p className="style-pack-warning" key={i}>{w}</p>)}
