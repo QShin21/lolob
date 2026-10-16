@@ -1,0 +1,42 @@
+name: Finalize verified 0.9.3 draft
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [new]
+    paths: ['.github/workflows/finalize-release-093.yml']
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: release-0.9.3
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    if: github.repository == 'QShin21/lolob' && github.ref == 'refs/heads/new'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test release recovery guards
+        run: node --test scripts/release-api-093.test.mjs
+      - name: Verify existing bytes and publish the exact draft by ID
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/finalize-release-093.mjs
+      - name: Upload publication receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-0.9.3
+          retention-days: 30
+          if-no-files-found: error
+          path: verification-output/release-0.9.3/publication.json

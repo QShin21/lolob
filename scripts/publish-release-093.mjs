@@ -4,6 +4,7 @@ import { readFile, copyFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
+import { api, apiRoot, findRelease, assertAssets } from './release-api-093.mjs';
 const repository=process.env.GITHUB_REPOSITORY;
 assert.equal(repository,'QShin21/lolob');assert.ok(process.env.GH_TOKEN,'Missing scoped release token');
 const version='0.9.3',tag=`v${version}`,folder=path.resolve('release',version);
@@ -19,11 +20,15 @@ await copyFile(path.join(folder,'使用说明.md'),path.join(folder,guide));
 await copyFile(`verification-output/release-${version}/packaged-report.json`,path.join(folder,'verification.json'));
 const files=[...manifest.artifacts.map(item=>item.name),'release-manifest.json','SHA256SUMS.txt',guide,'verification.json'];
 const gh=args=>execFileSync('gh',args,{encoding:'utf8',stdio:['ignore','pipe','inherit'],maxBuffer:4*1024*1024});
-// Publishing is refused when the immutable version already exists; no assets or tags are overwritten.
-const response=await fetch(`https://api.github.com/repos/${repository}/releases/tags/${tag}`,{headers:{Authorization:`Bearer ${process.env.GH_TOKEN}`,Accept:'application/vnd.github+json'}});
-assert.equal(response.status,404,'Version already exists or cannot be checked; inspect it before retrying');
+// Include drafts in preflight. Published releases and existing drafts are never overwritten.
+assert.equal(findRelease(tag),undefined,'Version or draft already exists; inspect it before retrying');
+const expected=[];
+for(const name of files){const hash=createHash('sha256');for await(const bytes of fs.createReadStream(path.join(folder,name)))hash.update(bytes);expected.push({name,bytes:fs.statSync(path.join(folder,name)).size,sha256:hash.digest('hex')});}
 gh(['release','create',tag,'--repo',repository,'--target',sha,'--draft','--title',`RiftCast ${version} · OCR 赛后报告`,'--notes-file',`docs/Windows-Release-${version}.md`,...files.map(name=>path.join(folder,name))]);
-const release=JSON.parse(gh(['api',`repos/${repository}/releases/tags/${tag}`]));assert.equal(release.draft,true);assert.equal(release.assets.length,files.length);
-for(const name of files){const asset=release.assets.find(item=>item.name===name);assert.ok(asset,`Missing remote ${name}`);assert.equal(asset.size,fs.statSync(path.join(folder,name)).size);if(asset.digest){const hash=createHash('sha256');for await(const bytes of fs.createReadStream(path.join(folder,name)))hash.update(bytes);assert.equal(asset.digest,`sha256:${hash.digest('hex')}`);}}
-gh(['release','edit',tag,'--repo',repository,'--draft=false','--latest']);
-const published=JSON.parse(gh(['api',`repos/${repository}/releases/tags/${tag}`]));assert.equal(published.draft,false);assert.equal(published.prerelease,false);console.log(JSON.stringify({url:published.html_url,sourceRevision:sha,assets:published.assets.map(a=>({name:a.name,size:a.size,digest:a.digest}))},null,2));
+const created=findRelease(tag);assert.ok(created,'New draft was not found');
+const release=api(`${apiRoot}/releases/${created.id}`);
+assert.equal(release.draft,true);assert.equal(release.tag_name,tag);assert.equal(release.target_commitish,sha);assertAssets(release,expected);
+api(`${apiRoot}/releases/${release.id}`,'--method','PATCH','-F','draft=false','-f','make_latest=true');
+const published=api(`${apiRoot}/releases/tags/${tag}`);
+assert.equal(published.id,release.id);assert.equal(published.target_commitish,sha);assert.equal(published.draft,false);assert.equal(published.prerelease,false);assertAssets(published,expected);
+console.log(JSON.stringify({url:published.html_url,sourceRevision:sha,assets:published.assets.map(a=>({name:a.name,size:a.size,digest:a.digest}))},null,2));
