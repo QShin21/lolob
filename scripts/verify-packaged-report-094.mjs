@@ -31,7 +31,7 @@ try {
   await cp(path.join(root,'release',version,'win-unpacked'),appRoot,{recursive:true});await mkdir(data,{recursive:true});
   const fixture=reportFixture();await writeFile(path.join(data,'state.json'),JSON.stringify(fixture));
   for(const file of ['scripts/read-spectator-gold.ps1','scripts/spectator-ocr-worker.ps1','scripts/spectator-portrait-matcher.cs'])assert.equal(hash(await readFile(path.join(appRoot,'resources/app',file))),hash(await readFile(path.join(root,file))));
-  const env={...await isolatedNativeEnvironment(sandbox),PATH:`${process.env.SystemRoot}\System32;${process.env.SystemRoot};${process.env.SystemRoot}\System32\WindowsPowerShell\v1.0`,PORT:String(port),RIFTCAST_USER_DATA_DIR:userData,RIFTCAST_OBS_AUTOSTART:'0'};
+  const env={...await isolatedNativeEnvironment(sandbox),PATH:[path.join(process.env.SystemRoot,'System32'),process.env.SystemRoot,path.join(process.env.SystemRoot,'System32','WindowsPowerShell','v1.0')].join(path.delimiter),PORT:String(port),RIFTCAST_USER_DATA_DIR:userData,RIFTCAST_OBS_AUTOSTART:'0'};
   application=await _electron.launch({executablePath:path.join(appRoot,'RiftCast.exe'),args:[],env,timeout:90000});
   await nativeRequestGuard(blocked).attach(application.context());
   page=await readyControlWindow(application);
