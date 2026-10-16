@@ -23,22 +23,24 @@ jobs:
           node-version: '22.16.0'
           cache: npm
       - run: npm ci
-      - name: Prepare pinned test fixture (download only)
-        run: node scripts/ensure-vbcable.cjs
-      - name: Export tracked source and locked Linux development dependencies
+      - name: Export bounded development files
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/style-pack-workspace"
-          git archive --format=tar.gz HEAD > "$RUNNER_TEMP/style-pack-workspace/source.tar.gz"
-          git rev-parse HEAD > "$RUNNER_TEMP/style-pack-workspace/revision.txt"
-          tar -czf "$RUNNER_TEMP/style-pack-workspace/dependencies.tar.gz" node_modules
-          if [ -d runtime ]; then
-            tar -czf "$RUNNER_TEMP/style-pack-workspace/test-runtime.tar.gz" runtime
-          fi
+          mkdir -p "$RUNNER_TEMP/style-source" "$RUNNER_TEMP/style-dependencies"
+          git archive --format=tar HEAD | python3 -c 'import tarfile,sys; src=tarfile.open(fileobj=sys.stdin.buffer,mode="r|"); dst=tarfile.open(sys.argv[1],"w:gz"); [(dst.addfile(m,src.extractfile(m) if m.isfile() else None)) for m in src if m.size<500000 and not m.name.startswith("docs/evidence/")]; dst.close()' "$RUNNER_TEMP/style-source/source.tar.gz"
+          git rev-parse HEAD > "$RUNNER_TEMP/style-source/revision.txt"
+          tar --exclude='node_modules/electron' --exclude='node_modules/electron-builder' --exclude='node_modules/app-builder-bin' --exclude='node_modules/7zip-bin' -czf "$RUNNER_TEMP/style-dependencies/dependencies.tar.gz" node_modules
+          ls -lh "$RUNNER_TEMP/style-source/" "$RUNNER_TEMP/style-dependencies/"
       - uses: actions/upload-artifact@v4
         with:
-          name: style-pack-workspace
-          path: ${{ runner.temp }}/style-pack-workspace/
+          name: style-pack-source
+          path: ${{ runner.temp }}/style-source/
+          compression-level: 0
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: style-pack-dependencies
+          path: ${{ runner.temp }}/style-dependencies/
           compression-level: 0
           retention-days: 1
