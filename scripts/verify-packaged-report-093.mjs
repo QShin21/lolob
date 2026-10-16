@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import { createServer } from 'node:net';
 import { pathToFileURL } from 'node:url';
 import { isolatedNativeEnvironment, nativeRequestGuard } from './verify-native-safety.mjs';
-import { reportFixture } from './report-093-fixture.mjs';
+import { reportFixture, amounts, counts } from './report-093-fixture.mjs';
 const modulePath=process.env.RIFTCAST_PLAYWRIGHT_MODULE;
 const {_electron}=await import(modulePath?pathToFileURL(modulePath).href:'playwright');
 const root=process.cwd(),version='0.9.3',dir=path.join(root,'verification-output',`release-${version}`);
@@ -15,27 +15,35 @@ const sandbox=await mkdtemp(path.join(os.tmpdir(),'riftcast-093-package-'));
 const appRoot=path.join(sandbox,'app'),userData=path.join(sandbox,'user'),data=path.join(userData,'data');
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const server=createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const port=server.address().port;await new Promise(resolve=>server.close(resolve));
-const errors=[],blocked=[],checks=[];let application;
+const errors=[],blocked=[],checks=[];let application,page;
 try {
   await cp(path.join(root,'release',version,'win-unpacked'),appRoot,{recursive:true});await mkdir(data,{recursive:true});
-  const fixture=reportFixture();fixture.previewScene='postgame';await writeFile(path.join(data,'state.json'),JSON.stringify(fixture));
+  const fixture=reportFixture();await writeFile(path.join(data,'state.json'),JSON.stringify(fixture));
   for(const file of ['scripts/read-spectator-gold.ps1','scripts/spectator-ocr-worker.ps1','scripts/spectator-portrait-matcher.cs'])assert.equal(hash(await readFile(path.join(appRoot,'resources/app',file))),hash(await readFile(path.join(root,file))));
   const env={...await isolatedNativeEnvironment(sandbox),PATH:`${process.env.SystemRoot}\\System32;${process.env.SystemRoot};${process.env.SystemRoot}\\System32\\WindowsPowerShell\\v1.0`,PORT:String(port),RIFTCAST_USER_DATA_DIR:userData,RIFTCAST_OBS_AUTOSTART:'0'};
   application=await _electron.launch({executablePath:path.join(appRoot,'RiftCast.exe'),args:[],env,timeout:90000});
   await nativeRequestGuard(blocked).attach(application.context());
-  const page=await application.firstWindow({timeout:90000});page.on('pageerror',e=>errors.push(e.message));
+  page=await application.firstWindow({timeout:90000});page.on('pageerror',e=>errors.push(e.message));
   const base=`http://127.0.0.1:${port}`;const health=await (await fetch(base+'/api/health')).json();assert.equal(health.version,version);
   const metadata=await application.evaluate(({app})=>({version:app.getVersion(),packaged:app.isPackaged,userData:app.getPath('userData')}));
   assert.equal(metadata.version,version);assert.equal(metadata.packaged,true);assert.equal(metadata.userData,userData);
   checks.push('isolated packaged EXE and bundled service start at 0.9.3 without development Node/npm on PATH');
+  const restored=await (await fetch(base+'/api/state')).json();
+  assert.equal(restored.finishedGameId,fixture.finishedGameId);assert.equal(restored.phase,'postgame');
+  const result=restored.gameResults.find(item=>item.id===fixture.finishedGameId);
+  assert.ok(result);assert.equal(result.winner,'red');assert.deepEqual(result.snapshot.ocrMatch,fixture.gameResults[0].snapshot.ocrMatch);
+  checks.push('bundled service restores the confirmed result and byte-equivalent serialized OCR archive');
   await page.goto(base+'/overlay?preview=1');await page.locator('.pr-gold-player').last().waitFor({timeout:30000});
   assert.equal(await page.locator('.pr-gold-player').count(),10);assert.equal(await page.locator('.pr-metrics>div').count(),6);
-  assert.equal(await page.locator('.pr-gold-player.blue .pr-gold-label>b').first().innerText(),'11.2k');
-  assert.equal(await page.locator('.pr-metrics>div').last().locator('b').first().innerText(),'0');
+  for(const [sideIndex,side] of ['blue','red'].entries()) {
+    assert.deepEqual(await page.locator(`.pr-gold-player.${side} .pr-gold-label>b`).allInnerTexts(),amounts.slice(sideIndex*5,sideIndex*5+5).map(n=>`${(n/1000).toFixed(1)}k`));
+    for(const [row,key] of ['towers','dragons','barons','voidgrubs'].entries())assert.equal(await page.locator('.pr-metrics>div').nth(row+2).locator('b').nth(sideIndex).innerText(),String(counts[side][key]));
+  }
   assert.doesNotMatch(await page.locator('.pr-overview').innerText(),/远古龙|峡谷先锋|DAMAGE/);
-  await page.screenshot({path:path.join(dir,'packaged-report.png')});checks.push('compiled packaged report restores retained OCR gold, eight objective values including zero, and six metric rows');
+  await page.screenshot({path:path.join(dir,'packaged-report.png')});checks.push('compiled packaged report restores all ten gold values, eight objective values including zero, and six metric rows');
   assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);checks.push('packaged OCR scripts match the tested source files byte for byte');
   await writeFile(path.join(dir,'packaged-report.json'),JSON.stringify({status:'passed',version,checks,errors,blocked,fixture:'synthetic archive; no live game, device installation, OBS output or platform streaming'},null,2));
 } catch(error) {
+  await page?.screenshot({path:path.join(dir,'packaged-report-failure.png')}).catch(()=>{});
   await writeFile(path.join(dir,'packaged-report.json'),JSON.stringify({status:'failed',version,checks,errors:[...errors,String(error)],blocked},null,2));throw error;
 } finally {await application?.close();await rm(sandbox,{recursive:true,force:true,maxRetries:5,retryDelay:1000});}

@@ -46,6 +46,8 @@ jobs:
           $tests = @(Get-ChildItem server -Filter '*.test.ts' | ForEach-Object FullName)
           node --import tsx --test --test-concurrency=1 @tests 2>&1 | Tee-Object verification-output/release-0.9.3/tests.txt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify report fixture through service restart
+        run: node scripts/verify-report-fixture-093.mjs
       - run: npm run build
       - name: Prepare isolated browser test dependency
         run: |

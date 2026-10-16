@@ -35,6 +35,8 @@ jobs:
           set -euo pipefail
           mkdir -p verification-output/ci
           npm test 2>&1 | tee verification-output/ci/tests.txt
+      - name: Verify report fixture through service restart
+        run: node scripts/verify-report-fixture-093.mjs
       - run: npm run build
       - name: Upload test evidence
         if: always()
