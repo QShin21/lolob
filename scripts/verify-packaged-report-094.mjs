@@ -17,15 +17,25 @@ const appRoot=path.join(sandbox,'app'),userData=path.join(sandbox,'user'),data=p
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const server=createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const port=server.address().port;await new Promise(resolve=>server.close(resolve));
 const errors=[],blocked=[],checks=[];let application,page;
+const base=`http://127.0.0.1:${port}`;
+async function readyControlWindow(app){
+  const window=await app.firstWindow({timeout:90000});
+  window.on('pageerror',error=>errors.push(error.message));
+  // firstWindow resolves before Electron's asynchronous loadURL finishes.
+  // Let the real startup navigation and React hydration finish before navigating.
+  await window.waitForURL(base+'/',{timeout:90000,waitUntil:'domcontentloaded'});
+  await window.getByRole('button',{name:'风格包',exact:true}).waitFor({timeout:30000});
+  return window;
+}
 try {
   await cp(path.join(root,'release',version,'win-unpacked'),appRoot,{recursive:true});await mkdir(data,{recursive:true});
   const fixture=reportFixture();await writeFile(path.join(data,'state.json'),JSON.stringify(fixture));
   for(const file of ['scripts/read-spectator-gold.ps1','scripts/spectator-ocr-worker.ps1','scripts/spectator-portrait-matcher.cs'])assert.equal(hash(await readFile(path.join(appRoot,'resources/app',file))),hash(await readFile(path.join(root,file))));
-  const env={...await isolatedNativeEnvironment(sandbox),PATH:`${process.env.SystemRoot}\\System32;${process.env.SystemRoot};${process.env.SystemRoot}\\System32\\WindowsPowerShell\\v1.0`,PORT:String(port),RIFTCAST_USER_DATA_DIR:userData,RIFTCAST_OBS_AUTOSTART:'0'};
+  const env={...await isolatedNativeEnvironment(sandbox),PATH:`${process.env.SystemRoot}\System32;${process.env.SystemRoot};${process.env.SystemRoot}\System32\WindowsPowerShell\v1.0`,PORT:String(port),RIFTCAST_USER_DATA_DIR:userData,RIFTCAST_OBS_AUTOSTART:'0'};
   application=await _electron.launch({executablePath:path.join(appRoot,'RiftCast.exe'),args:[],env,timeout:90000});
   await nativeRequestGuard(blocked).attach(application.context());
-  page=await application.firstWindow({timeout:90000});page.on('pageerror',e=>errors.push(e.message));
-  const base=`http://127.0.0.1:${port}`;const health=await (await fetch(base+'/api/health')).json();assert.equal(health.version,version);
+  page=await readyControlWindow(application);
+  const health=await (await fetch(base+'/api/health')).json();assert.equal(health.version,version);
   const metadata=await application.evaluate(({app})=>({version:app.getVersion(),packaged:app.isPackaged,userData:app.getPath('userData')}));
   assert.equal(metadata.version,version);assert.equal(metadata.packaged,true);assert.equal(metadata.userData,userData);
   checks.push('isolated packaged EXE and bundled service start at 0.9.4 without development Node/npm on PATH');
@@ -60,7 +70,7 @@ try {
   checks.push('bundled unzipper and native sharp import and export ZIP through the packaged UI; preview is styled, program and archived data remain unchanged');
   await application.close();application=undefined;
   application=await _electron.launch({executablePath:path.join(appRoot,'RiftCast.exe'),args:[],env,timeout:90000});
-  await nativeRequestGuard(blocked).attach(application.context());page=await application.firstWindow({timeout:90000});page.on('pageerror',e=>errors.push(e.message));
+  await nativeRequestGuard(blocked).attach(application.context());page=await readyControlWindow(application);
   await page.goto(base+'/overlay?preview=1');await page.locator('[data-style-pack=verification-cup][data-style-status=ready]').waitFor({timeout:30000});
   const restart=await(await fetch(base+'/api/state')).json();assert.deepEqual(restart.overlay.stylePack,ref);
   assert.equal(restart.production.program.overlay.stylePack.id,'jianlou');
