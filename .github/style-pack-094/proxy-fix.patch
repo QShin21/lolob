@@ -1,0 +1,13 @@
+diff --git a/scripts/verify-style-packs.mjs b/scripts/verify-style-packs.mjs
+index 6c1141e..17a77d1 100644
+--- a/scripts/verify-style-packs.mjs
++++ b/scripts/verify-style-packs.mjs
+@@ -72,7 +72,7 @@ try {
+   // Standalone renderer fixtures exercise every real scene component against the actual asset API.
+   const html=path.join(dir,'index.html');await writeFile(html,'<div id="root"></div><script type="module" src="./entry.tsx"></script>');
+   await writeFile(path.join(dir,'entry.tsx'),`import React from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import'/src/styles.css';import'/src/design-tokens.css';const q=new URLSearchParams(location.search);const state=${JSON.stringify(fixture)};if(q.has('styled'))state.overlay.stylePack=${JSON.stringify(ref)};document.body.style.margin='0';createRoot(document.getElementById('root')).render(<BroadcastCanvas state={state} champions={JSON.stringify(bundledChampions())} scene={q.get('scene')||'standby'} output/>);`);
+-  vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0,proxy:{'/api':base}}});await vite.listen();const origin=`http://127.0.0.1:${vite.httpServer.address().port}`;
++  vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0,proxy:{'/api':{target:base,changeOrigin:true}}}});await vite.listen();const origin=`http://127.0.0.1:${vite.httpServer.address().port}`;
+   const render=await context.newPage();render.on('pageerror',e=>errors.push(e.message));await render.setViewportSize({width:1920,height:1080});
+   for(const styled of [false,true])for(const scene of STYLE_SCENES){
+     await render.goto(`${origin}/verification-output/release-${version}/styles/index.html?scene=${scene}${styled?'&styled=1':''}`);
