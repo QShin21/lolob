@@ -8,7 +8,12 @@ import { VirtualCameraDriver } from './virtual-camera-driver';
 test('existing OBS registration is reused without requesting elevation or changing its path', async () => {
   const calls: string[] = [];
   const driver = new VirtualCameraDriver(() => 'Z:\\missing-test-runtime', async script => { calls.push(script); return { stdout: '{"installed":true}' }; });
-  assert.equal((await driver.install()).installed, process.platform === 'win32');
+  if (process.platform !== 'win32') {
+    await assert.rejects(driver.install(), /需要 Windows x64/);
+    assert.deepEqual(calls, [], 'unsupported platforms must not execute registration commands');
+    return;
+  }
+  assert.equal((await driver.install()).installed, true);
   assert.ok(calls.every(script => !script.includes('RunAs') && !script.includes('regsvr32')), 'valid system registration stays untouched');
 });
 

@@ -2,6 +2,9 @@ name: Release 0.9.3
 
 on:
   workflow_dispatch:
+  push:
+    branches: [new]
+    paths: ['.github/workflows/release-093.yml']
 
 permissions:
   contents: write
@@ -51,6 +54,14 @@ jobs:
           "RIFTCAST_PLAYWRIGHT_MODULE=$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/index.mjs" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
       - name: Verify report layouts
         run: node scripts/verify-report-093.mjs
+      - name: Upload report layout review
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-layout-0.9.3
+          retention-days: 30
+          path: |
+            verification-output/release-0.9.3/layout/*.json
+            verification-output/release-0.9.3/layout/*.png
       - name: Build Windows Setup and ZIP
         run: npm run release:win
       - name: Verify isolated packaged report

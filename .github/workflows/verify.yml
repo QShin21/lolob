@@ -26,18 +26,20 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - name: Export reproducible review inputs
-        if: github.ref == 'refs/heads/new'
-        run: |
-          git archive --format=tar HEAD | gzip > /tmp/lolob-review-source.tar.gz
-          tar -czf /tmp/lolob-review-dependencies.tar.gz node_modules
-      - uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/new'
-        with:
-          name: lolob-review-inputs
-          path: /tmp/lolob-review-*.tar.gz
-          retention-days: 1
-          compression-level: 0
+      - name: Prepare pinned archive used by driver wrapper tests (download only)
+        run: node scripts/ensure-vbcable.cjs
       - run: npm run check
-      - run: npm test
+      - name: Run tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verification-output/ci
+          npm test 2>&1 | tee verification-output/ci/tests.txt
       - run: npm run build
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-linux
+          path: verification-output/ci/tests.txt
+          retention-days: 30

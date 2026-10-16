@@ -62,7 +62,7 @@ test('automatic team calibration retains independently disabled player OCR and i
   assert.deepEqual(calibrated.config.players,players);assert.deepEqual(state.settings.economyOcr?.players,players);
 });
 
-test('Windows OCR auto-location uses word bounds, excludes the timer and rejects a third gold candidate', {skip:process.platform!=='win32'},async()=>{
+test('Windows OCR auto-location uses word bounds, excludes the timer and rejects a third gold candidate', {skip:process.platform!=='win32',timeout:180000},async()=>{
   const taskDirectory=await mkdtemp(path.join(os.tmpdir(),'riftcast-gold-fixture-'));
   try{
     const taskGenerator=path.join(taskDirectory,'generate.ps1');
@@ -88,7 +88,9 @@ $taskGraphics.DrawString('15.2k',$taskFont,[Drawing.Brushes]::White,[single]790,
 $taskImage.Save($OutputPath+'.ambiguous.png',[Drawing.Imaging.ImageFormat]::Png)
 $taskFont.Dispose();$taskGraphics.Dispose();$taskImage.Dispose()
 `;
-    await writeFile(taskGenerator,'﻿'+source,'utf8');const run=promisify(execFile),options={windowsHide:true,timeout:15000};
+    // Cold WinRT OCR and Add-Type initialization on a clean Windows runner can exceed 15 seconds.
+    // Bound each process while preserving every native OCR assertion and the production worker deadlines.
+    await writeFile(taskGenerator,'﻿'+source,'utf8');const run=promisify(execFile),options={windowsHide:true,timeout:60000};
     const taskImage=path.join(taskDirectory,'scoreboard.png');
     await run('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',taskGenerator,'-OutputPath',taskImage,'-ProductionPath',taskProduction],options);
     const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',taskProduction,'-AutoLocate','-ImagePath'];
