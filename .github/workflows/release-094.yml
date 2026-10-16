@@ -29,30 +29,6 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      # One-time source transfer. The reviewed patch is bounded and pinned by SHA-256.
-      # After the feature commit removes its payload this step remains a no-op.
-      - name: Apply reviewed 0.9.4 source payload
-        if: hashFiles('.github/style-pack-094/0.b64') != ''
-        run: |
-          $ErrorActionPreference = 'Stop'
-          if ((git rev-parse HEAD^) -ne '208489627033d97362eb2a1ea9731b2b7fe275c7') { throw 'Unexpected source base' }
-          git fetch origin new
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'Concurrent branch update; source transfer stopped' }
-          node --input-type=module -e "import fs from 'node:fs'; import path from 'node:path'; import {brotliDecompressSync} from 'node:zlib'; import {createHash} from 'node:crypto'; import assert from 'node:assert/strict'; const encoded=[0,1,2,3].map(i=>fs.readFileSync('.github/style-pack-094/'+i+'.b64','utf8')).join(''); const patch=brotliDecompressSync(Buffer.from(encoded,'base64'),{maxOutputLength:1048576}); assert.equal(createHash('sha256').update(patch).digest('hex'),'4e3c2ee296c10307254ef7c9b3149a07e2a0fdf0d5d176ad393cb0ec3dcc3640'); fs.writeFileSync(path.join(process.env.RUNNER_TEMP,'reviewed-094.patch'),patch);"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          git apply --index --unidiff-zero --whitespace=error "$env:RUNNER_TEMP/reviewed-094.patch"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          git apply --index --whitespace=error .github/style-pack-094/proxy-fix.patch
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          git rm -r .github/style-pack-094
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'feat: 0.9.4 scene style packs (简陋包)'
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          git push origin HEAD:new
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Verify version and source branch
         run: |
           node -e "require('node:assert/strict').equal(require('./package.json').version, '0.9.4')"
