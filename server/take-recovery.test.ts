@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { createServer, type AddressInfo } from 'node:net';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -34,7 +35,12 @@ test('HTTP restart recovers saved TAKE and rejects offline switches without chan
   const dir=await mkdtemp(path.join(tmpdir(),'riftcast-take-recovery-'));
   const s=applyAction(createSeed(),{type:'take'});
   await writeFile(path.join(dir,'state.json'),JSON.stringify(s));
-  const port=54000+Math.floor(Math.random()*9000),base=`http://127.0.0.1:${port}`;
+  // Ask the OS for an available port instead of guessing inside Windows' reserved ranges.
+  const listener=createServer();
+  await new Promise<void>((resolve,reject)=>{listener.once('error',reject);listener.listen(0,'127.0.0.1',resolve);});
+  const port=(listener.address() as AddressInfo).port;
+  await new Promise<void>((resolve,reject)=>listener.close(error=>error?reject(error):resolve()));
+  const base=`http://127.0.0.1:${port}`;
   const child=spawn(process.execPath,['--import','tsx','server/index.ts'],{
     cwd:process.cwd(),windowsHide:true,stdio:['ignore','ignore','pipe','ipc'],
     env:{...process.env,PORT:String(port),RIFTCAST_DATA_DIR:dir,RIFTCAST_AUTO_CONNECT:'0',RIFTCAST_OBS_AUTOSTART:'0',RIFTCAST_OFFLINE:'1'},

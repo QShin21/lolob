@@ -4,7 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches: [new]
-    paths: ['.github/workflows/release-094.yml']
+    paths:
+      - '.github/workflows/release-094.yml'
+      - 'scripts/verify-style-packs.mjs'
+      - 'scripts/verify-packaged-report-094.mjs'
+      - 'src/components/style-pack-surfaces.css'
 
 permissions:
   contents: write

@@ -82,7 +82,16 @@ try {
     if(['draft','live','economy','ranking','interview','teamfight','gold-ranking'].includes(scene))assert.equal(await render.locator('.cast-canvas').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
     if(scene==='teamfight')assert.equal(await render.locator('.cast-canvas').innerHTML(),'');
     if(scene==='postgame')assert.equal(await render.locator('.pr-gold-player').count(),10);
-    if(styled&&scene==='standby')assert.match(await render.locator('.cast-canvas').evaluate(el=>getComputedStyle(el).backgroundImage),/verification-cup/);
+    if(scene!=='teamfight'){
+      const surfaces=await render.locator('[data-style-pack]').evaluate(root=>{
+        const targets={header:'.arena-header,.arena-analysis-heading,.pr-header,.rl-header',panel:'.cast-analysis,.cast-interview,.pb-output,.cast-gold-ranking',cardBlue:'.cast-draft-team.blue,.rl-card.blue',cardRed:'.cast-draft-team.red,.rl-card.red',scoreboard:'.lb-scoreboard',rowBlue:'.lb-player-row.blue',rowRed:'.lb-player-row.red',nameplate:'.lb-nameplate,.cast-interview-name,.lt-native-team',ticker:'.cast-ticker',paper:'.arena-start',draftCenter:'.cast-draft-center'};
+        const checked=[];
+        if(root.dataset.packBackground==='true')for(const el of root.querySelectorAll('.cast-canvas,.arena-full,.rune-lineup,.postgame-report'))checked.push({slot:'background',image:getComputedStyle(el).backgroundImage});
+        for(const slot of root.dataset.packTextures.split(' ').filter(Boolean))for(const el of root.querySelectorAll(targets[slot]))checked.push({slot,image:getComputedStyle(el).backgroundImage});
+        return checked;
+      });
+      for(const surface of surfaces)assert.match(surface.image,styled?/\/api\/style-packs\/verification-cup\//:/data:image\/png/,`${scene}/${surface.slot} must use the selected texture`);
+    }
     await render.screenshot({path:path.join(dir,`${styled?'imported':'builtin'}-${scene}.png`),omitBackground:true});
     checks.push(`${styled?'imported':'builtin'}/${scene}: rendered, transparent capture area preserved`);
   }
