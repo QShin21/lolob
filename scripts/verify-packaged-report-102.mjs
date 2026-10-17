@@ -26,6 +26,9 @@ async function readyControlWindow(app){
   // Let the real startup navigation and React hydration finish before navigating.
   await window.waitForURL(base+'/',{timeout:90000,waitUntil:'domcontentloaded'});
   await window.getByRole('button',{name:'风格包',exact:true}).waitFor({timeout:30000});
+  // Seat issuance finishes after the first control buttons render. Navigating to
+  // /overlay before it completes abandons the owner token during the test.
+  await window.waitForFunction(()=>!!sessionStorage.getItem('riftcast-seat-token') && !!sessionStorage.getItem('riftcast-seat-info'),undefined,{timeout:30000});
   return window;
 }
 try {
