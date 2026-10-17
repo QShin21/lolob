@@ -4,8 +4,11 @@ import { stylePackFixture } from './style-pack-fixture.mjs';
 
 /** Exercise the same real manager and HTTP routes in browser and packaged Electron. */
 export async function checkStyleDeletion({ page, base, dir, checks }) {
-  const seat = await (await fetch(base + '/api/control/seat', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ role: 'director' }) })).json();
   await page.goto(base);
+  await page.waitForFunction(() => !!sessionStorage.getItem('riftcast-seat-token'));
+  const existingToken = await page.evaluate(() => sessionStorage.getItem('riftcast-seat-token'));
+  const seat = await (await fetch(base + '/api/control/seat', { method: 'POST', headers: { 'content-type': 'application/json', 'x-seat-token': existingToken }, body: JSON.stringify({ role: 'director' }) })).json();
+  assert.equal(seat.owner, true, 'Deletion runner must reuse the active director seat');
   await page.evaluate(token => sessionStorage.setItem('riftcast-seat-token', token), seat.token);
   await page.reload();
   await page.getByRole('button', { name: '风格包', exact: true }).click({ timeout: 30000 });
@@ -61,13 +64,16 @@ export async function checkStyleDeletion({ page, base, dir, checks }) {
   return { ref, builtin, archive };
 }
 
-export async function checkDeletedAfterRestart(base, removed, checks) {
+export async function checkDeletedAfterRestart(base, removed, checks, page) {
   const list = await (await fetch(base + '/api/style-packs')).json(); assert.equal(list.packs.length, 4);
   for (const ref of [removed.ref, removed.builtin]) {
     assert.equal(list.packs.some(p => p.id === ref.id && p.revision === ref.revision), false);
     assert.equal((await fetch(`${base}/api/style-packs/${ref.id}/${ref.revision}`, { cache: 'no-store' })).status, 404);
   }
-  const seat = await (await fetch(base + '/api/control/seat', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ role: 'director' }) })).json();
+  if (page) await page.waitForFunction(() => !!sessionStorage.getItem('riftcast-seat-token'));
+  const existingToken = page && await page.evaluate(() => sessionStorage.getItem('riftcast-seat-token'));
+  const seat = await (await fetch(base + '/api/control/seat', { method: 'POST', headers: { 'content-type': 'application/json', ...(existingToken ? { 'x-seat-token': existingToken } : {}) }, body: JSON.stringify({ role: 'director' }) })).json();
+  assert.equal(seat.owner, true);
   const body = new FormData(); body.append('file', new Blob([removed.archive]), 'restore-builtin.zip');
   const response = await fetch(base + '/api/style-packs/import', { method: 'POST', headers: { 'x-seat-token': seat.token }, body });
   assert.equal(response.status, 201); assert.equal((await response.json()).revision, removed.builtin.revision);

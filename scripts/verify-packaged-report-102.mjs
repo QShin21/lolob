@@ -90,7 +90,7 @@ try {
   await application.close();application=undefined;
   application=await _electron.launch({executablePath:path.join(appRoot,'RiftCast.exe'),args:[],env,timeout:90000});
   await nativeRequestGuard(blocked).attach(application.context());page=await readyControlWindow(application);
-  await checkDeletedAfterRestart(base,removed,checks);
+  await checkDeletedAfterRestart(base,removed,checks,page);
   assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);
   await writeFile(path.join(dir,'packaged-report.json'),JSON.stringify({status:'passed',version,checks,errors,blocked,fixture:'synthetic archive; no live game, device installation, OBS output or platform streaming'},null,2));
 } catch(error) {
