@@ -1,3 +1,4 @@
+import { mergeAppearance } from '../../shared/style-appearance';
 import { useEffect, useState, type CSSProperties } from 'react';
 import type { Scene } from '../../shared/types';
 import { BUILTIN_RUNTIME_STYLE, builtinStyle, sameStyle, styleRef, STYLE_SURFACES } from '../../shared/style-packs';
@@ -53,8 +54,16 @@ export function stylePackAppearance(pack: RuntimeStylePack, scene: Scene, accent
   const style: Record<string, string> = Object.fromEntries(Object.entries(pack.palette).map(([key, value]) => [`--art-${key}`, value]));
   style['--broadcast-accent'] = pack.palette.accent;
   style['--cast-font'] = bodyFonts[pack.fonts.body]; style['--cast-display'] = displayFonts[pack.fonts.display];
+  const appearance = mergeAppearance(pack.appearance, layout?.appearance);
+  const tokens: string[] = [];
+  if (!scene.startsWith('custom:') && scene !== 'teamfight') for (const [target, props] of Object.entries(appearance)) {
+    for (const [key, value] of Object.entries(props ?? {})) {
+      tokens.push(`${target}-${key}`);
+      style[`--element-${target}-${key}`] = key === 'font' ? bodyFonts[value as keyof typeof bodyFonts] : `${value}${key === 'fontSize' ? 'cqw' : key === 'letterSpacing' ? 'em' : ''}`;
+    }
+  }
   const image = (id: string | null | undefined) => id ? `url("${pack.assets[id]}")` : undefined;
   if (layout?.background) style['--pack-background'] = image(layout.background)!;
   for (const key of STYLE_SURFACES) if (surfaces[key]) style[`--pack-${key}`] = image(surfaces[key])!;
-  return { style: style as CSSProperties, background: !!layout?.background, textures: STYLE_SURFACES.filter(s => surfaces[s]).join(' '), frame: layout?.frame ? pack.assets[layout.frame] : undefined };
+  return { elements: tokens.join(' '), style: style as CSSProperties, background: !!layout?.background, textures: STYLE_SURFACES.filter(s => surfaces[s]).join(' '), frame: layout?.frame ? pack.assets[layout.frame] : undefined };
 }

@@ -1,6 +1,6 @@
 # RiftCast 风格包格式 v1
 
-适用于 RiftCast 1.0.0，继续采用 v1 清单格式。风格包管理 11 个内置节目的背景、面板贴图、装饰框、配色与字体类别。赛事、队伍、英雄、选手、BP、比分、时间、经济和统计仍由原有数据接口与组件实时绘制。自定义场景继续使用自己的素材。
+适用于 RiftCast 1.0.1，继续采用 v1 清单格式。风格包管理 11 个内置节目的背景、面板贴图、装饰框、配色与字体类别。赛事、队伍、英雄、选手、BP、比分、时间、经济和统计仍由原有数据接口与组件实时绘制。自定义场景继续使用自己的素材。
 
 ## 使用
 
@@ -94,3 +94,72 @@ ZIP 最大 48 MiB；清单最大 128 KiB；说明最大 64 KiB；最多 64 张�
 revision 是清单与规范化图片内容的 SHA-256 指纹，与美术作者填写的 version 分开。相同内容重复导入不会新增记录；相同 id 的修改版会成为独立 revision，旧版继续可用，已上节目的快照不会被新版覆盖。导出、导入和重启保留此内容身份。
 
 浏览器会预加载待播贴图，加载期间保持此前完整风格。预监加载失败时显示提示，节目画面不显示风格管理错误信息。断网外链不影响包内贴图；其他原有游戏资源仍遵循应用自己的离线资源策略。现场切换前仍需核对实际 OBS 预监。
+
+
+## 1.0.1 元素外观配置
+
+可选 `appearance` 按用途分别配置文字和底色；`scenes.<节目>.appearance` 覆盖该节目。原有 palette、fonts 与贴图继续生效。优先级为元素场景设置 > 元素全局设置 > 原有样式。场景只覆盖写出的属性；某个元素设为 null 会取消其全局元素设置，回到原有样式。省略 appearance 的旧包保留原内容指纹，导入、导出、重启和 TAKE 继续兼容。包含新字段的包需要 RiftCast 1.0.1 或更新版本。
+
+每个元素支持：
+
+| 属性 | 范围与含义 |
+| --- | --- |
+| color | 文字颜色，十六进制 RGB/RGBA |
+| backgroundColor | 元素底色，十六进制 RGB/RGBA；已有贴图仍绘制在底色上方 |
+| borderColor | 已有边框的颜色；不新增边框宽度 |
+| font | default、modern、serif，显式选择可覆盖全局字体 |
+| fontSize | 0.5–8，单位 cqw，即画布容器宽度的百分之一；1.8 在 1920 宽画布约 34.56px |
+| fontWeight | 100–900，100 的整数倍 |
+| letterSpacing | -0.05–0.3，单位 em |
+
+配置不调整布局坐标、视频区域和数据绑定。长姓名继续按可用宽度缩放；放大字号后应检查实际预监。原生团战与自定义场景不应用元素覆盖。
+
+青花瓷首发浅底姓名的局部配置示例（合并进原完整清单）：
+
+```json
+{
+  "appearance": {
+    "lineupName": { "color": "#17365e", "font": "modern", "fontSize": 1.8, "fontWeight": 700 },
+    "lineupGame": { "color": "#ffffff", "backgroundColor": "#133964" }
+  }
+}
+```
+
+旧青花瓷包升级应用后保留原配置；需导入带以上设置的新修订，再准备到预监并 TAKE。
+
+支持的元素及对应组件如下，选择器供定位用途参考，清单中只填写元素名称：
+
+| 元素名称 | 组件位置 |
+| --- | --- |
+| `lineupName` | `.rl-info > .fit-name` |
+| `lineupCardBlue` | `.rl-card.blue` |
+| `lineupCardRed` | `.rl-card.red` |
+| `lineupTeam` | `.rl-tag` |
+| `lineupScoreBlue` | `.rl-score.blue` |
+| `lineupScoreRed` | `.rl-score.red` |
+| `lineupGame` | `.rl-game` |
+| `lineupCaption` | `.rl-caption` |
+| `lineupFooter` | `.rune-lineup footer` |
+| `draftName` | `.cast-draft-player` |
+| `draftTeam` | `.arena-draft-team-heading` |
+| `draftTimer` | `.cast-draft-timer` |
+| `liveName` | `.lb-player-name` |
+| `liveNameplate` | `.lb-nameplate` |
+| `liveScoreboard` | `.lb-scoreboard` |
+| `reportName` | `.pr-card > .fit-name` |
+| `reportKda` | `.pr-kda` |
+| `reportHeadingBlue` | `.pr-table-heading:not(.red)` |
+| `reportHeadingRed` | `.pr-table-heading.red` |
+| `reportTeam` | `.pr-header > strong` |
+| `reportGame` | `.pr-header small` |
+| `reportCaption` | `.pr-caption` |
+| `reportMetric` | `.pr-metrics` |
+| `reportGoldLabel` | `.pr-gold-label` |
+| `scheduleTeam` | `.arena-schedule-team` |
+| `scheduleScore` | `.arena-schedule-score` |
+| `scheduleTime` | `.arena-schedule-time` |
+| `countdownNumber` | `.arena-countdown-number` |
+| `countdownMessage` | `.arena-countdown-message` |
+| `interviewName` | `.cast-interview-name` |
+| `ticker` | `.cast-ticker` |
+| `analysisHeading` | `.arena-analysis-heading` |

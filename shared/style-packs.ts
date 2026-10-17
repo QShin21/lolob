@@ -1,3 +1,4 @@
+import type { StyleAppearance } from './style-appearance';
 import catalog from './style-pack-catalog.json';
 import type { BuiltinScene } from './types';
 
@@ -5,10 +6,11 @@ export const STYLE_SCENES = ['standby', 'draft', 'lineup', 'live', 'economy', 'r
 export const STYLE_SURFACES = ['header', 'panel', 'cardBlue', 'cardRed', 'scoreboard', 'rowBlue', 'rowRed', 'nameplate', 'ticker', 'paper', 'draftCenter'] as const;
 export type StyleSurface = typeof STYLE_SURFACES[number];
 export type StyleFonts = { body: 'default' | 'modern' | 'serif'; display: 'default' | 'modern' | 'serif' };
-export interface StyleScene { background: string | null; frame: string | null; textures: Partial<Record<StyleSurface, string | null>> }
+export interface StyleScene { appearance?: StyleAppearance; background: string | null; frame: string | null; textures: Partial<Record<StyleSurface, string | null>> }
 export interface StylePack {
   format: 'riftcast-style-pack'; schemaVersion: 1; id: string; name: string; version: string; author: string; description: string;
   canvas: { width: 1920; height: 1080 }; palette: Record<string, string>; fonts: StyleFonts;
+  appearance?: StyleAppearance;
   textures: Record<StyleSurface, string | null>; scenes: Record<BuiltinScene, StyleScene>; assets: Record<string, string>;
 }
 /** State and TAKE snapshots carry only this small immutable reference, never image bytes. */

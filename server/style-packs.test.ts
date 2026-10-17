@@ -1,3 +1,4 @@
+import {mergeAppearance} from '../shared/style-appearance';
 import test from 'node:test';
 import { syntheticStyleArchive } from './style-pack-fixture';
 import assert from 'node:assert/strict';
@@ -143,4 +144,29 @@ test('edited artwork with a shipped id becomes a separate immutable revision', a
   const ref = await s.import(writeStyleZip(files));
   assert.equal(ref.builtin, false); assert.notEqual(ref.revision, BUILTIN_STYLE_REF.revision);
   assert.equal(s.get(BUILTIN_STYLE_REF).name, '冰川极光'); assert.equal(s.list().length, 6);
+});
+
+
+test('semantic appearance persists through ZIP export and restart without changing old revision identities', async t => {
+  const s = await store(t);
+  const ref = await s.import(await fixture(m => {
+    m.appearance = {lineupName: {color:'#17365e', font:'serif', fontSize:1.8, fontWeight:700, letterSpacing:0}, lineupGame:{color:'#123456'}};
+    m.scenes.lineup.appearance = {lineupName:{color:'#234567'}, lineupGame:null};
+  }));
+  const pack = s.get(ref);
+  assert.equal(mergeAppearance(pack.appearance, pack.scenes.lineup.appearance).lineupName?.color, '#234567');
+  assert.equal(mergeAppearance(pack.appearance, pack.scenes.lineup.appearance).lineupName?.font, 'serif');
+  assert.equal(mergeAppearance(pack.appearance, pack.scenes.lineup.appearance).lineupGame, null);
+  assert.equal((await s.import(await s.export(ref))).revision, ref.revision);
+  const restarted = new StylePackStore(s.directory); await restarted.initialize();
+  assert.deepEqual(restarted.get(ref), pack);
+
+});
+
+test('semantic appearance rejects unknown targets, arbitrary CSS and out-of-range typography', async t => {
+  const s = await store(t);
+  for (const appearance of [{unknown:{color:'#fff'}},{lineupName:{color:'url(x)'}},{lineupName:{position:'fixed'}},{lineupName:{font:'Arial'}},{lineupName:{font:['modern']}},{lineupName:{fontSize:99}},{lineupName:{fontWeight:450}},{lineupName:{letterSpacing:1}}, {lineupName:[]}]) {
+    await assert.rejects(s.import(await fixture(m => {m.appearance=appearance;})));
+    await assert.rejects(s.import(await fixture(m => {m.scenes.lineup.appearance=appearance;})));
+  }
 });

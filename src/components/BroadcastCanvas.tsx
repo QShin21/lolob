@@ -1,3 +1,4 @@
+import './style-pack-elements.css';
 import { useStylePack, stylePackAppearance } from './useStylePack';
 import { useEffect, useState, type CSSProperties } from 'react';
 import type { BroadcastState, Champion, Scene } from '../../shared/types';
@@ -35,7 +36,7 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  const overlayScene=['draft','live','gold-ranking','economy','ranking','interview'].includes(scene),selected=state.players.some(p=>p.id===state.selectedPlayerId);
  const feed=scene==='draft'||scene==='lineup'?state.connections.lcu:state.connections.live;
  const sourceIssue=!frozenResult&&state.mode==='live'&&['live','teamfight','gold-ranking','draft','lineup','economy','ranking'].includes(scene)&&feed.status!=='connected';
- return <div className={`broadcast-container cast-container skin-arena ${output?'is-output':''}`} data-style-pack={look.pack.id} data-style-revision={look.pack.revision} data-style-status={look.error?'error':look.loading?'loading':'ready'} data-pack-background={appearance.background} data-pack-textures={appearance.textures} data-pack-body={look.pack.fonts.body} data-pack-display={look.pack.fonts.display} style={appearance.style}><div className={`broadcast-canvas cast-canvas cast-scene-${scene} ${state.overlay.ticker?'has-ticker':''} ${overlayScene&&output?'transparent cast-transparent':''}`} style={{'--hud-scale':state.overlay.scale} as CSSProperties}>
+ return <div className={`broadcast-container cast-container skin-arena ${output?'is-output':''}`} data-style-pack={look.pack.id} data-style-revision={look.pack.revision} data-style-status={look.error?'error':look.loading?'loading':'ready'} data-pack-background={appearance.background} data-pack-textures={appearance.textures} data-pack-elements={appearance.elements} data-pack-body={look.pack.fonts.body} data-pack-display={look.pack.fonts.display} style={appearance.style}><div className={`broadcast-canvas cast-canvas cast-scene-${scene} ${state.overlay.ticker?'has-ticker':''} ${overlayScene&&output?'transparent cast-transparent':''}`} style={{'--hud-scale':state.overlay.scale} as CSSProperties}>
  {overlayScene&&!output&&<CapturePreview scene={scene}/>}
  {liveScene&&<NativeHudLayer state={state}/>}
  {scene==='live'&&<LiveBottom state={state} champions={champions} items={items} version={version}/>}

@@ -1,3 +1,4 @@
+import { APPEARANCE_TARGETS, APPEARANCE_PROPERTIES, type StyleAppearance } from '../shared/style-appearance';
 import path from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -14,10 +15,29 @@ const keys = (v: Record<string, unknown>, allowed: readonly string[]) => { if (O
 const text = (v: unknown, max: number, empty = false) => { if (typeof v !== 'string' || v.length > max || !empty && !v.trim() || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(v)) throw new Error('风格包文本字段无效'); return v; };
 const digest = (v: Buffer | string) => createHash('sha256').update(v).digest('hex');
 
+function validateAppearance(value: unknown): StyleAppearance {
+  const input = object(value); keys(input, Object.keys(APPEARANCE_TARGETS));
+  for (const entry of Object.values(input)) {
+    if (entry === null) continue;
+    const props = object(entry); keys(props, APPEARANCE_PROPERTIES);
+    for (const [key, value] of Object.entries(props)) {
+      if (['color', 'backgroundColor', 'borderColor'].includes(key)) {
+        if (typeof value !== 'string' || !/^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i.test(value)) throw new Error('元素颜色需使用十六进制颜色');
+      } else if (key === 'font') {
+        if (typeof value !== 'string' || !['default', 'modern', 'serif'].includes(value)) throw new Error('元素字体类别无效');
+      } else {
+        const range = key === 'fontSize' ? [.5, 8] : key === 'fontWeight' ? [100, 900] : [-.05, .3];
+        if (typeof value !== 'number' || !Number.isFinite(value) || value < range[0] || value > range[1] || key === 'fontWeight' && value % 100 !== 0) throw new Error('元素字号、字重或字距超出范围');
+      }
+    }
+  }
+  return input as StyleAppearance;
+}
+
 /** Whitelist data only. No CSS, JavaScript, HTML, URLs, fonts or filesystem paths from a pack are executed. */
 export function validateStyleManifest(input: unknown): StylePack {
   const m = object(input);
-  keys(m, ['format', 'schemaVersion', 'id', 'name', 'version', 'author', 'description', 'canvas', 'palette', 'fonts', 'textures', 'scenes', 'assets']);
+  keys(m, ['format', 'schemaVersion', 'id', 'name', 'version', 'author', 'description', 'canvas', 'palette', 'fonts', 'textures', 'scenes', 'assets', 'appearance']);
   if (m.format !== 'riftcast-style-pack' || m.schemaVersion !== 1) throw new Error('仅支持 riftcast-style-pack 格式第 1 版');
   if (typeof m.id !== 'string' || !identifier.test(m.id)) throw new Error('风格包 id 需为小写英文、数字或连字符，以字母开头，最多 48 字符');
   const version = text(m.version, 40); if (!/^\d+\.\d+\.\d+$/.test(version)) throw new Error('风格包版本需为 x.y.z');
@@ -47,13 +67,13 @@ export function validateStyleManifest(input: unknown): StylePack {
   const scenes = object(m.scenes); keys(scenes, STYLE_SCENES);
   const result = {} as StylePack['scenes'];
   for (const scene of STYLE_SCENES) {
-    const value = object(scenes[scene]); keys(value, ['background', 'frame', 'textures']);
+    const value = object(scenes[scene]); keys(value, ['background', 'frame', 'textures', 'appearance']);
     const background = texture(value.background), frame = texture(value.frame), textures = surfaces(value.textures ?? {}, false);
     if (!FULL_STYLE_SCENES.includes(scene) && background !== null) throw new Error(`场景 ${scene} 需要保留游戏或摄像头透明背景`);
     if (scene === 'teamfight' && (frame !== null || Object.values(textures).some(v => v !== null))) throw new Error('原生团战视角必须保持全透明');
-    result[scene] = { background, frame, textures };
+    result[scene] = { background, frame, textures, ...(Object.hasOwn(value, 'appearance') ? {appearance: validateAppearance(value.appearance)} : {}) };
   }
-  return { format: 'riftcast-style-pack', schemaVersion: 1, id: m.id, name: text(m.name, 80), version, author: text(m.author, 80, true), description: text(m.description, 500, true), canvas: { width: 1920, height: 1080 }, palette, fonts: fonts as StylePack['fonts'], textures: surfaces(m.textures, true), scenes: result, assets };
+  return { format: 'riftcast-style-pack', schemaVersion: 1, id: m.id, name: text(m.name, 80), version, author: text(m.author, 80, true), description: text(m.description, 500, true), canvas: { width: 1920, height: 1080 }, palette, fonts: fonts as StylePack['fonts'], textures: surfaces(m.textures, true), scenes: result, assets, ...(Object.hasOwn(m, 'appearance') ? {appearance: validateAppearance(m.appearance)} : {}) };
 }
 
 const applicationRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');

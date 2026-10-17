@@ -81,6 +81,23 @@ try {
     await render.evaluate(()=>document.fonts.ready);await render.waitForTimeout(100);
     if(['draft','live','economy','ranking','interview','teamfight','gold-ranking'].includes(scene))assert.equal(await render.locator('.cast-canvas').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
     if(scene==='teamfight')assert.equal(await render.locator('.cast-canvas').innerHTML(),'');
+    if(scene==='lineup' && styled) {
+      const name = render.locator('.rl-info > .fit-name').first();
+      assert.equal(await name.evaluate(el=>getComputedStyle(el).color),'rgb(23, 54, 94)');
+      assert.equal(await name.evaluate(el=>getComputedStyle(el).fontWeight),'700');
+      assert.match(await name.evaluate(el=>getComputedStyle(el).fontFamily),/Georgia/);
+      assert.match(await name.locator('span').evaluate(el=>getComputedStyle(el).fontFamily),/Georgia/);
+      assert.equal(await name.evaluate(el=>getComputedStyle(el).borderBottomColor),'rgb(52, 86, 120)');
+      assert.ok(Math.abs(await name.evaluate(el=>parseFloat(getComputedStyle(el).fontSize)) - 34.56) < .2);
+      assert.ok(await name.evaluate(el=>parseFloat(getComputedStyle(el).letterSpacing)) > 0);
+      assert.equal(await render.locator('.rl-game').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(19, 57, 100)');
+      assert.equal(await render.locator('.rl-game').evaluate(el=>getComputedStyle(el).color),'rgb(255, 255, 255)');
+      checks.push('semantic name color, font and weight applied; scene overrides global color; GAME retains independent white text');
+    }
+    if(styled && ['live','interview'].includes(scene)) {
+      const selector = scene==='live' ? '.lb-player-name' : '.cast-interview-name';
+      assert.equal(await render.locator(selector).first().evaluate(el=>getComputedStyle(el).color),'rgb(254, 220, 186)');
+    }
     if(scene==='postgame')assert.equal(await render.locator('.pr-gold-player').count(),10);
     if(scene!=='teamfight'){
       const surfaces=await render.locator('[data-style-pack]').evaluate(root=>{

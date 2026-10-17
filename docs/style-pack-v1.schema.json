@@ -895,6 +895,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -1046,6 +1049,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -1205,6 +1211,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -1356,6 +1365,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -1507,6 +1519,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -1658,6 +1673,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -1817,6 +1835,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -1976,6 +1997,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -2127,6 +2151,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -2182,6 +2209,9 @@
                   "type": "null"
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         },
@@ -2333,6 +2363,9 @@
                   ]
                 }
               }
+            },
+            "appearance": {
+              "$ref": "#/$defs/appearance"
             }
           }
         }
@@ -2347,6 +2380,161 @@
       "additionalProperties": {
         "type": "string",
         "pattern": "^assets/[a-z][a-z0-9-]{0,47}\\.(png|jpe?g|webp)$"
+      }
+    },
+    "appearance": {
+      "$ref": "#/$defs/appearance"
+    }
+  },
+  "$defs": {
+    "elementAppearance": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "color": {
+              "type": "string",
+              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+            },
+            "backgroundColor": {
+              "type": "string",
+              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+            },
+            "borderColor": {
+              "type": "string",
+              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+            },
+            "font": {
+              "enum": [
+                "default",
+                "modern",
+                "serif"
+              ]
+            },
+            "fontSize": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 8
+            },
+            "fontWeight": {
+              "type": "number",
+              "minimum": 100,
+              "maximum": 900,
+              "multipleOf": 100
+            },
+            "letterSpacing": {
+              "type": "number",
+              "minimum": -0.05,
+              "maximum": 0.3
+            }
+          }
+        }
+      ]
+    },
+    "appearance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lineupName": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lineupCardBlue": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lineupCardRed": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lineupTeam": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lineupScoreBlue": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lineupScoreRed": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lineupGame": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lineupCaption": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lineupFooter": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "draftName": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "draftTeam": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "draftTimer": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "liveName": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "liveNameplate": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "liveScoreboard": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportName": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportKda": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportHeadingBlue": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportHeadingRed": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportTeam": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportGame": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportCaption": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportMetric": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "reportGoldLabel": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "scheduleTeam": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "scheduleScore": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "scheduleTime": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "countdownNumber": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "countdownMessage": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "interviewName": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "ticker": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "analysisHeading": {
+          "$ref": "#/$defs/elementAppearance"
+        }
       }
     }
   }

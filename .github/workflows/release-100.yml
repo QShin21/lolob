@@ -2,14 +2,6 @@ name: Release 1.0.0
 
 on:
   workflow_dispatch:
-  push:
-    branches: [new]
-    paths:
-      - 'package.json'
-      - '.github/workflows/release-100.yml'
-      - 'scripts/verify-builtin-styles.mjs'
-      - 'scripts/verify-packaged-report-100.mjs'
-      - 'scripts/publish-release-100.mjs'
 
 permissions:
   contents: write
