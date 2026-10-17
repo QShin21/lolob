@@ -1,4 +1,5 @@
 import { StylePackStore } from './style-packs';
+import { stylePackDeleteBlock } from '../shared/style-pack-usage';
 import { BUILTIN_STYLE_REF, STYLE_PACK_MAX_BYTES, styleRef } from '../shared/style-packs';
 import express from 'express';
 import multer from 'multer';
@@ -191,6 +192,19 @@ app.get('/api/export',(req,res)=>{const format=req.query.format??'json';if(!['js
 // Immutable, independently cached art assets are kept out of high-frequency state broadcasts.
 app.get('/api/style-packs',(_req,res)=>{res.setHeader('Cache-Control','no-store');res.json({packs:stylePacks.list(),warnings:stylePacks.warnings});});
 const packRef=(req:express.Request)=>({id:String(req.params.id),revision:String(req.params.revision),name:'lookup'});
+app.delete('/api/style-packs/:id/:revision',async(req,res,next)=>{
+  // Serialize with TAKE, undo, staging and control claims; recheck live references inside the queue.
+  const run=actionQueue.catch(()=>{}).then(async()=>{
+    seats.authorize(req.headers['x-seat-token'],'engine');
+    const ref=packRef(req);
+    try{stylePacks.get(ref);}catch(e){throw new ValidationError(e instanceof Error?e.message:'风格包不可用');}
+    const reason=stylePackDeleteBlock(state,ref);
+    if(reason){res.status(409).json({error:reason});return;}
+    await stylePacks.remove(ref);
+    res.setHeader('Cache-Control','no-store');res.json({packs:stylePacks.list(),warnings:stylePacks.warnings});
+  });
+  actionQueue=run;try{await run;}catch(error){next(error);}
+});
 app.get('/api/style-packs/:id/:revision/assets/:asset',async(req,res)=>{try{const bytes=await stylePacks.asset(packRef(req),String(req.params.asset));res.setHeader('Cache-Control','public,max-age=31536000,immutable');res.setHeader('Content-Security-Policy',"default-src 'none'");res.type('image/png').send(bytes);}catch{res.status(404).json({error:'贴图不存在或已损坏'});}});
 app.get('/api/style-packs/:id/:revision/export',async(req,res)=>{try{const ref=packRef(req),bytes=await stylePacks.export(ref);res.setHeader('Content-Disposition',`attachment; filename="${ref.id}.riftstyle.zip"`);res.type('application/zip').send(bytes);}catch(e){throw new ValidationError(e instanceof Error?e.message:'风格包不可用');}});
 app.get('/api/style-packs/:id/:revision',(req,res)=>{try{res.setHeader('Cache-Control','public,max-age=31536000,immutable');res.json(stylePacks.get(packRef(req)));}catch{res.status(404).json({error:'风格包不存在或已损坏'});}});

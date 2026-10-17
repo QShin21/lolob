@@ -12,6 +12,60 @@ import { BUILTIN_STYLE_REF, BUILTIN_RUNTIME_STYLES, STYLE_SCENES, validStyleRef 
 import { applyAction, createSeed, normalizeSavedState } from './state';
 import { programState, takeProgram } from '../shared/production';
 import { ControlSeats } from './control-seats';
+import { stylePackDeleteBlock } from '../shared/style-pack-usage';
+
+test('delete one imported revision, retain siblings and support reimport after restart', async t => {
+  const s = await store(t), zip = await fixture(), a = await s.import(zip), b = await s.import(await fixture(m => { m.palette.ink = '#ffffff'; }));
+  await s.remove(a);
+  assert.throws(() => s.get(a), /不存在/);
+  await assert.rejects(s.asset(a, 'ink')); await assert.rejects(s.export(a));
+  assert.equal((await readdir(s.directory)).includes(`${a.id}--${a.revision}`), false);
+  assert.equal(s.get(b).revision, b.revision);
+  const restarted = new StylePackStore(s.directory); await restarted.initialize();
+  assert.throws(() => restarted.get(a)); assert.equal(restarted.get(b).revision, b.revision);
+  assert.equal((await restarted.import(zip)).revision, a.revision);
+  await assert.rejects(restarted.remove({ id: '../escape', revision: a.revision, name: 'x' }), /无效/);
+});
+
+test('nondefault builtins can be deleted persistently and restored from their original ZIP', async t => {
+  const s = await store(t), ref = BUILTIN_RUNTIME_STYLES.find(p => p.id !== BUILTIN_STYLE_REF.id)!;
+  await assert.rejects(s.remove(BUILTIN_STYLE_REF), /保留/);
+  const archive = await s.export(ref); await s.remove(ref);
+  assert.equal(s.list().length, 4); assert.throws(() => s.get(ref));
+  const restarted = new StylePackStore(s.directory); await restarted.initialize();
+  assert.equal(restarted.list().length, 4); assert.throws(() => restarted.get(ref));
+  assert.equal((await restarted.import(archive)).revision, ref.revision);
+  assert.equal(restarted.list().length, 5);
+});
+
+test('delete guards cover preview, program and undo snapshots by exact revision', async t => {
+  const s = await store(t), a = await s.import(await fixture()), b = await s.import(await fixture(m => { m.palette.ink = '#ffffff'; }));
+  const seed = createSeed();
+  assert.match(stylePackDeleteBlock(seed, BUILTIN_STYLE_REF)!, /保留/);
+  assert.equal(stylePackDeleteBlock(seed, a), undefined);
+  seed.overlay.stylePack = a; assert.match(stylePackDeleteBlock(seed, a)!, /待播/);
+  takeProgram(seed); seed.overlay.stylePack = { ...BUILTIN_STYLE_REF };
+  assert.match(stylePackDeleteBlock(seed, a)!, /当前节目/);
+  takeProgram(seed); assert.match(stylePackDeleteBlock(seed, a)!, /撤回/);
+  assert.equal(stylePackDeleteBlock(seed, b), undefined);
+  takeProgram(seed); assert.equal(stylePackDeleteBlock(seed, a), undefined);
+});
+
+test('failed deletion keeps the pack registered and releases the mutation lock', async t => {
+  const s = await store(t), ref = BUILTIN_RUNTIME_STYLES.find(p => p.id !== BUILTIN_STYLE_REF.id)!;
+  const { mkdir } = await import('node:fs/promises');
+  await mkdir(path.join(s.directory, 'removed-builtins.json.tmp'));
+  await assert.rejects(s.remove(ref)); assert.equal(s.get(ref).id, ref.id);
+  await rm(path.join(s.directory, 'removed-builtins.json.tmp'), { recursive: true });
+  await s.remove(ref); assert.throws(() => s.get(ref));
+});
+
+test('historical builtin deletion records remain readable after a catalog revision changes', async t => {
+  const s = await store(t);
+  await writeFile(path.join(s.directory, 'removed-builtins.json'), JSON.stringify(['historical-builtin--' + 'a'.repeat(64)]));
+  const restarted = new StylePackStore(s.directory); await restarted.initialize();
+  assert.equal(restarted.list().length, 5);
+});
 
 async function fixture(change: (manifest: any, files: Record<string, Buffer>) => void = () => {}) {
   const files = Object.fromEntries(await readStyleZip(await syntheticStyleArchive()));

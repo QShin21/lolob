@@ -1,0 +1,115 @@
+name: Release 1.0.2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [new]
+    paths:
+      - 'package.json'
+      - '.github/workflows/release-102.yml'
+      - 'scripts/verify-builtin-styles.mjs'
+      - 'scripts/verify-packaged-report-102.mjs'
+      - 'scripts/publish-release-102.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-1.0.2
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'QShin21/lolob' && github.ref == 'refs/heads/new'
+    runs-on: windows-2022
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify version and source branch
+        run: |
+          node -e "require('node:assert/strict').equal(require('./package.json').version, '1.0.2')"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git fetch origin new
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced concurrently; build its latest revision' }
+      - run: npm ci
+      - name: Prepare pinned VB-CABLE archive for tests (download only)
+        run: node scripts/ensure-vbcable.cjs
+      - run: npm run check
+      - run: npm run verify:builtin-assets
+      - name: Windows tests including production OCR worker
+        timeout-minutes: 15
+        run: |
+          New-Item -ItemType Directory -Force verification-output/release-1.0.2 | Out-Null
+          $tests = @(Get-ChildItem server -Filter '*.test.ts' | ForEach-Object FullName)
+          node --import tsx --test --test-concurrency=1 @tests 2>&1 | Tee-Object verification-output/release-1.0.2/tests.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify report fixture through service restart
+        run: node scripts/verify-report-fixture-093.mjs
+      - run: npm run build
+      - run: npm run verify:builtin-contracts
+      - name: Prepare isolated browser test dependency
+        run: |
+          npm install --prefix "$env:RUNNER_TEMP/rc-playwright" --no-save --package-lock=false playwright@1.56.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "RIFTCAST_PLAYWRIGHT_MODULE=$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/index.mjs" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Verify report layouts
+        run: node scripts/verify-report-093.mjs
+      - name: Verify style pack import, preview, all scenes and service restart
+        run: npm run verify:style-packs
+      - name: Verify deletion, permissions and restart
+        run: node scripts/verify-style-deletion.mjs
+      - name: Verify all five builtins, default migration and 65 scene renders
+        run: npm run verify:builtin-styles
+      - name: Upload report layout review
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-layout-1.0.2
+          retention-days: 30
+          path: |
+            verification-output/release-0.9.3/layout/*.json
+            verification-output/release-0.9.3/layout/*.png
+            verification-output/release-1.0.2/styles/*.json
+            verification-output/release-1.0.2/styles/*.png
+            verification-output/release-1.0.2/builtins/*.json
+            verification-output/release-1.0.2/builtins/*.png
+      - name: Build Windows Setup and ZIP
+        run: npm run release:win
+      - name: Verify isolated packaged report
+        run: node scripts/verify-packaged-report-102.mjs
+      - name: Confirm exact new revision before publication
+        run: |
+          git fetch origin new
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced while building; publication stopped' }
+      - name: Publish verified release and check remote digests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/publish-release-102.mjs
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-1.0.2
+          retention-days: 30
+          path: |
+            verification-output/release-1.0.2/*.txt
+            verification-output/release-1.0.2/*.json
+            verification-output/release-1.0.2/*.png
+            verification-output/release-0.9.3/layout/*.json
+            verification-output/release-0.9.3/layout/*.png
+            verification-output/release-1.0.2/styles/*.json
+            verification-output/release-1.0.2/styles/*.png
+            verification-output/release-1.0.2/builtins/*.json
+            verification-output/release-1.0.2/builtins/*.png
+            release/1.0.2/release-manifest.json
+            release/1.0.2/SHA256SUMS.txt
+            verification-output/release-1.0.2/deletion/*.json
+            verification-output/release-1.0.2/deletion/*.png

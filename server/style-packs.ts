@@ -8,6 +8,7 @@ import sharp from 'sharp';
 import { BUILTIN_STYLE_RECORDS, BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_REF, builtinStyle, BUILTIN_STYLE_PACK, FULL_STYLE_SCENES, STYLE_SCENES, STYLE_SURFACES, styleSummary, validStyleRef } from '../shared/style-packs';
 import type { RuntimeStylePack, StylePack, StylePackRef, StylePackSummary, StyleSurface } from '../shared/style-packs';
 import { readStyleZip, writeStyleZip } from './style-pack-zip';
+import { writeDurableState } from './durable-state';
 
 const identifier = /^[a-z][a-z0-9-]{0,47}$/;
 const object = (v: unknown): Record<string, unknown> => { if (!v || typeof v !== 'object' || Array.isArray(v)) throw new Error('风格包字段需要是对象'); return v as Record<string, unknown>; };
@@ -107,6 +108,7 @@ function revisionFor(manifest: StylePack, hashes: Record<string, string>) { retu
 export class StylePackStore {
   private installed = new Map<string, StoredPack>();
   private importing = false;
+  private removedBuiltins = new Set<string>();
   readonly warnings: string[] = [];
   constructor(readonly directory: string) {}
   private key(ref: Pick<StylePackRef, 'id' | 'revision'>) { return `${ref.id}--${ref.revision}`; }
@@ -114,6 +116,14 @@ export class StylePackStore {
     // Fail before startup on an incomplete application package; do not silently lose shipped art.
     for (const pack of BUILTIN_RUNTIME_STYLES) for (const id of Object.keys(pack.assets)) builtinAsset(pack, id);
     await mkdir(this.directory, { recursive: true });
+    try {
+      const removed: unknown = JSON.parse(await readFile(path.join(this.directory, 'removed-builtins.json'), 'utf8'));
+      // Keep historical revision tombstones readable when a later release changes its built-in catalog.
+      if (!Array.isArray(removed) || removed.length > 512 || removed.some(key => typeof key !== 'string' || !/^[a-z][a-z0-9-]{0,47}--[a-f0-9]{64}$/.test(key) || key === this.key(BUILTIN_STYLE_REF))) throw new Error('删除记录无效');
+      this.removedBuiltins = new Set(removed);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw new Error('内置风格删除记录无法读取，请检查数据目录');
+    }
     for (const entry of (await readdir(this.directory, { withFileTypes: true })).filter(e => e.isDirectory() && /^[a-z][a-z0-9-]{0,47}--[a-f0-9]{64}$/.test(e.name)).slice(0, 50)) {
       if (entry.name.startsWith('jianlou--')) continue; // Retired package is not installed or advertised.
       try {
@@ -127,10 +137,10 @@ export class StylePackStore {
       } catch { this.warnings.push(`风格包 ${entry.name.slice(0, 48)} 已损坏，暂不可用；请重新导入原包`); }
     }
   }
-  list(): StylePackSummary[] { return [...BUILTIN_RUNTIME_STYLES.map(styleSummary), ...[...this.installed.values()].map(s => styleSummary(this.runtime(s)))]; }
+  list(): StylePackSummary[] { return [...BUILTIN_RUNTIME_STYLES.filter(p => !this.removedBuiltins.has(this.key(p))).map(styleSummary), ...[...this.installed.values()].map(s => styleSummary(this.runtime(s)))]; }
   get(ref: StylePackRef): RuntimeStylePack {
     if (!validStyleRef(ref)) throw new Error('风格包引用无效');
-    const builtin = builtinStyle(ref); if (builtin) return builtin;
+    const builtin = builtinStyle(ref); if (builtin && !this.removedBuiltins.has(this.key(ref))) return builtin;
     const pack = this.installed.get(this.key(ref)); if (!pack) throw new Error('风格包不存在或已损坏，请重新导入');
     return this.runtime(pack);
   }
@@ -153,9 +163,26 @@ export class StylePackStore {
     return writeStyleZip(files);
   }
   async import(input: Buffer): Promise<StylePackSummary> {
-    if (this.importing) throw new Error('已有风格包正在导入，请完成后重试');
+    if (this.importing) throw new Error('已有风格包正在处理，请完成后重试');
     this.importing = true;
     try { return await this.importArchive(input); } finally { this.importing = false; }
+  }
+  async remove(ref: StylePackRef): Promise<void> {
+    if (this.importing) throw new Error('已有风格包正在处理，请完成后重试');
+    const pack = this.get(ref), key = this.key(ref);
+    if (pack.id === BUILTIN_STYLE_REF.id && pack.revision === BUILTIN_STYLE_REF.revision) throw new Error('默认风格用于安全回退，需保留');
+    this.importing = true;
+    try {
+      if (pack.builtin) {
+        const removed = new Set([...this.removedBuiltins, key]);
+        await writeDurableState(path.join(this.directory, 'removed-builtins.json'), [...removed]);
+        this.removedBuiltins = removed;
+      } else {
+        // The validated reference and registered key restrict deletion to this one installed revision.
+        await rm(path.join(this.directory, key), { recursive: true, force: true });
+        this.installed.delete(key);
+      }
+    } finally { this.importing = false; }
   }
   private async importArchive(input: Buffer): Promise<StylePackSummary> {
     const entries = await readStyleZip(input), raw = entries.get('manifest.json')!;
@@ -180,9 +207,16 @@ export class StylePackStore {
     }
     const revision = revisionFor(manifest, hashes), stored = { manifest, hashes, revision }, key = this.key({ id: manifest.id, revision });
     const builtin = builtinStyle({ id: manifest.id, revision });
-    if (builtin) return styleSummary(builtin);
+    if (builtin) {
+      if (this.removedBuiltins.has(key)) {
+        const removed = new Set(this.removedBuiltins); removed.delete(key);
+        await writeDurableState(path.join(this.directory, 'removed-builtins.json'), [...removed]);
+        this.removedBuiltins = removed;
+      }
+      return styleSummary(builtin);
+    }
     if (this.installed.has(key)) return styleSummary(this.runtime(this.installed.get(key)!));
-    if (this.installed.size >= 50) throw new Error('已安装 50 个风格版本，请在停播后备份并清理数据目录');
+    if (this.installed.size >= 50) throw new Error('已安装 50 个风格版本，请先在风格包管理中删除闲置版本');
     const temporary = path.join(this.directory, `.import-${randomUUID()}`), destination = path.join(this.directory, key);
     try {
       await mkdir(path.join(temporary, 'assets'), { recursive: true });

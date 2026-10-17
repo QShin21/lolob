@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Download, Upload, X, Palette } from 'lucide-react';
+import { Download, Upload, X, Palette, Trash2 } from 'lucide-react';
+import { stylePackDeleteBlock } from '../../shared/style-pack-usage';
 import type { BroadcastState, Champion, StateContext, BuiltinScene } from '../../shared/types';
 import { BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_REF, STYLE_PACK_MAX_BYTES, STYLE_SCENES, sameStyle, styleRef, styleSummary } from '../../shared/style-packs';
 import type { StylePackSummary } from '../../shared/style-packs';
@@ -18,6 +19,8 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
   const canEdit = connected !== false && seat?.role === 'director' && state.production?.control?.owner === seat.id;
   const active = styleRef(state.overlay.stylePack), onAir = styleRef(state.production?.program?.overlay.stylePack);
   const selectedInfo = packs.find(p => sameStyle(p, selected));
+  const deleteBlock = stylePackDeleteBlock(state, selected);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     dialog.current?.showModal();
@@ -33,6 +36,17 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
     void loadStylePack(selected).then(() => { if (alive) setReady(true); }).catch(e => { if (alive) setError(e instanceof Error ? e.message : '贴图加载失败'); });
     return () => { alive = false; };
   }, [selected.id, selected.revision]);
+  useEffect(() => { setConfirmDelete(false); }, [selected.id, selected.revision]);
+  async function removeSelected() {
+    if (!canEdit || working.current || !selectedInfo || deleteBlock) return;
+    working.current = true; setBusy(true); setError('');
+    try {
+      const data = await api<{ packs: StylePackSummary[]; warnings: string[] }>(`/api/style-packs/${selected.id}/${selected.revision}`, { method: 'DELETE' });
+      setPacks(data.packs); setWarnings(data.warnings); setSelected(BUILTIN_STYLE_REF); setConfirmDelete(false);
+      notify(`已删除 ${selected.name}；可重新导入 ZIP 恢复`, 'success');
+    } catch (e) { setError(e instanceof Error ? e.message : '删除失败'); }
+    finally { working.current = false; setBusy(false); }
+  }
   async function importFile(file?: File) {
     if (!file || !canEdit || working.current) return;
     if (!/\.zip$/i.test(file.name) || file.size > STYLE_PACK_MAX_BYTES) { setError('请选择不超过 48 MiB 的 ZIP 风格包'); return; }
@@ -69,7 +83,12 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
         <p>此处仅查看效果。导入后选择“准备到预监”，再回导播台核对并 TAKE；正在播出的风格保持不变。</p>
         <p>美术制作：导出任一内置风格包，解压后修改清单标识与图片，再将清单和 assets 文件夹压缩为 ZIP 导入。</p>
         {scene === 'teamfight' && <p>团战节目使用游戏原生画面，风格包保持透明。</p>}
-        {!canEdit && <p>导入和切换由当前主导播操作；此席位可查看与导出。</p>}
+        {!canEdit && <p>导入、删除和切换由当前主导播操作；此席位可查看与导出。</p>}
+        <div className="style-pack-delete">
+          <button className="button danger" disabled={!canEdit || busy || loading || !selectedInfo || !!deleteBlock} onClick={() => setConfirmDelete(true)}><Trash2 size={15}/>删除风格包</button>
+          <small>{deleteBlock ?? '删除当前选中的版本，可重新导入原 ZIP 恢复。需要保留素材时请先导出。'}</small>
+          {confirmDelete && !deleteBlock && <div role="group" aria-label="删除风格包确认"><p>确认删除“{selected.name}”的 v{selectedInfo?.version}（{selected.revision.slice(0, 10)}）版本？{selectedInfo?.builtin ? '内置原始素材保留在安装目录，重新导入对应风格包可恢复。' : '该版本的本地清单与贴图将被移除。'}</p><button className="button" disabled={busy} onClick={() => setConfirmDelete(false)}>取消删除</button><button className="button danger" disabled={busy || !canEdit} onClick={() => void removeSelected()}>确认删除</button></div>}
+        </div>
         {warnings.map((w, i) => <p className="style-pack-warning" key={i}>{w}</p>)}
         {error && <p className="style-pack-error" role="alert">{error}</p>}
         <footer><a className="button" download href={`/api/style-packs/${selected.id}/${selected.revision}/export`}><Download size={15}/>导出风格包</a><button className="button primary" disabled={!canEdit || busy || !ready || sameStyle(active, selected)} onClick={() => void stage()}>{busy ? '处理中…' : !ready ? '贴图加载中…' : sameStyle(active, selected) ? '已是待播风格' : '准备到预监'}</button></footer>
