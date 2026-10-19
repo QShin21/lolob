@@ -56,7 +56,7 @@ test('desktop IPC shutdown flushes the latest recording even while an older snap
   const dir=await mkdtemp(path.join(tmpdir(),'riftcast-test-'));const port=await availablePort();const base=`http://127.0.0.1:${port}`;
   const preload=path.join(dir,'slow-write.cjs');
   await writeFile(preload,`const fs=require('node:fs/promises');const original=fs.open;fs.open=async function(file,...args){const handle=await original.call(this,file,...args);const write=handle.writeFile.bind(handle);handle.writeFile=async function(...values){if(typeof file==='string'&&/state.json.*tmp/.test(file)){process.send?.({type:'test-write-started'});await new Promise(resolve=>setTimeout(resolve,500));}return write(...values);};return handle;};require('node:module').syncBuiltinESMExports();`);
-  const child=spawn(process.execPath,['--require',preload,'--import','tsx','server/index.ts'],{cwd:process.cwd(),windowsHide:true,env:{...process.env,PORT:String(port),RIFTCAST_DATA_DIR:dir,ENABLE_LAN:'0'},stdio:['ignore','pipe','pipe','ipc']});
+  const child=spawn(process.execPath,['--require',preload,'--import','tsx','server/index.ts'],{cwd:process.cwd(),windowsHide:true,env:{...process.env,PORT:String(port),RIFTCAST_DATA_DIR:dir,ENABLE_LAN:'0',RIFTCAST_AUTO_CONNECT:'0'},stdio:['ignore','pipe','pipe','ipc']});
   let diagnostics='';child.stdout?.on('data',value=>{diagnostics+=value.toString();});child.stderr?.on('data',value=>{diagnostics+=value.toString();});
   try{
     let ready=false;for(let i=0;i<60;i++){try{if((await fetch(`${base}/api/health`)).ok){ready=true;break;}}catch{/* wait for startup */}await new Promise(resolve=>setTimeout(resolve,150));}assert.ok(ready,diagnostics);

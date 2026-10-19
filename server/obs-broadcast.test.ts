@@ -93,7 +93,7 @@ test('Bilibili endpoints use OBS WebSocket protocol and keep keys out of HTTP, W
       const failed=failWrite&&requestType==='SetStreamServiceSettings';socket.send(JSON.stringify({op:7,d:{requestType,requestId,requestStatus:failed?{result:false,code:606,comment:`mock rejects ${destination.key}`}:{result:true,code:100},responseData}}));
     });
   });
-  const child=spawn(process.execPath,['--import','tsx','server/index.ts'],{cwd:process.cwd(),windowsHide:true,env:{...process.env,PORT:String(port),ENABLE_LAN:'1',RIFTCAST_DATA_DIR:dir,RIFTCAST_OBS_MODE:'external',DEBUG:'obs-websocket-js'},stdio:['ignore','pipe','pipe','ipc']});let diagnostics='';child.stdout?.on('data',value=>{diagnostics+=value.toString();});child.stderr?.on('data',value=>{diagnostics+=value.toString();});
+  const child=spawn(process.execPath,['--import','tsx','server/index.ts'],{cwd:process.cwd(),windowsHide:true,env:{...process.env,PORT:String(port),ENABLE_LAN:'1',RIFTCAST_DATA_DIR:dir,RIFTCAST_AUTO_CONNECT:'0',RIFTCAST_OBS_MODE:'external',DEBUG:'obs-websocket-js'},stdio:['ignore','pipe','pipe','ipc']});let diagnostics='';child.stdout?.on('data',value=>{diagnostics+=value.toString();});child.stderr?.on('data',value=>{diagnostics+=value.toString();});
   let stateSocket:WebSocket|undefined;const broadcasts:string[]=[];
   const post=(url:string,input:unknown,headers:Record<string,string>={})=>fetch(url,{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(input)});
   try{

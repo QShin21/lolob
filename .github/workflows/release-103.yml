@@ -116,3 +116,5 @@ jobs:
             release/1.0.3/SHA256SUMS.txt
             verification-output/release-1.0.3/deletion/*.json
             verification-output/release-1.0.3/deletion/*.png
+            verification-output/release-1.0.3/live-only/*.json
+            verification-output/release-1.0.3/live-only/*.png
