@@ -6,6 +6,7 @@ on:
     branches: [new]
     paths:
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/release-103.yml'
       - 'scripts/verify-builtin-styles.mjs'
       - 'scripts/verify-packaged-report-103.mjs'
