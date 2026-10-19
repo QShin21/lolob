@@ -69,7 +69,7 @@ export function PlayerBuild({ state: sourceState, champions, output = false, bus
         <EquipmentStrip ids={slots} version={catalog.version} catalog={catalog.items} />
         <div className="pb-section-title pb-rune-title"><ShieldCheck /><h3>符文</h3><span>客户端已提供字段</span></div>
         {runes.length ? <div className="pb-runes">{runes.map((rune, index) => <span key={`${index}-${rune}`}>{rune}</span>)}</div> : <p className="pb-empty-runes">API 未提供符文</p>}
-        <p className="pb-data-note">{result?`第 ${result.game} 局${gameResultAwaitingTerminalSample(result)?'已保存观测数据':'冻结数据'}`:state.mode === 'demo' ? '演示选手数据' : '本机客户端数据'}{catalog.version ? ` · 静态素材版本 ${catalog.version}` : ' · 静态素材版本不可用'}{items.length > 0 && catalog.status !== 'ready' ? ' · 装备名称暂不可用，保留 ID' : ''}</p>
+        <p className="pb-data-note">{result?`第 ${result.game} 局${gameResultAwaitingTerminalSample(result)?'已保存观测数据':'冻结数据'}`:'本机客户端数据'}{catalog.version ? ` · 静态素材版本 ${catalog.version}` : ' · 静态素材版本不可用'}{items.length > 0 && catalog.status !== 'ready' ? ' · 装备名称暂不可用，保留 ID' : ''}</p>
       </div>
     </div>
   </section>;

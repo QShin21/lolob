@@ -33,6 +33,7 @@ await require('./ensure-vbcable.cjs').ensureVbCable();
 run(path.join(root, 'node_modules', 'typescript', 'bin', 'tsc'), ['--noEmit']);
 run(path.join(root, 'node_modules', 'vite', 'bin', 'vite.js'), ['build']);
 const serviceBundle = await bundle({ entryPoints: [path.join(root, 'server/index.ts')], outfile: path.join(buildRoot, 'service/index.mjs'), bundle: true, packages: 'external', platform: 'node', format: 'esm', target: 'node22', sourcemap: false, legalComments: 'eof', metafile: true });
+if (Object.keys(serviceBundle.metafile.inputs).some(file => /(?:test-support|\.test\.[cm]?[jt]sx?$)/.test(file))) throw new Error('测试文件进入服务打包输入，已阻止发布。');
 const runtimeImports = [...new Set(Object.values(serviceBundle.metafile.outputs).flatMap(output => output.imports).filter(item => item.external && !item.path.startsWith('node:')).map(item => item.path.startsWith('@') ? item.path.split('/').slice(0, 2).join('/') : item.path.split('/')[0]))];
 for (const dependency of runtimeImports) if (!pkg.dependencies?.[dependency]) throw new Error(`Release 运行时依赖 ${dependency} 尚未列入 dependencies，请先修复后再打包。`);
 

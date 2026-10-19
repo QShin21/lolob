@@ -1,14 +1,15 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { NativeHudController } from './native-hud';
-import { applyAction, createSeed } from './state';
+import { applyAction, } from './state';
 
 const hiddenFields = ['interfaceReplay', 'interfaceScore', 'interfaceScoreboard', 'interfaceFrames', 'interfaceTimeline', 'interfaceChat', 'interfaceQuests', 'interfaceAnnounce', 'interfaceKillCallouts'] as const;
 function originalRender() {
   return Object.fromEntries([...hiddenFields, 'interfaceAll', 'interfaceTarget', 'interfaceMinimap', 'interfaceNeutralTimers', 'healthBarChampions', 'healthBarStructures', 'healthBarWards', 'healthBarPets', 'healthBarMinions', 'fogOfWar', 'environment', 'characters', 'champions', 'minions', 'particles'].map(key => [key, true]));
 }
 function fixture(render = originalRender()) {
-  const state = applyAction(createSeed(), { type: 'set-mode', mode: 'live' });
+  const state = emptyFixture();
   state.programScene = 'live';
   const calls: { endpoint: string; method: string; body?: Record<string, boolean> }[] = [];
   const current = { processId: 42, render: structuredClone(render), unsupported: false, acceptWrites: true };
@@ -280,7 +281,7 @@ test('broadcast and native HUD mode changes bypass the previous context throttle
     const f = fixture();
     await f.controller.tick();
     assert.equal(f.current.render.interfaceFrames, false);
-    if (change === 'broadcast') f.state.mode = 'demo';
+    if (change === 'broadcast') f.state.programScene = 'standby';
     else f.state.overlay.nativeHud = 'mask';
     await f.controller.tick();
     assert.deepEqual(f.current.render, originalRender());
@@ -290,7 +291,7 @@ test('broadcast and native HUD mode changes bypass the previous context throttle
 });
 
 test('a busy tick does not consume a scene change awaiting native HUD restoration', async () => {
-  const state = applyAction(createSeed(), { type: 'set-mode', mode: 'live' });
+  const state = emptyFixture();
   state.programScene = 'live';
   const saved = originalRender(), render = structuredClone(saved);
   let releaseHide!: () => void, reportStarted!: () => void;
@@ -407,7 +408,7 @@ test('closing after the replay process changes never restores old switches into 
 });
 
 test('shutdown waits for an in-flight hide so the final game state is restored', async () => {
-  const state = applyAction(createSeed(), { type: 'set-mode', mode: 'live' });
+  const state = emptyFixture();
   state.programScene = 'live';
   const saved = originalRender(), render = structuredClone(saved);
   let releaseHide!: () => void, reportStarted!: () => void;

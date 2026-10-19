@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -6,7 +7,6 @@ import {createServer} from 'vite';
 import react from '@vitejs/plugin-react';
 import {tsImport} from 'tsx/esm/api';
 const {chromium}=await import(pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href);
-const {createSeed}=await tsImport('../server/state.ts',import.meta.url);
 const {parseScoreboardRows}=await tsImport('../server/spectator-scoreboard.ts',import.meta.url);
 const fixture=JSON.parse(await readFile('server/fixtures/scoreboard-081.json','utf8'));
 const rows=parseScoreboardRows(fixture.playerWords,fixture.playerPortraits);

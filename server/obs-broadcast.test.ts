@@ -113,7 +113,7 @@ test('Bilibili endpoints use OBS WebSocket protocol and keep keys out of HTTP, W
     const hud=await post(`${base}/api/obs/hud`,{sceneName:'比赛',url:'http://untrusted.test'});assert.equal(hud.status,200);assert.deepEqual(await hud.json(),{sceneName:'比赛',inputName:'RiftCast HUD',reused:false});assert.equal(obsRequests.find(request=>request.type==='CreateInput'&&request.data.inputKind==='browser_source')!.data.inputSettings.url,`${base}/overlay`);
     const addresses=lanAddresses();if(addresses.length){const network=await fetch(`${base}/api/network`).then(response=>response.json());const remote=`http://${addresses[0]}:${port}`;const headers={'x-control-token':network.controlToken};assert.equal((await post(`${remote}/api/obs/stream/settings`,destination,headers)).status,403);assert.equal((await post(`${remote}/api/obs/hud`,{sceneName:'比赛'},headers)).status,403);assert.equal((await fetch(`${remote}/api/obs/cameras`)).status,403);assert.equal((await post(`${remote}/api/obs/player-feeds`,{},headers)).status,403);}
     assert.ok(!obsRequests.some(request=>['StartStream','StopStream','ToggleStream','GetStreamServiceSettings','SetCurrentProgramScene'].includes(request.type)));
-    await post(`${base}/api/action`,{type:'demo-pause',paused:true});
+    await post(`${base}/api/action`,{type:'set-overlay',patch:{ticker:false}});
     const exited=new Promise<void>(resolve=>child.once('exit',()=>resolve()));child.send({type:'riftcast-shutdown'});await exited;
     const persisted=await readFile(path.join(dir,'state.json'),'utf8');assert.ok(!persisted.includes(destination.key));assert.ok(broadcasts.every(raw=>!raw.includes(destination.key)));assert.ok(!diagnostics.includes(destination.key));
   }finally{

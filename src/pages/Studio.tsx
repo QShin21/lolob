@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileSliders, Pause, Play, RotateCcw, Swords } from 'lucide-react';
+import { FileSliders, Swords } from 'lucide-react';
 import type { Phase, Scene, StateContext } from '../../shared/types';
 import { GameTime } from '../components/GameTime';
 import { MonitorPane } from '../components/MonitorPane';
@@ -13,14 +13,12 @@ export function Studio(ctx: StateContext & { onSettings: () => void; onDraft: ()
   const { state, send, onSettings, onDraft, onRecords } = ctx;
   const [details, setDetails] = useState(false);
   const canDirect = !!ctx.seat && ctx.seat.role === 'director' && ctx.connected !== false && state.production?.control?.owner === ctx.seat.id;
-  const canDemo = !!ctx.seat && ctx.seat.role === 'director' && ctx.connected !== false;
   const selectScene = (scene: Scene) => { void send({ type: 'preview-scene', scene }).catch(() => {}); };
   return <div className="director-workspace">
     <header className="director-toolbar">
       <h1>导播台</h1>
       <div className="director-phases" aria-label="比赛阶段">{Object.entries(phases).map(([phase, label]) => <button key={phase} disabled={!canDirect} aria-pressed={state.phase === phase} onClick={() => void send({ type: 'set-phase', phase: phase as Phase }).catch(() => {})}>{label}</button>)}</div>
       <span className="director-clock"><GameTime state={state}/></span>
-      {state.mode === 'demo' && <div className="director-demo-controls"><button disabled={!canDemo} title={state.paused ? '继续演示' : '暂停演示'} aria-label={state.paused ? '继续演示' : '暂停演示'} onClick={() => void send({ type: 'demo-pause', paused: !state.paused }).catch(() => {})}>{state.paused ? <Play size={15}/> : <Pause size={15}/>}</button><button disabled={!canDemo} title="重置演示" aria-label="重置演示" onClick={() => void send({ type: 'demo-reset' }).catch(() => {})}><RotateCcw size={15}/></button></div>}
       <div className="director-toolbar-actions"><button className="button small" onClick={onDraft}><Swords size={15}/>BP 与归属</button><button className="button small" onClick={() => setDetails(true)}><FileSliders size={15}/>本局资料</button></div>
     </header>
     <section className="director-vision" aria-label="节目、预监与快捷切入">

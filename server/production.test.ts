@@ -1,6 +1,7 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createSeed, applyAction, normalizeSavedState, publicState, resetRuntimeState, csvRecording } from './state';
+import { applyAction, normalizeSavedState, publicState, resetRuntimeState, csvRecording } from './state';
 import { captureProgram, programState, ensureProduction, checkValid, productionKey } from '../shared/production';
 import { currentGameResult } from '../shared/game-results';
 import { getFearlessBans } from './draft-history';
@@ -28,7 +29,7 @@ test('same-scene TAKE stages manual configuration while current-match telemetry 
 for(const scene of ['live','postgame','interview','draft','lineup','schedule'] as const)test(`${scene} retains the full previous-game context during next-game preparation`,()=>{
   let s=createSeed();s.previewScene=scene;s=applyAction(s,{type:'take'});
   s=applyAction(s,{type:'finalize-game',winner:'red'});const old=structuredClone(programState(s));
-  s=applyAction(s,{type:'next-game'});const view=programState(s);
+  s=applyAction(s,{type:'production',command:{op:'accept-final',reason:'确认测试终局记录'}});s=applyAction(s,{type:'next-game'});const view=programState(s);
   assert.equal(view.match.game,old.match.game);assert.equal(view.gameTime,old.gameTime);
   assert.deepEqual(view.players,old.players);assert.deepEqual(view.stats,old.stats);assert.equal(s.match.game,3);
   s=applyAction(s,{type:'production',command:{op:'immediate',action:'analysis-off'}});
@@ -42,13 +43,13 @@ test('on-air terminal data remains frozen after source loss and next-game prepar
   s.players=[];s.gameTime=0;s.stats.blue.kills=999;s.draft.bluePicks=[];
   const disconnected=programState(s);
   assert.deepEqual(disconnected.players,final.players);assert.deepEqual(disconnected.stats,final.stats);assert.deepEqual(disconnected.draft,final.draft);assert.equal(disconnected.gameTime,final.gameTime);
-  s=applyAction(s,{type:'next-game'});assert.equal(s.match.game,3);
+  s=applyAction(s,{type:'production',command:{op:'accept-final',reason:'确认测试终局记录'}});s=applyAction(s,{type:'next-game'});assert.equal(s.match.game,3);
   assert.equal(currentGameResult(programState(s))!.id,currentGameResult(final)!.id);
   assert.deepEqual(programState(s).players,final.players);assert.equal(programState(s).selectedPlayerId,final.selectedPlayerId);assert.equal(programState(s).gameTime,final.gameTime);
 });
 
 test('scores, feed mappings and sample gate follow team identities across a side swap',()=>{
-  let s=applyAction(createSeed(),{type:'finalize-game',winner:'red'});s=applyAction(s,{type:'next-game'});
+  let s=applyAction(createSeed(),{type:'finalize-game',winner:'red'});s=applyAction(s,{type:'production',command:{op:'accept-final',reason:'确认测试终局记录'}});s=applyAction(s,{type:'next-game'});
   s.overlay.playerFeeds!.blue.label='AZR';s.overlay.playerFeeds!.red.label='EMB';
   const gate=structuredClone(s.awaitingNextGame);
   s=applyAction(s,{type:'set-match',patch:{blueTeamId:'ember',redTeamId:'azure'}});

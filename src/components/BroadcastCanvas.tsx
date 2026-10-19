@@ -54,7 +54,6 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  {!output&&(look.error||look.loading)&&<span className="style-pack-preview-status" role="status">{look.error?`${look.error}；保留 ${look.pack.name}`:'风格包贴图加载中'}</span>}
  {(state.overlay.sponsor||state.overlay.sponsorLogo)&&<div className="cast-sponsor">{state.overlay.sponsorLogo?<img src={state.overlay.sponsorLogo} alt={state.overlay.sponsor||'赞助商标志'}/>:<span>{state.overlay.sponsor}</span>}</div>}
  {state.overlay.ticker&&<div className="cast-ticker"><b>{state.match.title}</b><span>{state.overlay.tickerText}</span></div>}
- {state.mode==='demo'&&<span className="cast-demo">DEMO · 演示数据</span>}
  {sourceIssue&&<div className="cast-source-status">{feed.updatedAt?'比赛数据暂不可用':'等待比赛数据'}{feed.updatedAt&&<span> · 截至 {new Date(feed.updatedAt).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false})}</span>}</div>}
  </div></div>;
 }

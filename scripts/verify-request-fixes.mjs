@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -6,7 +7,6 @@ import { createServer } from 'vite';
 import react from '@vitejs/plugin-react';
 import { tsImport } from 'tsx/esm/api';
 const {chromium}=await import(pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href);
-const {createSeed}=await tsImport('../server/state.ts',import.meta.url);
 const dir=path.resolve('verification-output/request-fixes');await mkdir(dir,{recursive:true});
 const state=createSeed();state.overlay.ticker=false;state.overlay.sponsor='';state.overlay.sponsorLogo='';
 const champions=JSON.parse(await readFile('data/champions.json','utf8'));const list=Array.isArray(champions)?champions:champions.champions||[];

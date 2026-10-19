@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
@@ -5,10 +6,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { Adapters, ChampionCatalog, normalizeDraft, normalizeLive } from './adapters';
 import { LocalApiError } from './replay';
-import { applyAction, createSeed } from './state';
+import { applyAction, } from './state';
 
 test('live polling retains the last successful sample time across failure and reconnect',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});
+  const state=emptyFixture();
   let unavailable=true;let gameTime=120;
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('.'),async(port,endpoint)=>{
     assert.equal(port,2999);assert.equal(endpoint,'/liveclientdata/allgamedata');
@@ -87,7 +88,7 @@ test('replay events and objectives reflect the current position and cannot prema
 });
 
 test('LCU accepts a valid idle phase when gameflow session is absent and waits for real draft side information',async()=>{
-  const taskDirectory=await mkdtemp(path.join(os.tmpdir(),'riftcast-idle-lcu-'));const lockfile=path.join(taskDirectory,'lockfile');await writeFile(lockfile,'LeagueClient:0:12345:test-only:https');const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.settings.lockfilePath=lockfile;let phase='None';let sessionStatus=404;const calls:string[]=[];
+  const taskDirectory=await mkdtemp(path.join(os.tmpdir(),'riftcast-idle-lcu-'));const lockfile=path.join(taskDirectory,'lockfile');await writeFile(lockfile,'LeagueClient:0:12345:test-only:https');const state=emptyFixture();state.settings.lockfilePath=lockfile;let phase='None';let sessionStatus=404;const calls:string[]=[];
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('.'),async(port,endpoint)=>{assert.equal(port,12345);calls.push(endpoint);if(endpoint==='/lol-gameflow/v1/session')throw new LocalApiError('测试 session 错误','http',port,endpoint,sessionStatus);if(endpoint==='/lol-gameflow/v1/gameflow-phase')return phase;throw new Error('不应读取未确认的选人阵容');});
   try{await adapters.connect('lcu');assert.equal(state.connections.lcu.status,'connected');assert.match(state.connections.lcu.detail,/等待 BP/);assert.deepEqual(calls,['/lol-gameflow/v1/session','/lol-gameflow/v1/gameflow-phase']);assert.deepEqual(state.players,[]);phase='ChampSelect';await adapters.poll();assert.equal(state.connections.lcu.status,'connected');assert.equal(state.phase,'draft');assert.deepEqual(state.players,[]);assert.match(state.connections.lcu.detail,/蓝红方/);sessionStatus=401;await adapters.poll();assert.equal(state.connections.lcu.status,'error');}finally{await adapters.close();assert.ok(path.resolve(taskDirectory).startsWith(path.resolve(os.tmpdir())+path.sep));await rm(taskDirectory,{recursive:true,force:true});}
 });

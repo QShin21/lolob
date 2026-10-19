@@ -1,8 +1,9 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DisplayGameClock, displayClockInput, gameClockMatchKey, type DisplayClockInput } from '../shared/game-clock';
 import { Adapters, ChampionCatalog } from './adapters';
-import { applyAction, createSeed } from './state';
+import { applyAction, } from './state';
 
 const wallBase=1_000_000;
 function reading(time:number,at=0,patch:Partial<DisplayClockInput>={}):DisplayClockInput{return {time,sampledAt:new Date(wallBase+at).toISOString(),speed:1,paused:false,connected:true,sessionKey:'live-session-1',sampleKey:`${at}:${time}`,validForMs:4500,...patch};}
@@ -44,20 +45,20 @@ test('network age is applied once and subsequent progress uses monotonic time',(
 });
 
 test('clock metadata follows actual source status and cannot leak across modes or matches',()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=91;state.connections.replay.status='connected';state.gameClock={source:'replay',gameTime:100,sampledAt:new Date(wallBase).toISOString(),speed:4,paused:false,sessionId:'session',discontinuity:0,matchKey:gameClockMatchKey(state),validForMs:4500};
+  const state=emptyFixture();state.gameTime=91;state.connections.replay.status='connected';state.gameClock={source:'replay',gameTime:100,sampledAt:new Date(wallBase).toISOString(),speed:4,paused:false,sessionId:'session',discontinuity:0,matchKey:gameClockMatchKey(state),validForMs:4500};
   assert.equal(displayClockInput(state).time,100);assert.equal(displayClockInput(state).speed,4);assert.equal(displayClockInput(state,false).connected,false);
   state.connections.replay.status='error';assert.equal(displayClockInput(state).connected,false);
   state.match.game++;assert.equal(displayClockInput(state).time,91);assert.equal(displayClockInput(state).speed,0);
-  state.mode='demo';state.gameTime=42;state.paused=true;assert.equal(displayClockInput(state).time,42);assert.equal(displayClockInput(state).paused,true);
+  delete state.gameClock;state.gameTime=42;state.paused=true;assert.equal(displayClockInput(state).time,42);assert.equal(displayClockInput(state).paused,true);
 });
 
 test('malformed sample validity cannot keep an unbounded display clock running',()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=91;state.connections.live.status='connected';state.gameClock={source:'live',gameTime:100,sampledAt:new Date(wallBase).toISOString(),speed:1,paused:false,sessionId:'session',discontinuity:0,matchKey:gameClockMatchKey(state),validForMs:NaN};
+  const state=emptyFixture();state.gameTime=91;state.connections.live.status='connected';state.gameClock={source:'live',gameTime:100,sampledAt:new Date(wallBase).toISOString(),speed:1,paused:false,sessionId:'session',discontinuity:0,matchKey:gameClockMatchKey(state),validForMs:NaN};
   assert.equal(displayClockInput(state).connected,false);assert.equal(displayClockInput(state).time,91);
 });
 
 test('adapters publish actual Live and Replay clocks while preserving gameTime recording semantics',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.programScene='standby';let liveTime=241.5;let replayAvailable=true;let playback={time:900.25,speed:2,paused:true};
+  const state=emptyFixture();state.programScene='standby';let liveTime=241.5;let replayAvailable=true;let playback={time:900.25,speed:2,paused:true};
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('.'),async(_port,endpoint,options)=>{
     if(endpoint==='/liveclientdata/allgamedata')return {allPlayers:[{riotId:'Clock#Fixture',championName:'Ahri',team:'ORDER',scores:{kills:0,deaths:0,assists:0,creepScore:0}}],gameData:{gameTime:liveTime},events:{Events:[]}};
     if(endpoint==='/replay/playback'){if(!replayAvailable)throw new Error('fixture replay disconnected');if(options?.method==='POST')playback={...playback,...options.body as typeof playback};return {...playback};}
@@ -75,7 +76,7 @@ test('adapters publish actual Live and Replay clocks while preserving gameTime r
 });
 
 test('expired Replay metadata yields a fresh frozen Live anchor and runtime resets clear the old session',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.programScene='standby';state.settings.pollInterval=500;let liveTime=120;let replayAvailable=true;let playback={time:120,speed:8,paused:false};
+  const state=emptyFixture();state.programScene='standby';state.settings.pollInterval=500;let liveTime=120;let replayAvailable=true;let playback={time:120,speed:8,paused:false};
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('.'),async(_port,endpoint,options)=>{
     if(endpoint==='/liveclientdata/allgamedata')return {allPlayers:[{riotId:'Clock#Fixture',championName:'Ahri',team:'ORDER',scores:{kills:0,deaths:0,assists:0,creepScore:0}}],gameData:{gameTime:liveTime},events:{Events:[]}};
     if(endpoint==='/replay/playback'){if(!replayAvailable)throw new Error('fixture replay disconnected');if(options?.method==='POST')playback={...playback,...options.body as typeof playback};return {...playback};}

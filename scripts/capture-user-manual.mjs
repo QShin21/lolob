@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Capture the real 1.0.2 web UI using disposable demo data, with native writes blocked.
 import { mkdir, mkdtemp, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -10,7 +11,6 @@ import { isolatedNativeEnvironment } from './verify-native-safety.mjs';
 
 const modulePath = process.env.RIFTCAST_PLAYWRIGHT_MODULE;
 const { chromium } = await import(modulePath ? pathToFileURL(modulePath).href : 'playwright');
-const { createSeed } = await tsImport('../server/state.ts', import.meta.url);
 const { reportFixture } = await import('./report-093-fixture.mjs');
 const out = path.resolve('docs/user-manual-1.0.2/images');
 const evidence = path.resolve('verification-output/user-manual-1.0.2');

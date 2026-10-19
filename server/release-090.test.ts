@@ -1,10 +1,11 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import {PortraitManifestStore} from './spectator-portraits';
-import {createSeed,applyAction} from './state';
+import {applyAction} from './state';
 import {createElement} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {EconomySourcePanel} from '../src/components/EconomySourcePanel';

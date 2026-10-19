@@ -27,7 +27,7 @@ test('HTTP / WebSocket service, upload and LAN control credentials work together
   let ws:WebSocket|undefined;try{
     let ready=false;for(let i=0;i<60;i++){try{const r=await fetch(`${base}/api/health`);if(r.ok){ready=true;break;}}catch{/* wait for the service to listen */}await new Promise(r=>setTimeout(r,150));}assert.ok(ready,'service must become available');
     assert.equal((await fetch(`${base}/api/health`).then(r=>r.json())).service,'riftcast-director');
-    const state=await fetch(`${base}/api/state`).then(r=>r.json());assert.equal(state.mode,'demo');assert.equal(state.players.length,10);
+    const state=await fetch(`${base}/api/state`).then(r=>r.json());assert.equal(state.mode,'live');assert.equal(state.players.length,0);
     const cameras=await fetch(`${base}/api/obs/cameras`);assert.equal(cameras.status,503,'Camera enumeration reports disconnected OBS instead of inventing devices');
     assert.match((await cameras.json()).error,/OBS/);
     const feeds=await fetch(`${base}/api/obs/player-feeds`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(r=>r.json());assert.equal(feeds.applied,false,'Saved camera settings stay pending while OBS is disconnected');
@@ -37,9 +37,9 @@ test('HTTP / WebSocket service, upload and LAN control credentials work together
     const form=new FormData();const pixels=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/K1sAAAAASUVORK5CYII=','base64');form.append('file',new Blob([pixels],{type:'image/png'}),'../../x.png');const upload=await fetch(`${base}/api/assets`,{method:'POST',body:form});assert.equal(upload.status,201);const asset=await upload.json();assert.match(asset.url,/^\/uploads\/[a-z0-9-]+\.png$/);assert.equal((await fetch(base+asset.url)).status,200);
     const network=await fetch(`${base}/api/network`).then(r=>r.json());assert.equal(network.enabled,true);assert.equal(typeof network.controlToken,'string');
     const addresses=lanAddresses();if(addresses.length){const remote=`http://${addresses[0]}:${port}`;const info=await fetch(`${remote}/api/network`).then(r=>r.json());assert.equal(info.controlToken,undefined);const denied=await fetch(`${remote}/api/action`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'take',scene:'live'})});assert.equal(denied.status,401);const allowed=await fetch(`${remote}/api/action`,{method:'POST',headers:{'Content-Type':'application/json','x-control-token':network.controlToken},body:JSON.stringify({type:'take',scene:'live'})});assert.equal(allowed.status,403,'remote control requires an explicit operation seat before attempting TAKE');}
-    assert.equal((await fetch(`${base}/api/export?format=csv`)).status,200);
+    assert.equal((await fetch(`${base}/api/export?format=csv`)).status,400);
     const post=(route:string,body:unknown)=>fetch(base+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    assert.equal((await post('/api/economy/sample',{blue:'23.4k',red:'22.8k'})).status,400,'demo must reject real manual readings');
+    assert.equal((await post('/api/action',{type:'set-mode',mode:'demo'})).status,400,'removed source must be rejected');
     await post('/api/action',{type:'set-mode',mode:'live'});
     const economic=await post('/api/economy/sample',{blue:'23.4k',red:'22.8k'}).then(r=>r.json());assert.equal(economic.source,'manual');assert.equal(economic.blue,23400);
     const real=await fetch(`${base}/api/state`).then(r=>r.json());assert.equal(real.stats.blue.gold,23400);assert.equal(real.stats.red.gold,22800);assert.equal(real.economy[0].source,'manual');assert.equal(real.players.length,0,'manual team gold must not fabricate individual stats');
@@ -62,11 +62,12 @@ test('desktop IPC shutdown flushes the latest recording even while an older snap
     let ready=false;for(let i=0;i<60;i++){try{if((await fetch(`${base}/api/health`)).ok){ready=true;break;}}catch{/* wait for startup */}await new Promise(resolve=>setTimeout(resolve,150));}assert.ok(ready,diagnostics);
     child.send({type:'unrelated-message'});assert.equal((await fetch(`${base}/api/health`)).status,200);
     const firstWrite=new Promise<void>((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('The delayed persistence hook did not run')),3000);child.on('message',message=>{if(message&&typeof message==='object'&&(message as {type?:unknown}).type==='test-write-started'){clearTimeout(timer);resolve();}});});
-    const paused=await fetch(`${base}/api/action`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'demo-pause',paused:true})});assert.equal(paused.status,200);await firstWrite;
+    const paused=await fetch(`${base}/api/action`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'set-overlay',patch:{ticker:true}})});assert.equal(paused.status,200);await firstWrite;
+    await fetch(`${base}/api/economy/sample`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({blue:23000,red:22000})});
     const latest=await fetch(`${base}/api/action`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'save-recording',title:'退出前即时保存的记录'})}).then(response=>response.json());const recordingId=latest.recordings[0].id;
     const exited=new Promise<number|null>((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(`Desktop service did not shut down: ${diagnostics}`)),5000);child.once('exit',code=>{clearTimeout(timer);resolve(code);});});
     child.send({type:'riftcast-shutdown'});child.send({type:'riftcast-shutdown'});assert.equal(await exited,0);
-    const saved=JSON.parse(await readFile(path.join(dir,'state.json'),'utf8'));assert.equal(saved.recordings[0].id,recordingId);assert.equal(saved.recordings[0].title,'退出前即时保存的记录');assert.equal(saved.revision,latest.revision);assert.equal(saved.paused,true);
+    const saved=JSON.parse(await readFile(path.join(dir,'state.json'),'utf8'));assert.equal(saved.recordings[0].id,recordingId);assert.equal(saved.recordings[0].title,'退出前即时保存的记录');assert.equal(saved.revision,latest.revision);assert.equal(saved.overlay.ticker,true);
   }finally{
     if(child.exitCode===null){child.kill();await new Promise<void>(resolve=>{child.once('exit',()=>resolve());setTimeout(resolve,3000);});}
     const absolute=path.resolve(dir);assert.ok(absolute.startsWith(path.resolve(tmpdir())+path.sep)&&path.basename(absolute).startsWith('riftcast-test-'));await rm(absolute,{recursive:true,force:true,maxRetries:3,retryDelay:100});

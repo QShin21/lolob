@@ -1,10 +1,10 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type OBSWebSocket from 'obs-websocket-js';
 import type { PlayerFeedSettings, Side } from '../shared/types';
 import { ObsBroadcast, playerCameraName } from './obs-broadcast';
 import { Adapters, ChampionCatalog } from './adapters';
-import { createSeed } from './state';
 import { engineScene, enginePreviewScene } from './obs-engine';
 import { playerFeedPairs } from '../shared/player-feeds';
 import { applyAction } from './state';

@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -14,7 +15,6 @@ import { isolatedNativeEnvironment, nativeRequestGuard } from './verify-native-s
 import { reportFixture } from './report-093-fixture.mjs';
 const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
 const { BUILTIN_STYLE_REF, BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_RECORDS, STYLE_SCENES } = await tsImport('../shared/style-packs.ts', import.meta.url);
-const { createSeed } = await tsImport('../server/state.ts', import.meta.url);
 const { bundledChampions } = await tsImport('../shared/champion-art.ts', import.meta.url);
 const version = JSON.parse(await readFile('package.json', 'utf8')).version;
 const dir = path.resolve('verification-output', `release-${version}`, 'builtins'); await mkdir(dir, { recursive: true });

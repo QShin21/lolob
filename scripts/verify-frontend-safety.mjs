@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Focused browser regressions for the independent 35893d9 findings.
 // Real isolated HTTP + renderer; only the notification case uses a labelled engine stub.
 import assert from 'node:assert/strict';
@@ -20,7 +21,6 @@ if (process.env.RIFTCAST_EXPECT_SOURCE) {
 const evidence = path.join(root, 'verification-output', `frontend-safety-${source.slice(0, 7)}`);
 await mkdir(evidence, { recursive: true });
 const work = await mkdtemp(path.join(tmpdir(), 'riftcast-frontend-safety-'));
-const { createSeed } = await tsImport('../server/state.ts', import.meta.url);
 const { captureProgram } = await tsImport('../shared/production.ts', import.meta.url);
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const results = [], errors = [], services = [], requests = [];

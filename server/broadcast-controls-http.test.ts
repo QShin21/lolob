@@ -1,3 +1,5 @@
+import { finalizeGame } from './game-results';
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn, type ChildProcess } from 'node:child_process';
@@ -7,7 +9,6 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { BroadcastState } from '../shared/types';
-import { createSeed } from './state';
 
 async function freePort(): Promise<number> {
   const server = createServer();
@@ -61,7 +62,7 @@ test('five-pair controls persist over HTTP, migrate the retired scene, rotate in
   const directory = await mkdtemp(path.join(tmpdir(), 'riftcast-broadcast-http-'));
   let service: Awaited<ReturnType<typeof startService>> | undefined;
   try {
-    const saved = createSeed(); saved.paused = true; saved.overlay.nativeHud = 'off';
+    const saved = createSeed(); finalizeGame(saved,{source:'live',winner:'blue',terminal:true}); saved.paused = true; saved.overlay.nativeHud = 'off';
     (saved as any).previewScene = 'income';
     (saved as any).incomeSnapshots = [{ id: 'retired-data' }];
     await writeFile(path.join(directory, 'state.json'), JSON.stringify(saved));

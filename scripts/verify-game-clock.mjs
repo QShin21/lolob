@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Isolated real React component verification with a sampled clock; no game or output controls.
 import assert from 'node:assert/strict';
 import http from 'node:http';
@@ -9,7 +10,7 @@ import react from '@vitejs/plugin-react';
 import { tsImport } from 'tsx/esm/api';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const { createSeed, applyAction } = await tsImport('../server/state.ts', import.meta.url);
+const { applyAction } = await tsImport('../server/state.ts', import.meta.url);
 const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
 const initial = applyAction(createSeed(), { type: 'set-mode', mode: 'live' });
 initial.phase = 'live'; initial.settings.pollInterval = 1500;
@@ -20,7 +21,7 @@ import {GameTime,GameClockConnectionProvider} from '/src/components/GameTime.tsx
 let state=${JSON.stringify(initial)},connected=true,baseTime=241.8,baseAt=performance.now(),speed=1,paused=false,source='live',epoch=0;const listeners=new Set();
 const actual=()=>baseTime+(paused?0:(performance.now()-baseAt)/1000*speed);
 function publish(){state={...state,gameTime:actual(),gameClock:{source,gameTime:actual(),sampledAt:new Date().toISOString(),speed,paused,sessionId:'browser-clock-fixture',discontinuity:epoch,matchKey:gameClockMatchKey(state),validForMs:4500}};for(const update of listeners)update();}
-function control(change){baseTime=actual();baseAt=performance.now();if(change.time!==undefined){baseTime=change.time;epoch++;}if(change.speed!==undefined){speed=change.speed;source='replay';}if(change.paused!==undefined)paused=change.paused;if(change.connected!==undefined)connected=change.connected;if(change.newMatch){state={...state,match:{...state.match,game:state.match.game+1}};baseTime=0;epoch++;}if(change.mode){state={...state,mode:change.mode,paused};}publish();}
+function control(change){baseTime=actual();baseAt=performance.now();if(change.time!==undefined){baseTime=change.time;epoch++;}if(change.speed!==undefined){speed=change.speed;source='replay';}if(change.paused!==undefined)paused=change.paused;if(change.connected!==undefined)connected=change.connected;if(change.newMatch){state={...state,match:{...state.match,game:state.match.game+1}};baseTime=0;epoch++;}publish();}
 publish();setInterval(publish,1500);window.fixture={control};
 function App(){const [value,setValue]=useState(state),[transport,setTransport]=useState(connected);useEffect(()=>{const update=()=>{setValue(state);setTransport(connected);};listeners.add(update);return()=>listeners.delete(update);},[]);return <GameClockConnectionProvider value={transport}><main><h1>1500 ms 实采时钟验证</h1><strong data-testid="clock"><GameTime state={value}/></strong><p>API 实采值：<output data-testid="raw">{value.gameTime.toFixed(3)}</output> 秒</p></main></GameClockConnectionProvider>;}
 createRoot(document.getElementById('root')).render(<App/>);`;
@@ -76,10 +77,10 @@ try {
   const reconnected = parseTime(await page.getByTestId('clock').textContent()); assert.ok(reconnected > parseTime(disconnected), 'Reconnect adopts the fresh sample');
   await page.evaluate(() => window.fixture.control({ newMatch: true, paused: true })); await page.waitForTimeout(100);
   assert.equal(await page.getByTestId('clock').textContent(), '00:00', 'A new game clears the previous display anchor');
-  await page.evaluate(() => window.fixture.control({ mode: 'demo', time: 42, paused: true })); await page.waitForTimeout(100);
-  assert.equal(await page.getByTestId('clock').textContent(), '00:42', 'Mode switch adopts demo state without old Replay metadata');
+  await page.evaluate(() => window.fixture.control({ time: 42, paused: true })); await page.waitForTimeout(100);
+  assert.equal(await page.getByTestId('clock').textContent(), '00:42', 'Paused client sample reanchors at the requested position');
   assert.deepEqual(errors, []);
-  const report = { verifiedAt: new Date().toISOString(), boundary: 'Isolated Vite/React browser fixture using the production GameTime component. No live game timing claim.', pollIntervalMs: 1500, normalSequence: sequence, unchangedRawBetweenDisplayTicks: true, pause: paused, speed4xAdvance: acceleratedEnd - acceleratedStart, seek: '02:00', disconnectFreeze: disconnected, reconnect: reconnected, newGame: '00:00', demo: '00:42', pageErrors: errors, result: 'PASS' };
+  const report = { verifiedAt: new Date().toISOString(), boundary: 'Isolated Vite/React browser fixture using the production GameTime component. No live game timing claim.', pollIntervalMs: 1500, normalSequence: sequence, unchangedRawBetweenDisplayTicks: true, pause: paused, speed4xAdvance: acceleratedEnd - acceleratedStart, seek: '02:00', disconnectFreeze: disconnected, reconnect: reconnected, newGame: '00:00', pausedClient: '00:42', pageErrors: errors, result: 'PASS' };
   await writeFile(path.join(evidence, 'verification.json'), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report));
 } finally {

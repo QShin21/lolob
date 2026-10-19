@@ -66,7 +66,7 @@ export function LiveData({
       ? p.items.reduce((sum, id) => sum + items[id].gold!, 0)
       : null;
   const available = (p: Player) =>
-    state.mode === "demo" || p.statsAvailable !== false;
+    p.statsAvailable !== false;
   const metric = (p: Player) =>
     ranking === "equipment"
       ? (equipmentValue(p) ?? -1)
@@ -103,13 +103,9 @@ export function LiveData({
     });
   const player = players.find((p) => p.id === inspectedId) ?? players[0];
   const source =
-    state.mode === "demo"
-      ? "演示经济"
-      : sourceNames[state.economyFeed?.source ?? "none"];
+    sourceNames[state.economyFeed?.source ?? "none"];
   const statsSource = (p: Player) =>
-    state.mode === "demo"
-      ? "演示"
-      : !available(p)
+    !available(p)
         ? "未提供"
         : p.statsSource === "ocr"
           ? "OCR"
@@ -152,9 +148,7 @@ export function LiveData({
                 ? gameResultAwaitingTerminalSample(result)
                   ? "观测已保存，等待终局"
                   : "最终数据已冻结"
-                : state.mode === "demo"
-                  ? "虚构演示数据"
-                  : "当前对局采集"}
+                : "当前对局采集"}
             </p>
           </div>
           <span className="data-clock">
@@ -390,9 +384,7 @@ export function LiveData({
                 <div>
                   <dt>经济来源</dt>
                   <dd>
-                    {state.mode === "demo"
-                      ? "演示"
-                      : player.goldSource === "ocr"
+                    {player.goldSource === "ocr"
                         ? "OCR"
                         : player.goldSource === "api"
                           ? "API"
@@ -562,9 +554,7 @@ export function LiveData({
         </div>
         <EconomyChart state={state} interactive />
         <p className="data-table-foot">
-          {state.mode === "demo"
-            ? "当前为虚构演示数据。"
-            : state.economyFeed?.detail || "等待有效团队经济。"}{" "}
+          {state.economyFeed?.detail || "等待有效团队经济。"}{" "}
           保留采样来源与断采缺口；正值为蓝方领先，负值为红方领先。
         </p>
       </div>

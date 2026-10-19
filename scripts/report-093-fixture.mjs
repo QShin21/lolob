@@ -1,6 +1,6 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 import assert from 'node:assert/strict';
 import { tsImport } from 'tsx/esm/api';
-const { createSeed } = await tsImport('../server/state.ts', import.meta.url);
 const { finalizeGame } = await tsImport('../server/game-results.ts', import.meta.url);
 const { writableOcrMatch, retainTeamGold } = await tsImport('../server/hud-ocr.ts', import.meta.url);
 export const amounts = [11200,10400,13400,16300,9200,13500,12500,16300,17400,8500];

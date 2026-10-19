@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Browser design evidence only. Starts an isolated offline HTTP service, never OBS or output devices.
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, writeFile, readFile, readdir } from 'node:fs/promises';
@@ -16,7 +17,6 @@ const evidence = path.resolve(repo, 'docs/evidence/frontend-design-round1');
 const dir = await mkdtemp(path.join(tmpdir(), 'riftcast-design-'));
 process.env.XDG_CACHE_HOME = path.join(dir, 'cache');
 await mkdir(process.env.XDG_CACHE_HOME, { recursive: true });
-const { createSeed } = await tsImport(path.join(root, 'server/state.ts'), import.meta.url);
 const seed = createSeed(); seed.paused = true;
 // Generated geometry is an explicitly synthetic file, not a window or a real participant.
 await mkdir(path.join(dir, 'uploads'), { recursive: true });

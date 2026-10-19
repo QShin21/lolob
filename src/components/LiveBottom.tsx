@@ -110,7 +110,7 @@ export function LiveBottom({state,champions,items,version}:{state:BroadcastState
         const delta=state.overlay.goldDiff?bottomGoldDifference(state.mode,blue[i],red[i]):null;
         return <div className="lb-pair" key={i}>
           <PlayerRow player={blue[i]} champions={champions} items={items} version={version} side="blue" ultimateIcon={ultimateFor(blue[i])}/>
-          <div className={`lb-lead ${delta==null?'unavailable':delta>0?'blue':delta<0?'red':'even'}`} title={delta==null?'等待双方有效累计金币 OCR':`双方累计金币差 ${Math.abs(Math.round(delta))} · ${state.mode==='demo'?'演示数据':'OCR'}`}>
+          <div className={`lb-lead ${delta==null?'unavailable':delta>0?'blue':delta<0?'red':'even'}`} title={delta==null?'等待双方有效累计金币 OCR':`双方累计金币差 ${Math.abs(Math.round(delta))} · ${'OCR'}`}>
             <b>{delta==null?'—':Math.abs(Math.round(delta))}</b>
           </div>
           <PlayerRow player={red[i]} champions={champions} items={items} version={version} side="red" ultimateIcon={ultimateFor(red[i])}/>

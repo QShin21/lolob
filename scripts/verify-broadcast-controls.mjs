@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Isolated UI fixtures: never opens OBS, connects to a game, or reads production state.
 import assert from "node:assert/strict";
 import http from "node:http";
@@ -13,7 +14,7 @@ const evidence = path.resolve(
   process.env.RIFTCAST_CONTROLS_VERIFY_DIR ||
     path.join(root, "verification-output/broadcast-controls"),
 );
-const { createSeed, fallbackChampions, applyAction } = await tsImport(
+const { fallbackChampions, applyAction } = await tsImport(
   "../server/state.ts",
   import.meta.url,
 );
@@ -403,7 +404,7 @@ try {
     bluePicks: champions.slice(i * 10, i * 10 + 5).map((c) => c.id),
     redPicks: champions.slice(i * 10 + 5, i * 10 + 10).map((c) => c.id),
     recordedAt: new Date().toISOString(),
-    source: "demo",
+    source: "manual",
   }));
   state.players.forEach((p, i) => {
     p.name = "超长选手名称_" + String(i + 1) + "_ChampionPlayer";

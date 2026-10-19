@@ -47,7 +47,7 @@ try {
   service = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], { cwd: root, windowsHide: true,
     env: { ...runnerEnv, PORT: String(port), RIFTCAST_DATA_DIR: serviceData, RIFTCAST_OBS_MODE: 'external', RIFTCAST_OBS_AUTOSTART: '0' }, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
   await until(async () => { try { return (await fetch(base + '/api/health')).ok; } catch { return false; } }, 'service ready');
-  await api('/api/action', { type: 'demo-pause', paused: true });
+  await api('/api/action', { type: 'set-overlay', patch: { ticker: false } });
   engine = new ObsEngine(obs, { root: sandbox, dataDir: engineData, overlayUrl: base + '/overlay', onConnection() {} });
   await engine.initialize(); await engine.start();
   const credentials = JSON.parse(await readFile(path.join(runtime, 'config/obs-studio/plugin_config/obs-websocket/config.json'), 'utf8'));

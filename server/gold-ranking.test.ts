@@ -1,6 +1,6 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createSeed } from './state';
 import { goldRanking, rankingGold } from '../shared/gold-ranking';
 
 test('all ten players share one descending ranking and one bar scale', () => {
@@ -23,7 +23,7 @@ test('missing, negative and non-finite totals sort last; spendable gold never su
 });
 test('live totals require fresh OCR or an active API sample and reject a pending replay seek', () => {
   const now = Date.now(), state = createSeed(); state.mode = 'live';
-  const player = state.players[0];
+  const player = state.players[0];delete player.goldSource;
   assert.equal(rankingGold(state, player, now), null);
   Object.assign(player, { goldSource: 'ocr', goldExpiresAt: new Date(now + 1000).toISOString() });
   assert.equal(rankingGold(state, player, now), 9400);

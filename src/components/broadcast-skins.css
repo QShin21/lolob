@@ -53,7 +53,6 @@
 .cast-capture-preview > span { font-size: 1.6cqw; }
 .cast-capture-preview > small { font-size: .9cqw; }
 .cast-capture-preview.capture-draft { justify-content: flex-start; padding-top: 13cqw; }
-.cast-demo { position: absolute; right: 4%; top: 1%; color: var(--art-cc4d1d7, #c4d1d7); font: .7cqw var(--cast-font); z-index: 6; }
 .cast-source-status { position: absolute; left: 1.3%; top: 13%; color: var(--art-cf1d9b0, #f1d9b0); background: var(--art-c3b3125f2, #3b3125f2); border: 1px solid var(--art-cc8aa7470, #c8aa7470); padding: .4cqw .65cqw; font-size: .95cqw; z-index: 5; }
 .cast-source-status > span { color: var(--art-cd0c3ae, #d0c3ae); }
 .cast-sponsor { position: absolute; left: 4%; bottom: 10%; max-width: 13%; height: 1.7cqw; display: flex; align-items: center; justify-content: center; z-index: 4; color: var(--cast-paper); }

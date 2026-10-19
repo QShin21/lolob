@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
@@ -9,7 +10,6 @@ import type { ObsClient } from './obs-client';
 import type { VirtualAudioDriver, AudioDriverStatus } from './virtual-audio-driver';
 import { audioExtension, ObsMusic } from './obs-music';
 import { ObsProduction } from './obs-production';
-import { createSeed } from './state';
 
 const tracks = () => ({ '1': false, '2': true, '3': false, '4': false, '5': false, '6': false });
 class AudioObs extends EventEmitter {

@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
@@ -6,11 +7,11 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { EconomyBridge, defaultEconomyConfig, parseGold, validateEconomyConfig, type OcrReading, type AutoLocatedReading } from './economy';
-import { applyAction, createSeed } from './state';
+import { applyAction, } from './state';
 import type { BroadcastState } from '../shared/types';
 
 const stats=():BroadcastState['stats']=>({blue:{kills:0,gold:null,towers:0,dragons:0,barons:0},red:{kills:0,gold:null,towers:0,dragons:0,barons:0}});
-function setup(capture?:()=>Promise<OcrReading>,locate?:()=>Promise<AutoLocatedReading>){const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=100;let now=100000;const bridge=new EconomyBridge(()=>state,work=>work(state),{now:()=>now,capture,locate});return {state,bridge,advance:(ms:number)=>{now+=ms;}};}
+function setup(capture?:()=>Promise<OcrReading>,locate?:()=>Promise<AutoLocatedReading>){const state=emptyFixture();state.gameTime=100;let now=100000;const bridge=new EconomyBridge(()=>state,work=>work(state),{now:()=>now,capture,locate});return {state,bridge,advance:(ms:number)=>{now+=ms;}};}
 
 test('gold parser accepts scoreboard units and rejects ambiguous OCR or invented values',()=>{
   for(const [input,expected]of [[23400,23400],['23,400',23400],['23.4k',23400],['23.4 K',23400],['23 ． 4k',23400],['23 · 4k',23400],['２.３４万',23400],['0',0]]as const)assert.equal(parseGold(input),expected);
@@ -34,7 +35,7 @@ test('native cumulative gold takes priority while manual and OCR retain accurate
 test('seek backwards, new game, source-mode changes and explicit reset discard former samples',()=>{
   const {state,bridge}=setup();bridge.sample({blue:23000,red:22000});bridge.resolve(100,stats());const backwards=bridge.resolve(80,stats());assert.equal(backwards.stats.blue.gold,null);assert.notEqual(backwards.feed.status,'fresh');
   state.gameTime=80;bridge.sample({blue:21000,red:20000});state.match.game++;assert.notEqual(bridge.status().status,'fresh');assert.equal(bridge.resolve(0,stats()).stats.blue.gold,null);
-  state.gameTime=0;bridge.sample({blue:2500,red:2500});state.mode='demo';assert.equal(bridge.resolve(0,stats()).feed.status,'disabled');state.mode='live';assert.notEqual(bridge.status().status,'fresh');
+  state.gameTime=0;bridge.sample({blue:2500,red:2500});state.match.seriesId='new-live-series';assert.notEqual(bridge.status().status,'fresh');
   bridge.sample({blue:2600,red:2500});bridge.reset();assert.equal(state.stats.blue.gold,null);assert.deepEqual(state.economy,[]);
 });
 

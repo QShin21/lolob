@@ -164,7 +164,7 @@ export function Remote(
           </strong>
           <small>
             GAME {displayState.match.game}
-            {state.mode === "demo" ? " · 演示数据" : ""}
+            {""}
           </small>
         </div>
         <div

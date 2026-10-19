@@ -65,7 +65,7 @@ export default function App() {
   useEffect(() => { if (output) void loadStylePack(state?.overlay.stylePack).catch(() => {}); }, [output, state?.overlay.stylePack?.id, state?.overlay.stylePack?.revision]);
   useDirectorKeys({ ...broadcast, state: state ?? undefined }, page === 'studio', !output && !remote);
   // Before any snapshot exists, the browser source stays empty. Never expose
-  // workstation branding, connection controls, or demo state to the audience.
+  // workstation branding or connection controls to the audience.
   if (!state && output) return null;
   if (!state) return <div className="loading-screen"><Brand/><h2>{error ? '本地服务尚未连接' : '正在连接导播工作站'}</h2><p>{error || '载入赛事、素材与节目状态'}</p>{error && <button className="button primary" onClick={() => location.reload()}>重新连接</button>}</div>;
   const ctx = { state, champions, connected, send, notify, seat }, onAir = programState(state);
@@ -87,7 +87,7 @@ export default function App() {
         <header className="control-header">
           <div className="control-title"><strong>RIFTCAST</strong><span>ARENA / {navigation.find(item => item.id === page)?.name}</span></div>
           <button className="control-match" title="正在节目中的比赛 · 打开赛事资料" onClick={() => navigate('manage')}><span>{onAir.match.title}</span><b>{getTeam(onAir, 'blue')?.tag} <em>{onAir.match.blueScore} : {onAir.match.redScore}</em> {getTeam(onAir, 'red')?.tag}</b><small>第 {onAir.match.game} 局</small></button>
-          <span className="control-mode">{state.mode === 'demo' ? '演示数据' : '本地实况'}</span>
+          <span className="control-mode">{'本地实况'}</span>
           <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? (seatStatus === 'invalid' ? '席位失效' : '验证席位中')}</span>
           <span className={`control-sync ${connected && seat ? '' : 'disconnected'}`}><Wifi size={14}/>{connected ? seat ? '已同步' : '数据已同步 · 待验证席位' : '同步中断'}</span>
         </header>

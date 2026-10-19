@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { mkdir, mkdtemp, readFile, writeFile, cp } from 'node:fs/promises';
@@ -56,7 +57,6 @@ const userData = path.join(sandbox, 'user-data');
 const source = path.join(sandbox, 'legacy-project');
 await mkdir(path.join(source, 'data/uploads'), { recursive: true });
 await mkdir(path.join(source, 'runtime/obs-studio/config'), { recursive: true });
-const { createSeed } = await tsImport('../server/state.ts', import.meta.url);
 const seed = createSeed(); seed.match.title = 'Release 迁移验证'; seed.demoPaused = true;
 const sourceState = JSON.stringify(seed, null, 2);
 await writeFile(path.join(source, 'data/state.json'), sourceState);

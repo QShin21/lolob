@@ -1,7 +1,8 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Adapters, ChampionCatalog } from './adapters';
-import { applyAction, createSeed, normalizeSavedState, publicState, resetRuntimeState } from './state';
+import { applyAction, normalizeSavedState, publicState, resetRuntimeState } from './state';
 import { captureProgram, playerIdentity, programState, publishProgram } from '../shared/production';
 import { pendingContent } from '../shared/presentation';
 import { bottomPlayers } from './bottom-scoreboard';
@@ -177,6 +178,7 @@ test('held roster survives save/restart, new attempts and legacy undo without cr
   let { s, visible } = takeover();
   s = normalizeSavedState(JSON.parse(JSON.stringify(publicState(s)))); resetRuntimeState(s);
   assert.deepEqual(identities(programState(s)), identities(visible));
+  s.players=structuredClone(visible.players);s.phase='live';
   s.players[0].cs += 9;
   const lastCs = programState(s).players[0].cs;
   s = applyAction(s, { type: 'production', command: { op: 'remake', reason: '隔离回归重赛' } });

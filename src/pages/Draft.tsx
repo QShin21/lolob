@@ -115,9 +115,7 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
           <span className="bp-source">
             <CircleDot size={14} />
             {mode === "auto"
-              ? state.mode === "demo"
-                ? "演示 BP 数据"
-                : "客户端自动同步"
+              ? "客户端自动同步"
               : mode === "manual"
                 ? "人工接管"
                 : "客户端差异核对"}
@@ -244,7 +242,7 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
                               <Check size={12} />
                               {assignment
                                 ? `${assignment.role} · 归属已确认`
-                                : `${player.role || "待分路"} · ${state.mode === "demo" ? "演示归属" : "客户端归属"}`}
+                                : `${player.role || "待分路"} · ${"客户端归属"}`}
                             </small>
                           </>
                         ) : (

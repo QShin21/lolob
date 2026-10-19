@@ -1,6 +1,7 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { applyAction, createSeed, normalizeSavedState } from './state';
+import { applyAction, normalizeSavedState } from './state';
 import { activePlayerFeedPair, playerFeedControl, playerFeedPairs, resolvedPlayerFeed, tickPlayerFeeds } from '../shared/player-feeds';
 
 test('legacy two-person settings migrate into the jungle pair and retain the saved sources', () => {

@@ -1,3 +1,4 @@
+import { CLIENT_POLL_MIN, CLIENT_POLL_MAX, normalizeClientPollInterval } from '../../shared/client-poll';
 import {ProductionDesk} from '../components/ProductionDesk';
 import {GraphicControls} from '../components/GraphicControls';
 import {useConfigDraft} from '../useConfigDraft';
@@ -116,7 +117,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
   const engineActive = !!obsEngine?.streamActive || !!obsEngine?.recordActive || !!obsEngine?.virtualCamActive || !!obsEngine?.companionAudio?.active || !!obsEngine?.companionAudio?.managing;
   const saveSettings = () => run('save-settings', () => send({
     type: 'set-settings', expectedConfigVersion: settingsDraft.baseVersion.current,
-    patch: { ...settings, pollInterval: Math.min(10000, Math.max(500, settings.pollInterval || 1000)) },
+    patch: { ...settings, pollInterval: normalizeClientPollInterval(settings.pollInterval) },
   }), '客户端设置已保存');
   const saveOverlay = () => run('save-overlay', () => send({
     type: 'set-overlay', expectedConfigVersion: overlayDraft.baseVersion.current, patch: overlay,
@@ -150,7 +151,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
 
     <section className="settings-task-workspace" id="settings-current-task" role="tabpanel" aria-labelledby={'settings-nav-' + section}>
       <header className="settings-task-heading"><div><h1>{currentTask.label}</h1><p>{currentTask.description}</p></div>
-        {section === 'data' && <span className="settings-task-state">{state.mode === 'demo' ? '演示数据' : '客户端实时数据'}</span>}
+        {section === 'data' && <span className="settings-task-state">{'客户端实时数据'}</span>}
         {section === 'graphics' && <span className="settings-task-state">修改先进入待播</span>}
         {section === 'appearance' && <span className="settings-task-state">不改变节目画面</span>}
       </header>
@@ -165,11 +166,8 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
 
         <div className="settings-task-pane" hidden={section !== 'data'}>
           <section className="settings-source-mode">
-            <div><strong>数据来源</strong><p>{state.mode === 'demo' ? '当前使用演示数据；客户端连接状态仍独立显示。' : '读取本机客户端，进入游戏后再核对实时样本。'}</p></div>
-            <div className="settings-choice-group" role="group" aria-label="选择数据来源">
-              <button aria-pressed={state.mode === 'demo'} disabled={busy} onClick={() => run('mode', () => send({ type: 'set-mode', mode: 'demo' }), '已切换到演示模式')}><Play size={15} />演示数据{state.mode === 'demo' && <Check size={14} />}</button>
-              <button aria-pressed={state.mode === 'live'} disabled={busy} onClick={() => run('mode', () => send({ type: 'set-mode', mode: 'live' }), '已切换到实时模式')}><Radio size={15} />客户端实时{state.mode === 'live' && <Check size={14} />}</button>
-            </div>
+            <div><strong>数据来源</strong><p>{'读取本机客户端，进入游戏后再核对实时样本。'}</p></div>
+<div className="settings-choice-group"><span className="badge"><Radio size={15} />客户端实时</span></div>
           </section>
           <section className="settings-connection-list" aria-label="数据连接状态">
             {connectionCards.map(({ target, name, subtitle, icon: Icon, note }) => <div className="settings-connection-row" key={target}>
@@ -188,7 +186,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
               <label className="field">英雄联盟安装目录<input maxLength={1024} value={settings.gamePath} onChange={event => setSettings({ ...settings, gamePath: event.target.value })} placeholder="选择英雄联盟客户端的安装目录" /><small>用于查找本机 lockfile。</small>
                 {window.riftcastDesktop && <button className="button small" onClick={() => void window.riftcastDesktop!.choosePath('game').then(path => { if (path) setSettings({ ...settings, gamePath: path }); }).catch(error => notify(error.message, 'error'))}>选择安装目录</button>}
               </label>
-              <label className="field">轮询间隔（毫秒）<input type="number" min="500" max="10000" step="250" value={settings.pollInterval} onChange={event => setSettings({ ...settings, pollInterval: Number(event.target.value) })} /><small>支持 500–10000 毫秒。</small></label>
+              <label className="field">客户端 API 轮询间隔（毫秒）<input type="number" min={CLIENT_POLL_MIN} max={CLIENT_POLL_MAX} step="100" value={settings.pollInterval} onChange={event => setSettings({ ...settings, pollInterval: Number(event.target.value) })} /><small>默认 500 毫秒，可调整为 100–2000 毫秒，保存后生效。接口响应较慢时会等待当前请求完成。</small></label>
               <label className="settings-toggle"><span>自动跟随比赛阶段<small>客户端阶段变化时更新工作台</small></span><input type="checkbox" checked={settings.autoPhase} onChange={event => setSettings({ ...settings, autoPhase: event.target.checked })} /></label>
             </div>
           </section>

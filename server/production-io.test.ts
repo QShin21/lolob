@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
@@ -5,7 +6,7 @@ import { mkdtemp, writeFile, readFile, mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
-import { createSeed, applyAction, resetRuntimeState, csvRecording } from './state';
+import { applyAction, resetRuntimeState, csvRecording } from './state';
 import { ObsProduction } from './obs-production';
 import type { ObsClient } from './obs-client';
 import { engineScene, enginePreviewScene } from './obs-engine';
@@ -75,7 +76,7 @@ test('independent OBS clip previews, trims, restores audio and returns at its ou
 test('clip buffers index the on-air game while later-game content is being prepared',async()=>{
   const dir=await fixtureDir();try{
     const obs=new ProductionObsFixture();obs.nextFile=path.join(dir,'buffer.mkv');await writeFile(obs.nextFile,Buffer.alloc(4096));
-    let s=createSeed();const key=productionKey(s);s=applyAction(s,{type:'finalize-game',winner:'red'});s=applyAction(s,{type:'next-game'});
+    let s=createSeed();const key=productionKey(s);s=applyAction(s,{type:'finalize-game',winner:'red'});s=applyAction(s,{type:'production',command:{op:'accept-final',reason:'确认测试终局记录'}});s=applyAction(s,{type:'next-game'});
     const production=new ObsProduction(obs as unknown as ObsClient,()=>s,work=>work(s));await production.control({action:'save-clip'});
     assert.equal(s.production!.clips[0].key,key);assert.notEqual(key,productionKey(s));
     await production.control({action:'prepare-clip',id:s.production!.clips[0].id});
@@ -100,7 +101,7 @@ test('continuous recording maps game and video time segments to a verified file'
   const dir=await fixtureDir();try{
     let s=createSeed();const obs=new ProductionObsFixture(),production=new ObsProduction(obs as unknown as ObsClient,()=>s,work=>work(s));
     obs.recording=true;await production.recordingChanged('start-record',s);const group=s.production!.videos[0].recordingId;
-    s=applyAction(s,{type:'finalize-game',winner:'red'});s=applyAction(s,{type:'next-game'});s=applyAction(s,{type:'take',scene:'draft'});
+    s=applyAction(s,{type:'finalize-game',winner:'red'});s=applyAction(s,{type:'production',command:{op:'accept-final',reason:'确认测试终局记录'}});s=applyAction(s,{type:'next-game'});s=applyAction(s,{type:'take',scene:'draft'});
     obs.outputDuration=15000;await production.recordingSegment();assert.equal(s.production!.videos.length,2);
     assert.equal(s.production!.videos[0].endVideoSeconds,15);assert.equal(s.production!.videos[1].startVideoSeconds,15);assert.equal(s.production!.videos[1].recordingId,group);
     const file=path.join(dir,'continuous.mkv');await writeFile(file,Buffer.alloc(4096));await production.recordingChanged('stop-record',s,file);

@@ -219,7 +219,7 @@ export function Help({
         <span>
           RiftCast {version} ·{" "}
           {window.riftcastDesktop ? "桌面窗口" : "浏览器窗口"} ·{" "}
-          {state.mode === "demo" ? "演示数据" : "本地实况"}
+          {"本地实况"}
         </span>
       </header>
       <div className="guide-stage">
@@ -304,7 +304,7 @@ export function Help({
               </dl>
               <p>
                 导播台 Enter
-                切入当前预监；演示模式空格控制演示暂停。输入框、下拉框、编辑器、弹窗和输入法组合输入期间暂停播控快捷键，长按不会重复切入。
+                切入当前预监。输入框、下拉框、编辑器、弹窗和输入法组合输入期间暂停播控快捷键，长按不会重复切入。
               </p>
             </>
           ) : guide ? (

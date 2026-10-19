@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm } from 'node:fs/promises';
@@ -6,11 +7,11 @@ import os from 'node:os';
 import sharp from 'sharp';
 import nativeFixture from './fixtures/hud-093.json';
 import playerFixture from './fixtures/scoreboard-081.json';
-import { EconomyBridge, defaultEconomyConfig, readSpectatorGold, validateEconomyConfig, type OcrReading } from './economy';
+import { EconomyBridge, parseGold, defaultEconomyConfig, readSpectatorGold, validateEconomyConfig, type OcrReading } from './economy';
 import { closeSpectatorOcrWorker } from './spectator-ocr-worker';
 import { ObjectiveCounterTracker, parseObjectiveCount, retainTeamGold, writableOcrMatch } from './hud-ocr';
 import { defaultObjectiveRegions, currentOcrMatch, hudObjectives, postgameOcrView } from '../shared/hud-ocr';
-import { createSeed, applyAction, normalizeSavedState, publicState, resetRuntimeState } from './state';
+import { applyAction, normalizeSavedState, publicState, resetRuntimeState } from './state';
 import { finalizeGame, absorbTerminalGameSample } from './game-results';
 import { currentGameResult, frozenGameState, reportGameResult } from '../shared/game-results';
 import { programState } from '../shared/production';
@@ -129,7 +130,7 @@ test('Windows production worker reads native HUD glyph pixels, including blue ze
       .composite(nativeFixture.patches.map(p=>{const pixels=Buffer.alloc(p.width*p.rows.length*3);p.rows.forEach((row,y)=>{const bits=BigInt('0x'+row);for(let x=0;x<p.width;x++)if(bits&(1n<<BigInt(x)))for(let c=0;c<3;c++)pixels[(y*p.width+x)*3+c]=p.color[c];});return {input:pixels,raw:{width:p.width,height:p.rows.length,channels:3 as const},left:p.left,top:p.top};})).png().toFile(file);
     const config={enabled:true,blue:{x:691/1655,y:14/927,width:48/1655,height:24/927},red:{x:954/1655,y:14/927,width:49/1655,height:24/927},players:{enabled:false,region:{x:0,y:.4,width:1,height:.6}},objectives:{enabled:true,regions:defaultObjectiveRegions}};
     const result=await readSpectatorGold(config,[],file);
-    assert.equal(result.ok,true,JSON.stringify(result));assert.equal(result.blueText?.replaceAll(' ',''),'60.5k');assert.equal(result.redText?.replaceAll(' ',''),'68.2k');
+    assert.equal(result.ok,true,JSON.stringify(result));assert.equal(parseGold(result.blueText),60500);assert.equal(parseGold(result.redText),68200);
     assert.deepEqual(result.objectiveTexts,nativeFixture.expected,JSON.stringify(result));assert.equal(result.objectiveError,undefined);
   }finally{await closeSpectatorOcrWorker();await rm(directory,{recursive:true,force:true});}
 });

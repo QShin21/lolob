@@ -67,7 +67,6 @@
 .director-phases button { padding:5px 10px; font-size:12px; color:var(--ui-muted); border-radius:3px }
 .director-phases [aria-pressed=true] { background:var(--ui-selected); color:var(--ui-text) }
 .director-clock { font-size:18px; font-weight:600; font-variant-numeric:tabular-nums }
-.director-demo-controls { display:flex; gap:2px }.director-demo-controls button { display:grid; place-items:center; width:30px; height:30px; color:var(--ui-muted) }
 .director-toolbar-actions { display:flex; gap:8px; margin-left:auto }
 .director-vision { display:grid; grid-template-rows:auto auto minmax(112px,1fr); min-width:0; min-height:0; gap:8px }
 .director-monitors { display:grid; grid-template-columns:1fr 1fr; gap:12px; min-width:0; align-items:start }

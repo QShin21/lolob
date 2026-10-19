@@ -36,9 +36,6 @@ export function useDirectorKeys(ctx: Partial<StateContext>, studio: boolean, ena
       if (event.key === 'Enter' && (!target?.closest('button,a,summary,[role=button]') || target.closest('.scene-card'))) {
         event.preventDefault(); void send({ type: 'take' }).catch(() => {});
       }
-      if (event.key === ' ' && state.mode === 'demo' && !target?.closest('button,a,summary,[role=button]')) {
-        event.preventDefault(); void send({ type: 'demo-pause', paused: !state.paused }).catch(() => {});
-      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);

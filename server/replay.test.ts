@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
@@ -5,7 +6,6 @@ import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { diagnoseReplay, findReplayConfig, LocalApiError, replayEnabled, type LocalRequest, type ReplayConfig } from './replay';
 import { Adapters, ChampionCatalog } from './adapters';
-import { createSeed } from './state';
 
 const disabled:ReplayConfig={path:'D:\\League\\Game\\Config\\game.cfg',enabled:false,modifiedAt:'2026-10-03T16:00:00Z'};
 const missingReplay:LocalRequest=async(port,endpoint)=>{if(endpoint==='/replay/playback')throw new LocalApiError('HTTP 404','http',port,endpoint,404);return {paths:{'/liveclientdata/allgamedata':{get:{}}}};};
@@ -32,7 +32,7 @@ test('Replay configuration is read only from General and locates Game/Config wit
 });
 
 test('Replay adapter reconnects after an unavailable interface becomes ready and reports POST failure separately',async()=>{
-  const state=createSeed();let ready=false;let postUnavailable=false;const requests:{endpoint:string;method:string;body?:unknown}[]=[];
+  const state=createSeed();state.programScene='standby';let ready=false;let postUnavailable=false;const requests:{endpoint:string;method:string;body?:unknown}[]=[];
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('.'),async(port,endpoint,options)=>{
     requests.push({endpoint,method:options?.method??'GET',body:options?.body});
     if(endpoint.includes('swagger'))return {paths:{'/replay/playback':{get:{},post:{}}}};

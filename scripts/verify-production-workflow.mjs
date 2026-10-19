@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Built UI against an isolated real HTTP service. It never starts OBS or loads the operator's data.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -11,7 +12,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { version } = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const evidence = path.join(root, "verification-output", `production-${version}`);
 await mkdir(evidence, { recursive: true });
-const { createSeed } = await tsImport("../server/state.ts", import.meta.url);
 const seed = createSeed();
 seed.paused = true;
 seed.previewScene = "standby";

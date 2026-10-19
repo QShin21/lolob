@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -5,7 +6,7 @@ import { createServer, type AddressInfo } from 'node:net';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { createSeed, applyAction, resetRuntimeState } from './state';
+import { applyAction, resetRuntimeState } from './state';
 import { takeBlockReason } from '../shared/presentation';
 
 test('restart releases an orphaned TAKE without publishing pending content', () => {
@@ -16,7 +17,7 @@ test('restart releases an orphaned TAKE without publishing pending content', () 
   resetRuntimeState(s);
   assert.equal(s.production!.application!.status,'failed');
   assert.equal(s.production!.application!.id,candidate.production!.application!.id);
-  assert.deepEqual(s.production!.program,program);
+  assert.deepEqual(JSON.parse(JSON.stringify(s.production!.program)),JSON.parse(JSON.stringify(program)));
   assert.equal(s.programScene,scene);
   s.connections.obs.status='connected';
   s.production!.control={owner:'test',name:'test'};

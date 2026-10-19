@@ -47,7 +47,7 @@ export function programState(s: BroadcastState): BroadcastState {
   const recorded=s.gameResults?.find(result=>result.key===recordedKey);
   const result=c.key===productionKey(s)?recorded:undefined;
   const current=result?frozenGameState(s,result):s;
-  const same = c.key === productionKey(s) && (!!result || s.mode==='demo' || s.players.length>0&&s.phase!=='pregame');
+  const same = c.key === productionKey(s) && (!!result || false || s.players.length>0&&s.phase!=='pregame');
   const view: BroadcastState = { ...current, customScenes: c.customScenes ?? [], ...(same ? {} : c.telemetry), mode: c.mode, match: c.match, teams: c.teams, overlay: c.overlay, selectedPlayerId: c.selectedPlayerId, schedule: c.schedule ?? s.schedule, draftHistory: c.draftHistory,
     production: { ...ensureProduction(s), assignments: c.assignments ?? [], versions: c.versions ?? ensureProduction(s).versions, rules: c.rules ?? ensureProduction(s).rules, attempt: c.attempt ?? 1 },
     // Only an uninterrupted automatic session may read the current source. A manual
@@ -150,8 +150,8 @@ export function applyIdentity(s: BroadcastState, players: Player[]): Player[] {
 }
 export function dataHealth(s: BroadcastState, now = Date.now()) {
   const valid = (at?: string, expires?: string, max = 10000) => Number.isFinite(Date.parse(at ?? '')) && now - Date.parse(at!) >= -1000 && now - Date.parse(at!) < max && (!expires || Date.parse(expires) > now);
-  return { stats: s.players.filter(p => p.statsAvailable !== false && (s.mode === 'demo' || valid(p.statsSampledAt, p.statsExpiresAt, 3000))).length,
-    gold: s.players.filter(p => p.gold !== null && (s.mode === 'demo' || valid(p.goldSampledAt, p.goldExpiresAt))).length,
+  return { stats: s.players.filter(p => p.statsAvailable !== false && (valid(p.statsSampledAt, p.statsExpiresAt, 3000))).length,
+    gold: s.players.filter(p => p.gold !== null && (valid(p.goldSampledAt, p.goldExpiresAt))).length,
     roles: s.players.filter(p => !['', '待分路'].includes(p.role)).length, total: s.players.length,
     teamAge: s.economyFeed?.sampledAt ? Math.max(0, now - Date.parse(s.economyFeed.sampledAt)) : null };
 }

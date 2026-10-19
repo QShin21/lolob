@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Render source in an isolated browser; no persisted state, OBS, game commands or outputs.
 import assert from 'node:assert/strict';
 import http from 'node:http';
@@ -11,7 +12,7 @@ import {imagePixelDifference} from './compare-image-pixels.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const evidence=path.resolve(process.env.RIFTCAST_HUD_VERIFY_DIR||path.join(root,'verification-output/hud'));
-const {createSeed,fallbackChampions}=await tsImport('../server/state.ts',import.meta.url);
+const {fallbackChampions}=await tsImport('../server/state.ts',import.meta.url);
 const {chromium}=await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE?pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href:'playwright');
 let state=createSeed();state.paused=true;state.phase='live';state.gameTime=477;state.overlay.nativeHud='mask';state.overlay.sponsor='';state.overlay.ticker=false;
 state.stats.blue.kills=0;state.stats.red.kills=0;state.stats.blue.gold=13000;state.stats.red.gold=12900;state.stats.blue.towers=0;state.stats.red.towers=0;

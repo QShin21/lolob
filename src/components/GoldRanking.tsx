@@ -127,7 +127,7 @@ export function GoldRankingControls(ctx: StateContext) {
       <div className="panel-head">
         <h2>十人经济排行</h2>
         <span className="badge">
-          {state.mode === "demo" ? "DEMO" : `${available} / 10 有效`}
+          {`${available} / 10 有效`}
         </span>
       </div>
       <p className="muted">

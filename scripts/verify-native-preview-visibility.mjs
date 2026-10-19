@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Isolated UI regression; --desktop additionally exercises owned OBS HWNDs
 // through the production Electron bridge. No operator state or output is used.
 import assert from 'node:assert/strict';
@@ -19,7 +20,6 @@ await mkdir(evidence, { recursive: true });
 const sandbox = await mkdtemp(path.join(evidence, 'isolated-'));
 const { chromium, _electron } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE
   ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
-const { createSeed } = await tsImport('../server/state.ts', import.meta.url);
 const state = createSeed();
 state.connections.obs.status = 'connected';
 const checks = [], errors = [];

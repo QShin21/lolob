@@ -62,17 +62,13 @@ export function DraftSyncControls(ctx: StateContext) {
           <h3>接管与客户端核对</h3>
           <p>
             {p.draftMode === "auto"
-              ? state.mode === "demo"
-                ? "当前使用演示 BP 数据；手工保存槽位会进入人工接管。"
-                : "客户端样本正在同步到 BP；手工保存槽位会进入人工接管。"
+              ? "客户端样本正在同步到 BP；手工保存槽位会进入人工接管。"
               : "人工内容保留在待播，新的客户端样本只用于核对。"}
           </p>
         </div>
         <span>
           {p.draftMode === "auto"
-            ? state.mode === "demo"
-              ? "演示数据"
-              : "自动同步"
+            ? "自动同步"
             : p.draftMode === "manual"
               ? "人工接管"
               : "差异核对"}

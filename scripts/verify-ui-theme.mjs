@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Browser verification uses an isolated demo service and never opens operator data or OBS.
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -11,7 +12,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const evidence = path.join(root, 'verification-output', `ui-theme-${version}`);
 await mkdir(evidence, { recursive: true });
-const { createSeed, scenes } = await tsImport('../server/state.ts', import.meta.url);
+const { scenes } = await tsImport('../server/state.ts', import.meta.url);
 const seed = createSeed();
 seed.paused = true;
 seed.previewScene = seed.programScene = 'standby';

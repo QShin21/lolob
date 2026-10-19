@@ -1,6 +1,7 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { applyAction, createSeed, normalizeSavedState, publicState, resetRuntimeState } from './state';
+import { applyAction, normalizeSavedState, publicState, resetRuntimeState } from './state';
 import { captureProgram, programState, publishProgram } from '../shared/production';
 import { pendingContent } from '../shared/presentation';
 import type { BroadcastState } from '../shared/types';

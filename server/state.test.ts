@@ -1,6 +1,7 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { applyAction, createSeed, csvRecording, normalizeSavedState, publicState, resetRuntimeState, snapshotRecording, tickDemo } from './state';
+import { applyAction, csvRecording, normalizeSavedState, publicState, resetRuntimeState, snapshotRecording } from './state';
 import { normalizeDraft, normalizeLive, parseLockfile } from './adapters';
 import { inspectImage, validHost, validOrigin, validToken } from './security';
 
@@ -10,11 +11,11 @@ test('preview does not go on air until take, and password is never broadcast',()
   const settings=applyAction(program,{type:'set-settings',patch:{obsPassword:'secret-password'}});assert.equal(settings.settings.obsPassword,undefined);assert.equal(publicState(settings).settings.obsPassword,undefined);
 });
 test('switching to real source clears all synthetic match data',()=>{
-  const s=applyAction(createSeed(),{type:'set-mode',mode:'live'});assert.equal(s.mode,'live');assert.equal(s.players.length,0);assert.equal(s.events.length,0);assert.equal(s.economy.length,0);assert.equal(s.stats.blue.gold,null);
-  tickDemo(s);assert.equal(s.gameTime,0);assert.throws(()=>applyAction(s,{type:'demo-reset'}));
+  const s=emptyFixture();assert.equal(s.mode,'live');assert.equal(s.players.length,0);assert.equal(s.events.length,0);assert.equal(s.economy.length,0);assert.equal(s.stats.blue.gold,null);
+  assert.equal(s.gameTime,0);assert.throws(()=>applyAction(s,{type:'demo-reset'}));
 });
-test('demo respects pause and save recording is a detached snapshot',()=>{
-  let s=applyAction(createSeed(),{type:'demo-pause',paused:true});const oldTime=s.gameTime;tickDemo(s);assert.equal(s.gameTime,oldTime);
+test('save recording is a detached observed snapshot',()=>{
+  let s=createSeed();
   s=applyAction(s,{type:'save-recording'});const kills=s.recordings[0].players[0].kills;s.players[0].kills+=10;assert.equal(s.recordings[0].players[0].kills,kills);
   const next=applyAction(s,{type:'set-overlay',patch:{countdownEnd:Date.now()+60000}});assert.ok(next.overlay.countdownEnd!>Date.now());
 });
@@ -65,6 +66,7 @@ test('sponsor image accepts uploaded assets and can be removed',()=>{
 test('saved legacy looks restore as ARENA while preserving production configuration',()=>{
   for(const preset of ['worlds2025','lpl2025',undefined]) {
     const saved=applyAction(createSeed(),{type:'save-recording'});
+    saved.teams.forEach(t=>{t.name='用户战队 '+t.name;});
     Object.assign(saved.overlay,{preset,players:false,scale:1.25,sponsor:'校园杯',accent:'#abcdef'});
     saved.assets.push({id:'asset-1',name:'logo',url:'/uploads/logo.png',type:'image/png',createdAt:'2026-10-04T10:00:00Z'});
     const original=structuredClone(saved);
@@ -97,7 +99,7 @@ test('legacy overlay API names resolve to ARENA and unknown looks are rejected',
 });
 
 test('legacy real states with absent history fields never inherit demonstration samples',()=>{
-  const original=applyAction(createSeed(),{type:'set-mode',mode:'live'});
+  const original=emptyFixture();
   const old=structuredClone(original);delete old.draftHistory;
   const restored=normalizeSavedState(old);
   assert.deepEqual(restored.draftHistory,[]);assert.equal(Object.hasOwn(restored,'incomeSnapshots'),false);
@@ -110,7 +112,7 @@ test('legacy real states with absent history fields never inherit demonstration 
 
 test('real recordings require observed statistics and preserve their actual time and source',()=>{
   const now=Date.parse('2026-10-04T12:00:00.000Z');
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});
+  const state=emptyFixture();
   assert.throws(()=>snapshotRecording(state,{now}),/尚未取得真实/);
   state.players=[{...createSeed().players[0],id:'live-observed',gold:2268,currentGold:68,goldSource:'ocr',goldGameTime:499.5,goldSampledAt:new Date(now-200).toISOString(),goldExpiresAt:new Date(now+10000).toISOString(),statsSource:'ocr',statsGameTime:499.5,statsSampledAt:new Date(now-200).toISOString(),statsExpiresAt:new Date(now+10000).toISOString()}];
   state.gameTime=500;state.phase='live';
@@ -128,7 +130,7 @@ test('real recordings require observed statistics and preserve their actual time
 });
 
 test('a successful replay seek blocks records until matching current Live data arrives',()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'}),now=Date.now();state.gameTime=500;
+  const state=emptyFixture(),now=Date.now();state.gameTime=500;
   state.players=[{...createSeed().players[0],id:'live-current',statsSource:'api',statsSampledAt:new Date(now).toISOString()}];
   state.gameClock={source:'replay',gameTime:100,sampledAt:new Date(now).toISOString(),speed:1,paused:false,sessionId:'fixture',discontinuity:1,matchKey:'fixture',validForMs:4500,awaitingLiveSample:true};
   assert.throws(()=>snapshotRecording(state,{now}),/回放位置已变化/);delete state.gameClock.awaitingLiveSample;assert.equal(snapshotRecording(state,{now}).players.length,1);
@@ -136,7 +138,7 @@ test('a successful replay seek blocks records until matching current Live data a
 
 test('recording discards expired OCR gold while preserving fresh API statistics and original state',()=>{
   const now=Date.parse('2026-10-04T12:00:00.000Z');
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});
+  const state=emptyFixture();
   state.players=[{...createSeed().players[0],id:'live-api',statsSource:'api',statsSampledAt:new Date(now-100).toISOString(),gold:2268,currentGold:68,goldSource:'ocr',goldGameTime:480,goldSampledAt:new Date(now-11000).toISOString(),goldExpiresAt:new Date(now-1000).toISOString()}];
   state.gameTime=500;state.stats.blue.gold=2268;
   const recorded=snapshotRecording(state,{now});
@@ -149,8 +151,8 @@ test('recording discards expired OCR gold while preserving fresh API statistics 
 
 test('legacy live recording compatibility still requires a fresh connected client',()=>{
   const now=Date.parse('2026-10-04T12:00:00.000Z');
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});
-  state.players=[{...createSeed().players[0],id:'live-legacy'}];state.gameTime=500;
+  const state=emptyFixture();
+  state.players=[{...createSeed().players[0],id:'live-legacy'}];delete state.players[0].statsSource;delete state.players[0].statsSampledAt;state.gameTime=500;
   state.connections.live={status:'connected',detail:'客户端采样',updatedAt:new Date(now-1000).toISOString()};
   assert.equal(snapshotRecording(state,{now}).observedAt,state.connections.live.updatedAt);
   state.connections.live.status='disconnected';
@@ -163,7 +165,7 @@ test('legacy live recording compatibility still requires a fresh connected clien
 
 test('fresh explicitly sourced team economy can be saved without a player roster',()=>{
   const now=Date.parse('2026-10-04T12:00:00.000Z');
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=500;
+  const state=emptyFixture();state.gameTime=500;
   state.stats.blue.gold=12000;state.stats.red.gold=11000;
   state.economyFeed={source:'manual',status:'fresh',detail:'人工校准',blue:12000,red:11000,sampledAt:new Date(now-1000).toISOString(),expiresAt:new Date(now+9000).toISOString()};
   state.economy=[{time:500,blue:12000,red:11000,source:'manual'}];
@@ -175,7 +177,7 @@ test('fresh explicitly sourced team economy can be saved without a player roster
 });
 
 test('incomplete and invalid API scores cannot be saved as real zero statistics',()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=500;
+  const state=emptyFixture();state.gameTime=500;
   state.connections.live={status:'connected',detail:'鲜活客户端连接',updatedAt:new Date().toISOString()};
   for(const scores of [{kills:0,deaths:0,assists:0},{kills:0,deaths:0,assists:0,creepScore:-1},{kills:NaN,deaths:0,assists:0,creepScore:0},{kills:0,deaths:.5,assists:0,creepScore:0}]){
     state.players=normalizeLive({allPlayers:[{riotId:'Observed#TEST',team:'ORDER',scores}],gameData:{gameTime:500}},[]).players;

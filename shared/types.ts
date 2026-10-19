@@ -11,7 +11,7 @@ export interface CustomSceneSource {
 }
 export interface CustomScene { id: `custom:${string}`; name: string; background: string; sources: CustomSceneSource[] }
 export interface CustomSourceChoices { windows: { name: string; value: string }[]; inputs: { name: string; kind: string }[] }
-export type SourceMode = 'demo' | 'live';
+export type SourceMode = 'live';
 export type Side = 'blue' | 'red';
 export interface Champion { id: string; key: number; name: string; title: string; image: string; splash: string; tags: string[] }
 export interface SummonerSpell { id?: number; name: string; rawName?: string }
@@ -40,7 +40,7 @@ export interface PlayerEconomyFeed { status: 'disabled' | 'waiting' | 'fresh' | 
 export interface EconomyFeed { source: EconomySource; status: 'disabled' | 'waiting' | 'fresh' | 'stale' | 'error'; detail: string; blue: number | null; red: number | null; sampledAt?: string; expiresAt?: string; gameTime?: number; raw?: {blue: string; red: string}; players?: PlayerEconomyFeed; objectives?: ObjectiveOcrFeed }
 export interface EconomyPoint { time: number; blue: number; red: number; source?: EconomySource }
 export interface DraftState { bluePicks: string[]; redPicks: string[]; blueBans: string[]; redBans: string[]; bluePreselect?: string[]; redPreselect?: string[]; timer: number; activeTeam: Side; action: string; locked?: boolean }
-export interface DraftHistoryGame { seriesId: string; game: number; blueTeamId: string; redTeamId: string; bluePicks: string[]; redPicks: string[]; recordedAt: string; source: 'lcu' | 'live' | 'manual' | 'demo'; sourceGameId?: string }
+export interface DraftHistoryGame { seriesId: string; game: number; blueTeamId: string; redTeamId: string; bluePicks: string[]; redPicks: string[]; recordedAt: string; source: 'lcu' | 'live' | 'manual'; sourceGameId?: string }
 export interface NativeHudStatus { status: 'waiting' | 'hidden' | 'fallback' | 'off'; detail: string; updatedAt?: string; preserveScore?: boolean; preserveScoreboard?: boolean }
 export interface Connection { status: 'connected' | 'disconnected' | 'connecting' | 'error'; detail: string; updatedAt?: string }
 export interface GameClockSample { source: 'live' | 'replay'; gameTime: number; sampledAt: string; speed: number; paused: boolean; sessionId: string; discontinuity: number; matchKey: string; validForMs: number; awaitingLiveSample?: boolean }
@@ -83,8 +83,6 @@ export type BroadcastAction = (
   | { type: 'set-draft'; patch: Partial<DraftState> }
   | { type: 'select-player'; playerId: string | null }
   | { type: 'set-player-feed-control'; mode: 'manual' | 'auto'; activeIndex?: number }
-  | { type: 'demo-pause'; paused: boolean }
-  | { type: 'demo-reset' }
   | { type: 'save-recording'; title?: string }
   | { type: 'finalize-game'; winner?: Side | null }
   | { type: 'next-game' }

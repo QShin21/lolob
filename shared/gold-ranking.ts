@@ -3,7 +3,6 @@ import type { BroadcastState, Player } from './types';
 export interface GoldRankingRow { player: Player; gold: number | null; rank: number | null; percentage: number }
 export function rankingGold(state: Pick<BroadcastState, 'mode' | 'gameClock' | 'connections'>, player: Player, now = Date.now()): number | null {
   if (player.gold == null || !Number.isFinite(player.gold) || player.gold < 0) return null;
-  if (state.mode === 'demo') return player.gold;
   if (state.gameClock?.awaitingLiveSample) return null;
   if (player.goldSource === 'ocr') return Date.parse(player.goldExpiresAt ?? '') > now ? player.gold : null;
   if (player.goldSource === 'api') {

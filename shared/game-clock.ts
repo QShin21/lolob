@@ -17,10 +17,6 @@ export interface DisplayClockInput {
 
 export function displayClockInput(state: BroadcastState, transportConnected = true): DisplayClockInput {
   const matchKey = gameClockMatchKey(state);
-  if (state.mode === 'demo') return {
-    time: state.gameTime, speed: 1, paused: state.paused || state.phase !== 'live', connected: transportConnected,
-    sessionKey: matchKey, sampleKey: JSON.stringify([state.gameTime, state.paused, state.phase]), validForMs: 2500,
-  };
   const sample = state.gameClock;
   if (!sample || sample.matchKey !== matchKey || !Number.isFinite(sample.gameTime) || sample.gameTime < 0 || !Number.isFinite(sample.speed) || sample.speed < 0 || !Number.isFinite(sample.validForMs) || sample.validForMs < 0 || !Number.isFinite(Date.parse(sample.sampledAt))) return {
     time: state.gameTime, speed: 0, paused: true, connected: false,

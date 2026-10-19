@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import {mergeAppearance} from '../shared/style-appearance';
 import test from 'node:test';
 import { syntheticStyleArchive } from './style-pack-fixture';
@@ -9,7 +10,7 @@ import sharp from 'sharp';
 import { StylePackStore, builtinStyleArchive, validateStyleManifest } from './style-packs';
 import { readStyleZip, writeStyleZip } from './style-pack-zip';
 import { BUILTIN_STYLE_REF, BUILTIN_RUNTIME_STYLES, STYLE_SCENES, validStyleRef } from '../shared/style-packs';
-import { applyAction, createSeed, normalizeSavedState } from './state';
+import { applyAction, normalizeSavedState } from './state';
 import { programState, takeProgram } from '../shared/production';
 import { ControlSeats } from './control-seats';
 import { stylePackDeleteBlock } from '../shared/style-pack-usage';
@@ -169,7 +170,7 @@ test('a damaged installed pack is not restored and its verified original can rep
 
 
 test('1.0.0 migrates retired style on both buses and undo without changing match data', () => {
-  const seed = createSeed();
+  const seed = createSeed();seed.match.title='用户比赛';seed.match.subtitle='用户阶段';
   const old = { id: 'jianlou', revision: 'builtin-v1', name: '简陋包' };
   seed.overlay.stylePack = { ...old }; takeProgram(seed);
   seed.overlay.stylePack = { ...old }; takeProgram(seed);
@@ -179,7 +180,7 @@ test('1.0.0 migrates retired style on both buses and undo without changing match
   assert.deepEqual(result.production!.program!.overlay.stylePack, BUILTIN_STYLE_REF);
   assert.deepEqual(result.production!.previousProgram!.content.overlay.stylePack, BUILTIN_STYLE_REF);
   assert.deepEqual(result.players, seed.players); assert.deepEqual(result.draft, seed.draft);
-  assert.deepEqual(result.match, seed.match); assert.deepEqual(result.gameResults, seed.gameResults);
+  assert.deepEqual(result.match, seed.match); assert.deepEqual(result.gameResults, seed.gameResults??[]);
   assert.equal(before.overlay.stylePack.id, 'jianlou');
 });
 test('1.0.0 preserves custom revisions and canonicalizes built-in names independently', async t => {

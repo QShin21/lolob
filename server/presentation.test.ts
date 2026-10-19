@@ -1,6 +1,7 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createSeed, applyAction, normalizeSavedState } from "./state";
+import { applyAction, normalizeSavedState } from "./state";
 import {
   captureProgram,
   ensureProduction,

@@ -1,9 +1,10 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { applyAction, createSeed, normalizeSavedState } from './state';
+import { applyAction, normalizeSavedState } from './state';
 import { programState } from '../shared/production';
 import { pendingContent } from '../shared/presentation';
 import { ControlSeats } from './control-seats';

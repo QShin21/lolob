@@ -1,3 +1,4 @@
+const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Full console UI fixture: uses fresh in-memory state, an ephemeral local port,
 // mock OBS replies and a mock desktop bridge. Never loads persisted state or starts OBS.
 import assert from "node:assert/strict";
@@ -11,7 +12,7 @@ import { tsImport } from "tsx/esm/api";
 import { WebSocketServer, WebSocket } from "ws";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const { createSeed, applyAction, fallbackChampions } = await tsImport(
+const { applyAction, fallbackChampions } = await tsImport(
   "../server/state.ts",
   import.meta.url,
 );
@@ -790,7 +791,7 @@ try {
   const previousRevision = state.revision;
   state = createSeed();
   state.revision = previousRevision + 1;
-  state.match.seriesId = "demo:schedule:m1";
+  state.match.seriesId = "live:schedule:m1";
   state.match.game = 1;
   state.match.blueScore = 0;
   state.match.redScore = 0;

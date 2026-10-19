@@ -19,7 +19,7 @@ function exportRecording(record: Recording, type: "json" | "csv") {
           {
             ...record,
             source:
-              record.mode === "demo" ? "本地演示记录" : "本地客户端采集记录",
+              "本地客户端采集记录",
           },
           null,
           2,
@@ -154,7 +154,7 @@ export function ManagementRecords({
           <strong>另存当前对局快照</strong>
           <small>
             第 {state.match.game} 局 · {time(state.gameTime)} ·{" "}
-            {state.mode === "demo" ? "演示" : "客户端采集"}；不会结束比赛
+            {"客户端采集"}；不会结束比赛
           </small>
         </span>
         <input
@@ -242,9 +242,7 @@ export function ManagementRecords({
               <div className="manage-detail-head">
                 <div>
                   <small>
-                    {record.mode === "demo"
-                      ? "本地演示记录"
-                      : "本地客户端采集记录"}
+                    {"本地客户端采集记录"}
                   </small>
                   <h2>{record.title}</h2>
                   <p>{dateLabel(record.createdAt)}</p>

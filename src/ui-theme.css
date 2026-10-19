@@ -75,7 +75,7 @@
 /* Secondary copy and headings are scoped to operator components. */
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.look-identity strong,.look-heading strong,.look-toggles button.enabled,.roster-team-head>b,.objective-summary b,.connection-card h3,.asset-card strong,.asset-upload-empty strong,.economy-details>summary){color:var(--ui-text)}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.mode-pill,.look-identity,.look-identity-mark,.connection-icon,.source-icon.is-connected){color:var(--ui-accent);background:var(--ui-success-bg);border-color:#9abcac}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.mode-pill.demo,.live-bottom-unsaved){color:var(--ui-warning);background:var(--ui-warning-bg);border-color:#ceb477}
+:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.live-bottom-unsaved){color:var(--ui-warning);background:var(--ui-warning-bg);border-color:#ceb477}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.tip-card>div,.tip-card>span,.look-toggles button.enabled>span,.diagnostic-config b,.external-obs-advanced>summary,.match-lifecycle-status>svg,.output-link>span,.lan-title,.asset-card a){color:var(--ui-accent)}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.live-bottom-error){color:var(--ui-error)}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.badge,.event-count,.source-icon,.scene-shortcut-hint kbd){background:var(--ui-raised);color:var(--ui-muted);border-color:var(--ui-border)}
@@ -89,7 +89,6 @@
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .search-field input{background:transparent;color:var(--ui-text)!important}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.search-field>span,.look-identity span,.look-toggles button>span,.lan-url-list code,.output-link code){color:var(--ui-muted)}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .search-field:focus-within{box-shadow:0 0 0 2px #176b552b;border-color:var(--ui-accent)}
-:root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) .demo-label{color:var(--ui-warning)!important;background:var(--ui-warning-bg)!important;border-color:#ceb477!important}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.roster-row:hover,.roster-row.selected){background:var(--ui-hover)}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.draft-source-note,.diagnostic-endpoints>div,.economy-source-status,.asset-card,.pb-panel .pb-runes>span,.pb-panel .pb-image){background:var(--surface);border-color:var(--ui-border)}
 :root[data-ui-theme="light"] :is(.app-shell,.remote-workbench) :is(.pb-panel .pb-runes>span){color:var(--ui-muted)}

@@ -1,17 +1,19 @@
+import { fallbackChampionData } from './test-support/fixture';
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import type { BroadcastState, DraftState, Player } from '../shared/types';
-import { applyAction, createSeed, fallbackChampionData, resetRuntimeState } from './state';
+import { applyAction, resetRuntimeState } from './state';
 import { captureLiveDraft, getFearlessBans, getFearlessHistory, historyForTeam, initializeDraftHistory, observeLcuDraft } from './draft-history';
 import { Adapters, ChampionCatalog } from './adapters';
 
 const picks = (offset = 0) => ({ bluePicks: fallbackChampionData.slice(offset, offset + 5).map(champion => champion[0]), redPicks: fallbackChampionData.slice(offset + 5, offset + 10).map(champion => champion[0]) });
 const draft = (offset = 0, locked = true): DraftState => ({ ...picks(offset), blueBans: [], redBans: [], timer: 0, activeTeam: 'blue', action: '选择英雄', locked });
 function fresh(): BroadcastState {
-  return applyAction(applyAction(createSeed(), { type: 'set-mode', mode: 'live' }), { type: 'set-match', patch: { game: 1, seriesId:'draft-fixture-series', blueScore:0, redScore:0 } });
+  return applyAction(emptyFixture(), { type: 'set-match', patch: { game: 1, seriesId:'draft-fixture-series', blueScore:0, redScore:0 } });
 }
 function advance(state:BroadcastState):BroadcastState{
   state.players=roster().map(p=>({...p,statsSource:'api',statsSampledAt:new Date().toISOString()}));state.events=[];

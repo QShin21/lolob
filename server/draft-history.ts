@@ -16,7 +16,7 @@ function validHistory(value: unknown): value is DraftHistoryGame {
   return typeof entry.seriesId === 'string' && !!entry.seriesId && entry.seriesId.length <= 150 &&
     Number.isInteger(entry.game) && entry.game > 0 && entry.game <= 99 && typeof entry.blueTeamId === 'string' && !!entry.blueTeamId &&
     typeof entry.redTeamId === 'string' && !!entry.redTeamId && entry.blueTeamId !== entry.redTeamId && complete(entry) &&
-    ['lcu', 'live', 'manual', 'demo'].includes(entry.source) && typeof entry.recordedAt === 'string' && Number.isFinite(Date.parse(entry.recordedAt));
+    ['lcu', 'live', 'manual'].includes(entry.source) && typeof entry.recordedAt === 'string' && Number.isFinite(Date.parse(entry.recordedAt));
 }
 const gameId = (value: string | number | undefined): string | undefined => {
   if (typeof value === 'number') return Number.isSafeInteger(value) && value > 0 ? String(value) : undefined;
@@ -78,7 +78,7 @@ function writeHistory(state: BroadcastState, picks: Picks, source: Source, sourc
   if (existing) {
     next.recordedAt = existing.recordedAt;
     // Preserve the observed roster if delayed gameflow or manual scene changes arrive.
-    const priority: Record<Source, number> = { demo: 0, manual: 1, lcu: 2, live: 3 };
+    const priority: Record<Source, number> = { manual: 1, lcu: 2, live: 3 };
     if (priority[existing.source] > priority[source]) return false;
     entries[index] = next;
   } else entries.push(next);
@@ -123,5 +123,5 @@ export function captureLiveDraft(state: BroadcastState, sourceGameId?: string | 
 /** Entering live is the director's confirmation for a manually entered complete draft. */
 export function captureManualDraft(state: BroadcastState): void {
   if (state.phase !== 'live') return;
-  if (writeHistory(state, state.draft, state.mode === 'demo' ? 'demo' : 'manual')) state.draft.locked = true;
+  if (writeHistory(state, state.draft, 'manual')) state.draft.locked = true;
 }

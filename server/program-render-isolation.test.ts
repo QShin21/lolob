@@ -1,9 +1,10 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
-import { applyAction, createSeed, fallbackChampions, scenes } from './state';
+import { applyAction, fallbackChampions, scenes } from './state';
 import { captureProgram, programState } from '../shared/production';
 import { frozenGameState } from '../shared/game-results';
 import type { BroadcastState, Scene } from '../shared/types';

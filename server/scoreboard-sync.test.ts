@@ -1,7 +1,8 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EconomyBridge, defaultEconomyConfig, defaultPlayerGoldRegion } from './economy';
-import { applyAction, createSeed } from './state';
+import { applyAction, } from './state';
 import type { Player } from '../shared/types';
 import type { OcrReading } from './economy';
 
@@ -18,7 +19,7 @@ function scoreboardFixture(){
 }
 
 test('equipment updates exact statistics independently while prior gold keeps its original timestamp and chart point',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=100;const fixture=scoreboardFixture();state.players=structuredClone(fixture.roster);
+  const state=emptyFixture();state.gameTime=100;const fixture=scoreboardFixture();state.players=structuredClone(fixture.roster);
   let now=100000,reading=fixture.reading(true);const bridge=new EconomyBridge(()=>state,work=>work(state),{now:()=>now,capture:async()=>reading});
   bridge.observePlayers(fixture.roster,100);bridge.configure({...defaultEconomyConfig,players:{enabled:true,region:defaultPlayerGoldRegion}});await bridge.probe();
   const goldAt=state.players[0].goldSampledAt;assert.equal(state.economyFeed?.players?.statsMatched,10);assert.equal(state.economy.length,1);
@@ -32,33 +33,33 @@ test('equipment updates exact statistics independently while prior gold keeps it
 });
 
 test('an equipment-only first sample supplies all ten exact statistics and leaves missing economy unavailable',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=100;const fixture=scoreboardFixture();state.players=fixture.roster;
+  const state=emptyFixture();state.gameTime=100;const fixture=scoreboardFixture();state.players=fixture.roster;
   const bridge=new EconomyBridge(()=>state,work=>work(state),{capture:async()=>fixture.reading(false,2)});bridge.observePlayers(fixture.roster,100);bridge.configure({...defaultEconomyConfig,players:{enabled:true,region:defaultPlayerGoldRegion}});await bridge.probe();
   assert.equal(state.economyFeed?.players?.statsMatched,10);assert.equal(state.economyFeed?.players?.matched,0);assert.ok(state.players.every(player=>player.statsSource==='ocr'&&player.gold===null));assert.equal(state.players[9].cs,62);assert.equal(state.stats.blue.gold,null);assert.deepEqual(state.economy,[]);
 });
 
 test('a regressing OCR statistic cannot refresh an older accepted reading',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=100;const fixture=scoreboardFixture();state.players=fixture.roster;let now=100000,reading=fixture.reading(false,5);
+  const state=emptyFixture();state.gameTime=100;const fixture=scoreboardFixture();state.players=fixture.roster;let now=100000,reading=fixture.reading(false,5);
   const bridge=new EconomyBridge(()=>state,work=>work(state),{now:()=>now,capture:async()=>reading});bridge.observePlayers(fixture.roster,100);bridge.configure({...defaultEconomyConfig,players:{enabled:true,region:defaultPlayerGoldRegion}});await bridge.probe();const sampledAt=state.players[0].statsSampledAt;
   now+=1000;state.gameTime=101;reading=fixture.reading(false,4);await bridge.probe();assert.equal(state.players[0].cs,56);assert.equal(state.players[0].statsSampledAt,sampledAt);
   now+=2001;reading={ok:false};await bridge.poll();assert.equal(state.players[0].cs,51);assert.equal(state.players[0].statsSource,'api');
 });
 
 test('capture metadata starts the freshness window at frame acquisition after slow initialization',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=100;const fixture=scoreboardFixture();state.players=fixture.roster;let now=100000;
+  const state=emptyFixture();state.gameTime=100;const fixture=scoreboardFixture();state.players=fixture.roster;let now=100000;
   const bridge=new EconomyBridge(()=>state,work=>work(state),{now:()=>now,capture:async()=>{now+=5000;const capturedAt=now;state.gameTime=105;now+=400;return {...fixture.reading(false),capturedAt,capturedGameTime:105};}});
   bridge.observePlayers(fixture.roster,100);bridge.configure({...defaultEconomyConfig,players:{enabled:true,region:defaultPlayerGoldRegion}});await bridge.probe();assert.equal(state.economyFeed?.players?.statsMatched,10);assert.equal(state.economyFeed?.players?.durationMs,5400);assert.equal(state.players[0].statsGameTime,105);assert.equal(state.players[0].statsSampledAt,new Date(105000).toISOString());
 });
 
 test('500 ms player polling avoids overlap and ignores in-flight reads after shutdown',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=100;const fixture=scoreboardFixture();state.players=fixture.roster;let now=100000,calls=0,finish:(reading:OcrReading)=>void=()=>{};
+  const state=emptyFixture();state.gameTime=100;const fixture=scoreboardFixture();state.players=fixture.roster;let now=100000,calls=0,finish:(reading:OcrReading)=>void=()=>{};
   const bridge=new EconomyBridge(()=>state,work=>work(state),{now:()=>now,capture:async()=>{calls++;return new Promise(resolve=>{finish=resolve;});}});bridge.observePlayers(fixture.roster,100);bridge.configure({...defaultEconomyConfig,players:{enabled:true,region:defaultPlayerGoldRegion}});
   const first=bridge.poll();await bridge.poll();now+=499;await bridge.poll();assert.equal(calls,1);finish(fixture.reading(false));await first;
   now++;const second=bridge.poll();assert.equal(calls,2);bridge.close();finish(fixture.reading(false,1));await second;now+=1000;await bridge.poll();assert.equal(calls,2);assert.equal(state.players[0].cs,51);
 });
 
 test('scoreboard observations update exact CS and KDA, team kills and gold, then restore API statistics after expiry',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=100;
+  const state=emptyFixture();state.gameTime=100;
   const roster:Player[]=Array.from({length:10},(_,index)=>({id:`live-${index}`,name:`Player ${index}`,team:index<5?'blue':'red',championId:`Champion${index}`,championName:`Champion ${index}`,role:'待分路',level:5,kills:index,deaths:1,assists:2,cs:51+index,gold:null,items:[],statsSource:'api'}));
   state.players=structuredClone(roster);let now=100000;let captureAvailable=true;
   const playerWords=roster.flatMap((player,index)=>{
@@ -80,7 +81,7 @@ test('scoreboard observations update exact CS and KDA, team kills and gold, then
 });
 
 test('production player sampling cannot refresh a retained OBS texture after the game API disconnects',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});
+  const state=emptyFixture();
   state.settings.economyOcr={...defaultEconomyConfig,players:{enabled:true,region:defaultPlayerGoldRegion}};
   const now=Date.now();let captured=0;
   const bridge=new EconomyBridge(()=>state,work=>work(state),{now:()=>now,frame:async()=>{captured++;throw new Error('retained frame must not be read');}});

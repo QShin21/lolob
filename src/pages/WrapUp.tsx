@@ -247,9 +247,7 @@ export function WrapUp({
                       <div>
                         <dt>数据模式</dt>
                         <dd>
-                          {state.mode === "demo"
-                            ? "虚构演示数据"
-                            : "本地客户端采集"}
+                          {"本地客户端采集"}
                         </dd>
                       </div>
                     </dl>

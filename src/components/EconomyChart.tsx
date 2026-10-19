@@ -4,7 +4,6 @@ import { economySegments } from '../../shared/presentation';
 import { time } from '../lib';
 
 export function economySource(state:BroadcastState) {
-  if(state.mode==='demo')return '演示数据';
   return ({api:'客户端 API',ocr:'观战 HUD 读数',manual:'人工校准',none:'等待经济数据源'} as const)[state.economyFeed?.source||'none'];
 }
 export function EconomyChart({state,compact=false,interactive=false}:{state:BroadcastState;compact?:boolean;interactive?:boolean}) {

@@ -1,3 +1,4 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
@@ -7,7 +8,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { parsePlayerGoldRow, parseScoreboardWords, parseScoreboardRows, matchPlayerScoreboardRows, matchPlayerGoldRows, type ScoreboardWord } from './spectator-scoreboard';
 import { EconomyBridge, defaultEconomyConfig, defaultPlayerGoldRegion, validateEconomyConfig } from './economy';
-import { applyAction, createSeed, csvRecording } from './state';
+import { applyAction, csvRecording } from './state';
 import type { Player } from '../shared/types';
 
 const player = (id: string, team: Player['team'] = 'blue', kills = 6): Player => ({id,name:id,team,kills,deaths:4,assists:16,cs:27,level:12,role:'上单',championId:'Ahri',championName:'阿狸',gold:null,items:[]});
@@ -62,7 +63,7 @@ test('one obscured portrait is identified only by four confirmed teammates and a
   assert.equal(matchPlayerGoldRows(rows,[...roster.slice(0,4),{...roster[4],championId:roster[0].championId}]).has('p-4'),false);
 });
 test('individual OCR runs independently of team OCR, expires, respects API totals and rejects decreasing or outdated samples',async()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state.gameTime=100;state.players=[player('target'),player('other','red')];let now=100000;
+  const state=emptyFixture();state.gameTime=100;state.players=[player('target'),player('other','red')];let now=100000;
   let reading={ok:false,error:'team region unavailable',playerWords:words('123(9423) 6/4/16 27','blue')};
   const bridge=new EconomyBridge(()=>state,work=>work(state),{now:()=>now,capture:async()=>reading});
   bridge.configure({...defaultEconomyConfig,players:{enabled:true,region:defaultPlayerGoldRegion}});
@@ -146,7 +147,7 @@ test('victory shade and multiple respawn overlays preserve a safe partial identi
 });
 
 test('CSV appends individual OCR provenance and spendable gold while preserving the original cumulative-gold column',()=>{
-  const state=applyAction(createSeed(),{type:'set-mode',mode:'live'});
+  const state=emptyFixture();
   const sampledAt=new Date().toISOString(),expiresAt=new Date(Date.now()+10000).toISOString();
   state.players=[{...player('live-ocr-player'),gold:9423,currentGold:123,goldSource:'ocr',goldSampledAt:sampledAt,goldExpiresAt:expiresAt,statsSource:'ocr',statsSampledAt:sampledAt,statsExpiresAt:expiresAt}];
   const saved=applyAction(state,{type:'save-recording'}).recordings[0];

@@ -1,15 +1,16 @@
+import { createFixture as createSeed, emptyFixture } from './test-support/fixture';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { applyAction, createSeed, normalizeSavedState, publicState, resetRuntimeState } from './state';
+import { applyAction, normalizeSavedState, publicState, resetRuntimeState } from './state';
 import { Adapters, ChampionCatalog, normalizeLive } from './adapters';
 import { absorbTerminalGameSample, acceptNextGameSample, finalizeGame, lcuWinner } from './game-results';
 import { currentGameResult, frozenGameState, reportGameResult, rosterFingerprint } from '../shared/game-results';
 
 const liveData=(time=900,winner?:unknown,ended=false,gameId=123)=>({gameData:{gameTime:time,gameId},allPlayers:[{riotId:'fixture-blue',team:'ORDER',rawChampionName:'game_character_displayname_Ahri',level:10,totalGold:4000,scores:{kills:2,deaths:1,assists:3,creepScore:90}},{riotId:'fixture-red',team:'CHAOS',rawChampionName:'game_character_displayname_Vi',level:10,totalGold:3900,scores:{kills:1,deaths:2,assists:2,creepScore:70}}],events:{Events:ended?[{EventID:5,EventName:'GameEnd',EventTime:time,WinningTeam:winner}]:[]}});
-function observedState(){let state=applyAction(createSeed(),{type:'set-mode',mode:'live'});state=applyAction(state,{type:'load-match',matchId:'m1'});state=applyAction(state,{type:'set-match',patch:{blueScore:0,redScore:0}});const sample=normalizeLive(liveData(),[]);Object.assign(state,{players:sample.players,stats:sample.stats,events:sample.events,gameTime:sample.gameTime,phase:'live',activeSourceGameId:'123'});return state;}
+function observedState(){let state=emptyFixture();state=applyAction(state,{type:'load-match',matchId:'m1'});state=applyAction(state,{type:'set-match',patch:{blueScore:0,redScore:0}});const sample=normalizeLive(liveData(),[]);Object.assign(state,{players:sample.players,stats:sample.stats,events:sample.events,gameTime:sample.gameTime,phase:'live',activeSourceGameId:'123'});return state;}
 
 test('confirmed end archives observed players and scores once across repeated signals and restart',()=>{
   let state=observedState();const result=finalizeGame(state,{source:'live',winner:'blue',sourceGameId:'123'})!;

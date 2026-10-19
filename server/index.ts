@@ -1,3 +1,4 @@
+import { clientPollScheduler } from './client-poll';
 import { StylePackStore } from './style-packs';
 import { stylePackDeleteBlock } from '../shared/style-pack-usage';
 import { BUILTIN_STYLE_REF, STYLE_PACK_MAX_BYTES, styleRef } from '../shared/style-packs';
@@ -11,7 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { BroadcastState, Recording } from '../shared/types';
 import { Adapters, ChampionCatalog, localJson } from './adapters';
-import { applyAction, createSeed, csvRecording, normalizeSavedState, publicState, record, resetRuntimeState, snapshotRecording, tickDemo, ValidationError } from './state';
+import { applyAction, createSeed, csvRecording, normalizeSavedState, publicState, record, resetRuntimeState, snapshotRecording, ValidationError } from './state';
 import { inspectImage, isLoopback, lanAddresses, validHost, validOrigin, validToken } from './security';
 import { EconomyBridge } from './economy';
 import { closeSpectatorOcrWorker } from './spectator-ocr-worker';
@@ -34,7 +35,7 @@ const port=Number(process.env.PORT??3888);if(!Number.isInteger(port)||port<1||po
 const lan=process.env.ENABLE_LAN==='1';const controlToken=randomBytes(18).toString('base64url');
 await mkdir(uploadDir,{recursive:true});
 let state=createSeed();
-try{const saved=JSON.parse(await readFile(stateFile,'utf8'))as BroadcastState;if(saved&&saved.match&&saved.overlay&&saved.settings&&Array.isArray(saved.players)&&Array.isArray(saved.teams)&&['demo','live'].includes(saved.mode))state=normalizeSavedState(saved);}catch{/* first run uses explicit demo mode */}
+try{const saved=JSON.parse(await readFile(stateFile,'utf8'))as BroadcastState;if(saved&&saved.match&&saved.overlay&&saved.settings&&Array.isArray(saved.players)&&Array.isArray(saved.teams)&&['demo','live'].includes(saved.mode))state=normalizeSavedState(saved);}catch{/* first run waits for local client samples */}
 const stylePacks=new StylePackStore(path.join(dataDir,'style-packs'));
 await stylePacks.initialize();
 for(const overlay of [state.overlay,state.production?.program?.overlay,state.production?.previousProgram?.content.overlay]){
@@ -230,10 +231,11 @@ server.on('upgrade',(req,socket,head)=>{
   wss.handleUpgrade(req,socket,head,ws=>{wss.emit('connection',ws,req);});
 });
 wss.on('connection',ws=>{ws.send(JSON.stringify(publicState(state)));ws.on('error',()=>{});});
-const heartbeat=setInterval(()=>{void nativeHud.tick();void adapters.productionTick().catch(()=>{});const p=ensureProduction(state);if(p.analysisEndsAt&&Date.now()>=p.analysisEndsAt){delete p.analysisEndsAt;state.programScene='live';void adapters.productionApply().catch(()=>{});state.revision++;broadcast();}if(state.mode==='demo'&&!state.paused&&['live','draft'].includes(state.phase)){tickDemo(state);state.revision++;broadcast();}},1000);
+const heartbeat=setInterval(()=>{void nativeHud.tick();void adapters.productionTick().catch(()=>{});const p=ensureProduction(state);if(p.analysisEndsAt&&Date.now()>=p.analysisEndsAt){delete p.analysisEndsAt;state.programScene='live';void adapters.productionApply().catch(()=>{});state.revision++;broadcast();}},1000);
 const feedRotation=setInterval(()=>{if(tickPlayerFeeds(state)){state.revision++;broadcast();}},100);
 const ocrPoll=setInterval(()=>{if(!currentGameResult(state))void economy.poll();},100);
-let nextPoll=0;const poll=setInterval(()=>{if(Date.now()<nextPoll)return;nextPoll=Date.now()+state.settings.pollInterval;void adapters.poll();},500);
+const pollClients=clientPollScheduler(()=>{void adapters.poll();});
+const poll=setInterval(()=>pollClients(Date.now(),state.settings.pollInterval),25);
 server.listen(port,lan?'0.0.0.0':'127.0.0.1',()=>{console.log(`RiftCast 本地服务：http://127.0.0.1:${port}${lan?' · 局域网控制已启用':''}`);if(state.mode==='live')connectGameSources();if(process.env.RIFTCAST_OBS_AUTOSTART==='1')void adapters.obsEngineStatus().then(status=>status.mode==='embedded'?adapters.obsEngineStart():undefined).catch(()=>{/* Failure is displayed in the engine panel without blocking the director. */});});
 server.on('error',error=>{console.error('本地服务启动失败：',error.message);process.exitCode=1;clearInterval(heartbeat);clearInterval(feedRotation);clearInterval(poll);clearInterval(ocrPoll);economy.close();void closeSpectatorOcrWorker();});
 async function shutdown(){if(shuttingDown)return;shuttingDown=true;clearInterval(heartbeat);clearInterval(feedRotation);clearInterval(poll);clearInterval(ocrPoll);economy.close();if(writeTimer)clearTimeout(writeTimer);monitorStream.close();monitorWss.close();let exitCode=0;await closeSpectatorOcrWorker();await nativeHud.close();try{await adapters.close();}catch{console.error('内置输出引擎未能正常关闭，请在引擎窗口确认输出已停止。');exitCode=1;}wss.close();server.close();try{await persist();}catch{console.error('退出保存失败，请保留数据目录并检查磁盘。');exitCode=1;}process.exit(exitCode);}
