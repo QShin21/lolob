@@ -52,9 +52,9 @@ test('legacy default tournament is removed and live state cannot restore an old 
 
 test('client interval defaults to 500 ms, accepts both bounds, rejects invalid writes and clamps legacy values',()=>{
   assert.equal(createSeed().settings.pollInterval,500);
-  for(const value of [100,500,1500,2000])assert.equal(applyAction(createSeed(),{type:'set-settings',patch:{pollInterval:value}}).settings.pollInterval,value);
-  for(const value of [99,2001,NaN,Infinity,'100'])assert.throws(()=>applyAction(createSeed(),{type:'set-settings',patch:{pollInterval:value}}));
-  for(const [value,expected] of [[undefined,500],[50,100],[10000,2000],[1500,1500],[NaN,500]]){
+  for(const value of [100,500,1000])assert.equal(applyAction(createSeed(),{type:'set-settings',patch:{pollInterval:value}}).settings.pollInterval,value);
+  for(const value of [99,1001,1500,2000,NaN,Infinity,'100'])assert.throws(()=>applyAction(createSeed(),{type:'set-settings',patch:{pollInterval:value}}));
+  for(const [value,expected] of [[undefined,500],[50,100],[10000,1000],[1500,1000],[1000,1000],[500,500],[100,100],[NaN,500]]){
     assert.equal(normalizeClientPollInterval(value),expected);
     const saved=createSeed();Object.assign(saved.settings,{pollInterval:value});
     assert.equal(normalizeSavedState(saved).settings.pollInterval,expected);
@@ -65,5 +65,5 @@ test('client scheduler dispatches at 100 ms and applies edits without waiting fo
   let calls=0;const tick=clientPollScheduler(()=>calls++);
   tick(0,500);tick(499,500);assert.equal(calls,1);tick(500,500);assert.equal(calls,2);
   tick(599,100);assert.equal(calls,2);tick(600,100);tick(700,100);assert.equal(calls,4);
-  tick(2699,2000);assert.equal(calls,4);tick(2700,2000);assert.equal(calls,5);
+  tick(1699,1000);assert.equal(calls,4);tick(1700,1000);assert.equal(calls,5);
 });

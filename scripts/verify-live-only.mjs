@@ -35,27 +35,27 @@ try{
   const context=await browser.newContext({viewport:{width:1600,height:1000}});await nativeRequestGuard(blocked).attach(context);
   page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await settings();const interval=page.getByRole('spinbutton',{name:'客户端 API 轮询间隔（毫秒）'});
-  assert.equal(await interval.inputValue(),'500');assert.equal(await interval.getAttribute('min'),'100');assert.equal(await interval.getAttribute('max'),'2000');
+  assert.equal(await interval.inputValue(),'500');assert.equal(await interval.getAttribute('min'),'100');assert.equal(await interval.getAttribute('max'),'1000');
   assert.doesNotMatch(await page.locator('body').innerText(),/演示|DEMO|测试按钮/);
   await page.screenshot({path:path.join(dir,'client-settings.png')});
-  for(const value of [100,2000]){
+  for(const value of [100,1000]){
     await interval.fill(String(value));await page.getByRole('button',{name:'保存客户端设置',exact:true}).click();
     await page.waitForFunction(()=>document.querySelector('.settings-savebar')?.textContent.includes('客户端配置已同步'));
     assert.equal((await state()).settings.pollInterval,value);
   }
   const token=await page.evaluate(()=>sessionStorage.getItem('riftcast-seat-token'));assert.ok(token);
-  for(const action of [{type:'set-mode',mode:'demo'},{type:'demo-pause',paused:false},{type:'demo-reset'},{type:'set-settings',patch:{pollInterval:99}},{type:'set-settings',patch:{pollInterval:2001}}]){
+  for(const action of [{type:'set-mode',mode:'demo'},{type:'demo-pause',paused:false},{type:'demo-reset'},{type:'set-settings',patch:{pollInterval:99}},{type:'set-settings',patch:{pollInterval:1001}}]){
     const response=await fetch(base+'/api/action',{method:'POST',headers:{'content-type':'application/json','x-seat-token':token},body:JSON.stringify(action)});assert.equal(response.status,400,await response.text());
   }
   await page.goto(base+'/index.html#studio');await page.locator('.director-workspace').waitFor();
   assert.equal(await page.locator('.director-demo-controls,.cast-demo').count(),0);assert.doesNotMatch(await page.locator('body').innerText(),/演示|DEMO/);
   await page.screenshot({path:path.join(dir,'live-only-studio.png')});
   checks.push('built frontend has no demo UI; default and both interval boundaries save through actual settings; removed APIs and out-of-range values reject');
-  await stop();await start();assert.equal((await state()).settings.pollInterval,2000);
+  await stop();await start();assert.equal((await state()).settings.pollInterval,1000);
   checks.push('saved polling interval survives service restart');
   await stop();const legacy=createFixture();legacy.mode='demo';legacy.match.seriesId='demo-seed-series';legacy.production.program.mode='demo';legacy.production.previousProgram={content:structuredClone(legacy.production.program),scene:'live'};legacy.settings.pollInterval=10000;
   await writeFile(path.join(data,'state.json'),JSON.stringify(legacy));await start();
-  const upgraded=await state();assert.equal(upgraded.mode,'live');assert.equal(upgraded.phase,'pregame');assert.equal(upgraded.settings.pollInterval,2000);
+  const upgraded=await state();assert.equal(upgraded.mode,'live');assert.equal(upgraded.phase,'pregame');assert.equal(upgraded.settings.pollInterval,1000);
   assert.deepEqual(upgraded.players,[]);assert.deepEqual(upgraded.events,[]);assert.equal(upgraded.production.previousProgram,undefined);assert.equal(upgraded.production.program.mode,'live');
   await stop();const saved=JSON.parse(await readFile(path.join(data,'state.json'),'utf8'));assert.equal(saved.mode,'live');assert.deepEqual(saved.players,[]);
   checks.push('actual service upgrades and durably saves legacy demo data as an empty live state; stale polling range is clamped');

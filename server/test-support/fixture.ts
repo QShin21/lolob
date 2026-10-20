@@ -38,7 +38,7 @@ export function createFixture(): BroadcastState {
     economy:Array.from({length:20},(_,i)=>({time:i*60,blue:2500+i*2215+Math.round(Math.sin(i/3)*400),red:2500+i*2007+Math.round(Math.cos(i/4)*360)})),
     connections:{lcu:{status:'disconnected',detail:'尚未连接客户端'},live:{status:'disconnected',detail:'等待游戏进入对局'},replay:{status:'disconnected',detail:'仅回放模式支持播放控制'},obs:{status:'disconnected',detail:'连接 OBS WebSocket 5.x'}},
     overlay:{stylePack:{...BUILTIN_STYLE_REF},preset:'arena',scoreboard:true,players:true,objectives:true,ticker:false,goldDiff:true,sponsor:'RIFTCAST',tickerText:'峡谷邀请赛 · 欢迎来到比赛直播间',accent:'#83e6c5',scale:1,countdownEnd:null,nativeHud:'auto',patchVersion:'26.18',bottomTitle:'2026 DEMACIA CUP GLOBAL INVITATIONAL',playerFeeds:{blue:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''},red:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''}}},assets:[],recordings:[],selectedPlayerId:null,
-    settings:{lockfilePath:'',obsUrl:'ws://127.0.0.1:4455',pollInterval:1500,autoPhase:true,gamePath:''},
+    settings:{lockfilePath:'',obsUrl:'ws://127.0.0.1:4455',pollInterval:500,autoPhase:true,gamePath:''},
     draftHistory:[{seriesId:'fixture-series',game:1,blueTeamId:'azure',redTeamId:'ember',bluePicks:fallbackChampionData.slice(10,15).map(c=>c[0]),redPicks:fallbackChampionData.slice(15,20).map(c=>c[0]),recordedAt:'2026-10-03T11:00:00.000Z',source:'manual'}],
   };
   const sampledAt=new Date().toISOString();

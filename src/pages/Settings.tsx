@@ -191,7 +191,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
               <label className="field">英雄联盟安装目录<input maxLength={1024} value={settings.gamePath} onChange={event => setSettings({ ...settings, gamePath: event.target.value })} placeholder="选择英雄联盟客户端的安装目录" /><small>用于查找本机 lockfile。</small>
                 {window.riftcastDesktop && <button className="button small" onClick={() => void window.riftcastDesktop!.choosePath('game').then(path => { if (path) setSettings({ ...settings, gamePath: path }); }).catch(error => notify(error.message, 'error'))}>选择安装目录</button>}
               </label>
-              <label className="field">客户端 API 轮询间隔（毫秒）<input type="number" min={CLIENT_POLL_MIN} max={CLIENT_POLL_MAX} step="100" value={settings.pollInterval} onChange={event => setSettings({ ...settings, pollInterval: Number(event.target.value) })} /><small>默认 500 毫秒，可调整为 100–2000 毫秒，保存后生效。接口响应较慢时会等待当前请求完成。</small></label>
+              <label className="field">客户端 API 轮询间隔（毫秒）<input type="number" min={CLIENT_POLL_MIN} max={CLIENT_POLL_MAX} step="100" value={settings.pollInterval} onChange={event => setSettings({ ...settings, pollInterval: Number(event.target.value) })} /><small>默认 500 毫秒，可调整为 100–1000 毫秒，保存后生效。接口响应较慢时会等待当前请求完成。</small></label>
               <label className="settings-toggle"><span>自动跟随比赛阶段<small>客户端阶段变化时更新工作台</small></span><input type="checkbox" checked={settings.autoPhase} onChange={event => setSettings({ ...settings, autoPhase: event.target.checked })} /></label>
             </div>
           </section>

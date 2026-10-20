@@ -1,6 +1,6 @@
 export const CLIENT_POLL_DEFAULT = 500;
 export const CLIENT_POLL_MIN = 100;
-export const CLIENT_POLL_MAX = 2000;
+export const CLIENT_POLL_MAX = 1000;
 
 export function normalizeClientPollInterval(value: unknown): number {
   return typeof value === 'number' && Number.isFinite(value)
