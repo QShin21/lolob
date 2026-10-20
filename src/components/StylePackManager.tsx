@@ -82,7 +82,7 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
         <div className="style-pack-preview"><BroadcastCanvas state={previewState} champions={champions} scene={scene}/></div>
         <p>此处仅查看效果。导入后选择“准备到预监”，再回导播台核对并 TAKE；正在播出的风格保持不变。</p>
         <p>美术制作：导出任一内置风格包，解压后修改清单标识与图片，再将清单和 assets 文件夹压缩为 ZIP 导入。</p>
-        {scene === 'teamfight' && <p>团战节目使用游戏原生画面，风格包保持透明。</p>}
+        {scene === 'teamfight' && <p>团战节目叠加十人状态和中立资源计时，游戏区域保持透明。</p>}
         {!canEdit && <p>导入、删除和切换由当前主导播操作；此席位可查看与导出。</p>}
         <div className="style-pack-delete">
           <button className="button danger" disabled={!canEdit || busy || loading || !selectedInfo || !!deleteBlock} onClick={() => setConfirmDelete(true)}><Trash2 size={15}/>删除风格包</button>

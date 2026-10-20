@@ -1,4 +1,5 @@
 import type { StylePackRef } from './style-packs';
+import type { FightSegment, NeutralSample } from './combat-display';
 import type { Cooldown, TelemetryStamp, ItemCooldown, PlayerBuffs, DamageTotals } from './player-telemetry';
 import type { ProductionState, ProductionCommand } from './production-types';
 export type Phase = 'pregame' | 'draft' | 'live' | 'postgame';
@@ -22,7 +23,7 @@ export interface Player {
   itemCooldowns?: ItemCooldown[];
   buffs?: PlayerBuffs;
   respawnAt?: number;
-  /** Collected and archived only; never connected to program damage graphics. */
+  /** Cumulative champion damage; teamfight graphics use a server-owned interval baseline. */
   telemetryDamage?: DamageTotals;
   telemetryDamageSource?: 'api' | 'memory' | 'postgame';
 }
@@ -58,7 +59,7 @@ export type BroadcastPreset = 'arena';
 export interface PlayerFeedSettings { mode: 'image' | 'camera' | 'off'; imageUrl: string; cameraDeviceId: string; label: string; focusX?: number; focusY?: number }
 export type PlayerFeedPair = Record<Side, PlayerFeedSettings>;
 export interface PlayerFeedControl { mode: 'manual' | 'auto'; activeIndex: number; nextSwitchAt?: number }
-export interface OverlaySettings { stylePack?: StylePackRef; postgamePage?: 1 | 2; preset: BroadcastPreset; scoreboard: boolean; players: boolean; objectives: boolean; ticker: boolean; goldDiff: boolean; sponsor: string; sponsorLogo?: string; tickerText: string; accent: string; scale: number; countdownEnd: number | null; nativeHud?: 'auto' | 'mask' | 'off'; patchVersion?: string; bottomTitle?: string; playerFeeds?: PlayerFeedPair; playerFeedPairs?: PlayerFeedPair[]; playerFeedControl?: PlayerFeedControl; scheduleView?: { page: number; filter: 'all' | 'upcoming' | 'day'; day: string }; interview?: { name: string; team: string; role: string; topic: string; dock: 'left' | 'right' } }
+export interface OverlaySettings { stylePack?: StylePackRef; postgamePage?: 1 | 2 | 3; preset: BroadcastPreset; scoreboard: boolean; players: boolean; objectives: boolean; ticker: boolean; goldDiff: boolean; sponsor: string; sponsorLogo?: string; tickerText: string; accent: string; scale: number; countdownEnd: number | null; nativeHud?: 'auto' | 'mask' | 'off'; patchVersion?: string; bottomTitle?: string; playerFeeds?: PlayerFeedPair; playerFeedPairs?: PlayerFeedPair[]; playerFeedControl?: PlayerFeedControl; scheduleView?: { page: number; filter: 'all' | 'upcoming' | 'day'; day: string }; interview?: { name: string; team: string; role: string; topic: string; dock: 'left' | 'right' } }
 export interface BroadcastState {
   customScenes?: CustomScene[];
   production?: ProductionState;
@@ -68,6 +69,7 @@ export interface BroadcastState {
   stats: { blue: TeamStats; red: TeamStats }; draft: DraftState; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed; ocrMatch?: OcrMatchData;
   connections: { lcu: Connection; live: Connection; replay: Connection; obs: Connection };
   overlay: OverlaySettings; assets: Asset[]; recordings: Recording[]; selectedPlayerId: string | null;
+  fightSegment?: FightSegment; neutralObjectives?: NeutralSample;
   observerTelemetry?: {status:'connected'|'unavailable';detail:string;profile?:string;sampledAt?:string}; draftHistory?: DraftHistoryGame[]; draftHistoryPending?: DraftHistoryGame; nativeHudStatus?: NativeHudStatus;
   gameResults?: GameResult[]; finishedGameId?: string; reportGameId?: string; awaitingNextGame?: { sourceGameId?: string; rosterFingerprint: string; gameTime: number }; activeSourceGameId?: string;
   settings: { lockfilePath: string; obsUrl: string; obsPassword?: string; pollInterval: number; autoPhase: boolean; gamePath: string; economyOcr?: EconomyOcrConfig };

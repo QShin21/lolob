@@ -1,3 +1,4 @@
+import { NeutralTimers, TeamfightOverlay } from './CombatOverlay';
 import './style-pack-elements.css';
 import { useStylePack, stylePackAppearance } from './useStylePack';
 import { useEffect, useState, type CSSProperties } from 'react';
@@ -27,18 +28,18 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  const frozenResult=bus!=='program'&&['ranking','postgame'].includes(scene)?currentGameResult(sourceState)||reportGameResult(sourceState):undefined;
  const state=frozenResult?frozenGameState(sourceState,frozenResult):sourceState;
  const look=useStylePack(state.overlay.stylePack),appearance=stylePackAppearance(look.pack,scene,state.overlay.accent);
- const [now,setNow]=useState(Date.now());const {version,items}=useItemCatalog(scene==='teamfight'?[]:champions,state.production?.versions.resources);
+ const [now,setNow]=useState(Date.now());const {version,items}=useItemCatalog(champions,state.production?.versions.resources);
  useEffect(()=>{if(scene!=='standby'&&scene!=='live')return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[scene]);
- // The game's A view supplies the teamfight HUD. Keep the OBS layer fully transparent.
  if(scene.startsWith('custom:')){const custom=state.customScenes?.find(s=>s.id===scene);return <div className={`broadcast-container cast-container ${output?'is-output':''}`}><div className="broadcast-canvas cast-canvas">{custom&&<CustomSceneLayout scene={custom} state={state} placeholders={!output}/>}</div></div>;}
- if(scene==='teamfight')return <div className={`broadcast-container cast-container skin-arena ${output?'is-output':''}`}><div className="broadcast-canvas cast-canvas cast-scene-teamfight transparent cast-transparent" aria-label="游戏原生团战视角">{!output&&<CapturePreview scene={scene}/>}</div></div>;
- const liveScene=['live','gold-ranking','economy','ranking'].includes(scene);
- const overlayScene=['draft','live','gold-ranking','economy','ranking','interview'].includes(scene),selected=state.players.some(p=>p.id===state.selectedPlayerId);
+ const liveScene=['live','teamfight','gold-ranking','economy','ranking'].includes(scene);
+ const overlayScene=['draft','live','teamfight','gold-ranking','economy','ranking','interview'].includes(scene),selected=state.players.some(p=>p.id===state.selectedPlayerId);
  const feed=scene==='draft'||scene==='lineup'?state.connections.lcu:state.connections.live;
  const sourceIssue=!frozenResult&&state.mode==='live'&&['live','teamfight','gold-ranking','draft','lineup','economy','ranking'].includes(scene)&&feed.status!=='connected';
  return <div className={`broadcast-container cast-container skin-arena ${output?'is-output':''}`} data-style-pack={look.pack.id} data-style-revision={look.pack.revision} data-style-status={look.error?'error':look.loading?'loading':'ready'} data-pack-background={appearance.background} data-pack-textures={appearance.textures} data-pack-elements={appearance.elements} data-pack-body={look.pack.fonts.body} data-pack-display={look.pack.fonts.display} style={appearance.style}><div className={`broadcast-canvas cast-canvas cast-scene-${scene} ${state.overlay.ticker?'has-ticker':''} ${overlayScene&&output?'transparent cast-transparent':''}`} style={{'--hud-scale':state.overlay.scale} as CSSProperties}>
  {overlayScene&&!output&&<CapturePreview scene={scene}/>}
  {liveScene&&<NativeHudLayer state={state}/>}
+ {liveScene&&<NeutralTimers state={state}/>}
+ {scene==='teamfight'&&<TeamfightOverlay state={state} champions={champions} version={version}/> }
  {scene==='live'&&<LiveBottom state={state} champions={champions} items={items} version={version}/>}
  {scene==='standby'&&<Standby state={state} now={now}/>}
  {scene==='draft'&&<DraftOverlay state={state} champions={champions}/>}

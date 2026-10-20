@@ -80,7 +80,7 @@ try {
     await render.locator('.cast-canvas').waitFor();if(scene!=='teamfight')await render.locator(`[data-style-pack=${styled?'verification-cup':BUILTIN_STYLE_REF.id}][data-style-status=ready]`).waitFor();
     await render.evaluate(()=>document.fonts.ready);await render.waitForTimeout(100);
     if(['draft','live','economy','ranking','interview','teamfight','gold-ranking'].includes(scene))assert.equal(await render.locator('.cast-canvas').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
-    if(scene==='teamfight')assert.equal(await render.locator('.cast-canvas').innerHTML(),'');
+    if(scene==='teamfight')assert.equal(await render.locator('.tf-player').count(),10);
     if(scene==='lineup' && styled) {
       const name = render.locator('.rl-info > .fit-name').first();
       assert.equal(await name.evaluate(el=>getComputedStyle(el).color),'rgb(23, 54, 94)');

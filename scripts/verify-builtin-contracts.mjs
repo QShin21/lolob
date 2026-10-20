@@ -93,7 +93,7 @@ try{
     if(variant.page2)state.overlay.postgamePage=2;if(variant.focus)state.selectedPlayerId=state.players[0].id;
     const markup=render({state,champions,scene:variant.scene,output:true});
     assert.match(markup,new RegExp('cast-scene-'+variant.scene));
-    if(variant.scene==='teamfight'){assert.doesNotMatch(markup,/data-style-pack=|style-pack-frame|<img/);assert.match(markup,/cast-transparent/);}else{
+    if(variant.scene==='teamfight'){assert.match(markup,/tf-player/);assert.match(markup,/neutral-timers/);assert.match(markup,/cast-transparent/);}else{
       assert.match(markup,new RegExp(`data-style-pack="${pack.id}"`));assert.match(markup,new RegExp(`data-style-revision="${pack.revision}"`));
       if(!FULL_STYLE_SCENES.includes(variant.scene))assert.match(markup,/cast-transparent/);
       assert.doesNotMatch(markup,/jianlou|builtin-v1/);

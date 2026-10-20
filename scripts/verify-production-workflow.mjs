@@ -363,16 +363,16 @@ try {
     if (scene === "teamfight")
       assert.equal(
         await overlay
-          .locator(".cast-scene-teamfight")
-          .evaluate((e) => e.children.length),
-        0,
+          .locator(".cast-scene-teamfight .tf-player")
+          .count(),
+        10,
       );
     await overlay.screenshot({
       path: path.join(evidence, "output-" + scene + ".png"),
     });
   }
   tests.push(
-    "all eleven audience scenes render; native teamfight overlay remains empty and transparent",
+    "all eleven audience scenes render; teamfight includes ten status cards with transparent gameplay area",
   );
   const mobileContext = await browser.newContext({
     viewport: { width: 390, height: 844 },

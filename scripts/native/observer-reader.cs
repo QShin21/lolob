@@ -54,6 +54,74 @@ public sealed class RiftCastObserverReader : IDisposable {
         }
         return result;
     }
+    IEnumerable<Dictionary<string,object>> ActiveBuffs(long obj,float time) {
+        long start=Ptr(obj+0x2e68),end=Ptr(obj+0x2e70);
+        if(start<65536||end<start||(end-start)%16!=0||(end-start)/16>256)yield break;
+        for(long entry=start;entry<end;entry+=16) {
+            long buff=Ptr(entry);if(buff==0)continue;
+            float from=Float(buff+0x18),until=Float(buff+0x1c);
+            if(from>time||until<=time||Int(buff+0x38)<=0)continue;
+            yield return Obj("name",CString(Ptr(Ptr(buff+0x10)+8)).ToLowerInvariant(),"until",until);
+        }
+    }
+    static string DragonElement(string name) {
+        if(name.Contains("infernal")||name.Contains("fire"))return "fire";
+        if(name.Contains("ocean")||name.Contains("water"))return "water";
+        if(name.Contains("mountain")||name.Contains("earth"))return "earth";
+        if(name.Contains("cloud")||name.Contains("air"))return "air";
+        if(name.Contains("hextech"))return "hextech";
+        if(name.Contains("chemtech"))return "chemtech";
+        return null;
+    }
+    object NeutralObjectives(long heroes,float time) {
+        bool elder=false;string element=null;
+        for(int i=0;i<10;i++)try {foreach(var buff in ActiveBuffs(Ptr(heroes+i*8),time)) {
+            string name=(string)buff["name"];
+            if(name.StartsWith("srx_dragonsoulbuff")) {
+                if(name.EndsWith("_preview"))element=DragonElement(name);
+                else elder=true;
+            }
+            if(name=="aspectofthedragon")elder=true;
+        }} catch { }
+        long manager=Ptr(imageBase+0x1ee93b0),list=Ptr(manager+8);int count=Int(manager+16);
+        if(count<1||count>2048)throw new InvalidDataException("neutral-list");
+        Dictionary<string,object> top=null,bottom=null;float topDue=0,bottomDue=0;
+        for(int i=0;i<count;i++)try {
+            long obj=Ptr(list+i*8);string name=String(obj+0x41d0).ToLowerInvariant();
+            if(!name.StartsWith("sru_"))continue;
+            float hp=Range(obj+0x1060,0,200000);if(hp<=0)continue;
+            if(name=="sru_baron")top=Obj("kind","baron","state","alive");
+            else if(name=="sru_riftherald")top=Obj("kind","herald","state","alive");
+            else if(name=="sru_horde")top=Obj("kind","grubs","state","alive");
+            else if(name.StartsWith("sru_dragon")) {
+                bottom=Obj("kind",name.Contains("elder")?"elder":"dragon","state","alive");
+                var current=DragonElement(name);if(current!=null)bottom["element"]=current;
+            } else if(name=="sru_camprespawnmarker") {
+                float x=Float(obj+0x1e0),z=Float(obj+0x1e8);
+                bool upper=Math.Abs(x-5007)<500&&Math.Abs(z-10471)<500;
+                bool lower=Math.Abs(x-9866)<500&&Math.Abs(z-4414)<500;
+                if(!upper&&!lower)continue;
+                foreach(var buff in ActiveBuffs(obj,time)) {
+                    string kind=(string)buff["name"];float due=(float)buff["until"];
+                    if(kind=="camprespawncountdownhidden")due+=60;
+                    else if(kind!="camprespawncountdownvisible")continue;
+                    if(due<=time||due>time+900)continue;
+                    if(upper)topDue=due;else bottomDue=due;
+                }
+            }
+        } catch { }
+        if(top==null) {
+            string kind=time<480?"grubs":time<900?"herald":"baron";
+            float due=topDue>time?topDue:time<480?480:time<900?900:time<1200?1200:0;
+            top=Obj("kind",kind,"state",due>time?"countdown":"unknown");if(due>time)top["dueAt"]=due;
+        }
+        if(bottom==null) {
+            float due=bottomDue>time?bottomDue:time<300?300:0;
+            bottom=Obj("kind",elder?"elder":"dragon","state",due>time?"countdown":"unknown");
+            if(due>time)bottom["dueAt"]=due;if(!elder&&element!=null)bottom["element"]=element;
+        }
+        return new object[]{top,bottom};
+    }
     public object Sample() {
         try {
             var processes=Process.GetProcessesByName("League of Legends");
@@ -85,7 +153,9 @@ public sealed class RiftCastObserverReader : IDisposable {
                     try {player["buffs"]=Buffs(hero,time);} catch { }
                     players.Add(player);
                 }
-                return Obj("ok",true,"profile","cn-16.20.824.8524","pid",attachedPid,"gameTime",time,"sampledAt",DateTime.UtcNow.ToString("o"),"players",players);
+                var result=Obj("ok",true,"profile","cn-16.20.824.8524","pid",attachedPid,"gameTime",time,"sampledAt",DateTime.UtcNow.ToString("o"),"players",players);
+                try {result["neutralObjectives"]=NeutralObjectives(list,time);} catch { }
+                return result;
             }
         } catch(InvalidDataException e) {return Obj("ok",false,"reason",e.Message);}
           catch {Dispose();return Obj("ok",false,"reason","read-unavailable");}

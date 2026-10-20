@@ -4,7 +4,7 @@ export const sceneInfo: Record<BuiltinScene, { name: string; description: string
   draft: { name: 'BP 选人', description: '英雄选择 · 禁用列表', shortcut: '2' },
   lineup: { name: '首发对位', description: '选手阵容 · 英雄展示', shortcut: '3' },
   live: { name: '局内计分板', description: '比分 · 选手 · 资源', shortcut: '4' },
-  teamfight: { name: '团战视图', description: '原生视角 · 游戏内按 A', shortcut: 'T' },
+  teamfight: { name: '团战视图', description: '十人状态 · 本段伤害', shortcut: 'T' },
   'gold-ranking': { name: '十人经济排行', description: '累计经济 · 全场排序', shortcut: 'G' },
   economy: { name: '经济曲线', description: '经济走势 · 领先差值', shortcut: '5' },
   ranking: { name: '选手数据榜', description: 'KDA · 补刀 · 装备', shortcut: '6' },

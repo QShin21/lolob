@@ -11,7 +11,7 @@ import { useGameClock } from './GameTime';
 import { activeBuffs, cooldownView, telemetryFresh, type Cooldown } from '../../shared/player-telemetry';
 import './live-bottom.css';
 
-function Icon({src,label,missing='',className='',cooldown,time=0,fresh=true}:{src?:string;label:string;missing?:string;className?:string;cooldown?:Cooldown;time?:number;fresh?:boolean}) {
+export function Icon({src,label,missing='',className='',cooldown,time=0,fresh=true}:{src?:string;label:string;missing?:string;className?:string;cooldown?:Cooldown;time?:number;fresh?:boolean}) {
   const [failed,setFailed]=useState(false);
   useEffect(()=>setFailed(false),[src]);
   const cd=cooldownView(cooldown,time,fresh),status=cd.state==='cooldown'?`冷却 ${Math.ceil(cd.remaining)} 秒`:cd.state==='ready'?'就绪':cd.state==='unlearned'?'尚未学习':'冷却状态未知';
@@ -35,7 +35,7 @@ function Runes({player}:{player?:Player}) {
     <Icon src={runeImage(secondary)} label={secondary?`副系符文 ${secondary}`:'副系符文未提供'} missing="?"/>
   </div>;
 }
-function Meter({current,max,kind,label}:{current?:number;max?:number;kind:string;label:string}) {
+export function Meter({current,max,kind,label}:{current?:number;max?:number;kind:string;label:string}) {
   const available=current!=null&&Number.isFinite(current)&&max!=null&&Number.isFinite(max)&&max>0;
   const percentage=available?Math.max(0,Math.min(100,current!/max!*100)):0;
   return <span className={`lb-meter ${kind} ${available?'':'is-unavailable'}`} title={available?`${label} ${Math.round(current!)} / ${Math.round(max!)}`:`${label}未提供`} aria-label={available?`${label} ${Math.round(percentage)}%`:`${label}未提供`}>
@@ -103,7 +103,7 @@ function PlayerRow({player,champions,items,version,side,ultimateIcon,time,now,av
     <div className="lb-stat-column"><FitName className="lb-cs">{String(playerCs(player))}</FitName><FitName className="lb-kda">{playerKda(player,true)}</FitName></div>
   </div>;
 }
-function PlayerFeed({state,side}:{state:BroadcastState;side:Side}) {
+export function PlayerFeed({state,side}:{state:BroadcastState;side:Side}) {
   const feed=resolvedPlayerFeed(state,side);
   if(feed?.mode==='off')return null;
   const label=feed.label;

@@ -43,6 +43,8 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
     if(!memory||api.level!==memory.level)return false;
     pairs.push({api,memory});index.delete(key(champion,side));
   }
+  data._observerProfile=sample.profile;
+  if(Array.isArray(sample.neutralObjectives))data._observerObjectives={gameTime:sample.gameTime,sampledAt:sample.sampledAt,validForMs:3000,profile:sample.profile,objectives:sample.neutralObjectives};
   for(const {api,memory:m} of pairs) {
     const stamp={source:'memory',gameTime:sample.gameTime,sampledAt:sample.sampledAt,validForMs:3000};
     Object.assign(api,{health:m.health,maxHealth:m.maxHealth,resource:m.resource,maxResource:m.maxResource,

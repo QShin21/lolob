@@ -67,7 +67,7 @@ const bool = (value:unknown):boolean => { if(typeof value!=='boolean')throw new 
 const oneOf = <T extends string>(value:unknown,choices:readonly T[]):T => {if(typeof value!=='string'||!choices.includes(value as T))throw new ValidationError('未知选项');return value as T;};
 const imageUrl = (value:unknown):string => {const url=str(value,2048);if(!/^\/uploads\/[a-z0-9-]+\.(png|jpg|webp|gif)$/.test(url)&&!/^https:\/\//.test(url))throw new ValidationError('图片地址须为已上传素材或 HTTPS 地址');return url;};
 function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
-  if(p.postgamePage!==undefined){if(p.postgamePage!==1&&p.postgamePage!==2)throw new ValidationError('赛后页码无效');s.overlay.postgamePage=p.postgamePage;}
+  if(p.postgamePage!==undefined){if(p.postgamePage!==1&&p.postgamePage!==2&&p.postgamePage!==3)throw new ValidationError('赛后页码无效');s.overlay.postgamePage=p.postgamePage;}
   if(p.scheduleView!==undefined){const v=record(p.scheduleView);const day=str(v.day,10);if(day&&!/^\d{4}-\d{2}-\d{2}$/.test(day))throw new ValidationError('赛程日期格式无效');s.overlay.scheduleView={page:Math.floor(num(v.page,0,1000)),filter:oneOf(v.filter,['all','upcoming','day'] as const),day};}
   if(p.interview!==undefined){const v=record(p.interview);s.overlay.interview={name:str(v.name,80),team:str(v.team,80),role:str(v.role,80),topic:str(v.topic,120),dock:oneOf(v.dock,['left','right'] as const)};}
   if(p.patchVersion!==undefined)s.overlay.patchVersion=str(p.patchVersion,20);
@@ -103,7 +103,7 @@ function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
 const stringList = (v:unknown):string[]=>{if(!Array.isArray(v)||v.length>5)throw new ValidationError('BP 每侧最多五个英雄');return v.map(i=>str(i,64));};
 export function clearLiveData(s: BroadcastState):void {
   preserveProgram(s);
-  s.players=[];s.gameTime=0;s.events=[];s.economy=[];s.selectedPlayerId=null;delete s.economyFeed;delete s.ocrMatch;delete s.gameClock;delete s.observerTelemetry;
+  s.players=[];s.gameTime=0;s.events=[];s.economy=[];s.selectedPlayerId=null;delete s.economyFeed;delete s.ocrMatch;delete s.gameClock;delete s.observerTelemetry;delete s.neutralObjectives;delete s.fightSegment;
   s.stats={blue:{kills:0,gold:null,towers:0,dragons:0,barons:0},red:{kills:0,gold:null,towers:0,dragons:0,barons:0}};
   s.draft={bluePicks:[],redPicks:[],blueBans:[],redBans:[],timer:0,activeTeam:'blue',action:'等待客户端 BP 数据'};
 }

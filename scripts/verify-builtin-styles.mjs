@@ -83,7 +83,7 @@ try {
     if (variant.scene !== 'teamfight') await page.locator(`[data-style-pack=${pack.id}][data-style-status=ready]`).waitFor({ timeout: 30000 });
     await page.evaluate(() => document.fonts.ready);
     if (['draft','live','economy','ranking','interview','teamfight','gold-ranking'].includes(variant.scene)) assert.equal(await page.locator('.cast-canvas').evaluate(el => getComputedStyle(el).backgroundColor), 'rgba(0, 0, 0, 0)');
-    if (variant.scene === 'teamfight') assert.equal(await page.locator('.cast-canvas').innerHTML(), '');
+    if (variant.scene === 'teamfight') assert.equal(await page.locator('.tf-player').count(), 10);
     if (variant.scene === 'postgame' && !variant.suffix) assert.equal(await page.locator('.pr-gold-player').count(), 10);
     assert.equal(await page.locator('.style-pack-frame').evaluateAll(elements => elements.every(el => el.complete && el.naturalWidth === 1920)), true);
     await page.screenshot({ path: path.join(dir, `${pack.id}-${variant.scene}${variant.suffix}.png`), omitBackground: true });

@@ -71,7 +71,7 @@ export function validateStyleManifest(input: unknown): StylePack {
     const value = object(scenes[scene]); keys(value, ['background', 'frame', 'textures', 'appearance']);
     const background = texture(value.background), frame = texture(value.frame), textures = surfaces(value.textures ?? {}, false);
     if (!FULL_STYLE_SCENES.includes(scene) && background !== null) throw new Error(`场景 ${scene} 需要保留游戏或摄像头透明背景`);
-    if (scene === 'teamfight' && (frame !== null || Object.values(textures).some(v => v !== null))) throw new Error('原生团战视角必须保持全透明');
+    if (scene === 'teamfight' && (frame !== null || Object.values(textures).some(v => v !== null))) throw new Error('团战视图的整幅贴图必须为空，以保留游戏区域');
     result[scene] = { background, frame, textures, ...(Object.hasOwn(value, 'appearance') ? {appearance: validateAppearance(value.appearance)} : {}) };
   }
   return { format: 'riftcast-style-pack', schemaVersion: 1, id: m.id, name: text(m.name, 80), version, author: text(m.author, 80, true), description: text(m.description, 500, true), canvas: { width: 1920, height: 1080 }, palette, fonts: fonts as StylePack['fonts'], textures: surfaces(m.textures, true), scenes: result, assets, ...(Object.hasOwn(m, 'appearance') ? {appearance: validateAppearance(m.appearance)} : {}) };
@@ -98,7 +98,7 @@ export function builtinStyleArchive(ref: StylePackRef = BUILTIN_STYLE_REF): Buff
   const manifest = entry.manifest;
   const files: Record<string, Buffer> = { 'manifest.json': Buffer.from(JSON.stringify(manifest, null, 2) + '\n') };
   for (const [id, file] of Object.entries(manifest.assets)) files[file] = builtinAsset(ref, id);
-  files['README.md'] = Buffer.from(`${manifest.name} / RiftCast 1.1.1\n\nBP 卡片支持当前选人放大浮动，锁定后收回小框。cardBlue/cardRed 底纹逐卡片铺设，高亮使用该侧配色。锁定瞬间展开整侧原画特写，3 秒后收回。英雄小框、放大框和锁定横幅素材由应用独立图库提供，升级应用后即可使用；包内无需重复放入英雄图片。\n\n内置风格包，可独立导入或用于制作派生美术。派生包请修改 manifest.json 的 id、name 和 version。图片、配色与固定版式共同形成节目外观，赛事数据继续动态绘制。先准备到预监，检查后 TAKE。\n`);
+  files['README.md'] = Buffer.from(`${manifest.name} / RiftCast 1.1.2\n\nBP 卡片支持当前选人放大浮动，锁定后收回小框。cardBlue/cardRed 底纹逐卡片铺设，高亮使用该侧配色。锁定瞬间展开整侧原画特写，3 秒后收回。英雄小框、放大框和锁定横幅素材由应用独立图库提供，升级应用后即可使用；包内无需重复放入英雄图片。\n\n团战十人状态栏沿用 palette 配色，中立资源使用统一识别色。赛后第三页提供十人共用最大值的镜像伤害条；postgame 的背景、边框与字体继续生效。\n\n内置风格包，可独立导入或用于制作派生美术。派生包请修改 manifest.json 的 id、name 和 version。图片、配色与固定版式共同形成节目外观，赛事数据继续动态绘制。先准备到预监，检查后 TAKE。\n`);
   return writeStyleZip(files);
 }
 
