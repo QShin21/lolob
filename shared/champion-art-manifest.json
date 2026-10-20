@@ -20,6 +20,10 @@
     "draftReveal": [
       1200,
       426
+    ],
+    "postgameMatchup": [
+      840,
+      300
     ]
   },
   "source": "Riot Games Data Dragon",
@@ -81,6 +85,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Aatrox-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "9bd3ce3280bc17f1a1a9f94dd3f78a37f3e9a44cfff1fbcf703df293a93000ad",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aatrox_0.jpg",
+          "sourceSha256": "069063d4b8c378dd7fdb44a1a83e21a6c5c84e4ad45e47ee08e8cfd438a1c3c5",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -144,6 +162,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ahri-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "7925069c9a5de32f9a0d229b422f0aa1840bc0462768f9aa6e09c4ebfd147cb3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg",
+          "sourceSha256": "afe0ce6622095ce8a818b68162b88f916ba0e79f7a3621ce7a556ddc21d87770",
+          "crop": {
+            "left": 0,
+            "top": 20,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -204,6 +236,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Akali-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "eb5b1a56e67808ce95987a0e9cad84fc78d4ba798a54cd9183ae3001a4954caf",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Akali_0.jpg",
+          "sourceSha256": "b527633cee673efb2c873511f3621f4e6049668556bcc8430585827c3feb775e",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -267,6 +313,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Akshan-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f832c0026e89802b394e4c746f1c938d46545cdb7ad09bbc48579f340159c310",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Akshan_0.jpg",
+          "sourceSha256": "35c2b04bc54cfe24a8a726e0beefbde39ee7d53a72c99a1bf8c579c25f22eefb",
+          "crop": {
+            "left": 0,
+            "top": 170,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -328,6 +388,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Alistar-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "a0dc4044ec1a4a76ede933521f5961af585f48ca937adc568f8126812c1ce5de",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Alistar_0.jpg",
+          "sourceSha256": "e745a226b2cb0dd71355ff11b1b131261a5e0d55d6ea5728f9259891f5551dad",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -391,6 +465,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ambessa-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "981b2662e9e47095bac03b98ccd35285207e77ce6f23c0de1a96a0d9de602c75",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ambessa_0.jpg",
+          "sourceSha256": "f02479cd7fbb8849164437098dfd1db3a6f26d070b6f3e1f943b2580cf6bbccf",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -453,6 +541,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Amumu-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "06e849d3fdd03dc52abb5b474368f51ccfe71e3792b6d8d5c5911d27250aed5a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Amumu_0.jpg",
+          "sourceSha256": "1a3f8f6171b9c7380fb7948ed1026ae55f5551ec4ceadd8b02cd177f6bfca1cf",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -513,6 +615,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Anivia-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f20919f2664b018410144908d1f3089641fe4b8bafc816f51b20797e2ffc4bf1",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Anivia_0.jpg",
+          "sourceSha256": "3bb8c06be0c164ac22fe05e9a2efe1fa4abe291b4114c25679ef9f0a49b7e674",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -576,6 +692,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Annie-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "a7ff7661f6cdb09c32f4c44f850d7734cac2d8b891ce1738a2ddc41424777702",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Annie_0.jpg",
+          "sourceSha256": "edad0269013114402d1d829b42ec052b9f9b8171dea19b1f1624c3ebab9a45f2",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -636,6 +766,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Aphelios-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d2fbed3c127a882ecaececfd98e3e699dcc223095e83cb97c21b406c97b1e3c0",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aphelios_0.jpg",
+          "sourceSha256": "a5aba47dcb8f66ac8823e3bc345552d028a65c3162dce8d6670c357fef5dd198",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -699,6 +843,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ashe-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "7ee452bca77076b6f26fb5c2eb2367e478b5441a6fd0707ea90194927bf0be55",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ashe_0.jpg",
+          "sourceSha256": "2c8ca3fcf121d7c8fe88bfe88f07062ee3a7bbc44674e95e0105d9bacdc09035",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -759,6 +917,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/AurelionSol-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "9eb5adc83e0f9694d794b3327e338d5b1159cd6ecd2876620d0e46312be9a35b",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/AurelionSol_0.jpg",
+          "sourceSha256": "01e8ecdcbe5c5a40d8ab812607d44ccdb86f73dff77e600ea6c8bd141d72f9d0",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -822,6 +994,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Aurora-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "2d4ce0a1f19230d429533b0796ee76d3248242172880ac376bc4d9a8416b0a9c",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aurora_0.jpg",
+          "sourceSha256": "ad37e7844a2ac2870eab94007b9dfda4fffe8d9b48d2bfe529a836c779d11004",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -883,6 +1069,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Azir-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f431136606fcffc7cceb02dde94c9f7b86bcc701041984812342a9fa34fb4f31",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Azir_0.jpg",
+          "sourceSha256": "a8ef52d149b22eeeb0286da547de643387b724c8d5564b9d7c816cda1dc8500a",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -946,6 +1146,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Bard-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "3fc5a2abcec26033a07954a69a317fb12bb281725b7b5bc494aab681d9fbeda6",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Bard_0.jpg",
+          "sourceSha256": "22fd6d421531c4180c2aab0461fea7d0857feadc211f87e06db1a952c27ebdcd",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1006,6 +1220,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Belveth-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "1a18fe8de1fd07664236de7280d1ac5ce2e8e2b1b9b95661e085c841ee716dba",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Belveth_0.jpg",
+          "sourceSha256": "255ee513034d082a1429e4cc5602e951ac70550455404c1428316dbec9cd1708",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -1069,6 +1297,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Blitzcrank-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "8eb012f6f1d19dc671d032142246a73a85cf62945fd2bca65430993c4fe18b97",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Blitzcrank_0.jpg",
+          "sourceSha256": "1435d499f6de01bf87d21fdc1c226e15366306094516fba53fb91e2f2db7c035",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1130,6 +1372,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Brand-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "fe0659ff50510b4712ec245fa522a7311f71d291d6f4c9802ac06ee499a420d0",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Brand_0.jpg",
+          "sourceSha256": "da94361eab440d569f2f4eb53a7b49ee8475cd7c30f0c2685295365e6d5b82bf",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -1193,6 +1449,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Braum-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d7ed1b0863a0fd5c10fb12d73d7eb764d546c54a159586ae8c13dbfae38cf41b",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Braum_0.jpg",
+          "sourceSha256": "4c95367a56935afcc355fa89aca3c1d081765e098625b898091e683dc9429bd8",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1255,6 +1525,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Briar-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "4ff1bf5f06fd6cdd88a8e5f95932e304977abe54be60224ce16337c85c1f0e71",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Briar_0.jpg",
+          "sourceSha256": "d5a179d7c908e5bf077bb1ee017813dacbdf015ec2dd357d3d6a08af98a5fd4c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1315,6 +1599,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Caitlyn-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "fa4f99b145075d4e1483b259a31c745cc09a5efcba6892c5bee51b481d2ce47d",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Caitlyn_0.jpg",
+          "sourceSha256": "3e164b540b074edd792f4444ab1efe6d887143260a24fd99681e95a982e659cc",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -1378,6 +1676,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Camille-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "881227847dfa7ba0f457f69be5df1ab12f32fd20b5a77b9241d2a2d883da3d8e",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Camille_0.jpg",
+          "sourceSha256": "f6e1f6bb9698066bcafa532632f0a1a77cbf86ee6c1dc0bb9fa027514cda424c",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1438,6 +1750,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Cassiopeia-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "21e23e30de975318420b78a30cc911670b388f17c78fcbe4dce88a0b6a4505cd",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Cassiopeia_0.jpg",
+          "sourceSha256": "3ecd23a8db20e87bcdfe3faf4e9b6baedd1663073a1121bb34d2ca799060daef",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -1501,6 +1827,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Chogath-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "9849bb7b31afacb906208a8b6d0f00f6dca9fde1718e6243665c47c87a9c5881",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Chogath_0.jpg",
+          "sourceSha256": "af0bdfab88b9bcd0d63b2ec858b89d1a78afbb1400085b7fe23014ab95df6043",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1562,6 +1902,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Corki-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "860026a0f68a10835c6e7d6f17f1013f87ccf0416ab04f76474aa786ddd3ce22",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Corki_0.jpg",
+          "sourceSha256": "ea9901fda6ca9d4d59f40a31db5c4958b5643ea1a02c4a039f7e314f048bfc04",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -1625,6 +1979,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Darius-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "871f9cde21e5908167ccae8289c6c24aa39e734b090dc77b90a7f47a7a0a4c39",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Darius_0.jpg",
+          "sourceSha256": "2a9b1bc256b33710bd7251df62ab069e2f979b7ef25506c6a04432617b26510a",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1687,6 +2055,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Diana-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "967c6380dc7218bdd3b0fd6170891fc5d8d3d59102faee93568109f0380aa712",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Diana_0.jpg",
+          "sourceSha256": "871e44fea5297fa08bf079f7f64f8838d73c16775343a39030a257599b7641eb",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1747,6 +2129,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Draven-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "3c9490189d86b7c796fe57ea2f7b94fc7ca5cd0fe757d190a83d27fc9fa38d68",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Draven_0.jpg",
+          "sourceSha256": "ec23393b57a27244cad8d2aafe210d04d32e3174bea3932526a2962da81c2446",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -1810,6 +2206,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/DrMundo-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "3497953b01ab3675a30f112f969970953e651b40302d3e4d121c6644f55f65db",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/DrMundo_0.jpg",
+          "sourceSha256": "2f3e387eb8c4594063289bfa15a603bdbcd53f54b16ede68f269d2e0a2b1040a",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1871,6 +2281,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ekko-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "3460c1dd193f4461d77a704ac69c3155a9ca27ee2f9e3de90644684ed3a0786f",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ekko_0.jpg",
+          "sourceSha256": "9616673dc514f56126bf6fc6ad96f5a74791bbd9e131b014750bb81e3a531378",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -1934,6 +2358,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Elise-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "c22273a89178b6faf8ac1703c4439c38d504fa0b8c5e04991e77754f1b2b0270",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Elise_0.jpg",
+          "sourceSha256": "54302dfdd11794d2977eca04dd7fa58a2ff4b0fd0e22bb70d7b5d52584e52b84",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -1995,6 +2433,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Evelynn-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "17296c972a0ab4117a65bb5e3a89ea426815859df92749fdfb1676af659b7358",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Evelynn_0.jpg",
+          "sourceSha256": "bbcfea1c083aaa97870f25b9288bcc090ad11fc2b60a091e5a8d9817100f230e",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -2058,6 +2510,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ezreal-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "66be60f0e091b16fcb51f89e0a899d68a06c7e7d9cd1cdf9717812a5eba0d4d2",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ezreal_0.jpg",
+          "sourceSha256": "447e6acac61e08312324c4c07c59cb9352bfe9637af60807697d62ee6fe9d33c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -2119,6 +2585,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Fiddlesticks-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "ed73b8406f3bd5e33f50f91901df288e52edfd5da0cc36aa23ef2fb6d374e568",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Fiddlesticks_0.jpg",
+          "sourceSha256": "e15be9714a259cfda89a6ac4b80694175d88829c49abcb983f39dd0dd23e1605",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -2182,6 +2662,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Fiora-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "5755470acabb465f220599540eee6593a937ca78de2b5306093dce085e07d3e2",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Fiora_0.jpg",
+          "sourceSha256": "f467848704476308035a224c9b3765ada22ea89f301b2509eb317721d708240c",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -2243,6 +2737,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Fizz-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d018980d0db74b0d37974f433c9facca1e42dd20e8fefc41e5437eb6d4fd675f",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Fizz_0.jpg",
+          "sourceSha256": "f0b256009653bb1f1cecd596b15019d79320c9f1556dbe3d671429d473fcd21a",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -2306,6 +2814,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Galio-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "71bc0b7b09f4d713c11314ae5d06af9d4e598851bdd07f3c3bd9ebda12678e0b",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Galio_0.jpg",
+          "sourceSha256": "3c1e6e34de3789c5757c2f2e4b9d7a4b6685cfbb5e9c85aebcf9f7d77bb8c940",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -2366,6 +2888,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Gangplank-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "8fa823709465bc2b78e8e327c108473b3f1545394d5d4a7defe65a76db22320b",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gangplank_0.jpg",
+          "sourceSha256": "91f16753b7821f7ae36d1f428bffcf1ce0ffd6bf80c92f034a3410e70fee9d35",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -2429,6 +2965,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Garen-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "4818d1937b5d31aa717f6ac045e66cce36504e4cd6ce2f069f190a4870915a76",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Garen_0.jpg",
+          "sourceSha256": "b3b793811a9df402434dc5250d1f9d4c9b7fe0931412d2a719feaed1e283974e",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -2490,6 +3040,20 @@
             "top": 193,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Gnar-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "cdec22aaa03209de3f083f28cedc9cc3693483d207f5616ecac505145bd0c543",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gnar_0.jpg",
+          "sourceSha256": "a0cd03f10ea4bd399e7a0f595bbf70a32ff7486a6506b8fa46b58335f9a50a84",
+          "crop": {
+            "left": 0,
+            "top": 192,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -2553,6 +3117,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Gragas-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "79e507d4bcba2dc7aab5de52b5ba5331e4d02ea860b2050f5bc82361318927ac",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_0.jpg",
+          "sourceSha256": "0c35caed01c2b995656c4db5bffa34aeca9b8f304b48819a6d4808967587e043",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -2614,6 +3192,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Graves-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "ef7c834ee82c5eccd4230a7668054a8841844023a13a3f3cd13f83b8b4856a08",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Graves_0.jpg",
+          "sourceSha256": "5378da561dc5b054deaeba75054fcc225dfb3c588f221be5b2d671a1edcde2ac",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -2674,6 +3266,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Gwen-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "a6da2b5d3f1ccad91e1e18021a00a95c5f9c36b90d378e7bdac1c57b48e5419d",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gwen_0.jpg",
+          "sourceSha256": "7abdd112d3af8f760cf85a14fbbb9a8507a3094716f96726184b50351b687701",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -2737,6 +3343,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Hecarim-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "b71a98b26dd79e6bc70986efbc7f5bce52ae66b874df7961e1c1d5d7667790a3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Hecarim_0.jpg",
+          "sourceSha256": "8323b165204c6326cba36912a260b043519d9fe95010a4323da3c1c50bcfe9a7",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -2798,6 +3418,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Heimerdinger-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "9729cf0feeb542286806fbb53701fac29b3b9c5983d28170054780a13f15e6ec",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Heimerdinger_0.jpg",
+          "sourceSha256": "392e0c0d3e8bfa9d6a525fb8e7810dff634688c73140d2e0999960030b3faa4c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -2861,6 +3495,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Hwei-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f215ca479ffe6691cd5042bd4caadd08ef128d0de2a8d9157a1253d26879beb9",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Hwei_0.jpg",
+          "sourceSha256": "88af2b57c77b17c28839b1d23d4f78bd1e7a9aec6bb5469c097ae78172da6e2b",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -2922,6 +3570,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Illaoi-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "2f2363febb9043a56f2b1051429b932717ff7996ee12a8ed392dd2f69c7dccaa",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Illaoi_0.jpg",
+          "sourceSha256": "f1814ff221910bc65627c26869ed95332820ff7967b351b6cc48ccd22589cedc",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -2985,6 +3647,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Irelia-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "4054eb8d1b9bb7271b927e37c92f937caf2bf28662eb6977790912060608544a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Irelia_0.jpg",
+          "sourceSha256": "65a750a4372f2998a8d95887b5ae5ccdca1fd0fe7cd39c50861200f490f5102d",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3046,6 +3722,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ivern-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "91b40df905f3cb8d388701f4756a9944b7ad839aee02eeee90c71219ef6b625c",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ivern_0.jpg",
+          "sourceSha256": "93844439a5cb2d3efbdc0ffb51d8796cedf70e3fbc808e621abad467d766ec9e",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -3109,6 +3799,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Janna-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "03f168d05bedf46797f4d0fc5f7909c5a64f8a1506e643ed92b90dbc2c8d8cb0",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Janna_0.jpg",
+          "sourceSha256": "3ed931f0ae4c68f7838d504e9a5bb4bece01419116de96667e22c002f4cb68de",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3171,6 +3875,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/JarvanIV-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "a286cd64815483c98c6e3a5baa8b72e3a72fede028d4e92275ab85ed0577b370",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/JarvanIV_0.jpg",
+          "sourceSha256": "cf490471a52a53a78e8dc9ff438cdcd24ce418a7c30d58c785a908de8b49ce3e",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3231,6 +3949,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Jax-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "7b3c99bd2f5b43a129e9aab271e542bf1487da8b56d85b5a6cdcf713dd800db7",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jax_0.jpg",
+          "sourceSha256": "914a2f28d170d9c7329bffa466b548388871723386beb5e49bc366ad3742bb96",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -3294,6 +4026,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Jayce-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "22ec6192311c55d87d7c7016980c024c2745fad5ee69675b480b05d14c998362",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jayce_0.jpg",
+          "sourceSha256": "8eba72eb9c471313d083c129fc23748e304227261f9671346aeb486f46c6b262",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3356,6 +4102,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Jhin-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "11400d79b389d3e31b485a5a066ccf647c0a813a7bd30488357bd5057d4e095e",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jhin_0.jpg",
+          "sourceSha256": "42e6bf54555b2981c12142d1640cd33d7fb16ef90b7c3bebbb7a949c97b48188",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3416,6 +4176,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Jinx-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "38765a7c070adf768dd024d581c04e960f03f2089fc1f5e2325e7aa63468a221",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_0.jpg",
+          "sourceSha256": "95e7c9c71438f78e18b146aec29f7c8c183a24e01c42b00619e15daa0954f63a",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -3479,6 +4253,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Kaisa-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "05c5a9b8383569205581792493706df0bdd53d807d1b04181db4335615c41937",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kaisa_0.jpg",
+          "sourceSha256": "05bc2fe17c4d512b55737ac96c4d7945ea171dd58604ae1af74f989efed8fd45",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3539,6 +4327,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Kalista-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "a10b078145f15d9c42d324f0b00c439f6d489e55815a2f741252f451d9b03c4a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kalista_0.jpg",
+          "sourceSha256": "513aa68398ca94e8153ebb9b0c717666eb24973e0d1ba1ced3c8dd61674d396e",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -3602,6 +4404,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Karma-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f05ba69821f5ff417ab22f039391f07b8e67e3e62d879ac7b4e1268da5ee8068",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Karma_0.jpg",
+          "sourceSha256": "2c4310880f404da8da7a9199759ea5dc0609ed44aed47153f7c2bfc2b9ce2f62",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3662,6 +4478,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Karthus-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "bf2dd2bfffdbd90a26cd5dde0420a45d5e86bf3391aaa57d7f5ec0b0b84fa940",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Karthus_0.jpg",
+          "sourceSha256": "0b304d9e6510357b649f06ea8301f1bc77803be6edb65c90c1530a3a09e5491d",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -3725,6 +4555,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Kassadin-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "dbc36aadaff250bf29dec2d955464548f3615f7439fd135c9d6f22e0ea8cc291",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kassadin_0.jpg",
+          "sourceSha256": "4380a4a8093a14790ac74fb91c93126e6eb05c7f967f33e83efebd59e8c801ad",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3786,6 +4630,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Katarina-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "8609299196ceca82f5778e0ce08ae6d94df1d1f24b1d11c1c541281fa152eb7b",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Katarina_0.jpg",
+          "sourceSha256": "cc1250dc034e5152ba036747ea0a6ba763c2e997f03633fbdba73ec6bd19976d",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -3849,6 +4707,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Kayle-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "aa70078e64d83e3e163b357ea11bee58076edc2d75f24248fc0d17e60fd46f21",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kayle_0.jpg",
+          "sourceSha256": "48787df2b3aa2acfcf94ca17c5c9c2c288f624656389f2f8736177713971e51c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3911,6 +4783,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Kayn-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "dfcfaa98c17fb969ff2df13cbe7ff51c69f1abbc2277607172e0632ace15a0b8",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kayn_0.jpg",
+          "sourceSha256": "047c07049bbf9568841103f552549f1b731cf69cb9c6377da30fc6e5d436352f",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -3971,6 +4857,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Kennen-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "8424fdcd295c2b52fdb65bd596171800d3e3e6b7d33fa67c75da85c4c514c92b",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kennen_0.jpg",
+          "sourceSha256": "baed35b94968d3bcc5929cc737872fc3915f0e97cb1dff533ba49d2f97c8af00",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -4033,6 +4933,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Khazix-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "7a888d1210f3a675a3bd30445d6ae5190a4ce9685e50806a4f9e968814367185",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Khazix_0.jpg",
+          "sourceSha256": "b371ce8baeb502007cfad109ee579b260dee8cec687e3306cf930d839fec58a0",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4094,6 +5008,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Kindred-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "e1469a9b2724d1ee44afbc9c82c1230ea474d3e120ad43c5608522a3efd0dfd9",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kindred_0.jpg",
+          "sourceSha256": "cb0b36fdf6cb60d20502cf749dfcf0352c3e4c6d2be92ae47235a07b07d148f0",
+          "crop": {
+            "left": 0,
+            "top": 185,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4154,6 +5082,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Kled-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "bc6e122609d55a04803f0e7e3fce25ae7ce09082422c672330680126cdca57c6",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kled_0.jpg",
+          "sourceSha256": "2f72d09fda3f78332cf4d6c0e551091e43402427134eb5d27594f856a643ba2b",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -4217,6 +5159,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/KogMaw-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "5352bc5602fb0c84c115a3c68bb5caf8d7f3a245ff235d90fbe37d0084f04347",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/KogMaw_0.jpg",
+          "sourceSha256": "8ce32306a9a8dfa882fa75108788d66e15f5778631dcb307c4e706c56e4a6f92",
+          "crop": {
+            "left": 0,
+            "top": 228,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4278,6 +5234,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/KSante-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "576b5573946af8881c8486b3af3b677bc807212f2424044cdc059a98d3413202",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/KSante_0.jpg",
+          "sourceSha256": "1c20b44cf1b352e38114ee507bcb072c0d478b58b4060f27730e550258fdccc8",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -4341,6 +5311,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Leblanc-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "372e852a3f9d9296bad5bc77622f56fc5ebe4ce8f92c28e48459377bc6b562fa",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Leblanc_0.jpg",
+          "sourceSha256": "b64053d7f5ec393b96e8af29293a4f1e685adbbd686f85dbcccc5fddef082238",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4402,6 +5386,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/LeeSin-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "164bbb1cdaa9d010331b2e8140aa7f212d254cdd2cd3ead3c1bab38162be139d",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/LeeSin_0.jpg",
+          "sourceSha256": "11b9ba21ed6863f2367f1adc85b8dee8c77c4cc781fc65d144fa7ccbbc72b353",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -4465,6 +5463,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Leona-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "1fe4a90d74a2f12f97e5af2a88d86d26dccac79c300c7e8ef3898644cf65e223",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Leona_0.jpg",
+          "sourceSha256": "ea02ae22bdcd1bd5ea8e8b968117e9c897a4bdc9a9992f971d42a7cccb3a5b63",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4527,6 +5539,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Lillia-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "78ed841c3ffe92f56afe36cfdc145728858b114071418dc2f745b887800b8952",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lillia_0.jpg",
+          "sourceSha256": "b1d01d458b212fd6a977fc9d7d82f7e5f0797347634d0ee501f646b529d2b30d",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4587,6 +5613,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Lissandra-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d3108a1eaf2823b2f6c80e96f431775b214c8313ddaf69d172d58f69cb503b5d",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lissandra_0.jpg",
+          "sourceSha256": "68d8f0ba2523c8283a1ef1829545ebc704382d12e0660e05010678e7cb6eb831",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -4650,6 +5690,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Locke-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d0c11004cb7a47821f72bb91f1f0e868e897c925632888979295396d62d23e20",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Locke_0.jpg",
+          "sourceSha256": "b4232dc123c790947b01935fc326ef3c2aa026ca7c5b67c3a198ea1a9b26cdc1",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4711,6 +5765,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Lucian-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d5ac956d4d788f1a4d9feb3bdc5f68e1ae7a50fc609c084f4ff7d17ed83c905a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lucian_0.jpg",
+          "sourceSha256": "30da4f47729e3d2405d05e2527fe69d896092b664645614af653da462ff389f3",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -4774,6 +5842,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Lulu-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "5b30a2d296d32b0502ab6478e1461b448a3005cb5cb0ba3b529778091c013789",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lulu_0.jpg",
+          "sourceSha256": "0fa34d37da9d6a97a2f9c095716dfa1b4c8b98ecdb9369c3bebe1e1847000a1d",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4835,6 +5917,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Lux-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f71cc9b45c4cf0ac430cc65e47401e578615da6b5833f141e9b3717b60708570",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lux_0.jpg",
+          "sourceSha256": "d148fbcd3985d2f46f928a6ec65cca3c4f3d088692926cb5004352de73636e2e",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -4898,6 +5994,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Malphite-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "8636f06647fa3c8cf2e287d4b4b2953f6cced853572ac455fe345a891e1466ab",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Malphite_0.jpg",
+          "sourceSha256": "5448c1abac884e1ebb19dc01495524ebd7fcaa14f6dfb09c81deea6c2f942c6c",
+          "crop": {
+            "left": 0,
+            "top": 170,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -4958,6 +6068,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Malzahar-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "3798c7312a5d3f23d73c465dba49f88e7a7ce54267987b15b7121b1ac9cdf3ed",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Malzahar_0.jpg",
+          "sourceSha256": "c7f5e9bbb73740bd6953d8052cbd8116e1dfd9a33a900e135a52d31470b6a01b",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -5021,6 +6145,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Maokai-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "826f854d3bffb87059a02bcc1d0a5620a8dfa5c853f0ed392577252a139ef8ab",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Maokai_0.jpg",
+          "sourceSha256": "4376e85285dd399350401437c804d34d6402c24d3460ba2eee4a145c17746c2f",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -5082,6 +6220,20 @@
             "top": 143,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/MasterYi-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "2740de2eedefb2294e6e151f83dc5c0f3702a4c60dd87d4c16ac1ad84ae14734",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/MasterYi_0.jpg",
+          "sourceSha256": "bf7678dc3b32abfd06bb5810274959e88d59234f7da0573ff67f3e864944a42f",
+          "crop": {
+            "left": 0,
+            "top": 142,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -5145,6 +6297,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Mel-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "64c1b589b752baf1ccc6757f49033550de3e53e0e81eb76d8ac196f0bd2a0fa3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Mel_0.jpg",
+          "sourceSha256": "5f475967a4fbc9c0d50994a06c3d8e9ce602e05d0b408b69177b1d6455f39ab8",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -5206,6 +6372,20 @@
             "top": 35,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Milio-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "16fef7ec876d65a6baafae2941a50712fdc4f6859a5ce8e7aafb235006f8cfdd",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Milio_0.jpg",
+          "sourceSha256": "4258e7a13a4219dbaaa68456c5c97d9dff87743b364cb5edb9a4ab0d1616e541",
+          "crop": {
+            "left": 0,
+            "top": 34,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -5269,6 +6449,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/MissFortune-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "63ccb9996e9272b4cde5d73f7abd01870f962241f0ea656eda48dc8964390316",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/MissFortune_0.jpg",
+          "sourceSha256": "eeca480ba75f5a6821c416ece01223721e9c27db5492b47ff3cdcfb19a0e2824",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -5330,6 +6524,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/MonkeyKing-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "72151e04791b76bdf8acdb702700054bf99db9a919f637db4c88eda2beb1aadd",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/MonkeyKing_0.jpg",
+          "sourceSha256": "f62c3bf74d9b83c4a2d1ad1d6c2934fb4632cd07c07b83caa0b76ad84fe2848c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -5393,6 +6601,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Mordekaiser-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "9edbf7cf7a2dfede71739c262c38df2ff1ada12e2115690cf4ff1d9f8c6005b9",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Mordekaiser_0.jpg",
+          "sourceSha256": "d771ebd1b685d5a4f7af064f883ba9694782bc3eca37935e321d41e6e9e84db5",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -5454,6 +6676,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Morgana-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "5a39c1447198d0147893c7c688dbcf37813b3d421de632d1c49554327d7ec865",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Morgana_0.jpg",
+          "sourceSha256": "55863e2e8ac8293de013d2e8b622821d0b2ecf4920fa6001965d8a46f391b75f",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -5517,6 +6753,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Naafiri-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "8b69ab3515c1e0fe95ba480e8be0609389fb96cfd7a6beb2248a8fffebe2ba5c",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Naafiri_0.jpg",
+          "sourceSha256": "524c388c92e6b1b6339e92c5c66da6e85d6c2e73a64c83c75535e9b32f6a44e1",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -5578,6 +6828,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Nami-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "78cd0c2f353914a66b216b85cdf35b7d20e7297a9b26457d00800686850bf45d",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nami_0.jpg",
+          "sourceSha256": "b4226eb7ff4886274e9bf85d9528675ad5c548cf4b968958d716d553e160af2e",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -5641,6 +6905,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Nasus-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "893c96c75ca86659a5740f4ede45133d0d754b163c1c8f3160256326f7fdabfc",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nasus_0.jpg",
+          "sourceSha256": "b129e396c48a872fcfcc8b8bc6c75b39a7b508c07d4f58e34de840adc3247fbd",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -5702,6 +6980,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Nautilus-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "15fa1086abba0c578c52ea7f1bc358bebe87da88d3fe00ffec6867b0a3e9694b",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nautilus_0.jpg",
+          "sourceSha256": "c8389da01975174a6fc486d6930ef7291a16942d6bae55ad24f9bb185d78db9b",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -5765,6 +7057,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Neeko-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "2122c94aa090ecdf3f252b8be695d1fe088591e3c2765013c7687d5956cf71f6",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Neeko_0.jpg",
+          "sourceSha256": "b559eed6f15d5d0e1a03b3fbb8ed5fa8acfe82289f285e9f826abf226b951a3e",
+          "crop": {
+            "left": 0,
+            "top": 27,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -5826,6 +7132,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Nidalee-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "448e0c7f229134634fec3df6607b79aff9f82e9fe2a617f47e85a5e80ddd9a05",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nidalee_0.jpg",
+          "sourceSha256": "cfc98ea3da659640fafc624c1fb74ecf91390712675659c8a78aed0466177812",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -5889,6 +7209,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Nilah-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "cceffc3ee115ffa7d7447d61b53897b99b43f824810eb70df764b2369c392a53",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nilah_0.jpg",
+          "sourceSha256": "1c094cdc52c0b0a16fe4424207cc5d3cf10d9b14d526b8db87ecb895e74bc868",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -5950,6 +7284,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Nocturne-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "de3d08c5bd4fe5aa6e84078136072bd36ac83b4c5568d556f813f0785dc097b4",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_0.jpg",
+          "sourceSha256": "d29144f1e79208ee44d43e7a7e8c60356f454f6cce8241ea7acf00e9f96f9167",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -6013,6 +7361,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Nunu-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "6f8f4d203d3e6988deb6ec915be7cb500b3620428b777a684d8830ee72a4b66d",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nunu_0.jpg",
+          "sourceSha256": "762f6d410132317c0c285bcf2a0db07c643db8bb34e0e54e70c220d9253f2171",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -6074,6 +7436,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Olaf-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d4c2a0ac11da5c14fc2abf5a505d9315bf569a820cabdb901941d5ca7af96b6f",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Olaf_0.jpg",
+          "sourceSha256": "cfa0ab7498d12855cb9472c3aa345ee517ea4fe34b7ced54520b0f139d30aa8c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -6137,6 +7513,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Orianna-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "8037537df3c27aa95bfa1c0c883619c6b7af03dd15635a6f67d35eb5aeccaa34",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Orianna_0.jpg",
+          "sourceSha256": "349b57723acbe0a4eb9dc4f4dc6706c62a2e994bf31bfa3a4d77ee2507162840",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -6197,6 +7587,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ornn-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "6afeec7fd1c3c9ace8a72716cf745c2bfdb65636730febd037d0ee2cc94874e0",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ornn_0.jpg",
+          "sourceSha256": "2334b3ac4f3e464dd32ed98de265ac3bd568a8628af484832689c0d07852b1c7",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -6260,6 +7664,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Pantheon-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "97dd35e1d04c47b3ac3e46bf0bfab298c7c8ea414c7257de8c1c0a3fffaed22a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Pantheon_0.jpg",
+          "sourceSha256": "1f81ee3dc9a0d86c0a80b197de54b0a7cd59427ddb27a2e80cb3a7e077288d75",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -6321,6 +7739,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Poppy-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "e056179032aa873c29e5ca13298d31e097c301a5162a7c4c64e08e37fdcc5404",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Poppy_0.jpg",
+          "sourceSha256": "e8ca3e0093cbd07d2f1461ed9b453b8352e33cdd2ce8b4fa11569bb44dc4300e",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -6384,6 +7816,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Pyke-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "2d610d76959a295a60eee8642d48944d9895d9b73b154cadb8c6e97c165de711",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Pyke_0.jpg",
+          "sourceSha256": "9bdf1e03a9bf37cc12cb748a2062a33b27a259d65d104231b5ea83bc3520b1c1",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -6444,6 +7890,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Qiyana-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "95b92a550fc943aa1f9754bed1f944bdf1ef6eac50e760d6cd9f64413e914405",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Qiyana_0.jpg",
+          "sourceSha256": "4cec7ff2e06465964093716cfeefef800208b683369727b5255bf10281d2d485",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -6507,6 +7967,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Quinn-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "2a0d73a3ff4a471eaca47ea34aa30a5e4aa384f84bd9da6836041c791210cfeb",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Quinn_0.jpg",
+          "sourceSha256": "0e439de3b3ae02b0f7af247892e48d668fa4fb6c625eb6432c836f9242672e4c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -6568,6 +8042,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Rakan-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "694d78bf687efa830009d77d692a3cc1449c2f5ba5894963b31b17dde008e0cf",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rakan_0.jpg",
+          "sourceSha256": "b0e7ea0bb02dc9605d04301c1d737a63d2797e9f74cfff45cb4661c914eea3ee",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -6628,6 +8116,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Rammus-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "30c262e622433ae1172d4e5839ba145fec71b5b66763881ce42cb24737c46ef3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rammus_0.jpg",
+          "sourceSha256": "9ab8971bdd24bfed322a71cbf0e7a123e573cf73710dbbd5a4209a944f47ea31",
+          "crop": {
+            "left": 0,
+            "top": 127,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -6691,6 +8193,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/RekSai-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d8d40903c103277fd4d6b2389357e3189adfde0ba23e5f4dfca39af0c1db45c8",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/RekSai_0.jpg",
+          "sourceSha256": "d88721d61671de4405cef8f7128e707dec2dde0f2e841680d3c1416041197869",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -6752,6 +8268,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Rell-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "a92a8f52e90fd513833ea0a500124cbcfe70aa21a71aa992a5a397b0c899d74c",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rell_0.jpg",
+          "sourceSha256": "0007284208b047f9e4be441038da8082eb4b7fa4062942477edc360266433180",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -6815,6 +8345,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Renata-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "cc25e82ca96021ec3c48ce8c28837b274f89bf1183155d1119e678c294046c0d",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Renata_0.jpg",
+          "sourceSha256": "15fd9858de9591664e31772617c870ebba7594a84b17be4d22bf648610b53e1d",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -6876,6 +8420,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Renekton-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "30a2436774b7f14bf6d0d74efdc6f283e2102a232ab56fa5ce15a5299e81ccce",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Renekton_0.jpg",
+          "sourceSha256": "9293da39c0a0988e6d76d33a27168bebe99cd28f4efca484bcb62e70d0e7dc24",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -6939,6 +8497,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Rengar-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "a98002770422b89d1b3aa0dec2b90bf2f67769a4ad2dc4449c4b8872366af5eb",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rengar_0.jpg",
+          "sourceSha256": "f1b3bb3302fb417069dbfe05164d040604fc4cc83b90cd7b08bdebc25af784bb",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7000,6 +8572,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Riven-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "576483085c93fdac281167961a0027790d8c9842907c47a7b855d1528b913e57",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Riven_0.jpg",
+          "sourceSha256": "0aede092bcf78a6e65b72ee872e49d0413b1a678848ea9a193809bd75da63001",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -7063,6 +8649,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Rumble-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "81a835f93e2198c7fa0fd860a050117ab5cad35bed21cfac165a6cae187c6f68",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rumble_0.jpg",
+          "sourceSha256": "fe79363bd21cae59ffa42827191ef89f2500b9602d4a45782d9e9ca1c270c764",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7123,6 +8723,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ryze-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "e26664a5ff32be17dc9bcb56a995c4710bfebc6866c57d4ad4e5011ea445ccbf",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ryze_0.jpg",
+          "sourceSha256": "b21432f41a8f642269295fe90d34b036acbd6c063f3a5d9b4a95cebe40799dc7",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -7186,6 +8800,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Samira-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "477970a3fe0b13012af94e354d749aa2f0ccf0b5753b3c3a96b0a1f9d997cd8f",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Samira_0.jpg",
+          "sourceSha256": "9d4f8bfeb4dc9d69e4a30c250afbbc81ad4b3ada5bd391d7d4dc1a3b0c9e518f",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7246,6 +8874,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Sejuani-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "16e6486df9ded6255e8684da0ef977cdfab91447a932a56ef55972efd4f20e79",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sejuani_0.jpg",
+          "sourceSha256": "dd657f38314f6e6004cd0ece26f9961faf0c73d7a2790f84bb007fd4c3adaaac",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -7309,6 +8951,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Senna-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "634759acd2f4a339d6cab3649e98e06d067948f6da73a9771d9a10db458dd671",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Senna_0.jpg",
+          "sourceSha256": "d3f4367a2f5f784011bd5412cc72196638c28675714da0fd957aff8316881811",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7370,6 +9026,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Seraphine-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "417c76ef6e748fec3c45222267650ca97c7d98fbf13284481bd84a4ab8f92f9a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Seraphine_0.jpg",
+          "sourceSha256": "e0acdd9acb0b769b82ccb23bb1f40576b18b0b60099a491f2bd3640bf74e1c23",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -7433,6 +9103,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Sett-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "5c356d071e9dacd9a66ec8118821d10087db931f25c30ca0f8dc4471f8b5a6cb",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sett_0.jpg",
+          "sourceSha256": "f4705b3030c094092ae5df61f9a2fdb558732a1b8fee327d7d2596898f90c09a",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7494,6 +9178,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Shaco-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "c045c2f25321c8d9b589b6abded054cbc629b19fb578caa979ebffa803a9987c",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shaco_0.jpg",
+          "sourceSha256": "2b495743aa12041b0c0c0ff0d46abe735d4eb640e7f23fc84fa6337567b13b79",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7554,6 +9252,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Shen-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "9fefb93831538744f945964e5a55023047a89a134423e468f0857f9eaff30d39",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shen_0.jpg",
+          "sourceSha256": "b44e003444afbf8164f8c0497d650cf67bd12bca4e365ea233c0a71582bd013e",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -7617,6 +9329,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Shyvana-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "04c59d50853b3354b0ad8db52542a1328f3444e3eeb394e781df7a08047fa3a3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shyvana_0.jpg",
+          "sourceSha256": "43c84f6bdbcf826976ee6ff826707dcc55c2d02ab7f92e62ce19f23da34bbc03",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7678,6 +9404,20 @@
             "top": 7,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Singed-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "bc210bdbc7a09e5998c7fae32a75f5efcbdfa0be5d5df68db575bcb4e2a49a15",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Singed_0.jpg",
+          "sourceSha256": "e65ff0089bf9c6d742726f318e28a94022f5f4379a48d6c6140fa506fa54ae82",
+          "crop": {
+            "left": 0,
+            "top": 5,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -7741,6 +9481,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Sion-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "b89f3c5abc48a5c6d316c7647209e8d06ce204b29fe49319ef0901d557b8acc1",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sion_0.jpg",
+          "sourceSha256": "a776ccf331f6d2071dc58e1415c387f57f41a08a5ed554b8535ffbd07fc662f1",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7801,6 +9555,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Sivir-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "cb04c5e0c7d33753886899b7d9285095fb1025485032909f7823ef4839103077",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sivir_0.jpg",
+          "sourceSha256": "658632b38da4ff294c65e2fd2d25ac1ece17d441e1460bdd99566f1d88b73c27",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -7864,6 +9632,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Skarner-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "7dd444ff80fd2fb75348d0b37fb69c2832b14a607bb2ea4f08d8dae36a5cda3a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Skarner_0.jpg",
+          "sourceSha256": "7979985f1496dcf39233e96852626b39f87888d8f892e4f1d68ac61696eacd8d",
+          "crop": {
+            "left": 0,
+            "top": 192,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -7925,6 +9707,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Smolder-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "61c0d4595da4b7c03dfcc929c7fb442e18bd39e2efc91e062ae0c25cec227081",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Smolder_0.jpg",
+          "sourceSha256": "ff0ac87e4551f80128dd22d981b1c9820d55aa23aeff70b7fbfa6bf1b0b75309",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -7988,6 +9784,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Sona-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "71278b01629f85db0fcc898b93e4afab1f0be098f2b022ea2a1b094401600ed9",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sona_0.jpg",
+          "sourceSha256": "424d67c9774215bd28c1c64031889dd0a65c5ad26b581c4bb9e2949588f0431e",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8049,6 +9859,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Soraka-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f1c0d0a30331ce0ef350d7fe506c1ff8c963f0bb6f74fec028eb0e95dffc6f40",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Soraka_0.jpg",
+          "sourceSha256": "e36a257ef5e9a5638e29583a48d7a7d0284ab999b866d8f6fd9c85fda7863c38",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -8112,6 +9936,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Swain-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f2b4fdd140cd0b2c22c5055c4df31fbee72e94850c39c02712706f6fab5eae95",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Swain_0.jpg",
+          "sourceSha256": "7621c65d738075ba06af87ef3b7f080b6d1ecfe1976503ff10d3d18ba65efe66",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8174,6 +10012,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Sylas-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "c94b10ec47261801854257b246bfb5539f4dfb06b3cf62b521b525595173fe51",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Sylas_0.jpg",
+          "sourceSha256": "e6dc6f5db2e8126d38470421bf98b4a46351825e055544266b457a4444b5418a",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8234,6 +10086,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Syndra-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "aca5e64299e28f941fc3781a97f8896ed4ef965ff7206e2e022584f84caf363f",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Syndra_0.jpg",
+          "sourceSha256": "fc2b498ebf6be1cb5598a0babcda9019de5da51033c3788f38a9c82798f650bd",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -8297,6 +10163,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/TahmKench-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "2b1d3b603dfbc0dc9746df370b4a6c3e3980541350c017b72748dfb720bcfebc",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/TahmKench_0.jpg",
+          "sourceSha256": "a0f08c48e4bea96188a70a2638b19690fadd9b1245610ad98d88cda773239d85",
+          "crop": {
+            "left": 0,
+            "top": 106,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8359,6 +10239,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Taliyah-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "71d645ac069f303aa573e5bf9bfa4e796df32c711b72baca6ce89ac1c92f7076",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Taliyah_0.jpg",
+          "sourceSha256": "463641a0e9ce32b0363d80345a18e950c93493af63cb9c2a070e60cc74d9f0e8",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8419,6 +10313,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Talon-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "b0970a65df585ebf05d97c28feb68679953d73958c74c6f141d0428e5d292ac3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Talon_0.jpg",
+          "sourceSha256": "16c72ecec0e106f0247b45ab2ce255909e56cb1769ad88244214acd45c13f3a7",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -8482,6 +10390,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Taric-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "928f2fa29bd8661fd1fccefb9176addf5b3e73329add4a2a9cccc9524ec6763f",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Taric_0.jpg",
+          "sourceSha256": "b6e6b9ae8317d928acea3be57a52007d4a4cce98d09fda6d2ca141c6791e239d",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8543,6 +10465,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Teemo-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "124913659e3f5c8665a960d56b43c8a2a9ce2fd165b6b980c203e41e61a6349f",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Teemo_0.jpg",
+          "sourceSha256": "ccbd5868043975e803b2d4b057d04473bfd810ae133712d9c19f0e28aa221cbd",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -8606,6 +10542,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Thresh-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "182434eac234e88d94e7fe76276ab3e8185399a7750a0857e9b148a047358aa9",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Thresh_0.jpg",
+          "sourceSha256": "5dfe7df611da30e4ce758715d09393c1c460b775ea49efe9e8156ed3d635d679",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8667,6 +10617,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Tristana-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "655283c00b9ee17c68350ec906bdae6cb1055aaa83e8fae056f29a8fca2f8afb",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tristana_0.jpg",
+          "sourceSha256": "0e351504c40c03baafc2e7bd84f7a295a1259bec1ec0fb4142bf4c34c6c2be02",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -8730,6 +10694,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Trundle-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "7f59b3e679d26355a0ca618ef65b27112d33b6540ac250268f9d320529a0b6f3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Trundle_0.jpg",
+          "sourceSha256": "6b637904cb6f2565f2502c2d8de1ab689ed993f6879faab7d9174cf5c1fe0b7b",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8791,6 +10769,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Tryndamere-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "2374d2ba1e1966b729b70fc9ecb8a7c762d2ccb79c5ad032dda3c93dc2af243c",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tryndamere_0.jpg",
+          "sourceSha256": "f9a1558368ff875e23359bda641ffa4556ebea7ad82c3065aa60391ba1a7a71a",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -8854,6 +10846,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/TwistedFate-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "ffdb196e21cc92438383e67463320a69feeae88fcb3926e085ca8af916f67be3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/TwistedFate_0.jpg",
+          "sourceSha256": "dc9c9d677e2058f1cb1a2f6b57ed2084a8c338ff397f40a63d14a61c8f27869f",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -8915,6 +10921,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Twitch-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "df506efbe1e7e5802d7e52c3932a3036a8341f52446c7712d9919ba46e563fdf",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Twitch_0.jpg",
+          "sourceSha256": "a22e8a7a84c191c1b96fef8f8a5e3c2a4dc979cfd2a5b37a9132c903de9197ef",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -8978,6 +10998,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Udyr-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "b4d889dcca5593fbce0374210c37ae385bbd7ea67e8dbc18f7c3e9d3f19bc3fc",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Udyr_0.jpg",
+          "sourceSha256": "02955c8dd9a7639b1d3219cd1c5347a793e9351872da8ef032fd6bbd6b79906d",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9039,6 +11073,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Urgot-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d1023b2adaf2a8ff3e7dc04d52e99e542ebedef275754f1a5376e2f8befa47c8",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Urgot_0.jpg",
+          "sourceSha256": "8ffbd0b3bbfac4ab94bb36139a900e3c1f2994fa1169b613a8592b5f7e1b0a78",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -9102,6 +11150,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Varus-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "a16be33903976f0c0384739800b5562eedac608668e67cef737df10aa7b3bebd",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Varus_0.jpg",
+          "sourceSha256": "0a4198985bfa7b68c88a74fa4b59723ce84c700026b75b0556d5f937617fe67a",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9164,6 +11226,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Vayne-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "34439bc3ca925aea59fbd66377fa6ab3d4610119cec3fc2c1be624a6faaa6e97",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Vayne_0.jpg",
+          "sourceSha256": "2d4afc90d4470e9b0f3d7d4a600415a4e10eb8a1fb5508afca17689d64193c78",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9224,6 +11300,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Veigar-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "b9c1be13ec6118982a4a11747eb2219718c5d14cc4f6ebfd8826ac0551a26b9e",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Veigar_0.jpg",
+          "sourceSha256": "6bdcf02b9b5898cf2cfb30ee39b03379c58c59d1e2f018c0ffdc3e4ee87d2365",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -9287,6 +11377,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Velkoz-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "349994540087730c19b64db4007d42e75d337fb836b93955d8482dbaae8427b0",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Velkoz_0.jpg",
+          "sourceSha256": "9df27202fa3618f1e3a69b0613a696558c73792e85c7fb135bda6278684c6bf0",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9347,6 +11451,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Vex-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "08e3e7aa9f891a9a01ea9bffb6be4c1fb2405f825fdfbb5e5046726fec400421",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Vex_0.jpg",
+          "sourceSha256": "7dfbcb446f84be83ca2e412532cf1ccb379dddd41800cd8432f96fd5e5c4dd52",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -9410,6 +11528,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Vi-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "e3e1c4c469aeb5e076c210b13b272f53678df5ffe0cf9b02dd2d8927f9ec4bb3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Vi_0.jpg",
+          "sourceSha256": "4d667f6eec22916dc8c1e4875caef393de4387aaaaeb0f17e389eddb68c5c21c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9472,6 +11604,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Viego-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "89f6bb1a308f8dd7f6a8f6d900f9e97b97aab49af674f0f7020377c854ba6623",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Viego_0.jpg",
+          "sourceSha256": "d2cef19dd877388d55ac0c6ca21c8241f51f90173367f224780b7c621d2c1a42",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9532,6 +11678,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Viktor-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "20f36160d033ead22dd3af56d3ed852c4c6cd37da2d2fe75f2c21491d8626a3a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Viktor_0.jpg",
+          "sourceSha256": "16c34243a63c90f961172d59c5abad738283c813b51be71232dcfcc45b767dc4",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -9595,6 +11755,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Vladimir-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "49229392cff855b87a9c8e600c54fc33d3f17297e46feebb55fc2e27db515430",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Vladimir_0.jpg",
+          "sourceSha256": "170be067b108e75211ca45fa776291d3c2c3739d568f347151d00e5cbd4a6640",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9656,6 +11830,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Volibear-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "88fed8cac05dadf356e65ca6fd56b970ab3aa3f758ff3eb0d19f99d004278413",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Volibear_0.jpg",
+          "sourceSha256": "288f5611bea77372074a071cfd66c8218d3a128e86035925615154880f1124f2",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -9719,6 +11907,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Warwick-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "7a705eb6290f633594fab6dc05b99a2b272f027097e24898a5cc9d664248edf7",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Warwick_0.jpg",
+          "sourceSha256": "410be6f3907c456b791c9a25afe1dd55e539a59e9313f79d00836f2ea4dac4a7",
+          "crop": {
+            "left": 0,
+            "top": 156,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9779,6 +11981,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Xayah-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "bc366743618ce66ff188299b342a7ae743376efd39aa2502459d9afaa52c65c3",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Xayah_0.jpg",
+          "sourceSha256": "905f6332a9d430c93e2f795a1a836b442d6db79c0b5b4d382d9fb4ecb3b226d1",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -9842,6 +12058,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Xerath-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "bc8a80704a56bdfb6b627bc5f699c15d808af7b5367282b4578964adab40fba2",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Xerath_0.jpg",
+          "sourceSha256": "f734c034c70525e344d32b1dba90788f8c23305ebf62086652eaa06bb2a70b4b",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -9903,6 +12133,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/XinZhao-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "1b508065aaa3939499e76b24d33fabcecba77af4893a1049e8bb1f6b08ea3faf",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/XinZhao_0.jpg",
+          "sourceSha256": "a71a3c1f429e2e0dba3ecf500bfedf69f5ff7199aef61de6cf0a3e1a0de14e37",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -9966,6 +12210,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Yasuo-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f4f8070014ad362f639715820192b17df7dbc61bb922bedf23406f41f1065fb7",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yasuo_0.jpg",
+          "sourceSha256": "cac3ce1512147ce1ee5907d3e87c6d687d8f8f3336d6876f9bf39190a3528f76",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -10027,6 +12285,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Yone-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f0ffe88261f2ff817467c96ed436769aa385fb2c99fb7e6361ca969dd6267f68",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yone_0.jpg",
+          "sourceSha256": "4228de8d31b3930e27e80b48798ce55c98b8611e5154331bb4d7d18851ae56bb",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -10090,6 +12362,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Yorick-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "d2c964003d3861c20dbaff8db452b45b17af8daa9a2ada9e85974ff8d8c6a2f1",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yorick_0.jpg",
+          "sourceSha256": "89f5ff5dcbfd2122c3614d0d097d0b52a22f354e843f5eb9480a16c4e734947a",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -10150,6 +12436,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Yunara-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f3527051365b38a1c6562ad2d872c5bbe63b2dd80f71636a0404dfcc9508f168",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yunara_0.jpg",
+          "sourceSha256": "f52bfc15c3052a0761a4c2b516a07b3ca7c7a9e453ba1322451f8b7917fd2915",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -10213,6 +12513,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Yuumi-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f2e977bd07741856dcc2a1a40949badd30fbcb346883546416eb87e37bebc820",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yuumi_0.jpg",
+          "sourceSha256": "5a5fb840486692307c5e3e204ee6e910faa2dcc6a3800dfdafa164e28a6ff551",
+          "crop": {
+            "left": 0,
+            "top": 5,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -10273,6 +12587,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Zaahen-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "e95f68973d2d62af14da0a196ae4d3407caef9279926de4c0f927902e3299d3c",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zaahen_0.jpg",
+          "sourceSha256": "8f74d4c3c0acd7659d9f01fe46def22f049f9e4562a985800c41df1d98fc560e",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -10336,6 +12664,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Zac-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "696e85d0b8501d85ac482898bc099b53a223af5b5d0ba143460dcaa5fd51f59a",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zac_0.jpg",
+          "sourceSha256": "c3c7d4e23ee382c1b88d0f5865cfdc252b6c7d15834823eaa977cd27086cbeed",
+          "crop": {
+            "left": 0,
+            "top": 142,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -10396,6 +12738,20 @@
             "top": 0,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Zed-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "fcd0baf7cdb8ed6890cbbe4bc21f55f9c70ee94b86e255a5db5fb3696a9d7119",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zed_0.jpg",
+          "sourceSha256": "41ada61718f10afa0a2bdc06b19de0f1d501724ec56584cddf9bba000cbb3ef5",
+          "crop": {
+            "left": 0,
+            "top": 0,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -10458,6 +12814,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Zeri-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "f0bfeb4875db9471c1cb5ff5cf29543412055ac07d9af89a5e76afce447c7a64",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zeri_0.jpg",
+          "sourceSha256": "7bf60af6cc692bc505dbb03f5df1ced08cc234292b81071c206edae560ac9c4c",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -10518,6 +12888,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Ziggs-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "5ca03797b0a9d6a7048597f949348108b0b90c9ae9aaaa7918dd466d3c1aa8bc",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ziggs_0.jpg",
+          "sourceSha256": "305d37e437af1b246b91efa6bf6b955cfd93b791b2e7eeadd77b46360b159f24",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -10581,6 +12965,20 @@
             "width": 1215,
             "height": 431
           }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Zilean-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "8679d9d740cf48f658def399d6069da60a38c941393d56757b2b42f5b07c060e",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zilean_0.jpg",
+          "sourceSha256": "af1032a3460263d46c4221086b363506addf4392d04e5cd2a3169a321f6212c7",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
+          }
         }
       }
     },
@@ -10641,6 +13039,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Zoe-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "b13632d5e152b3496d72fcaa3389d21f0c2bcdccd3941472ce13d45d8677e1c5",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zoe_0.jpg",
+          "sourceSha256": "b26d8a2c4e8ac84efb8752f8b372bd7575f3116db7de9f361ce21f3e378d7497",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }
@@ -10703,6 +13115,20 @@
             "top": 57,
             "width": 1215,
             "height": 431
+          }
+        },
+        "postgameMatchup": {
+          "url": "/champion-art/Zyra-postgameMatchup.webp",
+          "width": 840,
+          "height": 300,
+          "sha256": "4409158785c9dc2e8fa84e74e4d67d2d27aa4fe9d9a52ebedebef10328e46a6f",
+          "source": "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Zyra_0.jpg",
+          "sourceSha256": "fb4e582609c6486f14d07fb09739413561c3fec095377217bba3ad20195cae35",
+          "crop": {
+            "left": 0,
+            "top": 55,
+            "width": 1215,
+            "height": 434
           }
         }
       }

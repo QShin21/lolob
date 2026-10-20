@@ -11,7 +11,7 @@ export function sidePlayers(state: BroadcastState, side: Side) {
   return state.players.filter(p => p.team === side).sort((a, b) => order(a.role) - order(b.role)).slice(0, 5);
 }
 export function ChampionImage({ champions, id, kind = 'icon', art = 'draft', className = '' }: {
-  champions: Champion[]; id: string; kind?: 'icon' | 'splash'; art?: 'draft' | 'lineup' | 'draftCompact' | 'draftExpanded' | 'draftReveal'; className?: string;
+  champions: Champion[]; id: string; kind?: 'icon' | 'splash'; art?: 'draft' | 'lineup' | 'draftCompact' | 'draftExpanded' | 'draftReveal' | 'postgameMatchup'; className?: string;
 }) {
   const champion = championFor(champions, id);
   const [failed, setFailed] = useState(false);

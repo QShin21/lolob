@@ -1,13 +1,12 @@
 import { StylePackManager } from './StylePackManager';
 import { styleRef } from '../../shared/style-packs';
-import {PostgamePageControl} from './PostgamePageControl';
 import { useRef, useState } from "react";
 import type { BroadcastState, Champion, Scene, CustomScene, StateContext } from "../../shared/types";
 import { sceneDetails, sceneInfo } from "../lib";
 import { Palette, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { CustomSceneEditor } from "./CustomSceneEditor";
 import { TaskTabs } from "./ConsoleUI";
-import { SceneCard } from "./SceneCard";
+import { SceneCard, reportPageNames } from "./SceneCard";
 import { customSceneFacts } from './custom-scene-status';
 const groups = [
   { id: "all", label: "全部" },
@@ -35,6 +34,9 @@ export function SceneLibrary(props: {
   const deletingActive = useRef(false);
   const [deleteError, setDeleteError] = useState('');
   const canEdit = props.connected !== false && !!props.seat && props.seat.role === 'director' && props.state.production?.control?.owner === props.seat.id;
+  const selectingReport=useRef(false);
+  const [selectionBusy,setSelectionBusy]=useState(false);
+  const selectReport=async(page:1|2|3)=>{if(selectingReport.current)return;selectingReport.current=true;setSelectionBusy(true);try{await props.send({type:'set-overlay',patch:{postgamePage:page}});await props.send({type:'preview-scene',scene:'postgame'});}catch(error){props.notify(error instanceof Error?error.message:'赛后报告准备失败','warning');}finally{selectingReport.current=false;setSelectionBusy(false);}};
   const [query, setQuery] = useState('');
   const [group, setGroup] = useState<(typeof groups)[number]["id"]>("all");
   const [favorites, setFavorites] = useState<Scene[]>(() => {
@@ -61,7 +63,8 @@ export function SceneLibrary(props: {
       : group === "all"
         ? allScenes
         : group === 'custom' ? custom.map(s => s.id) : phases[group];
-  const visibleScenes = scenes.filter(scene => sceneDetails(props.state, scene).name.toLowerCase().includes(query.trim().toLowerCase()));
+  const entries=scenes.flatMap<{scene:Scene;reportPage?:1|2|3}>(scene=>scene==='postgame'?([1,2,3] as const).map(reportPage=>({scene,reportPage})):[{scene,reportPage:undefined}]);
+  const visibleScenes=entries.filter(({scene,reportPage})=>(reportPage?reportPageNames[reportPage]:sceneDetails(props.state,scene).name).toLowerCase().includes(query.trim().toLowerCase()));
   const deleteReason = deleting ? customSceneFacts(deleting, props.state).deleteReason : '';
   return (
     <section className="scene-bank" aria-label="场景库">
@@ -81,11 +84,10 @@ export function SceneLibrary(props: {
       {styleManager && <StylePackManager {...props} onClose={() => setStyleManager(false)}/>}
       {editor && <CustomSceneEditor {...props} initial={editor === 'new' ? undefined : editor} onClose={() => setEditor(null)} />}
       {deleting && <div className="custom-delete-prompt" role="alert"><span><strong>{deleteReason || `删除「${deleting.name}」？`}</strong><small>已上传素材和借用的 OBS 输入都会保留。</small>{deleteError && <small>{deleteError}</small>}</span><button className="button small" disabled={busy} onClick={() => setDeleting(null)}>取消</button><button className="button small" disabled={busy || !canEdit || !!deleteReason} onClick={async () => { if (deletingActive.current || deleteReason || !canEdit) return; deletingActive.current = true; setBusy(true); setDeleteError(''); try { await props.send({ type: 'delete-custom-scene', id: deleting.id }); setDeleting(null); props.notify('自定义场景已删除'); } catch (e) { setDeleteError(e instanceof Error ? e.message : '删除未完成，请核对引用与权限后重试'); } finally { deletingActive.current = false; setBusy(false); } }}>确认删除</button></div>}
-      <PostgamePageControl state={props.state} send={props.send} />
 <div className="scene-bank-grid">
-        {visibleScenes.map((scene, index) => (
-          <div className="scene-bank-item" key={scene}>
-            <SceneCard {...props} scene={scene} />
+        {visibleScenes.map(({scene,reportPage}) => (
+          <div className="scene-bank-item" key={`${scene}:${reportPage??0}`}>
+            <SceneCard {...props} scene={scene} reportPage={reportPage} disabled={selectionBusy} onSelect={reportPage?()=>{void selectReport(reportPage);}:props.onSelect} />
             <div className="scene-bank-tools">
               <button
                 aria-label={`${favorites.includes(scene) ? "取消常用" : "设为常用"} ${sceneDetails(props.state,scene).name}`}
@@ -123,7 +125,7 @@ export function SceneLibrary(props: {
         ))}
       </div>
       {!visibleScenes.length && <p className="muted" style={{ padding: '0 20px 16px' }}>{group === 'custom' ? '还没有自定义场景，点击「新建场景」添加图片或应用窗口。' : query ? '没有匹配的场景，试试其他名称。' : '此分组暂无场景。'}</p>}
-      <div className="scene-bank-note"><span>单击只准备预监，核对后切入节目</span><span>{allScenes.length} 个场景 · {custom.length} / 50 自定义</span></div>
+      <div className="scene-bank-note"><span>单击只准备预监，核对后切入节目</span><span>{allScenes.length+2} 个场景 · {custom.length} / 50 自定义</span></div>
     </section>
   );
 }

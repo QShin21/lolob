@@ -54,8 +54,8 @@ try {
   const health=await (await fetch(base+'/api/health')).json();assert.equal(health.version,version);
   const metadata=await application.evaluate(({app})=>({version:app.getVersion(),packaged:app.isPackaged,userData:app.getPath('userData')}));
   assert.equal(metadata.version,version);assert.equal(metadata.packaged,true);assert.equal(metadata.userData,userData);
-  for(const id of ['Camille','Gnar','KogMaw'])for(const variant of ['draftCompact','draftExpanded','draftReveal']){const url=`/champion-art/${id}-${variant}.webp`,response=await fetch(base+url);assert.equal(response.status,200);assert.equal(hash(Buffer.from(await response.arrayBuffer())),hash(await readFile(path.join(root,'public',url))));}
-  checks.push('packaged service serves compact, expanded and lock-reveal local artwork with exact source hashes');
+  for(const id of ['Camille','Gnar','KogMaw'])for(const variant of ['draftCompact','draftExpanded','draftReveal','postgameMatchup']){const url=`/champion-art/${id}-${variant}.webp`,response=await fetch(base+url);assert.equal(response.status,200);assert.equal(hash(Buffer.from(await response.arrayBuffer())),hash(await readFile(path.join(root,'public',url))));}
+  checks.push('packaged service serves compact, expanded, lock-reveal and postgame matchup local artwork with exact source hashes');
   checks.push('isolated packaged EXE and bundled service start at 1.1.6 without development Node/npm on PATH');
   const restored=await (await fetch(base+'/api/state')).json();
   assert.equal(restored.finishedGameId,fixture.finishedGameId);assert.equal(restored.phase,'postgame');

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createServer} from 'vite';
@@ -9,7 +9,8 @@ const {chromium}=await import(pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODU
 const {createFixture}=await tsImport('../server/test-support/fixture.ts',import.meta.url);
 const {applyAction}=await tsImport('../server/state.ts',import.meta.url);
 const {tickPlayerFeeds}=await tsImport('../shared/player-feeds.ts',import.meta.url);
-const dir=path.resolve('verification-output/release-1.1.5/rotation');
+const version=JSON.parse(await readFile('package.json','utf8')).version;
+const dir=path.resolve(`verification-output/release-${version}/rotation`);
 await mkdir(dir,{recursive:true});
 let state=createFixture();state.previewScene='live';
 state=applyAction(state,{type:'set-player-feed-control',mode:'auto',activeIndex:1});
@@ -25,7 +26,7 @@ try{
  const page=await browser.newPage({viewport:{width:680,height:900}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.exposeFunction('dispatchAction',action=>{state=applyAction(state,action);return state;});
- await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-1.1.5/rotation/index.html`);
+ await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-${version}/rotation/index.html`);
  await page.getByRole('button',{name:'恢复 5 秒轮播'}).click();
  assert.equal(state.production.feedHold,false);assert(state.production.pause);
  assert.equal(state.production.program.overlay.playerFeedControl.activeIndex,1);

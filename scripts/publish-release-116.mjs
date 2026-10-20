@@ -25,9 +25,10 @@ for(const label of ['Compact','Expanded','LockReveal'])assert.ok(manifest.artifa
 const draftFocus=JSON.parse(await readFile(`verification-output/release-${version}/draft-focus/report.json`,'utf8'));assert.equal(draftFocus.status,'passed');
 const rotation=JSON.parse(await readFile(`verification-output/release-${version}/rotation/report.json`,'utf8'));assert.equal(rotation.status,'passed');
 const combat=JSON.parse(await readFile(`verification-output/release-${version}/combat/report.json`,'utf8'));assert.equal(combat.status,'passed');
+const postgame=JSON.parse(await readFile(`verification-output/release-${version}/postgame/report.json`,'utf8'));assert.equal(postgame.status,'passed');
 const guide=`RiftCast-${version}-Usage.md`;
 await copyFile(path.join(folder,'使用说明.md'),path.join(folder,guide));
-await fs.promises.writeFile(path.join(folder,'verification.json'),JSON.stringify({status:'passed',version,sourceRevision:sha,rotation,combat,draftFocus,telemetryHud,draftLayout,packaged:smoke,styles,builtins,deletion,liveOnly},null,2));
+await fs.promises.writeFile(path.join(folder,'verification.json'),JSON.stringify({status:'passed',version,sourceRevision:sha,postgame,rotation,combat,draftFocus,telemetryHud,draftLayout,packaged:smoke,styles,builtins,deletion,liveOnly},null,2));
 await copyFile('docs/Style-Packs.md',path.join(folder,'Style-Packs.md'));
 await copyFile('docs/style-pack-v1.schema.json',path.join(folder,'style-pack-v1.schema.json'));
 const files=[`RiftCast-${version}-Setup-x64.exe`];
@@ -36,7 +37,7 @@ const gh=args=>execFileSync('gh',args,{encoding:'utf8',stdio:['ignore','pipe','i
 assert.equal(findRelease(tag),undefined,'Version or draft already exists; inspect it before retrying');
 const expected=[];
 for(const name of files){const hash=createHash('sha256');for await(const bytes of fs.createReadStream(path.join(folder,name)))hash.update(bytes);expected.push({name,bytes:fs.statSync(path.join(folder,name)).size,sha256:hash.digest('hex')});}
-gh(['release','create',tag,'--repo',repository,'--target',sha,'--draft','--title',`RiftCast ${version} · 客户端轮询间隔调整`,'--notes-file',`docs/Windows-Release-${version}.md`,...files.map(name=>path.join(folder,name))]);
+gh(['release','create',tag,'--repo',repository,'--target',sha,'--draft','--title',`RiftCast ${version} · 轮询设置与赛后报告修复`,'--notes-file',`docs/Windows-Release-${version}.md`,...files.map(name=>path.join(folder,name))]);
 const created=findRelease(tag);assert.ok(created,'New draft was not found');
 const release=api(`${apiRoot}/releases/${created.id}`);
 assert.equal(release.draft,true);assert.equal(release.tag_name,tag);assert.equal(release.target_commitish,sha);assertAssets(release,expected);assert.equal(release.assets.length,1);

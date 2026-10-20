@@ -21,6 +21,7 @@ function replay(extraGameChunk?:Buffer){
   const keyframe=chunk(1,2,heroes.flatMap(h=>[block(1093,h.networkId,0),block(853,h.networkId,0)]));
   const game=chunk(1,1,fixture.samples.map((s:any)=>block(359,s.param,s.time,s.payload)));
   const stats=heroes.map(h=>({SKIN:h.champion,TEAM:h.team==='blue'?100:200,
+    TOTAL_DAMAGE_TAKEN:Math.floor(events.filter((e:any)=>e.target===h.networkId).reduce((sum:number,e:any)=>sum+e.amount,0)),
     TOTAL_DAMAGE_DEALT_TO_CHAMPIONS:Math.floor(events.filter((e:any)=>e.source===h.networkId).reduce((sum:number,e:any)=>sum+e.amount,0))}));
   const footer=Buffer.from(JSON.stringify({gameLength:200000,statsJson:JSON.stringify(stats)})),size=Buffer.alloc(4);size.writeUInt32LE(footer.length);
   return Buffer.concat([header,version,keyframe,game,...extraGameChunk?[extraGameChunk]:[],Buffer.alloc(256),footer,size]);
@@ -79,4 +80,16 @@ test('a slow result from a closed process cannot become the next match damage',a
   reader.enrich(sample());const old=reader.settled();reader.reset();release(index);await old;
   assert.equal(reader.enrich(sample(12)),false);
   assert.equal(reader.detail,'正在解析回放逐次伤害');reader.reset();
+});
+
+test('received damage includes minions, towers and self damage, follows seeks and matches the target',()=>{
+ const index=new ReplayDamageIndex(heroes,200,[
+ {time:10,source:heroes[5].networkId,target:heroes[0].networkId,amount:120,type:0},
+ {time:20,source:123,target:heroes[0].networkId,amount:50,type:1},
+ {time:30,source:heroes[0].networkId,target:heroes[0].networkId,amount:10,type:2}]);
+ assert.equal(index.at(heroes[0].networkId,30)?.taken,180);
+ assert.equal(index.at(heroes[0].networkId,15)?.taken,120);
+ assert.equal(index.at(heroes[0].networkId,5)?.taken,0);
+ assert.equal(index.at(heroes[5].networkId,30)?.toChampions,120);
+ assert.equal(index.at(heroes[5].networkId,30)?.taken,0);
 });

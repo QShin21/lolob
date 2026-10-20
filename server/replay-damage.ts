@@ -5,7 +5,7 @@ import { decodeCnDamageParameters } from './protocol/cn-16.20-damage';
 
 export const DAMAGE_BUILD = '16.20.824.8524';
 export interface DamageEvent { time: number; source: number; target: number; amount: number; type: 0 | 1 | 2 }
-export interface DamageHero { networkId: number; champion: string; team: 'blue' | 'red'; officialTotal: number }
+export interface DamageHero { networkId: number; champion: string; team: 'blue' | 'red'; officialTotal: number; officialTaken?: number }
 interface Block { time: number; id: number; param: number; payload: Uint8Array }
 
 /** ROFL2 blocks carry relative timestamps, packet IDs and object IDs across a chunk. */
@@ -44,11 +44,14 @@ export function decodeDamageBlock(block: Block): DamageEvent | undefined {
 type Point={time:number;total:number;physical:number;magic:number;trueDamage:number};
 export class ReplayDamageIndex {
   readonly tracks=new Map<number,Point[]>();
+  readonly received=new Map<number,{time:number;total:number}[]>();
   constructor(readonly heroes:DamageHero[],readonly duration:number,events:DamageEvent[]){
     const roster=new Map(heroes.map(h=>[h.networkId,h]));
-    for(const h of heroes)this.tracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);
+    for(const h of heroes){this.tracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);this.received.set(h.networkId,[{time:0,total:0}]);}
     for(const e of events.sort((a,b)=>a.time-b.time)){
       const source=roster.get(e.source),target=roster.get(e.target);
+      if(target&&e.amount>10000000)throw Error('英雄承伤数值异常');
+      if(target){const received=this.received.get(e.target)!;received.push({time:e.time,total:received.at(-1)!.total+e.amount});}
       if(!source||!target||source.team===target.team)continue;
       if(e.amount>10000000)throw Error('英雄伤害数值异常');
       const points=this.tracks.get(e.source)!,previous=points.at(-1)!;
@@ -63,7 +66,8 @@ export class ReplayDamageIndex {
     let low=0,high=points.length;
     while(low<high){const mid=(low+high)>>>1;if(points[mid].time<=time)low=mid+1;else high=mid;}
     const p=points[Math.max(0,low-1)];
-    return {toChampions:p.total,physicalToChampions:p.physical,magicToChampions:p.magic,trueToChampions:p.trueDamage};
+    const received=this.received.get(networkId)!;let left=0,right=received.length;while(left<right){const mid=(left+right)>>>1;if(received[mid].time<=time)left=mid+1;else right=mid;}
+    return {taken:received[Math.max(0,left-1)].total,toChampions:p.total,physicalToChampions:p.physical,magicToChampions:p.magic,trueToChampions:p.trueDamage};
   }
 }
 
@@ -111,7 +115,8 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
   const heroes:DamageHero[]=stats.map((p:any,i:number)=>{
     const champion=String(p.SKIN),team=Number(p.TEAM),officialTotal=Number(p.TOTAL_DAMAGE_DEALT_TO_CHAMPIONS);
     if(!/^[A-Za-z0-9]{2,40}$/.test(champion)||![100,200].includes(team)||!Number.isFinite(officialTotal)||officialTotal<0)throw Error('回放选手字段无效');
-    return {networkId:ids[i],champion,team:team===100?'blue':'red',officialTotal};
+    const taken=Number(p.TOTAL_DAMAGE_TAKEN);
+    return {networkId:ids[i],champion,team:team===100?'blue':'red',officialTotal,...(p.TOTAL_DAMAGE_TAKEN!==undefined&&Number.isFinite(taken)&&taken>=0?{officialTaken:taken}:{})};
   });
   if(new Set(heroes.map(h=>`${h.team}:${h.champion}`)).size!==10)throw Error('回放英雄对应关系不唯一');
   const index=new ReplayDamageIndex(heroes,duration,events);
@@ -119,6 +124,7 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
   for(const hero of heroes){
     const total=index.at(hero.networkId,duration)?.toChampions;
     if(total===undefined||Math.abs(total-hero.officialTotal)>=1.1)throw Error('逐次伤害累计与官方赛后数据不一致');
+    if(hero.officialTaken!==undefined&&Math.abs(index.at(hero.networkId,duration)!.taken!-hero.officialTaken)>=1.1)throw Error('逐次承伤累计与官方赛后数据不一致');
   }
   return index;
 }

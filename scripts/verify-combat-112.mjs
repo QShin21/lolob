@@ -59,7 +59,7 @@ try{
   await page.screenshot({path:path.join(dir,`${pack.id}-damage-report.png`)});await page.locator('.pr-damage').screenshot({path:path.join(dir,`${pack.id}-damage-detail.png`)});
   checks.push(`${pack.id}: ten HUD cards with 30 bars, spell cooldowns, death and buffs; interval reset; report page 3 shared maximum and mirrored anchors`);
  }
- await page.evaluate(()=>window.combatFixture.setState(s=>({...s,players:s.players.map((p,i)=>({...p,damageDealt:i===0?undefined:0}))})));
+ await page.evaluate(()=>window.combatFixture.setState(s=>({...s,players:s.players.map((p,i)=>({...p,damageDealt:i===0?undefined:0,telemetryDamage:undefined}))})));
  assert.equal(await page.locator('.pr-gold-label>b').first().innerText(),'未采集');assert(await page.locator('.pr-bar i').evaluateAll(nodes=>nodes.every(n=>n.getBoundingClientRect().width===0)));
  await page.evaluate(()=>window.combatFixture.setState(s=>({...s,overlay:{...s.overlay,postgamePage:1}})));await page.locator('.pr-gold-comparison').first().waitFor();assert.equal(await page.locator('.pr-gold-comparison').count(),5);
  await page.evaluate(()=>window.combatFixture.setState(s=>({...s,overlay:{...s.overlay,postgamePage:2}})));await page.locator('.pr-matchups').waitFor();assert.equal(await page.locator('.pr-player').count(),10);

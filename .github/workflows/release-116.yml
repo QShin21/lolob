@@ -70,6 +70,8 @@ jobs:
         run: node scripts/verify-live-only.mjs
       - name: Verify player rotation controls
         run: node scripts/verify-player-rotation-115.mjs
+      - name: Verify postgame crops, damage shares and scene entries
+        run: node scripts/verify-postgame-116.mjs
       - name: Verify report layouts
         run: node scripts/verify-report-093.mjs
       - name: Verify style pack import, preview, all scenes and service restart
@@ -137,3 +139,4 @@ jobs:
             verification-output/release-1.1.6/draft-focus/**
             verification-output/release-1.1.6/combat/**
             verification-output/release-1.1.6/rotation/**
+            verification-output/release-1.1.6/postgame/**

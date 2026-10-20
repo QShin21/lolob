@@ -99,5 +99,7 @@ if (verify) {
   await writeFile(catalogFile, JSON.stringify({ version, champions: bundled }, null, 2) + '\n');
   const reveal=spawnSync(process.execPath,[path.join(root,'scripts/prepare-draft-reveal.mjs')],{cwd:root,stdio:'inherit',windowsHide:true});
   if(reveal.status!==0)throw Error('Lock-reveal artwork preparation failed');
+  const postgame=spawnSync(process.execPath,[path.join(root,'scripts/prepare-postgame-art.mjs')],{cwd:root,stdio:'inherit',windowsHide:true});
+  if(postgame.status!==0)throw Error('Postgame matchup artwork preparation failed');
   console.log(`Prepared ${champions.length} champions, five portrait variants and an icon each.`);
 }

@@ -83,7 +83,22 @@ export function matchingTerminalGameSample(state:BroadcastState,sample:TerminalS
 }
 export function absorbTerminalGameSample(state:BroadcastState,sample:TerminalSample):boolean {
   const result=currentGameResult(state);
-  if(!result||result.terminalSampleAccepted||!matchingTerminalGameSample(state,sample))return false;
+  if(!result||!matchingTerminalGameSample(state,sample))return false;
+  // Packet decoding may finish after the final score sample was accepted.
+  if(result.terminalSampleAccepted){
+    let changed=false;
+    for(const player of result.snapshot.players){
+      const incoming=sample.players.find(p=>p.id===player.id&&p.team===player.team&&p.championId===player.championId);
+      if(!incoming?.telemetryDamage||player.telemetryDamageSource==='postgame')continue;
+      if(incoming.telemetryDamageSource==='packets'&&(incoming.telemetryDamageSince===undefined||incoming.telemetryDamageSince>1))continue;
+      const missing=(['toChampions','taken'] as const).some(key=>player.telemetryDamage?.[key]===undefined&&incoming.telemetryDamage?.[key]!==undefined);
+      if(!missing)continue;
+      player.telemetryDamage={...player.telemetryDamage,...incoming.telemetryDamage};player.telemetryDamageSource=incoming.telemetryDamageSource;
+      player.telemetryDamageSession=incoming.telemetryDamageSession;player.telemetryDamageSince=incoming.telemetryDamageSince;changed=true;
+    }
+    if(changed)syncResultRecording(state,result);
+    return changed;
+  }
   const snapshot=result.snapshot;
   const previousPlayers=snapshot.players,previousStats=snapshot.stats;
   snapshot.players=structuredClone(sample.players);snapshot.stats=structuredClone(sample.stats);snapshot.events=structuredClone(sample.events);snapshot.duration=sample.gameTime;snapshot.sourceGameTime=sample.gameTime;
