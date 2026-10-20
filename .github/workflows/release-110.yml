@@ -62,6 +62,8 @@ jobs:
           npm install --prefix "$env:RUNNER_TEMP/rc-playwright" --no-save --package-lock=false playwright@1.56.1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           "RIFTCAST_PLAYWRIGHT_MODULE=$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/index.mjs" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          node "$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/cli.js" install chromium
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Verify live-only startup, upgrade and polling controls
         run: node scripts/verify-live-only.mjs
       - name: Verify report layouts
