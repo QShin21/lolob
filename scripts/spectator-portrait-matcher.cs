@@ -200,7 +200,7 @@ public static class RiftCastNumericFilter {
       image.SetPixel(x,y,digit?System.Drawing.Color.White:System.Drawing.Color.Black);
     }
   }
-  // Native HUD 0/1 can be returned as O/I or omitted by language OCR. Recognize
+  // Native HUD digits can be returned as letters or omitted by language OCR. Recognize
   // their actual colored pixel shapes instead; blank cells and arbitrary letters
   // are never converted. Only a complete, tightly matching single glyph qualifies.
   public static string ReadHudAmbiguousGlyph(System.Drawing.Bitmap image,int left,int top,int width,int height) {
@@ -214,8 +214,11 @@ public static class RiftCastNumericFilter {
     int w=maxX-minX+1,h=maxY-minY+1;
     if(w<3||h<8||minX==0||minY==0||maxX==width-1||maxY==height-1)return null;
     // Digit masks sampled from the supplied native HUD, at their original raster size.
-    int[][] shapes={new int[]{124,254,454,455,387,387,387,387,391,391,455,206,254,56},new int[]{28,30,31,31,28,28,28,28,28,28,28,28,60},new int[]{28,30,31,29,28,28,28,28,28,28,28,28,60}};
-    int[] widths={9,6,6};string[] labels={"0","1","1"};double best=0;string value=null;
+    int[][] shapes={new int[]{124,254,454,455,387,387,387,387,391,391,455,206,254,56},new int[]{28,30,31,31,28,28,28,28,28,28,28,28,60},new int[]{28,30,31,29,28,28,28,28,28,28,28,28,60},
+      new int[]{0x1fc,0x1fc,0xe,0x6,0x6,0x7e,0xfe,0x1e0,0x1c0,0x380,0x182,0x1c7,0xfe,0x7c},
+      new int[]{0x1fe,0xfe,0x60,0x60,0x30,0x78,0xf8,0x1c0,0x180,0x380,0x187,0x1ff,0xfe},
+      new int[]{0x1fe,0xfe,0xc0,0x60,0x30,0x78,0xf8,0x1c0,0x380,0x380,0x186,0x1ff,0xfe}};
+    int[] widths={9,6,6,10,10,10};string[] labels={"0","1","1","5","3","3"};double best=0;string value=null;
     for(int s=0;s<shapes.Length;s++){
       int tw=widths[s],th=shapes[s].Length;
       if(System.Math.Abs((double)w/h-(double)tw/th)>.09)continue;

@@ -6,21 +6,22 @@ import { time } from '../lib';
 const GameClockConnection = createContext(true);
 export const GameClockConnectionProvider = GameClockConnection.Provider;
 
-export function useGameClock(state: BroadcastState): number {
+export function useGameClock(state: BroadcastState, smooth = false): number {
   const connected = useContext(GameClockConnection);
   const controller = useRef<DisplayGameClock | null>(null);
   if (!controller.current) controller.current = new DisplayGameClock();
   const input = displayClockInput(state, connected);
   const signature = JSON.stringify(input);
-  const [seconds, setSeconds] = useState(() => Math.floor(input.time));
+  const quantize = (time: number) => smooth ? Math.round(time * 20) / 20 : Math.floor(time);
+  const [seconds, setSeconds] = useState(() => quantize(input.time));
   useEffect(() => {
     controller.current!.update(input, performance.now(), Date.now());
-    setSeconds(Math.floor(controller.current!.read(performance.now())));
+    setSeconds(quantize(controller.current!.read(performance.now())));
   }, [signature]);
   useEffect(() => {
-    const timer = window.setInterval(() => setSeconds(Math.floor(controller.current!.read(performance.now()))), 50);
+    const timer = window.setInterval(() => setSeconds(quantize(controller.current!.read(performance.now()))), 50);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [smooth]);
   return seconds;
 }
 

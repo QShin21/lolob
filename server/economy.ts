@@ -107,7 +107,7 @@ export class EconomyBridge {
         delete result.visionSampledAt;delete result.visionExpiresAt;
       }
       if(fresh&&sample?.row.visionScore!==undefined)Object.assign(result,{visionScore:sample.row.visionScore,visionSource:'ocr',visionSampledAt:new Date(sample.at).toISOString(),visionExpiresAt:new Date(sample.at+statsTtl).toISOString()});
-      if(result.gold!==null)result.goldSource='api';
+      if(result.gold!==null)result.goldSource=baseline?.goldSource==='memory'?'memory':'api';
       if(fresh&&sample)Object.assign(result,{statsAvailable:true,kills:sample.row.kills,deaths:sample.row.deaths,assists:sample.row.assists,cs:sample.row.cs,statsSource:'ocr',statsSampledAt:new Date(sample.at).toISOString(),statsGameTime:sample.gameTime,statsExpiresAt:new Date(sample.at+statsTtl).toISOString()});
       if(freshGold&&goldSample&&result.gold===null){result.gold=goldSample.row.totalGold;result.currentGold=goldSample.row.currentGold;result.goldSource='ocr';result.goldSampledAt=new Date(goldSample.at).toISOString();result.goldGameTime=goldSample.gameTime;result.goldExpiresAt=new Date(goldSample.at+ttl).toISOString();}
       return [result];

@@ -1,6 +1,7 @@
 import type {BroadcastState,Champion} from '../shared/types';
 import {currentGameResult} from '../shared/game-results';
 import {sourceGameId,syncResultRecording} from './game-results';
+import {normalizeDamage} from './telemetry-normalize';
 /** Enrich only an identified archived game and a unique same-side champion. */
 export function enrichPostgame(state:BroadcastState,data:any,champions:Champion[]) {
  const result=currentGameResult(state),id=sourceGameId(data?.gameId);
@@ -11,6 +12,11 @@ export function enrichPostgame(state:BroadcastState,data:any,champions:Champion[
  const matches=result.snapshot.players.filter(p=>p.team===side&&p.championId===champion.id);if(matches.length!==1||team.players.filter((p:any)=>p.championId===raw.championId).length!==1)continue;
  const p=matches[0],stats=raw.stats??{};
  for(const [key,source]of [['damageDealt','TOTAL_DAMAGE_DEALT_TO_CHAMPIONS'],['damageTaken','TOTAL_DAMAGE_TAKEN']]as const){const value=stats[source]??stats[key==='damageDealt'?'totalDamageDealtToChampions':'totalDamageTaken'];if(number(value))p[key]=value;}
+ const damage=normalizeDamage({toChampions:p.damageDealt,taken:p.damageTaken,
+   physicalToChampions:stats.PHYSICAL_DAMAGE_DEALT_TO_CHAMPIONS??stats.physicalDamageDealtToChampions,
+   magicToChampions:stats.MAGIC_DAMAGE_DEALT_TO_CHAMPIONS??stats.magicDamageDealtToChampions,
+   trueToChampions:stats.TRUE_DAMAGE_DEALT_TO_CHAMPIONS??stats.trueDamageDealtToChampions});
+ if(damage){p.telemetryDamage={...p.telemetryDamage,...damage};p.telemetryDamageSource='postgame';}
  }
  }
  syncResultRecording(state,result);

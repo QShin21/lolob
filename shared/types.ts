@@ -1,4 +1,5 @@
 import type { StylePackRef } from './style-packs';
+import type { Cooldown, TelemetryStamp, ItemCooldown, PlayerBuffs, DamageTotals } from './player-telemetry';
 import type { ProductionState, ProductionCommand } from './production-types';
 export type Phase = 'pregame' | 'draft' | 'live' | 'postgame';
 export type BuiltinScene = 'standby' | 'draft' | 'lineup' | 'live' | 'economy' | 'ranking' | 'schedule' | 'postgame' | 'interview' | 'teamfight' | 'gold-ranking';
@@ -14,10 +15,19 @@ export interface CustomSourceChoices { windows: { name: string; value: string }[
 export type SourceMode = 'live';
 export type Side = 'blue' | 'red';
 export interface Champion { id: string; key: number; name: string; title: string; image: string; splash: string; tags: string[] }
-export interface SummonerSpell { id?: number; name: string; rawName?: string }
-export interface PlayerUltimate { state: 'ready' | 'cooldown' | 'unlearned' | 'unknown'; cooldownRemaining?: number; level?: number; icon?: string }
+export interface SummonerSpell { id?: number; name: string; rawName?: string; cooldown?: Cooldown }
+export interface PlayerUltimate extends Cooldown { cooldownRemaining?: number; level?: number; icon?: string }
+export interface Player {
+  telemetry?: TelemetryStamp;
+  itemCooldowns?: ItemCooldown[];
+  buffs?: PlayerBuffs;
+  respawnAt?: number;
+  /** Collected and archived only; never connected to program damage graphics. */
+  telemetryDamage?: DamageTotals;
+  telemetryDamageSource?: 'api' | 'memory' | 'postgame';
+}
 export interface PlayerRoleQuest { completed?: boolean; icon?: string; progress?: number; maxProgress?: number }
-export interface Player { damageDealt?: number; damageTaken?: number; id: string; name: string; role: string; championId: string; championName: string; kills: number; deaths: number; assists: number; cs: number; statsAvailable?: boolean; statsSource?: 'api' | 'ocr'; statsSampledAt?: string; statsGameTime?: number; statsExpiresAt?: string; level: number; gold: number | null; currentGold?: number | null; goldSource?: 'api' | 'ocr'; goldSampledAt?: string; goldGameTime?: number; goldExpiresAt?: string; items: number[]; itemSlots?: number[]; itemCounts?: number[]; team: Side; portrait?: string; runes?: string[]; runeIds?: number[]; fullRuneIds?: number[]; runeSelection?: { keystoneId?: number; primaryTreeId?: number; secondaryTreeId?: number }; health?: number; maxHealth?: number; resource?: number; maxResource?: number; resourceType?: string; experience?: number; maxExperience?: number; ultimate?: PlayerUltimate; visionScore?: number; visionSource?: 'api' | 'ocr'; visionSampledAt?: string; visionExpiresAt?: string; roleQuest?: PlayerRoleQuest; isDead?: boolean; respawnTimer?: number; summonerSpells?: SummonerSpell[] }
+export interface Player { damageDealt?: number; damageTaken?: number; id: string; name: string; role: string; championId: string; championName: string; kills: number; deaths: number; assists: number; cs: number; statsAvailable?: boolean; statsSource?: 'api' | 'ocr'; statsSampledAt?: string; statsGameTime?: number; statsExpiresAt?: string; level: number; gold: number | null; currentGold?: number | null; goldSource?: 'api' | 'ocr' | 'memory'; goldSampledAt?: string; goldGameTime?: number; goldExpiresAt?: string; items: number[]; itemSlots?: number[]; itemCounts?: number[]; team: Side; portrait?: string; runes?: string[]; runeIds?: number[]; fullRuneIds?: number[]; runeSelection?: { keystoneId?: number; primaryTreeId?: number; secondaryTreeId?: number }; health?: number; maxHealth?: number; resource?: number; maxResource?: number; resourceType?: string; experience?: number; maxExperience?: number; ultimate?: PlayerUltimate; visionScore?: number; visionSource?: 'api' | 'ocr'; visionSampledAt?: string; visionExpiresAt?: string; roleQuest?: PlayerRoleQuest; isDead?: boolean; respawnTimer?: number; summonerSpells?: SummonerSpell[] }
 export interface Team { id: string; name: string; tag: string; color: string; logo?: string; players: { id?: string; account?: string; name: string; role: string; portrait?: string }[] }
 export interface Match { id: string; title: string; blueTeamId: string; redTeamId: string; scheduledAt: string; format: string; status: 'scheduled' | 'live' | 'finished'; blueScore: number; redScore: number }
 export interface TeamStats { kills: number; gold: number | null; towers: number; dragons: number; barons: number; elders?: number; heralds?: number; voidgrubs?: number; objectivesAvailable?: boolean }
@@ -58,7 +68,7 @@ export interface BroadcastState {
   stats: { blue: TeamStats; red: TeamStats }; draft: DraftState; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed; ocrMatch?: OcrMatchData;
   connections: { lcu: Connection; live: Connection; replay: Connection; obs: Connection };
   overlay: OverlaySettings; assets: Asset[]; recordings: Recording[]; selectedPlayerId: string | null;
-  draftHistory?: DraftHistoryGame[]; draftHistoryPending?: DraftHistoryGame; nativeHudStatus?: NativeHudStatus;
+  observerTelemetry?: {status:'connected'|'unavailable';detail:string;profile?:string;sampledAt?:string}; draftHistory?: DraftHistoryGame[]; draftHistoryPending?: DraftHistoryGame; nativeHudStatus?: NativeHudStatus;
   gameResults?: GameResult[]; finishedGameId?: string; reportGameId?: string; awaitingNextGame?: { sourceGameId?: string; rosterFingerprint: string; gameTime: number }; activeSourceGameId?: string;
   settings: { lockfilePath: string; obsUrl: string; obsPassword?: string; pollInterval: number; autoPhase: boolean; gamePath: string; economyOcr?: EconomyOcrConfig };
 }

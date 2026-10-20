@@ -41,7 +41,7 @@ test('scoreboard reads explicit vision, rune roles, item counts and compatible d
   }]},[]).players[0];
   assert.equal(result.visionScore,6.2);assert.deepEqual(result.itemCounts,[1,0,0,0,2,0,1]);
   assert.deepEqual(result.runeSelection,{secondaryTreeId:8300});assert.equal(result.experience,180);assert.equal(result.maxExperience,550);
-  assert.deepEqual(result.ultimate,{state:'cooldown',cooldownRemaining:42,level:1});
+  assert.deepEqual(result.ultimate,{state:'cooldown',cooldownRemaining:42,level:1,readyAt:542});
   assert.deepEqual(result.roleQuest,{completed:false,progress:330,maxProgress:600});
   assert.equal(runeImage(result.runeSelection?.secondaryTreeId),'/runes/8300.png');
   assert.equal(runeImage(999999),undefined);

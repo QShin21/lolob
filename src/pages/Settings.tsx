@@ -178,6 +178,11 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
             </div>)}
           </section>
           <section className="settings-block">
+            <header><h2>观战遥测</h2><p>自动补充技能冷却、生命、资源、经验与头像增益。连接完整观战数据后开始采样。</p></header>
+            <p role="status">{state.observerTelemetry?.detail??'等待国服观战或回放'}</p>
+            {state.observerTelemetry?.profile&&<small>匹配版本：{state.observerTelemetry.profile}</small>}
+          </section>
+          <section className="settings-block">
             <header><h2>本机客户端</h2><p>路径与轮询配置保存到本地服务；认证信息仅由本地服务读取。</p></header>
             <div className="settings-fields settings-two-column">
               <label className="field">LCU lockfile 路径<input maxLength={1024} value={settings.lockfilePath} onChange={event => setSettings({ ...settings, lockfilePath: event.target.value })} placeholder="留空自动查找，或填写完整路径" />

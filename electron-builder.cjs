@@ -45,6 +45,7 @@ module.exports = {
     'scripts/native/obs-projector-window.cpp', 'scripts/spectator-ocr-worker.ps1',
     'scripts/bin/audio-device-tool.exe', 'scripts/bin/riftcast-audio-bridge.dll.json',
     'scripts/vbcable-runtime.json', 'THIRD_PARTY_AUDIO.md',
+    'scripts/observer-telemetry-worker.ps1', 'scripts/native/observer-reader.cs',
     'scripts/read-spectator-gold.ps1', 'scripts/spectator-portrait-matcher.cs',
     'THIRD_PARTY_OBS.md', 'third-party/OBS-COPYING',
   ],

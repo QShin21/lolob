@@ -1,0 +1,81 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {cooldownView,telemetryFresh,activeBuffs} from '../shared/player-telemetry';
+import {normalizeTelemetry,normalizeCooldown,normalizeDamage} from './telemetry-normalize';
+import {mergeObserverTelemetry,invalidateChangedItemSlots} from './observer-telemetry';
+import {normalizeLive} from './adapters';
+import {bottomEquipment} from './bottom-scoreboard';
+import {createFixture} from './test-support/fixture';
+import {finalizeGame,absorbTerminalGameSample} from './game-results';
+import {enrichPostgame} from './postgame-data';
+import {csvRecording} from '../shared/recording-export';
+
+const now=Date.now(),stamp={source:'memory' as const,gameTime:120,sampledAt:new Date(now).toISOString(),validForMs:3000};
+test('cooldown deadlines use game time, last ten seconds and unavailable semantics',()=>{
+ const cd={state:'cooldown' as const,readyAt:150,totalCooldown:60};
+ assert.equal(cooldownView(cd,120).fraction,.5);
+ assert.equal(cooldownView(cd,139.99).seconds,null);
+ assert.equal(cooldownView(cd,140).seconds,10);
+ assert.equal(cooldownView(cd,149.99).seconds,1);
+ assert.equal(cooldownView(cd,150).state,'ready');
+ assert.equal(cooldownView(cd,150,false).state,'unknown');
+ assert.equal(cooldownView(undefined,150).state,'unknown');
+ assert.equal(cooldownView({state:'cooldown'},150).state,'unknown');
+ assert.equal(cooldownView({state:'unlearned'},150).state,'unlearned');
+ assert.equal(telemetryFresh(stamp,120,now+3001),false);
+ assert.equal(telemetryFresh(stamp,100,now),false);
+ assert.equal(telemetryFresh(stamp,120,now),true);
+});
+test('death, buffs, invalid values, item identity and damage normalization',()=>{
+ const p=normalizeTelemetry({isDead:true,respawnTimer:5,experienceData:{current:350,previousLevel:280,nextLevel:660},health:NaN,damageStats:{toChampions:42,taken:-1},items:[{itemID:3157,slot:3,readyAt:140,maxCooldown:120},{itemID:1,slot:7,readyAt:140}]},120,stamp);
+ assert.equal(p.respawnAt,125);assert.equal(p.experience,70);assert.equal(p.maxExperience,380);
+ assert.equal(p.health,undefined);assert.deepEqual(p.telemetryDamage,{toChampions:42});
+ assert.deepEqual(p.itemCooldowns?.map(i=>[i.slot,i.itemId]),[[3,3157]]);
+ assert.equal(normalizeCooldown({level:0,readyAt:140},120)?.state,'unlearned');
+ assert.equal(normalizeDamage({toChampions:Infinity}),undefined);
+ const buffs={baron:true,elder:true,baronExpiresAt:130,elderExpiresAt:140};
+ assert.deepEqual(activeBuffs(buffs,135,true,false),{baron:false,elder:true});
+ assert.deepEqual(activeBuffs(buffs,120,true,true),{baron:false,elder:false});
+ assert.deepEqual(activeBuffs(buffs,120,false,false),{baron:false,elder:false});
+});
+function fixture(){
+ const allPlayers=Array.from({length:10},(_,i)=>({rawChampionName:`game_character_displayname_Hero${i}`,team:i<5?'ORDER':'CHAOS',level:3,summonerName:`player${i}`,position:['TOP','JUNGLE','MIDDLE','BOTTOM','UTILITY'][i%5],scores:{kills:0,deaths:0,assists:0,creepScore:15},items:[{itemID:3157,slot:3},{itemID:1001,slot:0}],summonerSpells:{summonerSpellOne:{displayName:'Flash'},summonerSpellTwo:{displayName:'Teleport'}}}));
+ const sample={ok:true,gameTime:120,sampledAt:stamp.sampledAt,players:allPlayers.map((p,i)=>({champion:`Hero${i}`,team:i<5?'blue':'red',level:3,health:600,maxHealth:800,resource:200,maxResource:300,experienceTotal:700,currentGold:100,totalGold:900,buffs:{baron:true},spells:Array.from({length:13},(_,slot)=>({level:slot===3?0:1,readyAt:slot===4?145:slot===9?126:0,totalCooldown:slot===4?300:120,state:slot===3?'unlearned':'cooldown'}))})).reverse()};
+ return {data:{allPlayers,gameData:{gameTime:120},activePlayer:{error:'no active player'},events:{Events:[]}},sample};
+}
+test('join reordered objects by champion and side; preserve equipment slot through price sorting',()=>{
+ const {data,sample}=fixture();assert.equal(mergeObserverTelemetry(data,sample,now),true);
+ const normalized=normalizeLive(data,[]),p=normalized.players[0];
+ assert.equal(p.health,600);assert.equal(p.telemetry?.source,'memory');assert.equal(p.goldSource,'memory');
+ assert.equal(p.summonerSpells?.[0].cooldown?.readyAt,145);assert.equal(p.ultimate?.state,'unlearned');
+ assert.equal(p.itemCooldowns?.find(i=>i.slot===3)?.cooldown.readyAt,126);
+ assert.equal(bottomEquipment(p,{3157:{gold:3250},1001:{gold:300}})[0].slot,3);
+ assert.equal(p.experience,40);assert.equal(p.maxExperience,480);
+});
+test('reject partial, duplicate, different-level and stale samples before mutating API data',()=>{
+ for(const mutate of [(s:any)=>s.players.pop(),(s:any)=>s.players[0]=s.players[1],(s:any)=>s.players[0].level=5,(s:any)=>s.gameTime=124,(s:any)=>s.sampledAt=new Date(now-4000).toISOString()]){
+  const {data,sample}=fixture(),original=structuredClone(data);mutate(sample);assert.equal(mergeObserverTelemetry(data,sample,now),false);assert.deepEqual(data,original);
+ }
+});
+test('inventory mutations between API and memory samples invalidate only affected slot timers',()=>{
+ const {data,sample}=fixture(),after=structuredClone(data);
+ after.allPlayers[0].items[0].itemID=3031;
+ invalidateChangedItemSlots(data,after,sample);assert.equal(mergeObserverTelemetry(after,sample,now),true);
+ const p=normalizeLive(after,[]).players[0];
+ assert.equal(p.itemCooldowns?.find(i=>i.slot===3),undefined);
+ assert.equal(p.itemCooldowns?.find(i=>i.slot===0)?.itemId,1001);
+});
+test('damage is archived with provenance, exported, and survives later terminal samples',()=>{
+ const s=createFixture();s.activeSourceGameId='42';
+ const result=finalizeGame(s,{source:'live',sourceGameId:'42',terminal:true})!;
+ const champion={id:s.players[0].championId,key:123,name:'fixture',title:'',image:'',splash:'',tags:[]};
+ const response={gameId:42,teams:[{teamId:100,players:[{championId:123,stats:{TOTAL_DAMAGE_DEALT_TO_CHAMPIONS:12000,TOTAL_DAMAGE_TAKEN:18000,PHYSICAL_DAMAGE_DEALT_TO_CHAMPIONS:9000,MAGIC_DAMAGE_DEALT_TO_CHAMPIONS:2500,TRUE_DAMAGE_DEALT_TO_CHAMPIONS:500}}]}]};
+ enrichPostgame(s,{...response,gameId:43},[champion]);assert.equal(result.snapshot.players.some(p=>p.telemetryDamage),false);
+ enrichPostgame(s,response,[champion]);
+ assert.deepEqual(result.snapshot.players[0].telemetryDamage,{toChampions:12000,taken:18000,physicalToChampions:9000,magicToChampions:2500,trueToChampions:500});
+ assert.equal(result.snapshot.players[0].telemetryDamageSource,'postgame');
+ const csv=csvRecording(result.snapshot);assert(csv.includes('官方赛后统计'));assert(csv.includes('"12000","18000","9000","2500","500"'));
+ absorbTerminalGameSample(s,{players:structuredClone(s.players),stats:s.stats,events:s.events,gameTime:s.gameTime,sourceGameId:'42',ended:true});
+ assert.equal(result.snapshot.players[0].telemetryDamage?.toChampions,12000);
+ assert.equal(s.recordings.find(r=>r.id===result.snapshot.id)?.players[0].telemetryDamage?.toChampions,12000);
+});

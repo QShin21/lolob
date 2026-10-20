@@ -103,7 +103,7 @@ function applyBottomOverlay(s:BroadcastState,p:Record<string,unknown>):void {
 const stringList = (v:unknown):string[]=>{if(!Array.isArray(v)||v.length>5)throw new ValidationError('BP 每侧最多五个英雄');return v.map(i=>str(i,64));};
 export function clearLiveData(s: BroadcastState):void {
   preserveProgram(s);
-  s.players=[];s.gameTime=0;s.events=[];s.economy=[];s.selectedPlayerId=null;delete s.economyFeed;delete s.ocrMatch;delete s.gameClock;
+  s.players=[];s.gameTime=0;s.events=[];s.economy=[];s.selectedPlayerId=null;delete s.economyFeed;delete s.ocrMatch;delete s.gameClock;delete s.observerTelemetry;
   s.stats={blue:{kills:0,gold:null,towers:0,dragons:0,barons:0},red:{kills:0,gold:null,towers:0,dragons:0,barons:0}};
   s.draft={bluePicks:[],redPicks:[],blueBans:[],redBans:[],timer:0,activeTeam:'blue',action:'等待客户端 BP 数据'};
 }
@@ -163,7 +163,7 @@ export function snapshotRecording(state:BroadcastState,options:{id?:string;title
     }else if(player.statsSource==='api'&&fresh(player.statsSampledAt))observed.push(player.statsSampledAt!);
     else if(!player.statsSource&&player.id.startsWith('live-')&&activeApi)observed.push(state.connections.live.updatedAt!);
     else throw new ValidationError('当前选手统计缺少有效游戏采样，请重新连接或识别计分板后保存');
-    if(player.goldSource==='ocr'&&(!fresh(player.goldSampledAt)||!Number.isFinite(Date.parse(player.goldExpiresAt??''))||Date.parse(player.goldExpiresAt!)<=now)){
+    if((player.goldSource==='ocr'||player.goldSource==='memory')&&(!fresh(player.goldSampledAt)||!Number.isFinite(Date.parse(player.goldExpiresAt??''))||Date.parse(player.goldExpiresAt!)<=now)){
       player.gold=null;delete player.currentGold;delete player.goldSource;delete player.goldSampledAt;delete player.goldExpiresAt;delete player.goldGameTime;
       snapshot.stats[player.team].gold=null;
     }

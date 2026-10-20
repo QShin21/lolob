@@ -7,19 +7,24 @@ import { bottomGoldDifference, bottomEquipment, bottomItemSlots, bottomPlayers }
 import { championFor, playerCs, playerKda, playerVision, playerGoldText } from '../lib';
 import { dataDragonItemImage, type ItemAssets } from './useItemCatalog';
 import { useUltimateIcons } from './useUltimateIcons';
+import { useGameClock } from './GameTime';
+import { activeBuffs, cooldownView, telemetryFresh, type Cooldown } from '../../shared/player-telemetry';
 import './live-bottom.css';
 
-function Icon({src,label,missing='',className=''}:{src?:string;label:string;missing?:string;className?:string}) {
+function Icon({src,label,missing='',className='',cooldown,time=0,fresh=true}:{src?:string;label:string;missing?:string;className?:string;cooldown?:Cooldown;time?:number;fresh?:boolean}) {
   const [failed,setFailed]=useState(false);
   useEffect(()=>setFailed(false),[src]);
-  return <span className={`lb-icon ${className} ${!src||failed?'is-unavailable':''}`} title={failed?`${label} · 图标加载失败`:label}>
+  const cd=cooldownView(cooldown,time,fresh),status=cd.state==='cooldown'?`冷却 ${Math.ceil(cd.remaining)} 秒`:cd.state==='ready'?'就绪':cd.state==='unlearned'?'尚未学习':'冷却状态未知';
+  return <span className={`lb-icon ${className} ${!src||failed?'is-unavailable':''} ${cooldown?'cd-'+cd.state:''}`} title={failed?`${label} · 图标加载失败`:cooldown?`${label} · ${status}`:label} data-cooldown-state={cd.state}>
     {src&&!failed?<img src={src} alt={label} onError={()=>setFailed(true)}/>:missing&&<span className="lb-icon-fallback">{missing}</span>}
+    {cd.state==='cooldown'&&<span className="lb-cooldown-mask" style={{background:`conic-gradient(transparent 0deg ${360-cd.fraction*360}deg, rgba(0,0,0,.76) ${360-cd.fraction*360}deg 360deg)`}}/>}
+    {cd.seconds!==null&&<b className="lb-cooldown-seconds">{cd.seconds}</b>}
   </span>;
 }
-function Spells({player,version}:{player?:Player;version:string}) {
+function Spells({player,version,time,fresh}:{player?:Player;version:string;time:number;fresh:boolean}) {
   return <div className="lb-spells" aria-label="召唤师技能">{Array.from({length:2},(_,i)=>{
     const spell=player?.summonerSpells?.[i];
-    return <Icon key={i} src={summonerSpellImage(spell,version)} label={spell?.name||'召唤师技能未提供'} missing="?"/>;
+    return <Icon key={i} src={summonerSpellImage(spell,version)} label={spell?.name||'召唤师技能未提供'} missing="?" cooldown={spell?.cooldown} time={time} fresh={fresh}/>;
   })}</div>;
 }
 function Runes({player}:{player?:Player}) {
@@ -37,31 +42,29 @@ function Meter({current,max,kind,label}:{current?:number;max?:number;kind:string
     <i style={{width:`${percentage}%`}}/>
   </span>;
 }
-function Identity({player,ultimateIcon}:{player?:Player;ultimateIcon?:string}) {
+function Identity({player,ultimateIcon,time,fresh}:{player?:Player;ultimateIcon?:string;time:number;fresh:boolean}) {
   const ultimate=player?.ultimate,state=ultimate?.state||'unknown';
   const status=state==='ready'?'终极技能就绪':state==='unlearned'?'终极技能尚未学习':state==='cooldown'?`终极技能冷却${ultimate?.cooldownRemaining!=null?` ${Math.ceil(ultimate.cooldownRemaining)} 秒`:''}`:'终极技能状态未提供';
   return <div className="lb-identity">
     <div className="lb-identity-line">
       <FitName className="lb-player-name">{player?.name||'—'}</FitName>
     </div>
-    <span className="lb-player-gold" aria-label={`剩余金币（总经济） ${playerGoldText(player)}`} title="剩余金币（总经济）">{playerGoldText(player)}</span>
     <div className="lb-status-line">
-      {state!=='unknown'&&<span className={`lb-ultimate ${state}`} title={status} aria-label={status}>
-        <Icon src={ultimate?.icon||ultimateIcon} label="终极技能" missing="R"/>
-        {state==='cooldown'&&ultimate?.cooldownRemaining!=null&&<b>{Math.ceil(ultimate.cooldownRemaining)}</b>}
-      </span>}
+      <span className={`lb-ultimate ${fresh?state:'unknown'}`} title={status} aria-label="终极技能">
+        <Icon src={ultimate?.icon||ultimateIcon} label="终极技能" missing="R" cooldown={ultimate??{state:'unknown'}} time={time} fresh={fresh}/>
+      </span>
       <div className="lb-vitals">
-      {player?.maxExperience!==undefined&&<Meter current={player?.experience} max={player?.maxExperience} kind="experience" label="当前等级经验"/>}
-      {player?.maxHealth!==undefined&&<Meter current={player?.health} max={player?.maxHealth} kind="health" label="生命值"/>}
-      {player?.maxResource!==undefined&&<Meter current={player?.resource} max={player?.maxResource} kind={`resource ${(player?.resourceType||'mana').toLowerCase()}`} label="资源值"/>}
+      <Meter current={fresh?player?.experience:undefined} max={player?.maxExperience} kind="experience" label="当前等级经验"/>
+      <Meter current={fresh?player?.health:undefined} max={player?.maxHealth} kind="health" label="生命值"/>
+      <Meter current={fresh?player?.resource:undefined} max={player?.maxResource} kind={`resource ${(player?.resourceType||'mana').toLowerCase()}`} label="资源值"/>
       </div>
     </div>
   </div>;
 }
-function Inventory({player,items,version}:{player?:Player;items:ItemAssets;version:string}) {
+function Inventory({player,items,version,time,fresh}:{player?:Player;items:ItemAssets;version:string;time:number;fresh:boolean}) {
   const slots=bottomItemSlots(player),quest=player?.roleQuest;
   const itemIcon=(id:number,slot:number)=><span className="lb-item-slot" key={slot}>
-    <Icon src={items[id]?.image||dataDragonItemImage(version,id)} label={id?(items[id]?.name||`装备 ${id}`):'空装备栏'}/>
+    <Icon src={items[id]?.image||dataDragonItemImage(version,id)} label={id?(items[id]?.name||`装备 ${id}`):'空装备栏'} cooldown={player?.itemCooldowns?.find(c=>c.slot===slot&&c.itemId===id)?.cooldown} time={time} fresh={fresh}/>
     {player?.itemCounts?.[slot]!=null&&player.itemCounts[slot]>1&&<b className="lb-item-count">{player.itemCounts[slot]}</b>}
   </span>;
   const questKnown=quest?.completed!=null;
@@ -73,20 +76,25 @@ function Inventory({player,items,version}:{player?:Player;items:ItemAssets;versi
     </div>}
     <div className="lb-trinket" title={playerVision(player)!=='—'?`视野得分 ${playerVision(player)}`:'视野得分未提供'}>
       <span className="lb-vision-score">{playerVision(player)}</span>
-      <Icon src={items[slots[6]]?.image||dataDragonItemImage(version,slots[6])} label={slots[6]?(items[slots[6]]?.name||'饰品'):'空饰品栏'}/>
+      <Icon src={items[slots[6]]?.image||dataDragonItemImage(version,slots[6])} label={slots[6]?(items[slots[6]]?.name||'饰品'):'空饰品栏'} cooldown={player?.itemCooldowns?.find(c=>c.slot===6&&c.itemId===slots[6])?.cooldown} time={time} fresh={fresh}/>
     </div>
   </div>;
 }
-function PlayerRow({player,champions,items,version,side,ultimateIcon}:{player?:Player;champions:Champion[];items:ItemAssets;version:string;side:Side;ultimateIcon?:string}) {
+function PlayerRow({player,champions,items,version,side,ultimateIcon,time,now,available}:{player?:Player;champions:Champion[];items:ItemAssets;version:string;side:Side;ultimateIcon?:string;time:number;now:number;available:boolean}) {
   const champion=championFor(champions,player?.championId||'');
+  const fresh=available&&telemetryFresh(player?.telemetry,time,now);
+  const buffs=activeBuffs(player?.buffs,time,fresh,!!player?.isDead);
+  const respawn=fresh&&player?.isDead?player.respawnAt!==undefined?Math.max(0,player.respawnAt-time):player.respawnTimer:undefined;
+  const gold=playerGoldText(player,now),goldParts=gold.match(/^(\d+)\((\d+)\)$/);
   return <div className={`lb-player-row ${side} ${player?.isDead?'is-dead':''}`} aria-label={`${player?.name||'等待选手'} 英雄、状态、装备、视野、剩余金币、总经济、KDA 与补刀`}>
-    <Inventory player={player} items={items} version={version}/><Runes player={player}/><Spells player={player} version={version}/>
-    <div className="lb-champion" title={`${player?.name||'等待选手'} · ${champion?.name||'英雄待定'}`}>
+    <Inventory player={player} items={items} version={version} time={time} fresh={fresh}/><Runes player={player}/><Spells player={player} version={version} time={time} fresh={fresh}/>
+    <div className={`lb-champion ${buffs.baron?'has-baron':''} ${buffs.elder?'has-elder':''}`} title={`${player?.name||'等待选手'} · ${champion?.name||'英雄待定'}${buffs.baron?' · 男爵增益':''}${buffs.elder?' · 远古龙增益':''}`}>
       {champion&&<img src={champion.image} alt={champion.name}/>}
       <b className="lb-level">{player?.level&&player.level>0?player.level:'—'}</b>
-      {player?.isDead&&player.respawnTimer!=null&&player.respawnTimer>0&&<span className="lb-respawn">{Math.ceil(player.respawnTimer)}</span>}
+      {player?.isDead&&<span className="lb-respawn">{respawn!=null&&respawn>0?Math.ceil(respawn):'—'}</span>}
     </div>
-    <Identity player={player} ultimateIcon={ultimateIcon}/>
+    <Identity player={player} ultimateIcon={ultimateIcon} time={time} fresh={fresh}/>
+    <span className="lb-player-gold" aria-label={`剩余金币（总经济） ${gold}`} title={`剩余金币（总经济） ${gold}`}>{goldParts?<><b>{goldParts[1]}</b><small>({goldParts[2]})</small></>:gold}</span>
     <div className="lb-stat-column"><b className="lb-cs">{playerCs(player)}</b><b className="lb-kda">{playerKda(player,true)}</b></div>
   </div>;
 }
@@ -99,6 +107,10 @@ function PlayerFeed({state,side}:{state:BroadcastState;side:Side}) {
   </div>;
 }
 export function LiveBottom({state,champions,items,version}:{state:BroadcastState;champions:Champion[];items:ItemAssets;version:string}) {
+  const time=useGameClock(state,true);
+  const available=state.connections.live.status==='connected'&&!state.gameClock?.awaitingLiveSample;
+  const [now,setNow]=useState(Date.now);
+  useEffect(()=>{const timer=window.setInterval(()=>setNow(Date.now()),250);return()=>window.clearInterval(timer);},[]);
   const blue=bottomPlayers(state,'blue'),red=bottomPlayers(state,'red');
   const ultimateIcons=useUltimateIcons(version,state.players.map(player=>championFor(champions,player.championId)?.id||player.championId));
   const ultimateFor=(player?:Player)=>{const champion=championFor(champions,player?.championId||'');return champion?ultimateIcons[champion.id]:undefined;};
@@ -109,11 +121,11 @@ export function LiveBottom({state,champions,items,version}:{state:BroadcastState
       <div className="lb-scoreboard-rows">{Array.from({length:5},(_,i)=>{
         const delta=state.overlay.goldDiff?bottomGoldDifference(state.mode,blue[i],red[i]):null;
         return <div className="lb-pair" key={i}>
-          <PlayerRow player={blue[i]} champions={champions} items={items} version={version} side="blue" ultimateIcon={ultimateFor(blue[i])}/>
-          <div className={`lb-lead ${delta==null?'unavailable':delta>0?'blue':delta<0?'red':'even'}`} title={delta==null?'等待双方有效累计金币 OCR':`双方累计金币差 ${Math.abs(Math.round(delta))} · ${'OCR'}`}>
+          <PlayerRow player={blue[i]} champions={champions} items={items} version={version} side="blue" ultimateIcon={ultimateFor(blue[i])} time={time} now={now} available={available}/>
+          <div className={`lb-lead ${delta==null?'unavailable':delta>0?'blue':delta<0?'red':'even'}`} title={delta==null?'等待双方有效累计金币':`双方累计金币差 ${Math.abs(Math.round(delta))} · ${blue[i]?.goldSource==='memory'&&red[i]?.goldSource==='memory'?'只读遥测':'累计经济'}`}>
             <b>{delta==null?'—':Math.abs(Math.round(delta))}</b>
           </div>
-          <PlayerRow player={red[i]} champions={champions} items={items} version={version} side="red" ultimateIcon={ultimateFor(red[i])}/>
+          <PlayerRow player={red[i]} champions={champions} items={items} version={version} side="red" ultimateIcon={ultimateFor(red[i])} time={time} now={now} available={available}/>
         </div>;
       })}</div>
     </section>}

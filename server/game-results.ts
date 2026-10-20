@@ -90,7 +90,7 @@ export function absorbTerminalGameSample(state:BroadcastState,sample:TerminalSam
   // A partial terminal response must not replace valid observed scores with normalization defaults.
   for(const player of snapshot.players){
     const previous=previousPlayers.find(p=>p.id===player.id);
-    for(const key of ["damageDealt","damageTaken"] as const)if(player[key]===undefined&&previous?.[key]!==undefined)player[key]=previous[key];
+    for(const key of ["damageDealt","damageTaken","telemetryDamage","telemetryDamageSource"] as const)if(player[key]===undefined&&previous?.[key]!==undefined)Object.assign(player,{[key]:previous[key]});
     if(!validPlayerScores(player)&&validPlayerScores(previous))Object.assign(player,{kills:previous.kills,deaths:previous.deaths,assists:previous.assists,cs:previous.cs,statsAvailable:previous.statsAvailable,statsSource:previous.statsSource,statsSampledAt:previous.statsSampledAt,statsGameTime:previous.statsGameTime,statsExpiresAt:previous.statsExpiresAt});
   }
   for(const side of ['blue','red']as const)snapshot.stats[side].kills=snapshot.players.filter(player=>player.team===side&&validPlayerScores(player)).reduce((sum,player)=>sum+player.kills,0);
