@@ -124,7 +124,11 @@ export class ObsProduction {
       }
     } else if (action === 'return-live') {
       const next = structuredClone(this.get()); returnToGame(next);
-      await this.returnLive(); this.commit(s => { returnToGame(s); });
+      await this.returnLive(); this.commit(s => {
+        returnToGame(s);
+        const p=ensureProduction(s);
+        p.application={...p.application!,status:'applied',detail:'OBS 已恢复比赛来源，请核对节目画面',at:new Date().toISOString()};
+      });
     } else if (action === 'emergency') {
       const scenes = await this.obs.call('GetSceneList');
       if (!scenes.scenes.some(s => s.sceneName === emergencyScene)) throw new ValidationError('本地备用画面尚未准备，请在停播窗口重启内置引擎');

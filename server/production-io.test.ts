@@ -15,6 +15,7 @@ import { writeDurableState } from './durable-state';
 import { ResourceCache, resourceUrl } from './resource-cache';
 import { objectiveRemaining, productionKey } from '../shared/production';
 import { updateAlerts } from './production';
+import { takeBlockReason } from '../shared/presentation';
 
 class ProductionObsFixture extends EventEmitter {
   calls:{type:string;data:any}[]=[];
@@ -92,9 +93,19 @@ test('failed media switch restores original sound policy; emergency and track ch
     assert.equal(obs.scene,engineScene);assert.equal(obs.inputs.get('RiftCast 桌面音频'),false);assert.equal(s.production!.playingClipId,undefined);
     obs.failure='';await production.control({action:'emergency',reason:'模拟信号故障'});assert.equal(obs.scene,emergencyScene);assert.equal(s.production!.pause!.kind,'signal');
     await production.control({action:'return-live'});assert.equal(obs.scene,engineScene);
+    assert.equal(s.production!.application?.status,'applied','confirmed OBS return must acknowledge its application');
+    s.connections.obs.status='connected';s.production!.control={owner:'director',name:'test'};
+    assert.equal(takeBlockReason(s,{id:'director',name:'test',role:'director'}),'','return-live must not lock the next TAKE');
     obs.reconnecting=true;await assert.rejects(production.control({action:'tracks'}),/停播/);
     assert.equal(obs.calls.some(c=>c.type==='SetInputAudioTracks'),false);
   }finally{await cleanup(dir);}
+});
+test('failed return-live preserves the prior program and never publishes an applied receipt',async()=>{
+  const s=createSeed(),obs=new ProductionObsFixture(),production=new ObsProduction(obs as unknown as ObsClient,()=>s,work=>work(s));
+  s.programScene='draft';const before=structuredClone(s);
+  obs.failure='SetCurrentProgramScene';
+  await assert.rejects(production.control({action:'return-live'}));
+  assert.equal(s.programScene,before.programScene);assert.deepEqual(s.production!.application,before.production!.application);
 });
 
 test('continuous recording maps game and video time segments to a verified file',async()=>{

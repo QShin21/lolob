@@ -9,6 +9,7 @@ import {createFixture} from './test-support/fixture';
 import {finalizeGame,absorbTerminalGameSample} from './game-results';
 import {enrichPostgame} from './postgame-data';
 import {csvRecording} from '../shared/recording-export';
+import {liveChampionId} from '../shared/champion-identity';
 
 const now=Date.now(),stamp={source:'memory' as const,gameTime:120,sampledAt:new Date(now).toISOString(),validForMs:3000};
 test('cooldown deadlines use game time, last ten seconds and unavailable semantics',()=>{
@@ -64,6 +65,26 @@ test('inventory mutations between API and memory samples invalidate only affecte
  const p=normalizeLive(after,[]).players[0];
  assert.equal(p.itemCooldowns?.find(i=>i.slot===3),undefined);
  assert.equal(p.itemCooldowns?.find(i=>i.slot===0)?.itemId,1001);
+});
+test('mixed CN localization keys retain all ten vitals, R, summoner and equipment cooldowns',()=>{
+ const {data,sample}=fixture(),after=structuredClone(data);
+ // Observed live: Aatrox uses Character_Aatrox_Name alongside the older format.
+ data.allPlayers[5].rawChampionName='Character_Aatrox_Name';
+ after.allPlayers[5].rawChampionName='game_character_displayname_Aatrox';
+ sample.players.find(p=>p.champion==='Hero5')!.champion='Aatrox';
+ invalidateChangedItemSlots(data,after,sample);
+ after.allPlayers[5].rawChampionName='Character_Aatrox_Name';
+ assert.equal(mergeObserverTelemetry(after,sample,now),true);
+ const players=normalizeLive(after,[]).players;
+ assert.equal(players[5].championId,'Aatrox');
+ for(const p of players){
+  assert.equal(p.health,600);assert.equal(p.resource,200);assert.equal(p.experience,40);
+  assert.equal(p.ultimate?.state,'unlearned');
+  assert.equal(p.summonerSpells?.[0].cooldown?.readyAt,145);
+  assert.equal(p.itemCooldowns?.find(i=>i.slot===3)?.cooldown.readyAt,126);
+ }
+ for(const raw of ['Aatrox','Character_Aatrox_Name','game_character_displayname_Aatrox'])assert.equal(liveChampionId(raw),'Aatrox');
+ for(const raw of [null,{},'Unknown_Aatrox_Name','Character__Name','Character_Aatrox_Name_extra'])assert.equal(liveChampionId(raw),'');
 });
 test('damage is archived with provenance, exported, and survives later terminal samples',()=>{
  const s=createFixture();s.activeSourceGameId='42';

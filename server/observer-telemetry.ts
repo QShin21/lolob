@@ -5,6 +5,7 @@ import { SpectatorOcrWorker } from './spectator-ocr-worker';
 import { nonnegative, object } from './telemetry-normalize';
 import { ReplayDamageTelemetry } from './replay-damage-telemetry';
 import { LiveDamageStream } from './live-damage-stream';
+import { liveChampionId } from '../shared/champion-identity';
 
 type Json = Record<string, any>;
 export interface ObserverStatus { status: 'connected' | 'unavailable'; detail: string; profile?: string; sampledAt?: string }
@@ -17,7 +18,7 @@ const key = (champion: string, team: string) => `${team}:${champion.toLowerCase(
 
 /** Do not attach a slot timer across a purchase, sale or inventory rearrangement. */
 export function invalidateChangedItemSlots(before:Json,after:Json,sample:Json):void {
-  const identity=(p:Json)=>key(String(p.rawChampionName??'').replace(/^game_character_displayname_/,''),p.team==='ORDER'?'blue':p.team==='CHAOS'?'red':'');
+  const identity=(p:Json)=>key(liveChampionId(p.rawChampionName),p.team==='ORDER'?'blue':p.team==='CHAOS'?'red':'');
   const old=new Map<string,Json>((before.allPlayers??[]).map((p:Json)=>[identity(p),p]));
   const current=new Map<string,Json>((after.allPlayers??[]).map((p:Json)=>[identity(p),p]));
   const item=(p:Json|undefined,slot:number)=>p?.items?.find((i:Json)=>i.slot===slot)?.itemID??0;
@@ -39,7 +40,7 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
   }
   const pairs: {api:Json;memory:Json}[]=[];
   for(const api of data.allPlayers) {
-    const champion=String(api.rawChampionName??'').replace(/^game_character_displayname_/,'');
+    const champion=liveChampionId(api.rawChampionName);
     const side=api.team==='ORDER'?'blue':api.team==='CHAOS'?'red':'';
     const memory=index.get(key(champion,side));
     if(!memory||api.level!==memory.level)return false;
