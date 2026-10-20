@@ -55,7 +55,7 @@ try{
   await page.evaluate(()=>{window.combatFixture.scene('postgame');window.combatFixture.setState(s=>({...s,overlay:{...s.overlay,postgamePage:3}}));});await page.locator('.pr-damage').waitFor();
   const bars=await page.locator('.pr-damage .pr-bar i').evaluateAll(nodes=>nodes.map(n=>{const b=n.getBoundingClientRect(),p=n.parentElement.getBoundingClientRect();return {value:Number(n.dataset.damage),ratio:b.width/p.width,left:b.left-p.left,right:p.right-b.right,red:n.closest('.red')!==null};}));
   assert.equal(bars.length,10);for(const b of bars){assert(Math.abs(b.ratio-b.value/29600)<.002);assert(Math.abs(b.red?b.right:b.left)<1);}
-  assert.equal(await page.locator('.pr-gold-comparison').count(),0);assert.equal(await page.locator('.pr-metrics>div').count(),6);assert.equal(await page.locator('.pr-economy').count(),1);
+  assert.equal(await page.locator('.pr-gold-comparison').count(),0);assert.equal(await page.locator('.pr-metrics>div').count(),8);assert.equal(await page.locator('.pr-economy').count(),1);
   await page.screenshot({path:path.join(dir,`${pack.id}-damage-report.png`)});await page.locator('.pr-damage').screenshot({path:path.join(dir,`${pack.id}-damage-detail.png`)});
   checks.push(`${pack.id}: ten HUD cards with 30 bars, spell cooldowns, death and buffs; interval reset; report page 3 shared maximum and mirrored anchors`);
  }

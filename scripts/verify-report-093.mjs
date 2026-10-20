@@ -22,9 +22,9 @@ try {
     await page.setViewportSize({width,height:width*9/16});
     await page.goto(`http://127.0.0.1:5198/verification-output/release-0.9.3/layout/index.html?variant=${variant}`);
     await page.locator('.pr-gold-player').last().waitFor();await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(200);
-    assert.equal(await page.locator('.pr-gold-player').count(),10);assert.equal(await page.locator('.pr-metrics>div').count(),6);
-    const text=await page.locator('.pr-overview').innerText();assert.match(text,/英雄经济/);assert.doesNotMatch(text,/远古龙|峡谷先锋|ELDERS|HERALDS|对英雄伤害|DAMAGE/);
-    assert.deepEqual(await page.locator('.pr-metrics>div>span').allTextContents(),['KDA','GOLD · 团队经济','TURRETS · 防御塔','DRAKES · 小龙','BARONS · 大龙','VOIDGRUBS · 虚空巢虫']);
+    assert.equal(await page.locator('.pr-gold-player').count(),10);assert.equal(await page.locator('.pr-metrics>div').count(),8);
+    const text=await page.locator('.pr-overview').innerText();assert.match(text,/英雄经济/);assert.doesNotMatch(text,/对英雄伤害|DAMAGE/);
+    assert.deepEqual(await page.locator('.pr-metrics>div>span').allTextContents(),['KDA','GOLD · 团队经济','TURRETS · 防御塔','DRAKES · 小龙','BARONS · 大龙','VOIDGRUBS · 虚空巢虫','HERALDS · 峡谷先锋','ELDERS · 远古龙']);
     for(const side of ['blue','red']) {
       const base=side==='blue'?0:5;
       assert.deepEqual(await page.locator(`.pr-gold-player.${side} .pr-gold-label>b`).allTextContents(),amounts.slice(base,base+5).map((n,i)=>variant==='missing'||variant==='partial'&&base+i===0?'未采集':`${(n/1000).toFixed(1)}k`));

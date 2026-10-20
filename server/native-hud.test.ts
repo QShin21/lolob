@@ -89,13 +89,13 @@ test('legacy gold OCR setting does not force the native player scoreboard open',
   assert.equal(f.current.render.interfaceScore, true);
 });
 
-test('player OCR independently preserves the expanded scoreboard and restores the saved switches', async () => {
+test('legacy player OCR no longer forces the native scoreboard open and original switches are restored', async () => {
   const saved = originalRender();saved.interfaceScoreboard=false;
   const f = fixture(saved);
   f.state.settings.economyOcr = {enabled:false,blue:{x:0,y:0,width:.1,height:.1},red:{x:.9,y:0,width:.1,height:.1},players:{enabled:true,region:{x:.25,y:.65,width:.5,height:.35}}};
   await f.controller.tick(true);
   assert.equal(f.current.render.interfaceScore,true);
-  assert.equal(f.current.render.interfaceScoreboard,true);
+  assert.equal(f.current.render.interfaceScoreboard,false);
   f.state.settings.economyOcr.players!.enabled=false;
   await f.controller.tick(true);
   assert.equal(f.current.render.interfaceScoreboard,false);

@@ -1,3 +1,4 @@
+import { objectiveCount, objectiveKeys, objectiveLabels } from '../../shared/objective-counts';
 import { useState } from "react";
 import { Activity, ArrowDownToLine, Search, UserRound } from "lucide-react";
 import type { Player, Side, StateContext } from "../../shared/types";
@@ -514,24 +515,7 @@ export function LiveData({
                   <dt>击杀</dt>
                   <dd>{teamKills(side)}</dd>
                 </div>
-                <div>
-                  <dt>防御塔</dt>
-                  <dd>
-                    {state.mode === "live" &&
-                    state.stats[side].objectivesAvailable === false
-                      ? "—"
-                      : state.stats[side].towers}
-                  </dd>
-                </div>
-                <div>
-                  <dt>巨龙</dt>
-                  <dd>
-                    {state.mode === "live" &&
-                    state.stats[side].objectivesAvailable === false
-                      ? "—"
-                      : state.stats[side].dragons}
-                  </dd>
-                </div>
+                {objectiveKeys.map(key=><div key={key}><dt>{objectiveLabels[key]}</dt><dd>{objectiveCount(state,side,key)??'—'}</dd></div>)}
               </dl>
             </section>
           ))}

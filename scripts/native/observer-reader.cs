@@ -73,6 +73,39 @@ public sealed class RiftCastObserverReader : IDisposable {
         if(name.Contains("chemtech"))return "chemtech";
         return null;
     }
+    // Same statistics tree used by Live Client scores; retain exact CS before its /10 truncation.
+    Dictionary<uint,Dictionary<string,object>> Scores() {
+        long head=Ptr(Ptr(imageBase+0x1ee9418)+0x30);
+        var pending=new Stack<long>();pending.Push(Ptr(head+8));
+        var seen=new HashSet<long>();var result=new Dictionary<uint,Dictionary<string,object>>();
+        while(pending.Count>0) {
+            long node=pending.Pop();if(node==head||node==0||!seen.Add(node))continue;
+            if(seen.Count>32)throw new InvalidDataException("stats-tree");
+            if(Read(node+0x19,1)[0]!=0)continue;
+            pending.Push(Ptr(node));pending.Push(Ptr(node+0x10));
+            long begin=Ptr(node+0x28),end=Ptr(node+0x30);
+            if(end-begin!=8)continue;
+            long stats=Ptr(begin);int kills=Int(stats+0x310),deaths=Int(stats+0x338),assists=Int(stats+0x360);
+            if(kills<0||kills>1000||deaths<0||deaths>1000||assists<0||assists>1000)continue;
+            int cs=(int)Math.Floor(Range(stats+0x270,0,10000)+0.00001f)+(int)Math.Floor(Range(stats+0x298,0,10000)+0.00001f);
+            result[unchecked((uint)Int(node+0x20))]=Obj("kills",kills,"deaths",deaths,"assists",assists,"creepScore",cs);
+        }
+        return result;
+    }
+    // Native replay scoreboard uses this per-team objective manager, independent of event history.
+    object ObjectiveCounts() {
+        long manager=Ptr(imageBase+0x1ee9298),turrets=Ptr(imageBase+0x1ef3218);
+        var result=Obj();
+        for(int side=0;side<2;side++) {
+            long row=manager+(side==0?0x18:0x68);
+            var counts=Obj("towers",Int(turrets+(side==0?0x14:8)),
+                "dragons",Int(row+3*8),"heralds",Int(row+4*8),"elders",Int(row+5*8),
+                "barons",Int(row+6*8),"voidgrubs",Int(row+7*8));
+            foreach(var value in counts)if((int)value.Value<0||(int)value.Value>(value.Key=="towers"?11:100))throw new InvalidDataException("objective-count");
+            result[side==0?"blue":"red"]=counts;
+        }
+        return result;
+    }
     object NeutralObjectives(long heroes,float time) {
         bool elder=false;string element=null;
         for(int i=0;i<10;i++)try {foreach(var buff in ActiveBuffs(Ptr(heroes+i*8),time)) {
@@ -138,6 +171,7 @@ public sealed class RiftCastObserverReader : IDisposable {
                 long manager=Ptr(imageBase+0x1ee9370),list=Ptr(manager+8);int count=Int(manager+16);
                 if(count!=10)throw new InvalidDataException("roster-incomplete");
                 var players=new List<object>();var unique=new HashSet<string>();
+                Dictionary<uint,Dictionary<string,object>> scores=null;try {scores=Scores();}catch { }
                 for(int i=0;i<count;i++) {
                     long hero=Ptr(list+i*8);string champion=String(hero+0x41d0);int side=Read(hero+0x239,1)[0];
                     if(!System.Text.RegularExpressions.Regex.IsMatch(champion,"^[A-Za-z0-9]{2,40}$")||(side!=1&&side!=2)||!unique.Add(side+":"+champion))throw new InvalidDataException("roster-invalid");
@@ -151,10 +185,14 @@ public sealed class RiftCastObserverReader : IDisposable {
                         "experienceTotal",Range(hero+0x4bb8,0,1000000),"currentGold",Range(hero+0x2848,0,1000000),"totalGold",Range(hero+0x2870,0,1000000),"spells",spells);
                     // A broken optional list must not discard valid health and cooldown samples.
                     try {player["buffs"]=Buffs(hero,time);} catch { }
+                    Dictionary<string,object> score;
+                    if(scores!=null&&scores.TryGetValue((uint)player["networkId"],out score))player["scores"]=score;
+                    try {player["visionScore"]=Range(hero+0x53a8,0,10000);}catch { }
                     players.Add(player);
                 }
                 var result=Obj("ok",true,"profile","cn-16.20.824.8524","pid",attachedPid,"processSession",attachedStart.ToUniversalTime().Ticks.ToString(),"gameTime",time,"sampledAt",DateTime.UtcNow.ToString("o"),"players",players);
                 try {result["neutralObjectives"]=NeutralObjectives(list,time);} catch { }
+                try {result["objectiveCounts"]=ObjectiveCounts();} catch { }
                 return result;
             }
         } catch(InvalidDataException e) {return Obj("ok",false,"reason",e.Message);}

@@ -47,12 +47,19 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
     pairs.push({api,memory});index.delete(key(champion,side));
   }
   data._observerProfile=sample.profile;
+  if(object(sample.objectiveCounts))data._observerCounts={values:sample.objectiveCounts,sampledAt:sample.sampledAt,gameTime:sample.gameTime};
   if(Array.isArray(sample.neutralObjectives))data._observerObjectives={gameTime:sample.gameTime,sampledAt:sample.sampledAt,validForMs:3000,profile:sample.profile,objectives:sample.neutralObjectives};
   for(const {api,memory:m} of pairs) {
     const stamp={source:'memory',gameTime:sample.gameTime,sampledAt:sample.sampledAt,validForMs:3000};
     Object.assign(api,{health:m.health,maxHealth:m.maxHealth,resource:m.resource,maxResource:m.maxResource,
       resourceType:energy.has(m.champion)?'ENERGY':otherResource.has(m.champion)?'OTHER':'MANA',
       totalGold:m.totalGold,currentGold:m.currentGold,ultimate:m.spells[3],_observerStamp:stamp});
+    if(object(m.scores)&&['kills','deaths','assists','creepScore'].every(k=>Number.isInteger(m.scores[k])&&m.scores[k]>=0)&&
+      ['kills','deaths','assists'].every(k=>m.scores[k]===api.scores?.[k])&&
+      Math.floor(m.scores.creepScore/10)*10===api.scores?.creepScore){
+      api.scores={...api.scores,...m.scores};api._observerScores=true;
+    }
+    if(nonnegative(m.visionScore)){api.visionScore=m.visionScore;api._observerVision=true;}
     if(object(m.buffs))api.buffs=m.buffs;
     if(object(m.damageStats)){
       api.damageStats=m.damageStats;

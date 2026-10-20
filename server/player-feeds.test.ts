@@ -2,7 +2,7 @@ import { createFixture as createSeed, emptyFixture } from './test-support/fixtur
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { applyAction, normalizeSavedState } from './state';
-import { activePlayerFeedPair, playerFeedControl, playerFeedPairs, resolvedPlayerFeed, tickPlayerFeeds } from '../shared/player-feeds';
+import { activePlayerFeedPair, playerFeedControl, playerFeedHoldReason, playerFeedPairs, resolvedPlayerFeed, tickPlayerFeeds } from '../shared/player-feeds';
 
 test('legacy two-person settings migrate into the jungle pair and retain the saved sources', () => {
   const old = createSeed();
@@ -60,8 +60,8 @@ test('automatic rotation waits off-air and restarts a complete slot when a live 
   state.programScene = 'teamfight'; state.previewScene = 'draft';
   assert.equal(tickPlayerFeeds(state, 1000), true);
   assert.equal(state.overlay.playerFeedControl!.nextSwitchAt, undefined);
-  assert.equal(tickPlayerFeeds(state,2000),false,'Teamfight holds rotation even when preview becomes live');
-  state.programScene='standby';
+  assert.equal(tickPlayerFeeds(state,2000),false);
+  // Teamfight PGM must not block a live preview bus.
   state.previewScene = 'live'; tickPlayerFeeds(state, 2000);
   assert.equal(state.overlay.playerFeedControl!.nextSwitchAt, 7000);
   assert.equal(tickPlayerFeeds(state, 6999), false);
@@ -76,4 +76,36 @@ test('invalid slot indices and partial or malformed pair configurations cannot m
   pairs[0].blue.mode = 'camera';
   assert.throws(() => applyAction(state, { type: 'set-overlay', patch: { playerFeedPairs: pairs } }), /摄像头/);
   assert.equal(state.overlay.playerFeedPairs, undefined);
+});
+test('resume rotation clears a saved pause-induced hold without resuming the match or taking staged material',()=>{
+ let s=applyAction(createSeed(),{type:'set-player-feed-control',mode:'auto',activeIndex:1});
+ s.previewScene='live';s=applyAction(s,{type:'take'});
+ s.production!.pause={kind:'official',reason:'旧版暂停',at:'2026-10-20T00:00:00Z',actor:'director'};
+ s.production!.feedHold=true;
+ tickPlayerFeeds(s,1000);assert.equal(playerFeedHoldReason(s,'preview'),'人工保持');
+ const program=s.production!.program!.overlay.playerFeedControl!;
+ assert.equal(program.nextSwitchAt,undefined);
+ s=applyAction(s,{type:'set-player-feed-control',mode:'auto',activeIndex:4});
+ assert(s.production!.pause);assert.equal(s.production!.feedHold,false);
+ assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,1);
+ const at=s.overlay.playerFeedControl!.nextSwitchAt!-5000;tickPlayerFeeds(s,at);
+ tickPlayerFeeds(s,at+5000);
+ assert.equal(s.overlay.playerFeedControl!.activeIndex,0);
+ assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,2);
+ s=applyAction(s,{type:'production',command:{op:'settings',feedHold:true}});
+ tickPlayerFeeds(s,at+10000);assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,2);
+});
+test('preview rotation continues while program shows teamfight or a replay clip',()=>{
+ let s=applyAction(createSeed(),{type:'set-player-feed-control',mode:'auto',activeIndex:0});
+ s.previewScene='live';s=applyAction(s,{type:'take'});
+ const at=s.overlay.playerFeedControl!.nextSwitchAt!;
+ s.programScene='teamfight';tickPlayerFeeds(s,at);
+ assert.equal(s.overlay.playerFeedControl!.activeIndex,1);
+ assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,0);
+ assert.match(playerFeedHoldReason(s,'program'),/团战/);assert.equal(playerFeedHoldReason(s,'preview'),'');
+ s.programScene='live';s.production!.playingClipId='clip';tickPlayerFeeds(s,at+5000);
+ assert.equal(s.overlay.playerFeedControl!.activeIndex,2);assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,0);
+ delete s.production!.playingClipId;tickPlayerFeeds(s,at+6000);
+ tickPlayerFeeds(s,at+10999);assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,0);
+ tickPlayerFeeds(s,at+11000);assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,1);
 });

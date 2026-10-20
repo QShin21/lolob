@@ -77,7 +77,7 @@ export function applyProduction(s: BroadcastState, raw: unknown, actor = '主机
     }
     case 'pause':
       if (!['official', 'signal', 'replay'].includes(c.kind)) throw new ValidationError('暂停类型无效');
-      p.pause = { kind: c.kind, reason: reason(c.reason), at: new Date().toISOString(), actor }; p.feedHold = true; break;
+      p.pause = { kind: c.kind, reason: reason(c.reason), at: new Date().toISOString(), actor }; break;
     case 'resume':
       reason(c.reason);
       if (s.mode === 'live' && (!checkValid(s, 'identity') || !checkValid(s, 'game') || !checkValid(s, 'audio') || !checkValid(s, 'data'))) throw new ValidationError('恢复前请核对身份、游戏来源、声音和本局有效样本');

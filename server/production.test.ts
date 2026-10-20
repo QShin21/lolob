@@ -131,11 +131,12 @@ test('seat ownership, role permissions and repeated request IDs remain authorita
   seats.remember(data.id,'request-1','payload',1);assert.equal(seats.duplicate(data.id,'request-1','payload'),true);assert.throws(()=>seats.duplicate(data.id,'request-1','other'));
 });
 
-test('program and preview feed selection have separate clocks and hold through pauses',()=>{
+test('program and preview feed selection have separate clocks and keep rotating through match pauses',()=>{
   let s=createSeed();s.previewScene='live';s=applyAction(s,{type:'set-player-feed-control',mode:'auto',activeIndex:1});s=applyAction(s,{type:'take'});
   const at=s.overlay.playerFeedControl!.nextSwitchAt!;
   s=applyAction(s,{type:'set-player-feed-control',mode:'manual',activeIndex:4});tickPlayerFeeds(s,at);
   assert.equal(s.overlay.playerFeedControl!.activeIndex,4);assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,2);
   s=applyAction(s,{type:'production',command:{op:'pause',kind:'official',reason:'裁判暂停'}});tickPlayerFeeds(s,at+10000);
-  assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,2);
+  assert.equal(s.production!.program!.overlay.playerFeedControl!.activeIndex,3);
+  assert.equal(s.production!.feedHold,false);
 });

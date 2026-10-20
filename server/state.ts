@@ -255,6 +255,10 @@ export function applyAction(current:BroadcastState,input:unknown,installedStyle?
     case 'set-player-feed-control': {
       const mode=oneOf(a.mode,['manual','auto'] as const),index=a.activeIndex===undefined?playerFeedControl(s.overlay).activeIndex:num(a.activeIndex,0,4);
       if(!Number.isInteger(index))throw new ValidationError('选手对位须为 0–4 的整数');
+      if(mode==='auto'){
+        const p=ensureProduction(s);
+        if(p.feedHold){p.feedHold=false;delete p.program?.overlay.playerFeedControl?.nextSwitchAt;}
+      }
       s.overlay.playerFeedControl={mode,activeIndex:index,...(mode==='auto'?{nextSwitchAt:Date.now()+playerFeedInterval}:{})};
       break;
     }

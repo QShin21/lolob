@@ -44,6 +44,24 @@ function fixture(){
  const sample={ok:true,gameTime:120,sampledAt:stamp.sampledAt,players:allPlayers.map((p,i)=>({champion:`Hero${i}`,team:i<5?'blue':'red',level:3,health:600,maxHealth:800,resource:200,maxResource:300,experienceTotal:700,currentGold:100,totalGold:900,buffs:{baron:true},spells:Array.from({length:13},(_,slot)=>({level:slot===3?0:1,readyAt:slot===4?145:slot===9?126:0,totalCooldown:slot===4?300:120,state:slot===3?'unlearned':'cooldown'}))})).reverse()};
  return {data:{allPlayers,gameData:{gameTime:120},activePlayer:{error:'no active player'},events:{Events:[]}},sample};
 }
+test('native exact CS, vision and six objective counters replace rounded API and incomplete event history',()=>{
+ const {data,sample}=fixture();
+ Object.assign(data.gameData,{mapNumber:11});
+ for(const p of data.allPlayers)p.scores.creepScore=10;
+ for(const p of sample.players)Object.assign(p,{scores:{kills:0,deaths:0,assists:0,creepScore:19},visionScore:17.4});
+ const counts={blue:{towers:4,dragons:1,barons:0,voidgrubs:0,heralds:1,elders:0},red:{towers:3,dragons:3,barons:1,voidgrubs:3,heralds:0,elders:0}};
+ Object.assign(sample,{objectiveCounts:counts});
+ assert(mergeObserverTelemetry(data,sample));
+ const normalized=normalizeLive(data,[]);
+ assert(normalized.players.every(p=>p.cs===19&&p.statsSource==='memory'&&p.visionSource==='memory'&&p.visionScore===17.4));
+ assert.equal(normalized.stats.blue.heralds,1);assert.equal(normalized.stats.red.voidgrubs,3);
+ assert.equal(normalized.stats.blue.objectivesSource,'memory');assert.equal(normalized.stats.red.towers,3);
+ (data as any)._observerCounts.sampledAt=new Date(Date.now()-4000).toISOString();
+ assert.equal(normalizeLive(data,[]).stats.blue.objectivesAvailable,false);
+ const invalid=fixture();Object.assign(invalid.sample.players[0],{scores:{kills:99,deaths:0,assists:0,creepScore:19}});
+ assert(mergeObserverTelemetry(invalid.data,invalid.sample));
+ assert(!normalizeLive(invalid.data,[]).players.some(p=>p.statsSource==='memory'));
+});
 test('join reordered objects by champion and side; preserve equipment slot through price sorting',()=>{
  const {data,sample}=fixture();assert.equal(mergeObserverTelemetry(data,sample,now),true);
  const normalized=normalizeLive(data,[]),p=normalized.players[0];

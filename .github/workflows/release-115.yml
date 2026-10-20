@@ -1,0 +1,139 @@
+name: Release 1.1.5
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [new]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/release-115.yml'
+      - 'scripts/verify-builtin-styles.mjs'
+      - 'scripts/verify-packaged-report-115.mjs'
+      - 'scripts/publish-release-115.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-1.1.5
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'QShin21/lolob' && github.ref == 'refs/heads/new'
+    runs-on: windows-2022
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify version and source branch
+        run: |
+          node -e "require('node:assert/strict').equal(require('./package.json').version, '1.1.5')"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git fetch origin new
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced concurrently; build its latest revision' }
+      - run: npm ci
+      - name: Prepare pinned VB-CABLE archive for tests (download only)
+        run: node scripts/ensure-vbcable.cjs
+      - run: npm run check
+      - run: npm run verify:builtin-assets
+      - name: Verify all bundled champion crops and hashes
+        run: npm run prepare:champion-art -- --verify
+      - name: Windows tests including production OCR worker
+        timeout-minutes: 15
+        run: |
+          New-Item -ItemType Directory -Force verification-output/release-1.1.5 | Out-Null
+          $tests = @(Get-ChildItem server -Filter '*.test.ts' | ForEach-Object FullName)
+          node --import tsx --test --test-concurrency=1 @tests 2>&1 | Tee-Object verification-output/release-1.1.5/tests.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify report fixture through service restart
+        run: node scripts/verify-report-fixture-093.mjs
+      - run: npm run build
+      - run: npm run verify:builtin-contracts
+      - name: Prepare isolated browser test dependency
+        run: |
+          npm install --prefix "$env:RUNNER_TEMP/rc-playwright" --no-save --package-lock=false playwright@1.56.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "RIFTCAST_PLAYWRIGHT_MODULE=$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/index.mjs" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          node "$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/cli.js" install chromium
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify live-only startup, upgrade and polling controls
+        run: node scripts/verify-live-only.mjs
+      - name: Verify player rotation controls
+        run: node scripts/verify-player-rotation-115.mjs
+      - name: Verify report layouts
+        run: node scripts/verify-report-093.mjs
+      - name: Verify style pack import, preview, all scenes and service restart
+        run: npm run verify:style-packs
+      - name: Verify deletion, permissions and restart
+        run: node scripts/verify-style-deletion.mjs
+      - name: Verify all six builtins, default migration and 78 scene renders
+        run: npm run verify:builtin-styles
+      - name: Verify BP stacks and larger scoreboard across all styles
+        run: node scripts/verify-draft-layout-104.mjs
+      - name: Verify cooldown HUD, vitals, names and stale data
+        run: node scripts/verify-telemetry-hud.mjs
+      - name: Verify floating BP, 3-second lock reveal and three portrait libraries
+        run: node scripts/verify-draft-focus-111.mjs
+      - name: Verify teamfight, objectives and third report page across all styles
+        run: node scripts/verify-combat-112.mjs
+      - name: Upload report layout review
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-layout-1.1.5
+          retention-days: 30
+          path: |
+            verification-output/release-0.9.3/layout/*.json
+            verification-output/release-0.9.3/layout/*.png
+            verification-output/release-1.1.5/styles/*.json
+            verification-output/release-1.1.5/styles/*.png
+            verification-output/release-1.1.5/builtins/*.json
+            verification-output/release-1.1.5/builtins/*.png
+      - name: Build Windows Setup and ZIP
+        run: npm run release:win
+      - name: Verify isolated packaged report
+        run: node scripts/verify-packaged-report-115.mjs
+      - name: Confirm exact new revision before publication
+        run: |
+          git fetch origin new
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced while building; publication stopped' }
+      - name: Publish verified release and check remote digests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/publish-release-115.mjs
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-1.1.5
+          retention-days: 30
+          path: |
+            verification-output/release-1.1.5/*.txt
+            verification-output/release-1.1.5/*.json
+            verification-output/release-1.1.5/*.png
+            verification-output/release-0.9.3/layout/*.json
+            verification-output/release-0.9.3/layout/*.png
+            verification-output/release-1.1.5/styles/*.json
+            verification-output/release-1.1.5/styles/*.png
+            verification-output/release-1.1.5/builtins/*.json
+            verification-output/release-1.1.5/builtins/*.png
+            verification-output/release-1.1.5/draft-layout/**
+            release/1.1.5/release-manifest.json
+            release/1.1.5/SHA256SUMS.txt
+            verification-output/release-1.1.5/deletion/*.json
+            verification-output/release-1.1.5/deletion/*.png
+            verification-output/release-1.1.5/live-only/*.json
+            verification-output/release-1.1.5/live-only/*.png
+            verification-output/release-1.1.5/telemetry-hud/**
+            verification-output/release-1.1.5/draft-focus/**
+            verification-output/release-1.1.5/combat/**
+            verification-output/release-1.1.5/rotation/**

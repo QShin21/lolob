@@ -31,7 +31,7 @@ test('production direct mode ignores legacy gold OCR and manual inputs, expires,
  bridge.observePlayers(s.players,100);
  const live=bridge.resolve(100,s.stats);s.stats=live.stats;s.economyFeed=live.feed;
  await bridge.probe();
- assert.equal(calls,1);assert.equal(s.stats.blue.gold,6000);assert.equal(bridge.status().source,'memory');
+ assert.equal(calls,0);assert.equal(s.stats.blue.gold,6000);assert.equal(bridge.status().source,'memory');
  assert.throws(()=>bridge.sample({blue:1,red:2}),/直读/);await assert.rejects(bridge.autoCalibrate(),/直读/);
  assert.equal(s.ocrMatch?.teamGold?.source,'memory');assert.equal(s.ocrMatch?.players[s.players[0].id].source,'memory');
  now=103501;await bridge.poll();assert.equal(s.stats.blue.gold,null);assert.equal(s.players[0].gold,null);
@@ -51,4 +51,18 @@ test('same sample polling cannot renew gold freshness, and source changes/seek r
  bridge.observePlayers(s.players,100);bridge.resolve(100,s.stats);bridge.resolve(80,s.stats);
  assert.equal(bridge.status().source,'none');assert.equal(s.ocrMatch,undefined);
  bridge.close();
+});
+test('direct resource counts retain Herald and Elder for reports without OCR and follow backward seeks',()=>{
+ const s=fixture();let now=100500;
+ const bridge=new EconomyBridge(()=>s,fn=>fn(s),{goldSource:'direct',now:()=>now});
+ for(const side of ['blue','red']as const)Object.assign(s.stats[side],{objectivesSource:'memory',objectivesSampledAt:new Date(100000).toISOString(),objectivesExpiresAt:new Date(103000).toISOString(),heralds:side==='blue'?1:0,elders:0,voidgrubs:side==='red'?3:0});
+ bridge.observePlayers(s.players,100);bridge.resolve(100,s.stats);
+ assert.equal(s.ocrMatch?.objectives.blue.heralds?.value,1);
+ assert.equal(s.ocrMatch?.objectives.red.voidgrubs?.value,3);
+ assert.equal(s.ocrMatch?.objectives.blue.elders?.value,0);
+ now=104000;const missing=structuredClone(s.stats);missing.blue.heralds=99;
+ bridge.resolve(100,missing);assert.equal(s.ocrMatch?.objectives.blue.heralds?.value,1);
+ const earlier=structuredClone(s.stats);for(const side of ['blue','red']as const)Object.assign(earlier[side],{heralds:0,voidgrubs:0,objectivesSampledAt:new Date(now).toISOString(),objectivesExpiresAt:new Date(now+3000).toISOString()});
+ bridge.resolve(20,earlier);assert.equal(s.ocrMatch?.objectives.blue.heralds?.value,0);
+ assert.equal(s.ocrMatch?.objectives.red.voidgrubs?.value,0);bridge.close();
 });

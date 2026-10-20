@@ -27,15 +27,21 @@ export function resolvedPlayerFeed(state: BroadcastState, side: Side, index = pl
   const member = team?.players.find(member => player?.name && member.name === player.name) ?? team?.players.find(member => member.role === playerFeedRoles[index]);
   return { ...feed, label: feed.label || player?.name || member?.name || '', imageUrl: feed.imageUrl || player?.portrait || member?.portrait || '' };
 }
-/** Each bus keeps its selected pair; production holds suspend the rotation clocks. */
+/** Match pause does not stop player pictures. Each bus follows its own scene. */
+export function playerFeedHoldReason(state: BroadcastState, bus: 'preview' | 'program'): string {
+  if (state.production?.feedHold) return '人工保持';
+  if (bus === 'program' && state.production?.playingClipId) return '回放播出';
+  const scene = bus === 'preview' ? state.previewScene : state.programScene;
+  if (scene === 'teamfight') return '团战视图无选手画面';
+  return scene === 'live' ? '' : '当前场景无选手画面';
+}
 export function tickPlayerFeeds(state: BroadcastState, now = Date.now()): boolean {
-  const p=state.production,hold=!!(p?.feedHold||p?.pause||p?.playingClipId||state.programScene==='teamfight');
-  const buses=[{control:state.overlay.playerFeedControl,visible:state.previewScene==='live'||!p&&state.programScene==='live'},
-    {control:p?.program?.overlay.playerFeedControl,visible:state.programScene==='live'}];
+  const buses=[{control:state.overlay.playerFeedControl,hold:playerFeedHoldReason(state,'preview')},
+    {control:state.production?.program?.overlay.playerFeedControl,hold:playerFeedHoldReason(state,'program')}];
   let changed=false;
-  for(const {control,visible} of buses){
+  for(const {control,hold} of buses){
     if(!control||control.mode!=='auto')continue;
-    if(!visible||hold){if(control.nextSwitchAt!==undefined){delete control.nextSwitchAt;changed=true;}continue;}
+    if(hold){if(control.nextSwitchAt!==undefined){delete control.nextSwitchAt;changed=true;}continue;}
     if(control.nextSwitchAt===undefined){control.nextSwitchAt=now+playerFeedInterval;changed=true;continue;}
     if(now>=control.nextSwitchAt){control.activeIndex=(control.activeIndex+1)%5;control.nextSwitchAt=now+playerFeedInterval;changed=true;}
   }
