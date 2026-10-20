@@ -59,6 +59,7 @@ if (!fs.existsSync(sourceArchive) || await digest(sourceArchive) !== obsRelease.
 await copyFile(path.join(root, 'third-party/OBS-COPYING'), path.join(licenseRoot, 'OBS-COPYING'));
 await copyFile(path.join(root, 'THIRD_PARTY_OBS.md'), path.join(licenseRoot, 'THIRD_PARTY_OBS.md'));
 await copyFile(path.join(root, 'THIRD_PARTY_AUDIO.md'), path.join(licenseRoot, 'THIRD_PARTY_AUDIO.md'));
+await copyFile(path.join(root, 'THIRD_PARTY_REPLAY.md'), path.join(licenseRoot, 'THIRD_PARTY_REPLAY.md'));
 const audioSources = path.join(licenseRoot, 'RiftCast-Audio-Source');
 await mkdir(audioSources, { recursive: true });
 await mkdir(path.join(audioSources, 'scripts/native'), { recursive: true });

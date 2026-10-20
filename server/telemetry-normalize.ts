@@ -66,6 +66,11 @@ export function normalizeTelemetry(raw: Json, time: number, stamp: TelemetryStam
     toChampions:raw.totalDamageDealtToChampions,taken:raw.totalDamageTaken,
     physicalToChampions:raw.physicalDamageDealtToChampions,magicToChampions:raw.magicDamageDealtToChampions,trueToChampions:raw.trueDamageDealtToChampions,
   });
-  if (damage) {out.telemetryDamage = damage;out.telemetryDamageSource = stamp.source === 'memory' ? 'memory' : 'api';}
+  if (damage) {
+    out.telemetryDamage = damage;out.telemetryDamageSource = raw._damageStatsSource==='packets'&&stamp.source==='memory'?'packets':stamp.source === 'memory' ? 'memory' : 'api';
+    if(out.telemetryDamageSource==='packets'&&typeof raw._damageStatsSession==='string'&&raw._damageStatsSession.length<=160&&nonnegative(raw._damageStatsSince)){
+      out.telemetryDamageSession=raw._damageStatsSession;out.telemetryDamageSince=raw._damageStatsSince;
+    }
+  }
   return out;
 }

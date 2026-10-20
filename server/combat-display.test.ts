@@ -23,6 +23,14 @@ test('seek, decreasing counters, replacement champions invalidate a segment unti
  for(const scenario of ['seek','counter','champion']){const s=fight();syncFightSegment(s,now);const p=s.players[0];p.telemetryDamage!.toChampions=1400;syncFightSegment(s,now+1000);
  if(scenario==='seek')s.gameTime=1100;if(scenario==='counter')p.telemetryDamage!.toChampions=1200;if(scenario==='champion')p.championId='Gwen';syncFightSegment(s,now+1500);assert.equal(s.fightSegment!.players[p.id].invalid,true);assert.equal(s.fightSegment!.players[p.id].total,undefined);}
 });
+test('packet stream capture epochs and incomplete origins invalidate the active fight',()=>{
+ for(const reason of ['epoch','origin']){
+  const s=fight(),p=s.players[0];p.telemetryDamageSource='packets';p.telemetryDamageSession='capture:1';p.telemetryDamageSince=1100;
+  syncFightSegment(s,now);p.telemetryDamage!.toChampions=1500;
+  if(reason==='epoch')p.telemetryDamageSession='capture:2';else p.telemetryDamageSince=1201;
+  syncFightSegment(s,now+1000);assert.equal(s.fightSegment!.players[p.id].invalid,true);assert.equal(s.fightSegment!.players[p.id].total,undefined);
+ }
+});
 function data(time:number,events:any[]=[]){return {gameData:{gameTime:time,mapNumber:11,gameMode:'CLASSIC',gameVersion:'16.20.1'},_eventHistoryComplete:true,allPlayers:[{summonerName:'Blue',team:'ORDER'}],events:{Events:[{EventName:'GameStart',EventTime:0},...events]}};}
 test('neutral phases and initial countdowns use a common game-time clock',()=>{
  assert.deepEqual(neutralObjectives(data(100),now)?.objectives.map(o=>[o.kind,o.dueAt]),[['grubs',480],['dragon',300]]);

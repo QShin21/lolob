@@ -3,6 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SpectatorOcrWorker } from './spectator-ocr-worker';
 import { nonnegative, object } from './telemetry-normalize';
+import { ReplayDamageTelemetry } from './replay-damage-telemetry';
+import { LiveDamageStream } from './live-damage-stream';
 
 type Json = Record<string, any>;
 export interface ObserverStatus { status: 'connected' | 'unavailable'; detail: string; profile?: string; sampledAt?: string }
@@ -51,7 +53,10 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
       resourceType:energy.has(m.champion)?'ENERGY':otherResource.has(m.champion)?'OTHER':'MANA',
       totalGold:m.totalGold,currentGold:m.currentGold,ultimate:m.spells[3],_observerStamp:stamp});
     if(object(m.buffs))api.buffs=m.buffs;
-    if(object(m.damageStats))api.damageStats=m.damageStats;
+    if(object(m.damageStats)){
+      api.damageStats=m.damageStats;
+      if(m.damageStatsSource==='packets'){api._damageStatsSource='packets';api._damageStatsSession=m.damageStatsSession;api._damageStatsSince=m.damageStatsSince;}
+    }
     const previous=thresholds[m.level-1],next=thresholds[m.level];
     if(nonnegative(m.experienceTotal)&&previous!==undefined&&next!==undefined&&m.experienceTotal>=previous&&m.experienceTotal<next)
       api.experienceData={current:m.experienceTotal,previousLevel:previous,nextLevel:next};
@@ -66,11 +71,13 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
 export class ObserverTelemetry {
   private worker?: SpectatorOcrWorker;
   private retryAt=0;
+  private damage=new ReplayDamageTelemetry();
+  private liveDamage=new LiveDamageStream();
   status:ObserverStatus={status:'unavailable',detail:'等待国服观战或回放'};
   constructor(private request:(port:number,route:string)=>Promise<any>){}
   async enrich(data:Json):Promise<void> {
     if(process.platform!=='win32'||data.activePlayer?.summonerName||data.activePlayer?.riotId||!data.activePlayer?.error||data.allPlayers?.length!==10) {
-      this.status={status:'unavailable',detail:'等待完整观战数据'};return;
+      this.damage.reset();this.liveDamage.reset();this.status={status:'unavailable',detail:'等待完整观战数据'};return;
     }
     if(Date.now()<this.retryAt)return;
     try {
@@ -86,12 +93,15 @@ export class ObserverTelemetry {
       if(after.activePlayer?.summonerName||after.activePlayer?.riotId||!after.activePlayer?.error||after.allPlayers?.length!==10)throw Error('等待同一画面的完整遥测样本');
       invalidateChangedItemSlots(data,after,sample);
       Object.assign(data,after);
-      if(sample.pid!==game.processID||!mergeObserverTelemetry(data,sample))throw Error('等待同一画面的完整遥测样本');
-      this.status={status:'connected',detail:'国服只读遥测已连接 · 冷却、生命、资源、经验、增益',profile:sample.profile,sampledAt:sample.sampledAt};
+      if(sample.pid!==game.processID)throw Error('等待同一画面的完整遥测样本');
+      const replayDamage=this.damage.enrich(sample),streamDamage=this.liveDamage.enrich(sample);
+      if(!mergeObserverTelemetry(data,sample))throw Error('等待同一画面的完整遥测样本');
+      this.status={status:'connected',detail:'国服只读遥测已连接 · 冷却、生命、资源、经验、增益'+
+        (replayDamage?' · 回放逐次伤害':streamDamage?' · 实时观战伤害':sample.replayPath?` · ${this.damage.detail}`:sample.observerSession?` · ${this.liveDamage.detail}`:''),profile:sample.profile,sampledAt:sample.sampledAt};
     } catch(error) {
       const transient=error instanceof Error&&error.message.startsWith('等待');
       this.status={status:'unavailable',detail:transient?error.message:'观战遥测暂不可用'};this.retryAt=transient?0:Date.now()+3000;
     }
   }
-  async close(){await this.worker?.close();}
+  async close(){this.damage.reset();this.liveDamage.reset();await this.worker?.close();}
 }

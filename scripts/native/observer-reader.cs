@@ -147,13 +147,13 @@ public sealed class RiftCastObserverReader : IDisposable {
                     var spells=new List<object>();for(int j=0;j<13;j++) {
                         try {spells.Add(Spell(hero,j,time));} catch {spells.Add(Obj("state","unknown"));}
                     }
-                    var player=Obj("champion",champion,"team",side==1?"blue":"red","level",level,"health",hp,"maxHealth",maxHp,"resource",resource,"maxResource",maxResource,
+                    var player=Obj("champion",champion,"networkId",BitConverter.ToUInt32(Read(hero+0xbc,4),0),"team",side==1?"blue":"red","level",level,"health",hp,"maxHealth",maxHp,"resource",resource,"maxResource",maxResource,
                         "experienceTotal",Range(hero+0x4bb8,0,1000000),"currentGold",Range(hero+0x2848,0,1000000),"totalGold",Range(hero+0x2870,0,1000000),"spells",spells);
                     // A broken optional list must not discard valid health and cooldown samples.
                     try {player["buffs"]=Buffs(hero,time);} catch { }
                     players.Add(player);
                 }
-                var result=Obj("ok",true,"profile","cn-16.20.824.8524","pid",attachedPid,"gameTime",time,"sampledAt",DateTime.UtcNow.ToString("o"),"players",players);
+                var result=Obj("ok",true,"profile","cn-16.20.824.8524","pid",attachedPid,"processSession",attachedStart.ToUniversalTime().Ticks.ToString(),"gameTime",time,"sampledAt",DateTime.UtcNow.ToString("o"),"players",players);
                 try {result["neutralObjectives"]=NeutralObjectives(list,time);} catch { }
                 return result;
             }

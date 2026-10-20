@@ -16,7 +16,7 @@ export function enrichPostgame(state:BroadcastState,data:any,champions:Champion[
    physicalToChampions:stats.PHYSICAL_DAMAGE_DEALT_TO_CHAMPIONS??stats.physicalDamageDealtToChampions,
    magicToChampions:stats.MAGIC_DAMAGE_DEALT_TO_CHAMPIONS??stats.magicDamageDealtToChampions,
    trueToChampions:stats.TRUE_DAMAGE_DEALT_TO_CHAMPIONS??stats.trueDamageDealtToChampions});
- if(damage){p.telemetryDamage={...p.telemetryDamage,...damage};p.telemetryDamageSource='postgame';}
+ if(damage){p.telemetryDamage={...damage};p.telemetryDamageSource='postgame';delete p.telemetryDamageSession;delete p.telemetryDamageSince;}
  }
  }
  syncResultRecording(state,result);

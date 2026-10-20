@@ -25,7 +25,9 @@ export interface Player {
   respawnAt?: number;
   /** Cumulative champion damage; teamfight graphics use a server-owned interval baseline. */
   telemetryDamage?: DamageTotals;
-  telemetryDamageSource?: 'api' | 'memory' | 'postgame';
+  telemetryDamageSource?: 'api' | 'memory' | 'packets' | 'postgame';
+  telemetryDamageSession?: string;
+  telemetryDamageSince?: number;
 }
 export interface PlayerRoleQuest { completed?: boolean; icon?: string; progress?: number; maxProgress?: number }
 export interface Player { damageDealt?: number; damageTaken?: number; id: string; name: string; role: string; championId: string; championName: string; kills: number; deaths: number; assists: number; cs: number; statsAvailable?: boolean; statsSource?: 'api' | 'ocr'; statsSampledAt?: string; statsGameTime?: number; statsExpiresAt?: string; level: number; gold: number | null; currentGold?: number | null; goldSource?: 'api' | 'ocr' | 'memory'; goldSampledAt?: string; goldGameTime?: number; goldExpiresAt?: string; items: number[]; itemSlots?: number[]; itemCounts?: number[]; team: Side; portrait?: string; runes?: string[]; runeIds?: number[]; fullRuneIds?: number[]; runeSelection?: { keystoneId?: number; primaryTreeId?: number; secondaryTreeId?: number }; health?: number; maxHealth?: number; resource?: number; maxResource?: number; resourceType?: string; experience?: number; maxExperience?: number; ultimate?: PlayerUltimate; visionScore?: number; visionSource?: 'api' | 'ocr'; visionSampledAt?: string; visionExpiresAt?: string; roleQuest?: PlayerRoleQuest; isDead?: boolean; respawnTimer?: number; summonerSpells?: SummonerSpell[] }

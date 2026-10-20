@@ -67,15 +67,21 @@ test('inventory mutations between API and memory samples invalidate only affecte
 });
 test('damage is archived with provenance, exported, and survives later terminal samples',()=>{
  const s=createFixture();s.activeSourceGameId='42';
- const result=finalizeGame(s,{source:'live',sourceGameId:'42',terminal:true})!;
+ const result=finalizeGame(s,{source:'live',sourceGameId:'42'})!;
  const champion={id:s.players[0].championId,key:123,name:'fixture',title:'',image:'',splash:'',tags:[]};
  const response={gameId:42,teams:[{teamId:100,players:[{championId:123,stats:{TOTAL_DAMAGE_DEALT_TO_CHAMPIONS:12000,TOTAL_DAMAGE_TAKEN:18000,PHYSICAL_DAMAGE_DEALT_TO_CHAMPIONS:9000,MAGIC_DAMAGE_DEALT_TO_CHAMPIONS:2500,TRUE_DAMAGE_DEALT_TO_CHAMPIONS:500}}]}]};
  enrichPostgame(s,{...response,gameId:43},[champion]);assert.equal(result.snapshot.players.some(p=>p.telemetryDamage),false);
+ Object.assign(result.snapshot.players[0],{telemetryDamage:{toChampions:350,magicToChampions:350},telemetryDamageSource:'packets',telemetryDamageSession:'partial:1',telemetryDamageSince:900});
+ assert(csvRecording(result.snapshot).includes('逐次伤害（游戏 900 秒起采集）'));
  enrichPostgame(s,response,[champion]);
  assert.deepEqual(result.snapshot.players[0].telemetryDamage,{toChampions:12000,taken:18000,physicalToChampions:9000,magicToChampions:2500,trueToChampions:500});
  assert.equal(result.snapshot.players[0].telemetryDamageSource,'postgame');
+ assert.equal(result.snapshot.players[0].telemetryDamageSession,undefined);
+ assert.equal(result.snapshot.players[0].telemetryDamageSince,undefined);
  const csv=csvRecording(result.snapshot);assert(csv.includes('官方赛后统计'));assert(csv.includes('"12000","18000","9000","2500","500"'));
- absorbTerminalGameSample(s,{players:structuredClone(s.players),stats:s.stats,events:s.events,gameTime:s.gameTime,sourceGameId:'42',ended:true});
+ const terminal=structuredClone(s.players);Object.assign(terminal[0],{telemetryDamage:{toChampions:450},telemetryDamageSource:'packets',telemetryDamageSession:'partial:1',telemetryDamageSince:900});
+ assert.equal(absorbTerminalGameSample(s,{players:terminal,stats:s.stats,events:s.events,gameTime:s.gameTime,sourceGameId:'42',ended:true}),true);
  assert.equal(result.snapshot.players[0].telemetryDamage?.toChampions,12000);
+ assert.equal(result.snapshot.players[0].telemetryDamageSince,undefined);
  assert.equal(s.recordings.find(r=>r.id===result.snapshot.id)?.players[0].telemetryDamage?.toChampions,12000);
 });

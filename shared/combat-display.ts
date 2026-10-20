@@ -2,7 +2,7 @@ import type { BroadcastState, Player } from './types';
 import { productionKey } from './production';
 import { telemetryFresh } from './player-telemetry';
 
-export interface FightPlayer { championId: string; baseline?: number; previous?: number; total?: number; sampledAt?: string; invalid?: boolean }
+export interface FightPlayer { championId: string; baseline?: number; previous?: number; total?: number; sampledAt?: string; invalid?: boolean; damageSession?: string }
 export interface FightSegment {
   id: string; key: string; active: boolean; startedAt: number; endedAt?: number;
   clockSession?: string; discontinuity?: number; lastTime: number;
@@ -28,13 +28,14 @@ export function syncFightSegment(state: BroadcastState, now=Date.now()): void {
   if(!segment?.active){
     segment={id:`${now}:${state.revision}`,key,active:true,startedAt:state.gameTime,lastTime:state.gameTime,
       clockSession:clock?.sessionId,discontinuity:clock?.discontinuity,players:{}};
-    for(const player of state.players){const baseline=liveDamage(player,state,now);segment.players[player.id]={championId:player.championId,baseline,previous:baseline,total:baseline===undefined?undefined:0};}
+    for(const player of state.players){const baseline=liveDamage(player,state,now);segment.players[player.id]={championId:player.championId,baseline,previous:baseline,total:baseline===undefined?undefined:0,damageSession:player.telemetryDamageSession};}
     state.fightSegment=segment;
   }
   const discontinuity=state.gameTime<segment.lastTime-.5||clock?.sessionId!==segment.clockSession||clock?.discontinuity!==segment.discontinuity;
   for(const player of state.players){
     const row=segment.players[player.id];if(!row)continue;
-    if(discontinuity||row.championId!==player.championId)row.invalid=true;
+    if(discontinuity||row.championId!==player.championId||row.damageSession!==player.telemetryDamageSession||
+      player.telemetryDamageSince!==undefined&&player.telemetryDamageSince>segment.startedAt)row.invalid=true;
     const value=liveDamage(player,state,now);
     if(row.invalid||row.baseline===undefined||value===undefined){row.total=undefined;continue;}
     if(value<row.baseline||row.previous!==undefined&&value<row.previous){row.invalid=true;row.total=undefined;continue;}
