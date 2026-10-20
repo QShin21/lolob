@@ -8,11 +8,11 @@ export function writableOcrMatch(state: BroadcastState): OcrMatchData | undefine
   if (state.activeSourceGameId) state.ocrMatch!.sourceGameId = state.activeSourceGameId;
   return state.ocrMatch;
 }
-export function retainTeamGold(data: OcrMatchData, blue: number, red: number, at: number, gameTime: number): void {
+export function retainTeamGold(data: OcrMatchData, blue: number, red: number, at: number, gameTime: number, source: 'ocr' | 'api' | 'memory' = 'ocr'): void {
   if (![blue, red, at, gameTime].every(Number.isFinite) || blue < 0 || red < 0 || gameTime < 0) return;
   if (data.teamGold && (gameTime < data.teamGold.gameTime || at < Date.parse(data.teamGold.sampledAt))) return;
-  data.teamGold = { blue, red, sampledAt: new Date(at).toISOString(), gameTime };
-  const point = { time: gameTime, blue, red, source: 'ocr' as const }, last = data.economy.at(-1);
+  data.teamGold = { ...(source!=='ocr'?{source}:{}), blue, red, sampledAt: new Date(at).toISOString(), gameTime };
+  const point = { time: gameTime, blue, red, source }, last = data.economy.at(-1);
   // Five-second bins preserve a full day's samples without inventing points in unseen intervals.
   if (last && Math.floor(last.time / 5) === Math.floor(gameTime / 5)) data.economy[data.economy.length - 1] = point;
   else data.economy.push(point);

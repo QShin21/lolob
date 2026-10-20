@@ -65,15 +65,15 @@ test('live scenes enable game-provided bottom corners and restore their original
   }
 });
 
-test('OCR keeps visible team and player score sources while other native panels are hidden', async () => {
+test('legacy gold OCR setting does not force the native player scoreboard open', async () => {
   const f = fixture();
   f.state.settings.economyOcr = { enabled: true, blue: { x: 0, y: 0, width: .1, height: .1 }, red: { x: .9, y: 0, width: .1, height: .1 } };
   await f.controller.tick(true);
   assert.equal(f.state.nativeHudStatus?.status, 'hidden');
   assert.equal(f.state.nativeHudStatus?.preserveScore, true);
   assert.equal(f.current.render.interfaceScore, true);
-  assert.equal(f.current.render.interfaceScoreboard, true);
-  assert.equal(f.state.nativeHudStatus?.preserveScoreboard, true);
+  assert.equal(f.current.render.interfaceScoreboard, false);
+  assert.equal(f.state.nativeHudStatus?.preserveScoreboard, false);
   assert.equal(f.current.render.interfaceFrames, false);
   assert.equal(f.current.render.interfaceTarget, true);
   assert.equal(f.current.render.interfaceMinimap, true);
@@ -84,7 +84,7 @@ test('OCR keeps visible team and player score sources while other native panels 
   f.state.settings.economyOcr.enabled = true;
   await f.controller.tick(true);
   assert.equal(f.current.render.interfaceScore, true);
-  assert.equal(f.current.render.interfaceScoreboard, true);
+  assert.equal(f.current.render.interfaceScoreboard, false);
   await f.controller.close();
   assert.equal(f.current.render.interfaceScore, true);
 });

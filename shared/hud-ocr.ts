@@ -20,13 +20,13 @@ export function observedPlayerGold(data: OcrMatchData | undefined, player: Playe
   const sample = data?.players[player.id];
   return sample?.team === player.team && sample.championId === player.championId ? sample : undefined;
 }
-/** A postgame view uses retained OCR observations, never default API objective zeros or inferred gold. */
+/** A postgame view uses retained observed gold with provenance; legacy OCR records remain readable. */
 export function postgameOcrView(state: BroadcastState): BroadcastState {
   if (state.mode !== 'live') return state;
   const data = currentOcrMatch(state);
   const players = state.players.map(player => {
     const sample = observedPlayerGold(data, player);
-    return { ...player, gold: sample?.value ?? (player.goldSource === 'ocr' ? player.gold : null) };
+    return { ...player, ...(sample?.source?{goldSource:sample.source}:{}), gold: sample?.value ?? (player.goldSource === 'ocr' ? player.gold : null) };
   });
   const economy = data?.economy ?? state.economy.filter(point => point.source === 'ocr');
   const last = economy.at(-1);

@@ -7,7 +7,6 @@
 .cast-canvas .neutral-objective>b{min-width:3.25cqw;font:800 1.5cqw/1 Arial,sans-serif;text-align:center;font-variant-numeric:tabular-nums}.neutral-objective.unknown{opacity:.6}
 .teamfight-overlay{position:absolute;inset:0;z-index:4;pointer-events:none}
 .tf-panel{position:absolute;bottom:0;left:25.83333%;width:48.33333%;padding:.4cqw .3cqw .3cqw;background:linear-gradient(0deg,var(--art-panel,#101c25) 0%,#071018ef 82%,#071018b8);border-bottom:.16cqw solid var(--art-accent,#55b5dd);color:var(--art-paper,#f4f6f9)}
-.tf-panel>header{color:#f4f6f9;display:flex;justify-content:space-between;margin-bottom:.3cqw;font:700 .65cqw/1 Arial,'Microsoft YaHei',sans-serif;letter-spacing:.05cqw;opacity:.8}
 .tf-roster{display:flex;gap:1.2cqw}.tf-team{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5cqw;flex:1;min-width:0}.tf-player{min-width:0;display:flex;flex-direction:column;align-items:center;gap:.18cqw}
 .tf-ultimate{width:2.3cqw;height:2.3cqw;border:1px solid #ddd;border-radius:50%;overflow:hidden;background:#071018}.tf-ultimate .lb-icon{border-radius:50%}
 .tf-spells{display:flex;width:2.8cqw;height:1.3cqw;gap:.2cqw}.tf-spells .lb-icon{width:1.3cqw}

@@ -188,7 +188,7 @@ test('adapter sync caches stable settings and updates camera visibility independ
 });
 
 test('failed camera sync is throttled across broadcast ticks and retries a changed selection immediately',async()=>{
-  const state=createSeed();state.connections.obs.status='connected';state.overlay.playerFeeds=structuredClone(feeds);state.overlay.playerFeeds.blue.cameraDeviceId='missing';
+  const state=createSeed();state.connections.obs.status='connected';state.programScene='live';state.previewScene='live';state.overlay.playerFeeds=structuredClone(feeds);state.overlay.playerFeeds.blue.cameraDeviceId='missing';
   const obs=new CameraObs();const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('unused'));(adapters as any).obs.call=obs.call;
   await assert.rejects(adapters.syncPlayerFeeds(),/已不可用/);
   const count=obs.requests.length;
@@ -223,4 +223,22 @@ test('five-pair manual and automatic selections route each side to the matching 
   state=applyAction(state,{type:'take'});
   obs.requests=[];await adapters.syncPlayerFeeds();
   assert.ok(obs.requests.filter(request=>request.type==='SetSceneItemEnabled').every(request=>request.data.sceneItemEnabled===false));
+});
+
+test('teamfight hides native cameras on its bus and never requires an unused camera device',async()=>{
+ let state=createSeed();state.connections.obs.status='connected';state.programScene='live';state.previewScene='live';
+ const pairs=playerFeedPairs(state.overlay),obs=new CameraObs();
+ pairs[1]={blue:{...feeds.blue},red:{...feeds.red}};
+ state=applyAction(state,{type:'set-overlay',patch:{playerFeedPairs:pairs}});
+ state=applyAction(state,{type:'take'});
+ const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('unused'));(adapters as any).obs.call=obs.call;
+ await adapters.syncPlayerFeeds();
+ state.programScene='teamfight';obs.requests=[];await adapters.syncPlayerFeeds();
+ const toggles=obs.requests.filter(r=>r.type==='SetSceneItemEnabled');
+ assert(toggles.some(r=>r.data.sceneName===engineScene&&r.data.sceneItemEnabled===false));
+ assert(!toggles.some(r=>r.data.sceneName===engineScene&&r.data.sceneItemEnabled===true));
+ assert(toggles.some(r=>r.data.sceneName===enginePreviewScene&&r.data.sceneItemEnabled===true));
+ state.previewScene='teamfight';obs.devices=[];obs.requests=[];
+ await adapters.syncPlayerFeeds(true,state);
+ assert(!obs.requests.some(r=>r.type==='CreateInput'||r.type==='SetSceneItemEnabled'&&r.data.sceneItemEnabled===true));
 });

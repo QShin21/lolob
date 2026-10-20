@@ -9,7 +9,7 @@ import { bottomPlayers } from '../../server/bottom-scoreboard';
 import { championFor } from '../lib';
 import { useGameClock } from './GameTime';
 import { useUltimateIcons } from './useUltimateIcons';
-import { Icon, Meter, PlayerFeed } from './LiveBottom';
+import { Icon, Meter } from './LiveBottom';
 import './combat-overlay.css';
 
 const labels:Record<NeutralKind,string>={grubs:'虚空巢虫',herald:'峡谷先锋',baron:'纳什男爵',dragon:'元素亚龙',elder:'远古巨龙'};
@@ -54,8 +54,8 @@ export function TeamfightOverlay({state,champions,version}:{state:BroadcastState
    <div className="tf-damage" aria-label={`${player?.name??'选手'} 本段对英雄伤害`} data-available={damage!==undefined}><b>{damage===undefined?'—':damage.toLocaleString('en-US')}</b></div>
   </article>;
  };
- return <div className="teamfight-overlay"><PlayerFeed state={state} side="blue"/><PlayerFeed state={state} side="red"/>
-  <section className="tf-panel" aria-label="团战十人状态与本段伤害"><header>本段对英雄伤害 <span>{segment?`${Math.max(0,Math.floor(time-segment.startedAt))}s`:'切入后开始统计'}</span></header>
+ return <div className="teamfight-overlay">
+  <section className="tf-panel" aria-label="团战十人状态与本段伤害">
    <div className="tf-roster">{(['blue','red'] as const).map(side=><div className={`tf-team ${side}`} key={side}>{Array.from({length:5},(_,i)=>render(bottomPlayers(state,side)[side==='blue'?4-i:i],i))}</div>)}</div>
   </section>
  </div>;

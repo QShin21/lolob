@@ -2,7 +2,7 @@ import type { Recording } from './types';
 
 export function csvRecording(r:Recording):string {
   const quote=(value:unknown)=>{let t=String(value??'');if(/^[=+@\-\t\r]/.test(t))t=`'${t}`;return `"${t.replaceAll('"','""')}"`;};
-  const sources={none:'不可用',api:'游戏 API',manual:'人工校准',ocr:'观战 HUD 识别'};
+  const sources={none:'不可用',memory:'国服观战直读',api:'游戏 API',manual:'人工校准',ocr:'观战 HUD 识别'};
   const source=sources[r.economyFeed?.source??'none'];
   const players=r.players.map(p=>{
     const available=p.statsAvailable!==false;

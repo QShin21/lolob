@@ -35,16 +35,16 @@ export interface Team { id: string; name: string; tag: string; color: string; lo
 export interface Match { id: string; title: string; blueTeamId: string; redTeamId: string; scheduledAt: string; format: string; status: 'scheduled' | 'live' | 'finished'; blueScore: number; redScore: number }
 export interface TeamStats { kills: number; gold: number | null; towers: number; dragons: number; barons: number; elders?: number; heralds?: number; voidgrubs?: number; objectivesAvailable?: boolean }
 export interface GameEvent { id: string; time: number; type: string; text: string; team?: Side }
-export type EconomySource = 'none' | 'api' | 'manual' | 'ocr';
+export type EconomySource = 'none' | 'api' | 'manual' | 'ocr' | 'memory';
 export interface EconomyRoi { x: number; y: number; width: number; height: number }
 export type HudObjective = 'towers' | 'dragons' | 'barons' | 'voidgrubs';
 export interface OcrObservation { value: number; sampledAt: string; gameTime: number; raw?: string }
-export interface OcrPlayerGoldObservation extends OcrObservation { team: Side; championId: string }
+export interface OcrPlayerGoldObservation extends OcrObservation { source?: 'ocr' | 'api' | 'memory'; team: Side; championId: string }
 export interface OcrMatchData {
   key: string; sourceGameId?: string; roster?: string;
   players: Record<string, OcrPlayerGoldObservation>;
   objectives: Record<Side, Partial<Record<HudObjective, OcrObservation>>>;
-  teamGold?: { blue: number; red: number; sampledAt: string; gameTime: number };
+  teamGold?: { source?: 'ocr' | 'api' | 'memory'; blue: number; red: number; sampledAt: string; gameTime: number };
   economy: EconomyPoint[];
 }
 export interface ObjectiveOcrFeed { status: 'disabled' | 'waiting' | 'fresh' | 'partial' | 'stale'; detail: string; matched: number; total: number; sampledAt?: string }

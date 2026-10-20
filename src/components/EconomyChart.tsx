@@ -4,7 +4,7 @@ import { economySegments } from '../../shared/presentation';
 import { time } from '../lib';
 
 export function economySource(state:BroadcastState) {
-  return ({api:'客户端 API',ocr:'观战 HUD 读数',manual:'人工校准',none:'等待经济数据源'} as const)[state.economyFeed?.source||'none'];
+  return ({memory:'国服观战直读',api:'客户端 API',ocr:'观战 HUD 读数',manual:'人工校准',none:'等待经济数据源'} as const)[state.economyFeed?.source||'none'];
 }
 export function EconomyChart({state,compact=false,interactive=false}:{state:BroadcastState;compact?:boolean;interactive?:boolean}) {
   const [hover,setHover]=useState<number|null>(null),points=state.economy.filter(p=>[p.time,p.blue,p.red].every(Number.isFinite));

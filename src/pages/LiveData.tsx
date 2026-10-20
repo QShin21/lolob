@@ -34,6 +34,7 @@ const connectionStatus = {
   error: "异常",
 };
 const sourceNames = {
+  memory: "国服观战直读",
   none: "待采集",
   api: "游戏 API",
   ocr: "观战 HUD 识别",

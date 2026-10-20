@@ -1,44 +1,34 @@
 import { defaultObjectiveRegions } from '../../shared/hud-ocr';
-import {currentGameResult} from '../../shared/game-results';
-import {OcrCalibration} from './OcrCalibration';
+import { currentGameResult } from '../../shared/game-results';
+import { OcrCalibration } from './OcrCalibration';
 import { useEffect, useState } from 'react';
-import { ScanLine, Save, RefreshCw } from 'lucide-react';
-import type { EconomyFeed, EconomyOcrConfig, EconomyRoi, StateContext } from '../../shared/types';
+import { Save, RefreshCw } from 'lucide-react';
+import type { EconomyFeed, EconomyOcrConfig, StateContext } from '../../shared/types';
 import { api, gold } from '../lib';
 
 const initial:EconomyOcrConfig={enabled:false,blue:{x:.33,y:0,width:.08,height:.06},red:{x:.59,y:0,width:.08,height:.06}};
-const playerRegion:EconomyRoi={x:0,y:.4,width:1,height:.6};
-const labels={none:'等待经济来源',api:'游戏 API',manual:'人工校准',ocr:'观战 HUD 识别'};
-export function EconomySourcePanel({state,notify}:Pick<StateContext,'state'|'notify'>) {
-  const [config,setConfig]=useState<EconomyOcrConfig>(state.settings.economyOcr||initial);
-  const [blue,setBlue]=useState('');const [red,setRed]=useState('');const [busy,setBusy]=useState('');const [probe,setProbe]=useState<EconomyFeed>();
-  const configKey=JSON.stringify(state.settings.economyOcr);
-  useEffect(()=>{setConfig(state.settings.economyOcr||initial);},[configKey]);
-  const frozen=!!currentGameResult(state);
-  const frozenDetail='本局赛后记录已冻结，连续识别已停止。测试其他录像请开启新系列赛；正式赛事请进入下一局或载入下一场，历史记录会保留。';
-  const feed=frozen?undefined:state.economyFeed;
-  const objectiveConfig=config.objectives??{enabled:config.enabled,regions:defaultObjectiveRegions};
-  const playerConfig=config.players??{enabled:config.enabled,region:playerRegion};
-  async function run(key:string,work:()=>Promise<EconomyFeed>){setBusy(key);try{const value=await work();setProbe(value);notify(key==='probe'&&value.players?value.players.detail:value.detail);}catch(e){notify(e instanceof Error?e.message:'经济采集操作失败','error');}finally{setBusy('');}}
-  function roi(side:'blue'|'red',key:keyof EconomyRoi,value:string){setConfig(c=>({...c,[side]:{...c[side],[key]:Number(value)/100}}));}
-  return <section className="panel economy-bridge"><div className="panel-head"><div><h2><ScanLine size={17}/>经济与顶部资源 OCR</h2><p className="muted">从原生观战计分板读取经济，同步每名选手的 KDA、补刀，并留存防御塔、小龙、大龙与虚空巢虫计数。</p></div><span className="badge">{'LIVE'}</span></div>
-    <div className={`economy-source-status ${feed?.status||''}`}><strong>{labels[feed?.source||'none']}</strong><span>{frozen?'赛后已冻结':feed?.status==='fresh'?'读数有效':feed?.status==='stale'?'读数已过期':feed?.status==='error'?'需要调整':'待采集'}</span><p>{frozen?frozenDetail:feed?.detail||'请连接局内数据，再校准双方经济区域。'}</p></div>
-    <div className="economy-calibration"><div><h3>自动读取观战计分板</h3><p>使用 OCR 读取游戏顶部的双方经济及底部个人计分板。内置 OBS 已连接时直接采样原始游戏捕获，支持游戏窗口处于后台或被其他窗口遮挡。使用外部 OBS 或原始捕获不可用时，回退读取 Windows 屏幕，此时请保持游戏窗口可见且采样区域无遮挡。先显示原生计分板，再自动定位或手动校准坐标；OCR 保留画面显示精度，局内统计有效 3 秒，经济与资源有效 10 秒。赛后报告独立保留最后有效 OCR 样本及采样时间；未采集到的数据留空。</p>
-      <label className="toggle-setting"><span>启用观战经济识别<small>优先采集内置 OBS 原始游戏画面；屏幕回退需窗口可见</small></span><input type="checkbox" checked={config.enabled} onChange={e=>setConfig({...config,enabled:e.target.checked})}/></label>
-      <button className="button primary small" disabled={frozen||!!busy||state.mode!=='live'} onClick={()=>void run('locate',async()=>{const found=await api<{config:EconomyOcrConfig;feed:EconomyFeed}>('/api/economy/calibrate',{method:'POST',body:JSON.stringify({delayMs:3000})});setConfig(found.config);return found.feed;})}><ScanLine size={14}/>{busy==='locate'?'请切回游戏，正在定位…':'自动定位经济区域（3秒）'}</button>
-      <label className="toggle-setting"><span>读取顶部四类资源<small>蓝红两侧共八个数字，新计数连续两帧一致后保存</small></span><input type="checkbox" checked={objectiveConfig.enabled} onChange={e=>setConfig({...config,objectives:{...objectiveConfig,enabled:e.target.checked}})}/></label>
-      <p role="status">{frozen?frozenDetail:feed?.objectives?.detail||'资源识别默认跟随团队 OCR。可在采样图选择具体资源，框选数字并保存。'}</p>
-      <p>赛后报告只展示防御塔、小龙、大龙、虚空巢虫。个人累计经济需在局内露出金币列供采集，装备价格与补刀数不会换算为英雄经济。</p>
-      <OcrCalibration config={config} onChange={setConfig}/><details><summary>高级百分比坐标与个人识别</summary>
-      {(['blue','red']as const).map(side=><div className="economy-roi-row" key={side}><span className={`${side}-text`}>{side==='blue'?'蓝方经济':'红方经济'}</span>{([{key:'x',label:'左 %'},{key:'y',label:'上 %'},{key:'width',label:'宽 %'},{key:'height',label:'高 %'}]as const).map(v=><label key={v.key}>{v.label}<input aria-label={`${side==='blue'?'蓝方':'红方'}区域${v.label}`} type="number" min={(v.key==='width'||v.key==='height')?0.1:0} max="100" step="0.1" value={Number((config[side][v.key]*100).toFixed(2))} onChange={e=>roi(side,v.key,e.target.value)}/></label>)}</div>)}
-      <h3>个人经济、KDA 与补刀 · 原生底部计分板</h3><p>已启用团队 OCR 时，个人识别会自动跟随开启。装备视图可独立读取 KDA 和精确补刀；金币视图中的 123(9423) 对应当前金币 123、累计经济 9423。系统按同侧英雄头像确认选手，分别更新统计和经济。头像或数字未能可靠识别的行会等待下一次采样。自动 HUD 会保留此计分板供采集。</p>
-      <label className="toggle-setting"><span>读取个人计分板<small>连续采样；统计有效 3 秒，经济有效 10 秒</small></span><input type="checkbox" checked={playerConfig.enabled} onChange={e=>setConfig({...config,players:{...playerConfig,enabled:e.target.checked}})}/></label>
-      <div className="economy-roi-row"><span>底部计分板</span>{([{key:'x',label:'左 %'},{key:'y',label:'上 %'},{key:'width',label:'宽 %'},{key:'height',label:'高 %'}]as const).map(v=><label key={v.key}>{v.label}<input aria-label={`个人经济区域${v.label}`} type="number" min={(v.key==='width'||v.key==='height')?0.1:0} max="100" step="0.1" value={Number((playerConfig.region[v.key]*100).toFixed(2))} onChange={e=>setConfig({...config,players:{...playerConfig,region:{...playerConfig.region,[v.key]:Number(e.target.value)/100}}})}/></label>)}</div>
-      <p>默认区域覆盖游戏窗口完整宽度和下方 60%，请保留左右两侧金币列、中央英雄头像及全部五行。坐标调整后点击“保存识别区域”。</p>
-      <p role="status">{frozen?frozenDetail:feed?.players?.detail||'等待原生计分板的 KDA 与补刀，金币列可另行采集。'}{state.mode==='live'&&feed?.players&&<> 统计 {feed.players.statsMatched??0} / {feed.players.total} · 经济 {feed.players.matched} / {feed.players.total}{feed.players.sampledAt?` · 采样时间 ${new Date(feed.players.sampledAt).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai'})}`:''}{feed.players.durationMs!==undefined?` · 本次耗时 ${(feed.players.durationMs/1000).toFixed(2)} 秒`:''}。</>}</p>
-      </details><div className="inline-buttons"><button className="button small" disabled={!!busy} onClick={()=>void run('config',()=>api('/api/economy/config',{method:'POST',body:JSON.stringify(config)}))}><Save size={14}/>保存识别区域</button><button className="button small" disabled={frozen||!!busy||!(state.settings.economyOcr?.enabled||state.settings.economyOcr?.players?.enabled||state.settings.economyOcr?.objectives?.enabled)||state.mode!=='live'} onClick={()=>void run('probe',()=>api('/api/economy/probe',{method:'POST',body:JSON.stringify({delayMs:3000})}))}><RefreshCw size={14}/>{busy==='probe'?'请展开游戏计分板，正在读取…':'3 秒后读取一次'}</button></div>
-      {!frozen&&probe?.players&&state.mode==='live'&&<p aria-live="polite">最近一次操作：{probe.players.detail}</p>}
-      {!frozen&&(feed?.raw||probe?.raw)&&<p className="ocr-raw">最近团队经济采样文本：蓝「{(feed?.raw||probe?.raw)?.blue}」 / 红「{(feed?.raw||probe?.raw)?.red}」</p>}
-    </div><div><h3>人工校准双方经济</h3><p>按原生计分板输入双方数值，例如 23.4k、23,400 或 2.34万。读数立即进入计分板和经济曲线；每次校准有效 10 秒，过期后显示 —。持续转播请使用自动识别。</p><div className="economy-manual-row"><label className="field blue-text">蓝方累计经济<input aria-label="蓝方累计经济校准" value={blue} onChange={e=>setBlue(e.target.value)} placeholder="例如 23.4k" maxLength={40}/></label><label className="field red-text">红方累计经济<input aria-label="红方累计经济校准" value={red} onChange={e=>setRed(e.target.value)} placeholder="例如 22.8k" maxLength={40}/></label></div><button className="button primary small" disabled={frozen||!!busy||!blue||!red||state.mode!=='live'} onClick={()=>void run('sample',()=>api('/api/economy/sample',{method:'POST',body:JSON.stringify({blue,red})}))}>校准并更新经济</button><div className="economy-readings"><span className="blue-text">当前蓝方<b>{gold(state.stats.blue.gold)}</b></span><span className="red-text">当前红方<b>{gold(state.stats.red.gold)}</b></span></div><p>个人累计经济优先使用客户端 totalGold，缺失时读取观战金币列的括号内数字；装备目录价值独立展示。</p></div></div>
-  </section>;
+const playerRegion={x:0,y:.4,width:1,height:.6};
+const labels={none:'等待经济来源',memory:'国服观战直读',api:'游戏 API',manual:'历史人工校准',ocr:'历史 HUD 读数'};
+export function EconomySourcePanel({state,notify}:Pick<StateContext,'state'|'notify'>){
+ const [config,setConfig]=useState<EconomyOcrConfig>(state.settings.economyOcr||initial),[busy,setBusy]=useState(false);
+ const configKey=JSON.stringify(state.settings.economyOcr);
+ useEffect(()=>setConfig(state.settings.economyOcr||initial),[configKey]);
+ const frozen=!!currentGameResult(state),feed=frozen?undefined:state.economyFeed;
+ const objectives=config.objectives??{enabled:config.enabled,regions:defaultObjectiveRegions};
+ const players=config.players??{enabled:false,region:playerRegion};
+ async function run(route:string,body:unknown){setBusy(true);try{const result=await api<EconomyFeed>(route,{method:'POST',body:JSON.stringify(body)});notify(result.detail);}catch(e){notify(e instanceof Error?e.message:'采集操作失败','error');}finally{setBusy(false);}}
+ return <section className="panel economy-bridge"><div className="panel-head"><div><h2>经济数据来源</h2><p className="muted">直接读取十名选手的当前金币与累计金币，团队经济由同一批次五名选手的累计金币相加。</p></div><span className="badge">LIVE</span></div>
+  <div className={`economy-source-status ${feed?.status||''}`}><strong>{labels[feed?.source||'none']}</strong><span>{frozen?'赛后已冻结':feed?.status==='fresh'?'读数有效':feed?.status==='stale'?'等待新样本':'待采集'}</span><p>{frozen?'本局经济与曲线已保存在赛后记录。测试其他录像请开启新系列赛；正式赛事请进入下一局或载入下一场。':feed?.detail||'连接国服观战或回放后自动采集。'}</p></div>
+  <div className="economy-readings"><span className="blue-text">蓝方累计金币<b>{gold(state.stats.blue.gold)}</b></span><span className="red-text">红方累计金币<b>{gold(state.stats.red.gold)}</b></span></div>
+  <p>经济曲线按游戏时间记录，每 5 秒保留最新样本；个人经济、团队合计和曲线使用同一数据来源。暂停时停留在当前游戏时间，采样中断保留空白。</p>
+  <p role="status">{feed?.players?.detail||'等待个人金币数据'}{feed?.sampledAt?` · 采样时间 ${new Date(feed.sampledAt).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai'})}`:''}</p>
+  <details><summary>辅助 HUD 识别：视野、计分板统计与顶部资源</summary>
+   <p>以下 OCR 仅补充视野、KDA、补刀与顶部资源计数，金币始终使用直接采集数据。</p>
+   <label className="toggle-setting"><span>读取个人计分板统计</span><input type="checkbox" checked={players.enabled} onChange={e=>setConfig({...config,players:{...players,enabled:e.target.checked}})}/></label>
+   <label className="toggle-setting"><span>读取顶部四类资源</span><input type="checkbox" checked={objectives.enabled} onChange={e=>setConfig({...config,objectives:{...objectives,enabled:e.target.checked}})}/></label>
+   <p>{feed?.objectives?.detail}</p>
+   <OcrCalibration config={config} onChange={setConfig} goldRegions={false}/>
+   <div className="inline-buttons"><button className="button small" disabled={busy||frozen} onClick={()=>void run('/api/economy/config',{...config,enabled:false,players,objectives})}><Save size={14}/>保存辅助识别设置</button><button className="button small" disabled={busy||frozen||(!players.enabled&&!objectives.enabled)} onClick={()=>void run('/api/economy/probe',{delayMs:3000})}><RefreshCw size={14}/>3 秒后读取辅助数据</button></div>
+  </details>
+ </section>;
 }

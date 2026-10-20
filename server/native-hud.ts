@@ -58,7 +58,7 @@ export class NativeHudController {
       }
       // OCR reads the actual game window; keeping its score visible avoids destroying its input.
       const preserveScore = true;
-      const preserveScoreboard = state.settings.economyOcr?.players?.enabled ?? state.settings.economyOcr?.enabled === true;
+      const preserveScoreboard = state.settings.economyOcr?.players?.enabled === true;
       const fields = hiddenFields.filter(key => !(preserveScore && key === 'interfaceScore') && !(preserveScoreboard && key === 'interfaceScoreboard'));
       if ([...hiddenFields,...preservedFields].some(key => typeof render[key] !== 'boolean')) throw new Error('当前版本缺少完整 HUD 开关');
       if (!this.original) this.original = Object.fromEntries([...hiddenFields,...preservedFields,'interfaceAll'].filter(k => typeof render[k] === 'boolean').map(k => [k,render[k]]));

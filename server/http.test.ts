@@ -4,6 +4,7 @@ import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { mkdtemp, rm, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { tmpdir } from 'node:os';
 import { WebSocket } from 'ws';
 import { lanAddresses } from './security';
@@ -41,11 +42,10 @@ test('HTTP / WebSocket service, upload and LAN control credentials work together
     const post=(route:string,body:unknown)=>fetch(base+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     assert.equal((await post('/api/action',{type:'set-mode',mode:'demo'})).status,400,'removed source must be rejected');
     await post('/api/action',{type:'set-mode',mode:'live'});
-    const economic=await post('/api/economy/sample',{blue:'23.4k',red:'22.8k'}).then(r=>r.json());assert.equal(economic.source,'manual');assert.equal(economic.blue,23400);
-    const real=await fetch(`${base}/api/state`).then(r=>r.json());assert.equal(real.stats.blue.gold,23400);assert.equal(real.stats.red.gold,22800);assert.equal(real.economy[0].source,'manual');assert.equal(real.players.length,0,'manual team gold must not fabricate individual stats');
-    assert.equal((await post('/api/economy/sample',{blue:'23.4k 2',red:'22.8k'})).status,400);
-    const exported=await fetch(`${base}/api/export?format=json`).then(r=>r.json());assert.equal(exported.economyFeed.source,'manual');assert.equal(exported.economy[0].blue,23400);
-    assert.match(await fetch(`${base}/api/export?format=csv`).then(r=>r.text()),/人工校准/);
+    const economic=await post('/api/economy/sample',{blue:'23.4k',red:'22.8k'});assert.equal(economic.status,400);assert.match((await economic.json()).error,/直读/);
+    const real=await fetch(`${base}/api/state`).then(r=>r.json());assert.equal(real.stats.blue.gold,null);assert.equal(real.stats.red.gold,null);assert.equal(real.economy.length,0);assert.equal(real.players.length,0);
+    assert.equal((await post('/api/economy/calibrate',{})).status,400);
+    assert.equal((await fetch(`${base}/api/export?format=json`)).status,400,'unobserved gold cannot produce an export');
     assert.equal((await post('/api/economy/config',{enabled:false,blue:{x:.33,y:0,width:.08,height:.06},red:{x:.59,y:0,width:.08,height:.06}})).status,200);
     assert.equal((await post('/api/economy/config',{enabled:false,blue:{x:.95,y:0,width:.08,height:.06},red:{x:.59,y:0,width:.08,height:.06}})).status,400,'out-of-window ROI must fail');
     if(addresses.length){assert.equal((await fetch(`http://${addresses[0]}:${port}/api/economy/sample`,{method:'POST',headers:{'Content-Type':'application/json','x-control-token':network.controlToken},body:JSON.stringify({blue:23000,red:22000})})).status,403,'paired remote still cannot configure capture or read manual source');}
@@ -56,14 +56,15 @@ test('desktop IPC shutdown flushes the latest recording even while an older snap
   const dir=await mkdtemp(path.join(tmpdir(),'riftcast-test-'));const port=await availablePort();const base=`http://127.0.0.1:${port}`;
   const preload=path.join(dir,'slow-write.cjs');
   await writeFile(preload,`const fs=require('node:fs/promises');const original=fs.open;fs.open=async function(file,...args){const handle=await original.call(this,file,...args);const write=handle.writeFile.bind(handle);handle.writeFile=async function(...values){if(typeof file==='string'&&/state.json.*tmp/.test(file)){process.send?.({type:'test-write-started'});await new Promise(resolve=>setTimeout(resolve,500));}return write(...values);};return handle;};require('node:module').syncBuiltinESMExports();`);
-  const child=spawn(process.execPath,['--require',preload,'--import','tsx','server/index.ts'],{cwd:process.cwd(),windowsHide:true,env:{...process.env,PORT:String(port),RIFTCAST_DATA_DIR:dir,ENABLE_LAN:'0',RIFTCAST_AUTO_CONNECT:'0'},stdio:['ignore','pipe','pipe','ipc']});
+  const hook=path.join(dir,'observed-fixture.mjs');
+  await writeFile(hook,`import {Adapters} from '${pathToFileURL(path.join(process.cwd(),'server/adapters.ts')).href}';import {createFixture} from '${pathToFileURL(path.join(process.cwd(),'server/test-support/fixture.ts')).href}';Adapters.prototype.initializeObsEngine=async function(){this.commit(s=>Object.assign(s,createFixture()));};`);
+  const child=spawn(process.execPath,['--require',preload,'--import','tsx','--import',pathToFileURL(hook).href,'server/index.ts'],{cwd:process.cwd(),windowsHide:true,env:{...process.env,PORT:String(port),RIFTCAST_DATA_DIR:dir,ENABLE_LAN:'0',RIFTCAST_AUTO_CONNECT:'0'},stdio:['ignore','pipe','pipe','ipc']});
   let diagnostics='';child.stdout?.on('data',value=>{diagnostics+=value.toString();});child.stderr?.on('data',value=>{diagnostics+=value.toString();});
   try{
     let ready=false;for(let i=0;i<60;i++){try{if((await fetch(`${base}/api/health`)).ok){ready=true;break;}}catch{/* wait for startup */}await new Promise(resolve=>setTimeout(resolve,150));}assert.ok(ready,diagnostics);
     child.send({type:'unrelated-message'});assert.equal((await fetch(`${base}/api/health`)).status,200);
     const firstWrite=new Promise<void>((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('The delayed persistence hook did not run')),3000);child.on('message',message=>{if(message&&typeof message==='object'&&(message as {type?:unknown}).type==='test-write-started'){clearTimeout(timer);resolve();}});});
     const paused=await fetch(`${base}/api/action`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'set-overlay',patch:{ticker:true}})});assert.equal(paused.status,200);await firstWrite;
-    await fetch(`${base}/api/economy/sample`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({blue:23000,red:22000})});
     const latest=await fetch(`${base}/api/action`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'save-recording',title:'退出前即时保存的记录'})}).then(response=>response.json());const recordingId=latest.recordings[0].id;
     const exited=new Promise<number|null>((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(`Desktop service did not shut down: ${diagnostics}`)),5000);child.once('exit',code=>{clearTimeout(timer);resolve(code);});});
     child.send({type:'riftcast-shutdown'});child.send({type:'riftcast-shutdown'});assert.equal(await exited,0);

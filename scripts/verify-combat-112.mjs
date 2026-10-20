@@ -44,7 +44,7 @@ try{
  for(const pack of BUILTIN_RUNTIME_STYLES){
   await page.goto(`${origin}?pack=${pack.id}`);await page.locator('[data-style-status=ready]').waitFor();await page.evaluate(()=>document.fonts.ready);
   await page.waitForFunction(()=>document.querySelectorAll('.tf-ultimate img').length===10&&[...document.querySelectorAll('.tf-player img')].every(i=>i.complete&&i.naturalWidth>0),undefined,{timeout:30000});
-  assert.equal(await page.locator('.tf-player').count(),10);assert.equal(await page.locator('.tf-vitals .lb-meter').count(),30);assert.equal(await page.locator('.tf-spells .lb-cooldown-seconds').count(),10);
+  assert.equal(await page.locator('.tf-panel>header,.teamfight-overlay .lb-feed').count(),0);assert(!(await page.locator('.teamfight-overlay').innerText()).includes('本段对英雄伤害'));assert.equal(await page.locator('.tf-player').count(),10);assert.equal(await page.locator('.tf-vitals .lb-meter').count(),30);assert.equal(await page.locator('.tf-spells .lb-cooldown-seconds').count(),10);
   assert.equal(await page.locator('.tf-respawn').innerText(),'15');assert.equal(await page.locator('.tf-portrait.has-baron').count(),1);assert.equal(await page.locator('.tf-portrait.has-elder').count(),1);
   assert.deepEqual(await page.locator('.tf-damage>b').allInnerTexts(),Array(10).fill('0'));await geometry();
   assert.equal(await page.locator('.neutral-objective.alive>b').count(),0);assert.equal(await page.locator('.neutral-objective.countdown>b').innerText(),'5:50');
@@ -73,5 +73,5 @@ try{
  await page.evaluate(()=>window.combatFixture.setState(s=>({...s,players:s.players.map(p=>({...p,telemetry:{...p.telemetry,sampledAt:'2000-01-01T00:00:00Z'}})),neutralObjectives:{...s.neutralObjectives,sampledAt:'2000-01-01T00:00:00Z'}})));
  await page.waitForFunction(()=>document.querySelectorAll('.tf-damage[data-available=false]').length===10);assert.equal(await page.locator('.tf-vitals .is-unavailable').count(),30);assert.equal(await page.locator('.neutral-objective.unknown').count(),2);
  checks.push('scaled 1280/960 layouts remain bounded; stale samples hide damage and vitals and mark neutral state unknown');
- assert.deepEqual(errors,[]);await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors,scope:'Synthetic browser validation; real CN damage field remains unconfirmed'},null,2));console.log(JSON.stringify({status:'passed',checks}));
+ assert.deepEqual(errors,[]);await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors,scope:'Synthetic browser validation of teamfight, objectives and postgame layouts'},null,2));console.log(JSON.stringify({status:'passed',checks}));
 }finally{await browser?.close();await vite.close();}

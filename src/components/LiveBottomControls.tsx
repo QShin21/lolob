@@ -205,7 +205,7 @@ export function LiveBottomControls({ state, champions, send, notify }: StateCont
           <label className="field">选手名称<input maxLength={80} aria-label={`${sideName[side]}选手名称`} value={feed.label} disabled={busy} onChange={event => updateFeed(side, { label: event.target.value })} placeholder={automatic.label || `${playerFeedRoles[editIndex]}选手名称`} /><small className="muted">留空时使用当前对位选手名称。</small></label>
         </div>;
       })}</div>
-      <p className="live-bottom-economy-note muted">每行经济领先继续使用双方同位置选手的累计经济 OCR 读数计算。请在上方经济来源中启用个人经济识别并校准游戏原生金币列。</p>
+      <p className="live-bottom-economy-note muted">每行经济领先使用双方同位置选手的累计金币计算，由国服观战直接采集。</p>
       {cameraApplyDetail && <div className="live-bottom-camera-apply"><p className={cameraApplyFailed ? 'request-error' : 'muted'} role="status">{cameraApplyDetail}</p>{cameraApplyFailed && incoming.playerFeedPairs.some(pair => sides.some(side => pair[side].mode === 'camera')) && <button type="button" className="button small" disabled={busy || dirty} onClick={() => void retryCameras()}><RefreshCw size={14} className={pending === 'camera-apply' ? 'spinning' : ''} />{pending === 'camera-apply' ? '正在应用…' : '重新应用已保存摄像头'}</button>}</div>}
       {error && <p className="request-error live-bottom-error" role="alert">{error}</p>}
       {conflict&&<div className="request-error" role="alert"><strong>底部配置已由其他页面修改，草稿已保留</strong><details><summary>比较当前待播与本地草稿</summary><p>当前待播</p><pre>{JSON.stringify(incoming,null,2)}</pre><p>本地草稿</p><pre>{JSON.stringify(draft,null,2)}</pre></details><button className="button" onClick={()=>{baseVersion.current=state.production?.configVersion;setConflict(false);}}>已核对，保留本地修改</button></div>}
