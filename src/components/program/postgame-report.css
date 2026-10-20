@@ -11,3 +11,5 @@
 .pr-gold-comparison.is-unavailable>i{background:var(--art-cd9d8d4, #d9d8d4)}
 
 .pr-damage .pr-gold-player .pr-bar{visibility:visible;background:transparent}.pr-damage .blue .pr-bar i{margin-left:0;background:linear-gradient(90deg,#225fc6,#20c8e0)}.pr-damage .red .pr-bar i{margin-left:auto;background:linear-gradient(90deg,#f19c42,#eb4e1b)}.pr-damage .pr-gold-pair{column-gap:1cqw}.pr-damage .pr-gold-player>.champion-image{border:1px solid var(--art-line,#b6a459)}
+
+.pr-damage .blue .pr-gold-label>b{color:#225fc6}.pr-damage .red .pr-gold-label>b{color:#eb4e1b}
