@@ -95,7 +95,7 @@ function PlayerRow({player,champions,items,version,side,ultimateIcon,time,now,av
     </div>
     <Identity player={player} ultimateIcon={ultimateIcon} time={time} fresh={fresh}/>
     <span className="lb-player-gold" aria-label={`剩余金币（总经济） ${gold}`} title={`剩余金币（总经济） ${gold}`}>{goldParts?<><b>{goldParts[1]}</b><small>({goldParts[2]})</small></>:gold}</span>
-    <div className="lb-stat-column"><b className="lb-cs">{playerCs(player)}</b><b className="lb-kda">{playerKda(player,true)}</b></div>
+    <div className="lb-stat-column"><FitName className="lb-cs">{String(playerCs(player))}</FitName><FitName className="lb-kda">{playerKda(player,true)}</FitName></div>
   </div>;
 }
 function PlayerFeed({state,side}:{state:BroadcastState;side:Side}) {

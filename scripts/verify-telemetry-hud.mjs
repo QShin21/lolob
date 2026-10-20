@@ -27,6 +27,7 @@ state.players.forEach((p,i)=>{
  p.buffs={baron:i===0||i===7,elder:i===5||i===7,baronExpiresAt:1260,elderExpiresAt:1250};
  p.isDead=i===3;p.respawnAt=i===3?1215:undefined;
  p.telemetryDamage={toChampions:98765};
+ if(i===4||i===9){p.cs=1234;p.kills=123;p.deaths=45;p.assists=123;}
 });
 const entryPath=path.join(root,'_telemetry-fixture.tsx').replaceAll('\\','/');
 const entry=`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas.tsx';import'/src/styles.css';import'/src/responsive.css';
@@ -58,6 +59,7 @@ try{
   return {side:row.classList.contains('red')?'red':'blue',row:box(row),parts:selectors.map(s=>({selector:s,...box(row.querySelector(s))}))};
  }));
  for(const row of geometry){for(const part of row.parts){assert(part.x>=row.row.x-1&&part.right<=row.row.right+1,`${row.side} ${part.selector} exceeds row`);assert(part.y>=row.row.y-1&&part.bottom<=row.row.bottom+1,`${part.selector} exceeds row height`);}}
+ assert(await page.locator('.lb-stat-column .fit-name').evaluateAll(cells=>cells.every(cell=>{const text=cell.querySelector('span').getBoundingClientRect(),box=cell.getBoundingClientRect();return text.left>=box.left-1&&text.right<=box.right+1;})),'Large KDA and CS stay within their column');
  checks.push('ten mirrored rows, 30 bars, no layout overflow','D/F, R and item masks with last-ten-second labels','dead portrait, resurrection countdown, Baron and Elder including both','damage absent from program');
  await page.screenshot({path:path.join(dir,'scoreboard-1920.png')});
  await page.locator('.lb-scoreboard').screenshot({path:path.join(dir,'scoreboard-detail.png')});

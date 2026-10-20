@@ -81,3 +81,6 @@
 .lb-champion.has-baron.has-elder::after{border-color:#bd60f0;box-shadow:inset 0 0 0 .12cqw #e0e5ed}
 .cast-canvas .lb-respawn{font:700 1.2cqw/1 Arial,sans-serif;z-index:2}
 .cast-canvas .lb-level{z-index:3}.lb-player-row.is-dead .lb-level{font-size:.63cqw}
+.cast-canvas .lb-stat-column .fit-name{height:1em;line-height:1}
+.lb-stat-column .fit-name>span{left:auto;right:0;transform-origin:right center}
+.lb-player-row.red .lb-stat-column .fit-name>span{right:auto;left:0;transform-origin:left center}
