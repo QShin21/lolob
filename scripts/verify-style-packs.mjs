@@ -55,7 +55,7 @@ try {
   await page.screenshot({path:path.join(dir,'manager-imported.png')});
   checks.push('real scene-library ZIP import and stage preserve program, archived match data and custom scenes; state carries only immutable reference');
   const preview=await context.newPage();await preview.goto(base+'/overlay?preview=1');await preview.locator('[data-style-pack=verification-cup][data-style-status=ready]').waitFor();
-  const program=await context.newPage();await program.goto(base+'/overlay');await program.locator('[data-style-pack=glacier-aurora]').waitFor();
+  const program=await context.newPage();await program.goto(base+'/overlay');await program.locator('[data-style-pack=qinghua-celestial]').waitFor();
   checks.push('independent browser preview loads imported art while on-air browser retains builtin art until TAKE');
   await preview.close();await program.close();
   const exported=await fetch(`${base}/api/style-packs/${ref.id}/${ref.revision}/export`);assert.equal(exported.status,200);assert.match(exported.headers.get('content-type'),/zip/);
@@ -114,7 +114,7 @@ try {
   }
   await browser.close();browser=undefined;await vite.close();vite=undefined;
   await stop();await start();const restored=await state();assert.deepEqual(restored.overlay.stylePack,ref);assert.equal(restored.production.program.overlay.stylePack.id,BUILTIN_STYLE_REF.id);
-  assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,6);
+  assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,7);
   checks.push('real service restart restores both immutable style versions and separate preview/program selection');
   assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);
   await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors,blocked},null,2));console.log(checks.join('\n'));

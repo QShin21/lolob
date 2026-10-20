@@ -69,13 +69,13 @@
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftName-fontSize"] .cast-canvas .cast-draft-player{font-size:var(--element-draftName-fontSize)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftName-fontWeight"] .cast-canvas .cast-draft-player{font-weight:var(--element-draftName-fontWeight)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftName-letterSpacing"] .cast-canvas .cast-draft-player{letter-spacing:var(--element-draftName-letterSpacing)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-color"] .cast-canvas .arena-draft-team-heading{color:var(--element-draftTeam-color)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-backgroundColor"] .cast-canvas .arena-draft-team-heading{background-color:var(--element-draftTeam-backgroundColor)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-borderColor"] .cast-canvas .arena-draft-team-heading{border-color:var(--element-draftTeam-borderColor)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-font"] .cast-canvas .arena-draft-team-heading{font-family:var(--element-draftTeam-font)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-fontSize"] .cast-canvas .arena-draft-team-heading{font-size:var(--element-draftTeam-fontSize)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-fontWeight"] .cast-canvas .arena-draft-team-heading{font-weight:var(--element-draftTeam-fontWeight)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-letterSpacing"] .cast-canvas .arena-draft-team-heading{letter-spacing:var(--element-draftTeam-letterSpacing)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-color"] .cast-canvas .arena-draft-center-team{color:var(--element-draftTeam-color)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-backgroundColor"] .cast-canvas .arena-draft-center-team{background-color:var(--element-draftTeam-backgroundColor)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-borderColor"] .cast-canvas .arena-draft-center-team{border-color:var(--element-draftTeam-borderColor)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-font"] .cast-canvas .arena-draft-center-team{font-family:var(--element-draftTeam-font)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-fontSize"] .cast-canvas .arena-draft-center-team{font-size:var(--element-draftTeam-fontSize)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-fontWeight"] .cast-canvas .arena-draft-center-team{font-weight:var(--element-draftTeam-fontWeight)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-letterSpacing"] .cast-canvas .arena-draft-center-team{letter-spacing:var(--element-draftTeam-letterSpacing)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTimer-color"] .cast-canvas .cast-draft-timer{color:var(--element-draftTimer-color)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTimer-backgroundColor"] .cast-canvas .cast-draft-timer{background-color:var(--element-draftTimer-backgroundColor)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTimer-borderColor"] .cast-canvas .cast-draft-timer{border-color:var(--element-draftTimer-borderColor)}
@@ -87,7 +87,7 @@
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveName-backgroundColor"] .cast-canvas .lb-player-name{background-color:var(--element-liveName-backgroundColor)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveName-borderColor"] .cast-canvas .lb-player-name{border-color:var(--element-liveName-borderColor)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveName-font"] .cast-canvas .lb-player-name{font-family:var(--element-liveName-font)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveName-fontSize"] .cast-canvas .lb-player-name{font-size:var(--element-liveName-fontSize)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveName-fontSize"] .cast-canvas .lb-player-name{font-size:calc(var(--element-liveName-fontSize) * 1.2)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveName-fontWeight"] .cast-canvas .lb-player-name{font-weight:var(--element-liveName-fontWeight)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveName-letterSpacing"] .cast-canvas .lb-player-name{letter-spacing:var(--element-liveName-letterSpacing)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveNameplate-color"] .cast-canvas .lb-nameplate{color:var(--element-liveNameplate-color)}
@@ -101,7 +101,7 @@
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveScoreboard-backgroundColor"] .cast-canvas .lb-scoreboard{background-color:var(--element-liveScoreboard-backgroundColor)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveScoreboard-borderColor"] .cast-canvas .lb-scoreboard{border-color:var(--element-liveScoreboard-borderColor)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveScoreboard-font"] .cast-canvas .lb-scoreboard{font-family:var(--element-liveScoreboard-font)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveScoreboard-fontSize"] .cast-canvas .lb-scoreboard{font-size:var(--element-liveScoreboard-fontSize)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveScoreboard-fontSize"] .cast-canvas .lb-scoreboard{font-size:calc(var(--element-liveScoreboard-fontSize) * 1.2)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveScoreboard-fontWeight"] .cast-canvas .lb-scoreboard{font-weight:var(--element-liveScoreboard-fontWeight)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveScoreboard-letterSpacing"] .cast-canvas .lb-scoreboard{letter-spacing:var(--element-liveScoreboard-letterSpacing)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="reportName-color"] .cast-canvas .pr-card > .fit-name{color:var(--element-reportName-color)}
@@ -234,7 +234,7 @@
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="lineupCaption-font"] .cast-canvas .rl-caption *{font-family:var(--element-lineupCaption-font)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="lineupFooter-font"] .cast-canvas .rune-lineup footer *{font-family:var(--element-lineupFooter-font)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftName-font"] .cast-canvas .cast-draft-player *{font-family:var(--element-draftName-font)}
-.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-font"] .cast-canvas .arena-draft-team-heading *{font-family:var(--element-draftTeam-font)}
+.broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTeam-font"] .cast-canvas .arena-draft-center-team *{font-family:var(--element-draftTeam-font)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="draftTimer-font"] .cast-canvas .cast-draft-timer *{font-family:var(--element-draftTimer-font)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveName-font"] .cast-canvas .lb-player-name *{font-family:var(--element-liveName-font)}
 .broadcast-container.cast-container[data-style-pack][data-pack-elements~="liveNameplate-font"] .cast-canvas .lb-nameplate *{font-family:var(--element-liveNameplate-font)}

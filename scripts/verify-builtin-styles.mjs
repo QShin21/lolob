@@ -18,7 +18,7 @@ const { BUILTIN_STYLE_REF, BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_RECORDS, STYLE_
 const { bundledChampions } = await tsImport('../shared/champion-art.ts', import.meta.url);
 const version = JSON.parse(await readFile('package.json', 'utf8')).version;
 const dir = path.resolve('verification-output', `release-${version}`, 'builtins'); await mkdir(dir, { recursive: true });
-const sandbox = await mkdtemp(path.join(os.tmpdir(), 'riftcast-five-styles-'));
+const sandbox = await mkdtemp(path.join(os.tmpdir(), 'riftcast-six-styles-'));
 const data = path.join(sandbox, 'data'); await mkdir(data, { recursive: true });
 const listener = netServer(); await new Promise(r => listener.listen(0, '127.0.0.1', r)); const port = listener.address().port; await new Promise(r => listener.close(r));
 const base = `http://127.0.0.1:${port}`;
@@ -40,7 +40,7 @@ try {
   assert.deepEqual(initial.gameResults, legacy.gameResults);
   assert.equal((await fetch(base + '/api/style-packs/jianlou/builtin-v1')).status, 404);
   const list = await (await fetch(base + '/api/style-packs')).json();
-  assert.equal(list.packs.length, 5); assert.ok(list.packs.every(p => p.builtin)); assert.deepEqual(list.warnings, []);
+  assert.equal(list.packs.length, 6); assert.ok(list.packs.every(p => p.builtin)); assert.deepEqual(list.warnings, []);
   checks.push('legacy retired references migrate on both buses and undo; archived game data unchanged; retired API returns 404');
   for (const record of BUILTIN_STYLE_RECORDS) {
     const pack = await (await fetch(`${base}/api/style-packs/${record.manifest.id}/${record.revision}`)).json();
@@ -57,18 +57,18 @@ try {
   page = await context.newPage(); page.on('pageerror', e => errors.push(e.message)); await page.goto(base);
   await page.getByRole('button', { name: '风格包', exact: true }).click({ timeout: 30000 });
   const dialog = page.getByRole('dialog'); await dialog.locator('.style-pack-choice').nth(4).waitFor();
-  assert.equal(await dialog.locator('.style-pack-choice').count(), 5); assert.doesNotMatch(await dialog.innerText(), /简陋包/);
-  assert.match(await dialog.locator('.style-pack-choice').filter({ hasText: '冰川极光' }).innerText(), /默认/);
-  for (const pack of BUILTIN_RUNTIME_STYLES.slice(1)) {
+  assert.equal(await dialog.locator('.style-pack-choice').count(), 6); assert.doesNotMatch(await dialog.innerText(), /简陋包/);
+  assert.match(await dialog.locator('.style-pack-choice').filter({ hasText: '青花瓷 · 云山雅韵' }).innerText(), /默认/);
+  for (const pack of BUILTIN_RUNTIME_STYLES.filter(pack => pack.id !== BUILTIN_STYLE_REF.id)) {
     await dialog.locator('.style-pack-choice').filter({ hasText: pack.name }).click();
     await dialog.locator(`[data-style-pack="${pack.id}"][data-style-status=ready]`).waitFor();
     await dialog.getByRole('button', { name: '准备到预监', exact: true }).click();
     await page.waitForFunction(id => document.querySelector('.style-pack-buses')?.textContent?.includes(id), pack.name);
     const result = await state(); assert.equal(result.overlay.stylePack.id, pack.id); assert.deepEqual(result.production.program.overlay.stylePack, BUILTIN_STYLE_REF);
   }
-  await page.screenshot({ path: path.join(dir, 'five-builtin-manager.png') });
+  await page.screenshot({ path: path.join(dir, 'six-builtin-manager.png') });
   const staged = (await state()).overlay.stylePack;
-  checks.push('five builtins visible without import; Glacier marked default; all other builtin choices stage independently of program');
+  checks.push('six builtins visible without import; Qinghua marked default; all other builtin choices stage independently of program');
   const fixture = createSeed(); fixture.paused = true; fixture.overlay.ticker = true;
   await writeFile(path.join(dir, 'index.html'), '<div id="root"></div><script type="module" src="./entry.tsx"></script>');
   await writeFile(path.join(dir, 'entry.tsx'), `import React from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import'/src/styles.css';import'/src/design-tokens.css';const q=new URLSearchParams(location.search),packs=${JSON.stringify(BUILTIN_RUNTIME_STYLES.map(({id,revision,name})=>({id,revision,name})))},scene=q.get('scene')||'standby';const state=scene==='postgame'?${JSON.stringify(reportFixture())}:${JSON.stringify(fixture)};state.overlay.stylePack=packs.find(p=>p.id===q.get('pack'));if(q.has('page2'))state.overlay.postgamePage=2;if(q.has('focus'))state.selectedPlayerId=state.players[0].id;document.body.style.margin='0';createRoot(document.getElementById('root')).render(<BroadcastCanvas state={state} champions={${JSON.stringify(bundledChampions())}} scene={scene} output/>);`);
@@ -92,11 +92,11 @@ try {
   }
   await browser.close(); browser = undefined; await vite.close(); vite = undefined; await stop(); await start();
   const restored = await state(); assert.deepEqual(restored.overlay.stylePack, staged); assert.deepEqual(restored.production.program.overlay.stylePack, BUILTIN_STYLE_REF);
-  assert.equal((await (await fetch(base + '/api/style-packs')).json()).packs.length, 5);
-  checks.push('service restart retains staged builtin independently from Glacier program, with no imported copies');
+  assert.equal((await (await fetch(base + '/api/style-packs')).json()).packs.length, 6);
+  checks.push('service restart retains staged builtin independently from Qinghua program, with no imported copies');
   await stop(); await rm(path.join(data, 'state.json')); await start();
   const fresh = await state(); assert.deepEqual(fresh.overlay.stylePack, BUILTIN_STYLE_REF); assert.deepEqual(fresh.production.program.overlay.stylePack, BUILTIN_STYLE_REF);
-  checks.push('fresh installation uses Glacier Aurora on both buses');
+  checks.push('fresh installation uses Qinghua Celestial on both buses');
   assert.deepEqual(errors, []); assert.deepEqual(blocked, []);
   await writeFile(path.join(dir, 'report.json'), JSON.stringify({ status: 'passed', version, checks, errors, blocked, fixtures: 'synthetic; no live game, OBS outputs or platform streaming' }, null, 2));
 } catch(error) { await page?.screenshot({path:path.join(dir,'failure.png')}).catch(()=>{}); await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'failed',version,checks,errors:[...errors,String(error)],blocked,log},null,2));throw error; }

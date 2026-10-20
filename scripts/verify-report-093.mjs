@@ -31,7 +31,7 @@ try {
       for(const [i,key]of ['towers','dragons','barons','voidgrubs'].entries())assert.equal(await page.locator('.pr-metrics>div').nth(i+2).locator('b').nth(side==='blue'?0:1).innerText(),variant==='missing'||variant==='partial'&&side==='red'&&key==='barons'?'未采集':String(counts[side][key]));
     }
     const overflow=await page.locator('.fit-name').evaluateAll(nodes=>nodes.filter(h=>{const t=h.firstElementChild.getBoundingClientRect(),r=h.getBoundingClientRect();return t.width>r.width+1||t.left<r.left-1||t.right>r.right+1;}).map(h=>h.textContent));assert.deepEqual(overflow,[]);
-    if(variant==='missing')assert.ok((await page.locator('.pr-bar>i').evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().width))).every(w=>w===0));
+    if(variant==='missing')assert.equal(await page.locator('.pr-gold-comparison.is-unavailable').count(),5);
     await page.screenshot({path:path.join(dir,`${variant}-${width}.png`)});checks.push(`${variant}/${width}: 10 gold values, four objective rows, explicit missing values, names fit`);
   }
   for(const width of [1920,1280]) {

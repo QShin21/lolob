@@ -9,7 +9,7 @@ const transparentCss='body { background-color: rgba(0, 0, 0, 0); margin: 0px aut
 const finite=(value:unknown):number=>typeof value==='number'&&Number.isFinite(value)&&value>=0?value:0;
 const cameraNames={blue:'RiftCast 蓝方选手摄像头',red:'RiftCast 红方选手摄像头'} as const;
 export const playerCameraName=(device:string)=>'RiftCast 选手摄像头 '+createHash('sha256').update(device).digest('hex').slice(0,16);
-const cameraPanels={blue:{x:306,y:829.4,width:190,height:250.6},red:{x:1424,y:829.4,width:190,height:250.6}} as const;
+const cameraPanels={blue:{x:306,y:779.28,width:190,height:300.72},red:{x:1424,y:779.28,width:190,height:300.72}} as const;
 export interface CameraScene { sceneName:string; hudName:string; visible:boolean }
 type CameraDevice={name:string;id:string};
 

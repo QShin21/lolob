@@ -10,7 +10,7 @@ export const APPEARANCE_TARGETS = {
   "lineupCaption": ".rl-caption",
   "lineupFooter": ".rune-lineup footer",
   "draftName": ".cast-draft-player",
-  "draftTeam": ".arena-draft-team-heading",
+  "draftTeam": ".arena-draft-center-team",
   "draftTimer": ".cast-draft-timer",
   "liveName": ".lb-player-name",
   "liveNameplate": ".lb-nameplate",

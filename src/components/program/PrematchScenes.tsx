@@ -19,28 +19,40 @@ export function Standby({ state, now }: { state: BroadcastState; now: number }) 
 function DraftHistory({ state, champions, side }: { state: BroadcastState; champions: Champion[]; side: Side }) {
   const teamId = state.match[`${side}TeamId`];
   const history = (state.draftHistory || []).filter(g => g.seriesId === state.match.seriesId && g.game < state.match.game && (g.blueTeamId === teamId || g.redTeamId === teamId));
-  const slots = Math.min(4, Math.max(0, Number(state.match.format.replace('BO', '')) - 1));
-  return <div className={`cast-ban-history ${side}`} aria-label={`${sideName(side)}全局 BP 历史`}><div className="arena-history-heading"><strong>{getTeam(state, side)?.tag || sideName(side)}</strong><span>{state.production?.rules.mode === 'standard' ? '本系列已用英雄' : '本系列禁选历史'}</span></div><div className="arena-history-games">{Array.from({ length: slots }, (_, i) => {
-    const game = i + 1, record = history.find(g => g.game === game), picks = record ? (record.blueTeamId === teamId ? record.bluePicks : record.redPicks) : [];
-    return <div className={`cast-history-game ${record ? '' : 'is-pending'} ${state.production?.rules.mode === 'standard' ? 'is-standard' : ''}`} key={game}><span>第 {game} 局 <small>{record ? '已归档' : game === state.match.game ? '本局' : game > state.match.game ? '待进行' : '未归档'}</small></span><div>{Array.from({ length: 5 }, (_, j) => <ChampionImage key={j} champions={champions} id={picks[j] || ''} />)}</div></div>;
-  })}</div></div>;
+  // Keep each team's picks on its current side, including after a side swap.
+  const games = Array.from({ length: Math.max(0, state.match.game - 1) }, (_, i) => {
+    const game = i + 1, record = history.find(g => g.game === game);
+    return { game, current: false, picks: record ? (record.blueTeamId === teamId ? record.bluePicks : record.redPicks) : [] };
+  });
+  games.push({ game: state.match.game, current: true, picks: state.draft[`${side}Bans`] });
+  return <div className={`cast-ban-history ${side}`} aria-label={`${sideName(side)}逐局禁用英雄`}>
+    {games.map(({ game, current, picks }) => <div className={`cast-history-game ${current ? 'is-current' : 'is-history'}`} key={game} data-game={game} aria-label={`GAME${game} ${current ? '本局禁用' : '历史选用'}`}>
+      <span>GAME{game}</span><div>{Array.from({ length: 5 }, (_, i) => <ChampionImage key={i} champions={champions} id={picks[i] || ''} />)}</div>
+    </div>)}
+  </div>;
 }
 
 function DraftTeam({ state, champions, side }: { state: BroadcastState; champions: Champion[]; side: Side }) {
-  const picks = state.draft[`${side}Picks`], bans = state.draft[`${side}Bans`], preselect = state.draft[`${side}Preselect`] || [];
-  const assigned = (id: string) => (state.draft.locked || state.production?.assignments.some(a => a.locked && a.championId === id)) ? state.players.find(p => p.team === side && p.championId === id && p.role !== '待分路') : undefined;
+  const picks = state.draft[`${side}Picks`], preselect = state.draft[`${side}Preselect`] || [];
+  const assigned = (id: string) => (state.draft.locked || state.production?.assignments.some(a => a.locked && a.championId === id)) ? state.players.find(p => p.team === side && p.championId === id) : undefined;
   const choosing = !state.draft.locked && state.draft.activeTeam === side && !/ban|禁/i.test(state.draft.action);
-  const team = getTeam(state, side);
-  return <section className={`cast-draft-team ${side}`}><header className="arena-draft-team-heading"><TeamMark team={team} /><strong title={team?.name}>{team?.tag || sideName(side)}</strong><span>{sideName(side)}</span><div className="cast-bans"><small>本局禁用</small>{Array.from({ length: 5 }, (_, i) => <ChampionImage key={i} champions={champions} id={bans[i] || ''} />)}</div></header>
+  return <section className={`cast-draft-team ${side}`}>
     <div className="cast-draft-cards">{Array.from({ length: 5 }, (_, i) => {
       const active = choosing && !picks[i] && i === picks.filter(Boolean).length, hover = active ? preselect[0] : undefined, player = assigned(picks[i]);
-      return <article className={`cast-draft-card ${picks[i] ? 'locked' : 'waiting'} ${active ? 'active-slot' : ''}`} key={i}><ChampionImage champions={champions} id={picks[i] || hover || ''} kind="splash" /><span className="cast-pick-order">{side === 'blue' ? 'B' : 'R'}{i + 1}</span><small className="arena-pick-state" data-state={picks[i] ? 'locked' : hover ? 'preselect' : active ? 'choosing' : 'waiting'} aria-label={hover ? '预选 · 未锁定' : undefined}>{picks[i] ? '已锁定' : hover ? '预选' : active ? '选择中' : '待选'}</small><div className="arena-pick-identity"><span className="cast-draft-role">{player?.role || '归属待确认'}</span><FitName className="cast-draft-player">{player?.name || `${side === 'blue' ? 'B' : 'R'}${i + 1} · 选择顺序`}</FitName><span className="cast-draft-champion">{championFor(champions, picks[i])?.name || (hover ? `${championFor(champions, hover)?.name || hover}（预选）` : '等待选择')}</span></div></article>;
-    })}</div>{preselect.length > 0 && <div className="cast-draft-preselect">预选未锁定：{preselect.map(id => championFor(champions, id)?.name || id).join(' / ')}</div>}
+      return <article className={`cast-draft-card ${picks[i] ? 'locked' : 'waiting'} ${active ? 'active-slot' : ''}`} data-state={picks[i] ? 'locked' : hover ? 'preselect' : active ? 'choosing' : 'waiting'} key={i}>
+        <ChampionImage champions={champions} id={picks[i] || hover || ''} kind="splash" />
+        <div className="arena-pick-identity"><FitName className="cast-draft-player">{player?.name || ''}</FitName></div>
+      </article>;
+    })}</div>
   </section>;
 }
 
 export function DraftOverlay({ state, champions }: { state: BroadcastState; champions: Champion[] }) {
-  return <div className="cast-draft"><div className="arena-draft-history"><DraftHistory state={state} champions={champions} side="blue" /><span className="arena-draft-history-gap" /><DraftHistory state={state} champions={champions} side="red" /></div><div className="arena-draft-tray"><DraftTeam state={state} champions={champions} side="blue" /><aside className={`cast-draft-center ${state.draft.activeTeam}`}><ArenaMark /><MatchStrip state={state} /><div className="cast-draft-timer"><strong>{Math.max(0, Math.ceil(state.draft.timer))}</strong><small>{state.draft.locked ? '阵容已锁定' : state.draft.action || '等待 BP'}</small><span>{getTeam(state, state.draft.activeTeam)?.tag || sideName(state.draft.activeTeam)}</span></div><small>{state.match.format} · 第 {state.match.game} 局</small></aside><DraftTeam state={state} champions={champions} side="red" /></div></div>;
+  return <div className="cast-draft"><div className="arena-draft-history"><DraftHistory state={state} champions={champions} side="blue" /><span className="arena-draft-history-gap" /><DraftHistory state={state} champions={champions} side="red" /></div><div className="arena-draft-tray"><DraftTeam state={state} champions={champions} side="blue" /><aside className={`cast-draft-center ${state.draft.activeTeam}`}>
+    <ArenaMark /><div className="arena-draft-match">{(['blue', 'red'] as Side[]).map(side => <div className={`arena-draft-center-team ${side}`} key={side}><TeamMark team={getTeam(state, side)} /><FitName>{getTeam(state, side)?.tag || sideName(side)}</FitName><b>{state.match[`${side}Score`]}</b></div>)}</div>
+    {!state.draft.locked && <div className="cast-draft-timer"><strong>{Math.max(0, Math.ceil(state.draft.timer))}</strong></div>}
+    <small>{state.match.format} · GAME{state.match.game}</small>
+  </aside><DraftTeam state={state} champions={champions} side="red" /></div></div>;
 }
 
 export {Lineup} from './RuneLineup';

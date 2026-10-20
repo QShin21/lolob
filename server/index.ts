@@ -217,7 +217,7 @@ app.post('/api/style-packs/import',(req,res,next)=>{if(styleUploadBusy){res.stat
 });
 app.use('/api',(_req,res)=>res.status(404).json({error:'接口不存在'}));
 app.use(express.static(path.join(root,'dist'),{index:false}));
-app.get(/.*/,(_req,res)=>res.sendFile(path.join(root,'dist','index.html'),error=>{if(error&&!res.headersSent)res.status(503).type('text').send('前端尚未构建。请执行 npm run build，或使用 npm run dev 开发模式。');}));
+app.get(/.*/,(_req,res)=>res.sendFile('index.html',{root:path.join(root,'dist')},error=>{if(error&&!res.headersSent)res.status(503).type('text').send('前端尚未构建。请执行 npm run build，或使用 npm run dev 开发模式。');}));
 app.use((error:unknown,_req:express.Request,res:express.Response,_next:express.NextFunction)=>{const bad=error instanceof ValidationError||error instanceof SyntaxError||error instanceof multer.MulterError;res.status(bad?400:503).json({error:error instanceof Error?error.message:'本地服务操作失败'});});
 server.on('upgrade',(req,socket,head)=>{
   const url=new URL(req.url??'/','http://127.0.0.1');

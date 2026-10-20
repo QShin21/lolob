@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "defaultId": "glacier-aurora",
+  "defaultId": "qinghua-celestial",
   "entries": [
     {
       "manifest": {
@@ -1426,6 +1426,315 @@
       "revision": "7c986a251b5f437a411c84a4cce640add9ecb2575953a707dd273e754eda206e",
       "archiveName": "RiftCast_05_Porcelain_Racing_v1.0.0.riftstyle.zip",
       "archiveSha256": "f7797b118952c0ff2b7c72b1fd10e6a8db87672fbf9513045b13cf80444b73f8"
+    },
+    {
+      "manifest": {
+        "format": "riftcast-style-pack",
+        "schemaVersion": 1,
+        "id": "qinghua-celestial",
+        "name": "青花瓷 · 云山雅韵",
+        "version": "1.0.1",
+        "author": "RiftCast Custom Collection",
+        "description": "青花山水、钴蓝釉色与瓷白留白。由已确认的生成画稿按固定槽位重新构图，覆盖十一种节目配置。原生计分板与倒计时采用深釉读图区；游戏、BP、采访和团战保持规定透明区。",
+        "canvas": {
+          "width": 1920,
+          "height": 1080
+        },
+        "palette": {
+          "ink": "#eef4fa",
+          "panel": "#e7eff8",
+          "muted": "#526987",
+          "line": "#4268944d",
+          "paper": "#17385e",
+          "blue": "#2863a6",
+          "red": "#a04e58",
+          "accent": "#234f91",
+          "c233544": "#d9e6f4",
+          "c243642": "#d5e2f0",
+          "ccbb886": "#416ba0",
+          "c14242e": "#142a43",
+          "c9fb2bd": "#bed0e7",
+          "cc4d1d7": "#516887",
+          "cf1d9b0": "#254f80",
+          "c3b3125f2": "#edf3fbf2",
+          "cc8aa7470": "#5b7da670",
+          "cd0c3ae": "#4d6484",
+          "c172c38fa": "#f1f6fbfa",
+          "c10192340": "#bccde140",
+          "c101923f5": "#eef4faf5",
+          "cf4e5cdb0": "#305c9bb0",
+          "c101923e8": "#eef4fae8",
+          "ceed38e": "#214a81",
+          "ca7becb": "#4c6486",
+          "c142330": "#eaf1f8",
+          "ca4c5d51c": "#355f9b1c",
+          "c1c2a36": "#dce8f4",
+          "c080f17d9": "#edf3fad9",
+          "c9db4c2": "#526987",
+          "c1b2e38": "#e9f0f8",
+          "cf4f8fa": "#f2f6fc",
+          "c000": "#102b50",
+          "cc5d3d6": "#c4d7ed",
+          "c36c8ff": "#8bbfe9",
+          "cff555b": "#e1a4ad",
+          "cf3f3f1": "#edf4ff",
+          "c64716f": "#6c91bd",
+          "c737a74": "#5076a2",
+          "c0c100e": "#142b48",
+          "c575e5d": "#a8bfdc",
+          "c101211": "#102743",
+          "cfff": "#ffffff",
+          "c79d166": "#86d2ac",
+          "cbf9765": "#c6b785",
+          "c414946": "#70849f",
+          "cf5f5f2": "#edf4ff",
+          "c0a110f": "#122944",
+          "cb9a467": "#91b8e0",
+          "c13150e": "#0e294a",
+          "c656960": "#8ea7c6",
+          "c242b29": "#18355b",
+          "ccd73b5": "#bc97d5",
+          "c72c687": "#72c687",
+          "c60afd4": "#60afd4",
+          "cdfc758": "#dfc758",
+          "cd86154": "#d86154",
+          "c1d2221": "#18314f",
+          "c414744": "#6886ac",
+          "cdfb97b": "#d4e5ff",
+          "ceee": "#f0f5ff",
+          "c737b78": "#adc0d9",
+          "c41a5da": "#78b1e8",
+          "cec765b": "#d997a3",
+          "c172725dd": "#173965dd",
+          "c24272580": "#17396580",
+          "cf7f7f3": "#eff5ff",
+          "ce2c58c": "#badaff",
+          "c2a3e4b": "#cddcee",
+          "cf6f5f1": "#375b8c",
+          "c07080a": "#e9f0f8",
+          "c71d5ee": "#375b8c",
+          "cff8f83": "#375b8c",
+          "c121419": "#e9f0f8",
+          "cffffff30": "#375b8c30",
+          "c68717c": "#375b8c",
+          "c8f959e": "#375b8c",
+          "c737982": "#375b8c",
+          "caeb3ba": "#375b8c",
+          "cffffff24": "#375b8c24",
+          "c8e959f": "#375b8c",
+          "caeb3bb": "#375b8c",
+          "c888f9a": "#375b8c",
+          "cbac0c8": "#375b8c",
+          "cffffff06": "#375b8c06",
+          "cffffff26": "#375b8c26",
+          "cc3c8ce": "#375b8c",
+          "c959da8": "#375b8c",
+          "c7c8592": "#375b8c",
+          "cf2f1e9": "#375b8c",
+          "c111a23": "#e9f0f8",
+          "ce5ebe22b": "#375b8c2b",
+          "c17232e": "#e9f0f8",
+          "ce5ebe221": "#375b8c21",
+          "cbbdfc924": "#375b8c24",
+          "cbbdfc907": "#375b8c07",
+          "cadbfc9": "#375b8c",
+          "c17191e": "#17365e",
+          "cf4f0e3": "#f4f7fb",
+          "cfaf9f5": "#f7f9fc",
+          "c65665f": "#566d8b",
+          "c141414": "#193960",
+          "c20278c": "#245c9d",
+          "cb3a457": "#a64f59",
+          "c090909": "#133964",
+          "c22298b": "#234c7f",
+          "cb5ab76": "#90424e",
+          "cffffff60": "#375b8c60",
+          "c131514": "#e9f0f8",
+          "cb8a263": "#52698a",
+          "c363735": "#496583",
+          "c66685e": "#566c87",
+          "c191d27": "#17365e",
+          "c24278d": "#245c9d",
+          "cb6a459": "#a64f59",
+          "c62625c": "#586d86",
+          "c5b5c56": "#526987",
+          "c333": "#284a74",
+          "cd9d8d4": "#cad8e8",
+          "c999": "#9bb0c9",
+          "caaa": "#a5b8cf",
+          "c555": "#496483",
+          "c45484a": "#496483",
+          "c192735": "#e9f0f8",
+          "c0009": "#102b5099",
+          "c0008": "#102b5088",
+          "ceae9e3": "#dbe5f0",
+          "c222": "#244770"
+        },
+        "fonts": {
+          "body": "modern",
+          "display": "default"
+        },
+        "textures": {
+          "header": "header-main",
+          "panel": "panel-wide",
+          "cardBlue": "draft-blue",
+          "cardRed": "draft-red",
+          "scoreboard": "scoreboard",
+          "rowBlue": "roster-blue",
+          "rowRed": "roster-red",
+          "nameplate": "nameplate",
+          "ticker": "ticker",
+          "paper": "countdown",
+          "draftCenter": "draft-center"
+        },
+        "scenes": {
+          "standby": {
+            "background": "bg-standby",
+            "frame": "frame-full",
+            "textures": {}
+          },
+          "draft": {
+            "background": null,
+            "frame": null,
+            "textures": {}
+          },
+          "lineup": {
+            "background": "bg-lineup",
+            "frame": "frame-full",
+            "textures": {
+              "header": "header-editorial",
+              "cardBlue": "lineup-blue",
+              "cardRed": "lineup-red"
+            }
+          },
+          "live": {
+            "background": null,
+            "frame": null,
+            "textures": {}
+          },
+          "economy": {
+            "background": null,
+            "frame": null,
+            "textures": {}
+          },
+          "ranking": {
+            "background": null,
+            "frame": null,
+            "textures": {
+              "panel": "panel-focus"
+            }
+          },
+          "schedule": {
+            "background": "bg-schedule",
+            "frame": "frame-full",
+            "textures": {}
+          },
+          "postgame": {
+            "background": "bg-postgame",
+            "frame": "frame-full",
+            "textures": {
+              "header": "header-editorial"
+            }
+          },
+          "interview": {
+            "background": null,
+            "frame": null,
+            "textures": {
+              "panel": "panel-interview",
+              "nameplate": "interview-name"
+            }
+          },
+          "teamfight": {
+            "background": null,
+            "frame": null,
+            "textures": {
+              "header": null,
+              "panel": null,
+              "cardBlue": null,
+              "cardRed": null,
+              "scoreboard": null,
+              "rowBlue": null,
+              "rowRed": null,
+              "nameplate": null,
+              "ticker": null,
+              "paper": null,
+              "draftCenter": null
+            }
+          },
+          "gold-ranking": {
+            "background": null,
+            "frame": null,
+            "textures": {
+              "panel": "panel-tall"
+            }
+          }
+        },
+        "assets": {
+          "bg-lineup": "assets/bg-lineup.png",
+          "bg-postgame": "assets/bg-postgame.png",
+          "bg-schedule": "assets/bg-schedule.png",
+          "bg-standby": "assets/bg-standby.png",
+          "countdown": "assets/countdown.png",
+          "draft-blue": "assets/draft-blue.png",
+          "draft-center": "assets/draft-center.png",
+          "draft-red": "assets/draft-red.png",
+          "frame-full": "assets/frame-full.png",
+          "header-editorial": "assets/header-editorial.png",
+          "header-main": "assets/header-main.png",
+          "interview-name": "assets/interview-name.png",
+          "lineup-blue": "assets/lineup-blue.png",
+          "lineup-red": "assets/lineup-red.png",
+          "nameplate": "assets/nameplate.png",
+          "panel-focus": "assets/panel-focus.png",
+          "panel-interview": "assets/panel-interview.png",
+          "panel-tall": "assets/panel-tall.png",
+          "panel-wide": "assets/panel-wide.png",
+          "roster-blue": "assets/roster-blue.png",
+          "roster-red": "assets/roster-red.png",
+          "scoreboard": "assets/scoreboard.png",
+          "ticker": "assets/ticker.png"
+        },
+        "appearance": {
+          "lineupName": {
+            "color": "#17365e",
+            "font": "modern",
+            "fontSize": 1.8,
+            "fontWeight": 700
+          },
+          "lineupGame": {
+            "color": "#ffffff",
+            "backgroundColor": "#133964"
+          }
+        }
+      },
+      "hashes": {
+        "assets/bg-lineup.png": "3bae50432e70435019b443b1b40e431c3a0127b7f2a69c6626d1740287bc79ee",
+        "assets/bg-postgame.png": "f19576ef62b30aec839c75a4c39cdde54cf84d65e7c14e9e1cca5ec6834d887b",
+        "assets/bg-schedule.png": "09c8b766d8aa7249062421428c5ac1dcf92776e4ff9e32da28c4cc2de5bf9f67",
+        "assets/bg-standby.png": "7554416e792f398716fa18a4589eea145d41c54edd1450df1d329880bfc75250",
+        "assets/countdown.png": "6c7ddc6c8d0cec9d3f87bf7c9f61329885f2627365fc3b7201171c68cfc08b8c",
+        "assets/draft-blue.png": "a8df18378e0091fcd701c2ccd0181ddc9fb036547caa664da7f4835e6dd32908",
+        "assets/draft-center.png": "0b4c03b4b51a8be0559aaefdca2cf180184e19388b08d52a3f0aa00b90adadad",
+        "assets/draft-red.png": "6f150433687a796a2502383cff5b08b33e8509154756ba0e1fe39b165796dce6",
+        "assets/frame-full.png": "606a120744e11fffe4c2e3885a34ed478d5b3c79095988cc490ee43feb2b8c6b",
+        "assets/header-editorial.png": "d7ca1ec3d204692133d7c281cdf1afcb1d0185385b14b4cce80f8af0b718362a",
+        "assets/header-main.png": "001c312c720c6f70bb32044c802d8d8f6e1edfd0e154863e7a0507223fb69262",
+        "assets/interview-name.png": "5866013ef49812d83497122636a8328809a51f95e277d693a85adb0ff97ebf91",
+        "assets/lineup-blue.png": "9529d1392805fd65ca979ef1281596167d8e680857b102b2f60b549f045f4d48",
+        "assets/lineup-red.png": "b19c02e03d7de9ee920fa32c242b77d1411485be8e2d689e49079fc41498095c",
+        "assets/nameplate.png": "6d3c5c88d3422475de04b3c748710ee8dabc6e80d3cbf3e93c056a9b4c2dae78",
+        "assets/panel-focus.png": "0831881829e1562ab2b86b7f081d66d3de4e96af74eb04f81768ccedf1835d97",
+        "assets/panel-interview.png": "3186e03bf39ed96332d3d5816edb1f696483cfd1c9042cab96f65dfb315ed555",
+        "assets/panel-tall.png": "172d005d529ddaaddb911a3d44e30cc3d0562b79a5a60f8835f91187be10356b",
+        "assets/panel-wide.png": "121de1c99d8a5d70dbd27bce2092f58e36e2f61f516058046aa3c06ea1fca2f6",
+        "assets/roster-blue.png": "c80f54bf41c3551bfe6e086725775aadc4cba80448aaa9753fcc27db3aba7598",
+        "assets/roster-red.png": "9c0940fbb18cac6ee46e310124ff20b80c34e4eaadff5e9e52aa58074e9662bc",
+        "assets/scoreboard.png": "905ecd29565b81ab8d26acdf7567d542f9f7f916470339ec051c9fdee4521e1f",
+        "assets/ticker.png": "35b5edcb49d5313ed946b02f56739afbeac4d1aafd9d3059ef1b2e9a0f2fd391"
+      },
+      "revision": "e31544c225428d7807ef82d5306f65258932f0499e070620c7607418fa015556",
+      "archiveName": "qinghua-celestial-1.0.1.riftstyle.zip",
+      "archiveSha256": "6295b9157914e05190476b66701ce4d98ee7c1960fb9ad2197e23e553ff79960"
     }
   ]
 }

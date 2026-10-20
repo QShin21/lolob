@@ -7,7 +7,7 @@ import { tsImport } from 'tsx/esm/api';
 const { BUILTIN_STYLE_RECORDS, BUILTIN_STYLE_REF, STYLE_SCENES } = await tsImport('../shared/style-packs.ts', import.meta.url);
 const { validateStyleManifest } = await tsImport('../server/style-packs.ts', import.meta.url);
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-assert.equal(BUILTIN_STYLE_RECORDS.length, 5); assert.equal(BUILTIN_STYLE_REF.id, 'glacier-aurora');
+assert.equal(BUILTIN_STYLE_RECORDS.length, 6); assert.equal(BUILTIN_STYLE_REF.id, 'qinghua-celestial');
 const checks=[];
 for (const record of BUILTIN_STYLE_RECORDS) {
   const manifest = validateStyleManifest(record.manifest), hashes = {};
@@ -28,4 +28,4 @@ for (const record of BUILTIN_STYLE_RECORDS) {
 assert.deepEqual((await readdir('public/style-packs')).sort(),checks.map(p=>p.id).sort());
 await mkdir('verification-output/release-1.0.0',{recursive:true});
 await writeFile('verification-output/release-1.0.0/builtin-assets.json',JSON.stringify({status:'passed',default:BUILTIN_STYLE_REF,packs:checks},null,2));
-console.log('Verified five original packs, 115 PNGs, immutable revisions and default Glacier Aurora.');
+console.log('Verified six packs, 138 PNGs, immutable revisions and default Qinghua Celestial.');

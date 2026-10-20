@@ -100,8 +100,8 @@ test('two cameras cover only their exact panels, mute camera audio and sit under
     for(const scene of scenes){
       const item=obs.items.get(scene.sceneName)!.find(item=>item.sourceName===names[side])!;
       const transform=obs.requests.find(request=>request.type==='SetSceneItemTransform'&&request.data.sceneName===scene.sceneName&&request.data.sceneItemId===item.sceneItemId)!.data.sceneItemTransform;
-      assert.equal(transform.positionX,side==='blue'?306:1424);assert.equal(transform.positionY,829.4);
-      assert.equal(transform.boundsWidth,190);assert.equal(transform.boundsHeight,250.6);
+      assert.equal(transform.positionX,side==='blue'?306:1424);assert.equal(transform.positionY,779.28);
+      assert.equal(transform.boundsWidth,190);assert.equal(transform.boundsHeight,300.72);
       assert.equal(transform.boundsType,'OBS_BOUNDS_SCALE_OUTER');assert.equal(transform.cropToBounds,true);
       assert.equal(transform.alignment,5);assert.equal(transform.boundsAlignment,0);
       assert.equal(obs.requests.find(request=>request.type==='SetSceneItemEnabled'&&request.data.sceneItemId===item.sceneItemId)!.data.sceneItemEnabled,scene.visible);
@@ -123,9 +123,9 @@ test('camera rectangles follow HUD letterboxing on a non 16:9 OBS canvas',async(
   const item=obs.items.get(engineScene)!.find(item=>item.sourceName===names.blue)!;
   const transform=obs.requests.find(request=>request.type==='SetSceneItemTransform'&&request.data.sceneItemId===item.sceneItemId)!.data.sceneItemTransform;
   assert.ok(Math.abs(transform.positionX-204)<.0001);
-  assert.ok(Math.abs(transform.positionY-(40+829.4*2/3))<.0001);
+  assert.ok(Math.abs(transform.positionY-(40+779.28*2/3))<.0001);
   assert.ok(Math.abs(transform.boundsWidth-190*2/3)<.0001);
-  assert.ok(Math.abs(transform.boundsHeight-250.6*2/3)<.0001);
+  assert.ok(Math.abs(transform.boundsHeight-300.72*2/3)<.0001);
 });
 
 test('both panels can share one camera without opening the same USB device twice',async()=>{
