@@ -42,12 +42,17 @@ function Meter({current,max,kind,label}:{current?:number;max?:number;kind:string
     <i style={{width:`${percentage}%`}}/>
   </span>;
 }
+function scoreboardName(name:string) {
+  let result='',length=0;
+  for(const character of name){const width=/\p{Script=Han}/u.test(character)?2:1;if(length+width>16)break;result+=character;length+=width;}
+  return result;
+}
 function Identity({player,ultimateIcon,time,fresh}:{player?:Player;ultimateIcon?:string;time:number;fresh:boolean}) {
   const ultimate=player?.ultimate,state=ultimate?.state||'unknown';
   const status=state==='ready'?'终极技能就绪':state==='unlearned'?'终极技能尚未学习':state==='cooldown'?`终极技能冷却${ultimate?.cooldownRemaining!=null?` ${Math.ceil(ultimate.cooldownRemaining)} 秒`:''}`:'终极技能状态未提供';
   return <div className="lb-identity">
     <div className="lb-identity-line">
-      <FitName className="lb-player-name">{player?.name||'—'}</FitName>
+      <FitName className="lb-player-name">{scoreboardName(player?.name||'—')}</FitName>
     </div>
     <div className="lb-status-line">
       <span className={`lb-ultimate ${fresh?state:'unknown'}`} title={status} aria-label="终极技能">

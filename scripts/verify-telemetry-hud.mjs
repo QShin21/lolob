@@ -17,7 +17,7 @@ const state=createFixture(),champions=fallbackChampions();
 state.gameTime=1200;state.paused=true;state.overlay.nativeHud='mask';state.connections.live={status:'connected',updatedAt:new Date().toISOString()};
 state.gameClock={source:'live',gameTime:1200,paused:true,speed:1,sampledAt:new Date().toISOString(),sessionId:'fixture',discontinuity:0,matchKey:gameClockMatchKey(state),validForMs:60000};
 state.players.forEach((p,i)=>{
- p.name=['Rainy丶Night','这是一个需要缩放的很长选手名称','Knight','Viper','ON','Breathe','Tarzan','Shanks','Hope','Kael'][i];
+ p.name=['Rainy丶Night','这是八个汉字名字','Knight','Viper','ON','Breathe','Tarzan','Shanks','Hope','Kael'][i];
  p.telemetry={source:'memory',sampledAt:new Date().toISOString(),gameTime:1200,validForMs:60000};
  p.goldSource='memory';p.goldSampledAt=p.telemetry.sampledAt;p.goldExpiresAt=new Date(Date.now()+60000).toISOString();p.goldGameTime=1200;p.currentGold=1234;
  p.ultimate={state:i===2?'unlearned':i%2?'ready':'cooldown',level:i===2?0:2,readyAt:1208,totalCooldown:80};

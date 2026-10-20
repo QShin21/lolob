@@ -6,8 +6,10 @@ const {ObserverTelemetry}=await tsImport('../server/observer-telemetry.ts',impor
 const {localJson,normalizeLive}=await tsImport('../server/adapters.ts',import.meta.url);
 const {bundledChampions}=await tsImport('../shared/champion-art.ts',import.meta.url);
 const observer=new ObserverTelemetry(localJson),samples=[];
+const playback=await localJson(2999,'/replay/playback');
 try {
  for(let i=0;i<8&&samples.length<3;i++){
+  if(i)await new Promise(resolve=>setTimeout(resolve,1000));
   const data=await localJson(2999,'/liveclientdata/allgamedata');await observer.enrich(data);
   if(observer.status.detail.startsWith('等待同一画面'))continue;
   assert.equal(observer.status.status,'connected',observer.status.detail);
@@ -17,6 +19,6 @@ try {
  }
  assert.equal(samples.length,3,'Three consistent samples are required');
  await mkdir('verification-output/release-1.1.0',{recursive:true});
- await writeFile('verification-output/release-1.1.0/live-observer.json',JSON.stringify({verifiedAt:new Date().toISOString(),scope:'read-only current replay samples; no broadcast output acceptance',samples},null,2));
+ await writeFile('verification-output/release-1.1.0/live-observer.json',JSON.stringify({verifiedAt:new Date().toISOString(),scope:'read-only current replay samples; no broadcast output acceptance',playback,samples},null,2));
  console.log(JSON.stringify({status:'passed',samples:samples.length,players:10,gameTime:samples.at(-1).gameTime,profile:observer.status.profile,activeCooldowns:samples.at(-1).players.flatMap(p=>p.spells??[]).filter(s=>s.cooldown?.state==='cooldown').length}));
 }finally{await observer.close();}
