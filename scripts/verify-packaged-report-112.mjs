@@ -73,7 +73,7 @@ try {
   await page.screenshot({path:path.join(dir,'packaged-report.png')});checks.push('compiled packaged report restores all ten gold values, eight objective values including zero, and six metric rows');
   checks.push('packaged observer and OCR scripts match the tested source files byte for byte');
   const controlToken=await page.evaluate(()=>sessionStorage.getItem('riftcast-seat-token'));
-  const setPage=async postgamePage=>{const response=await fetch(base+'/api/action',{method:'POST',headers:{'content-type':'application/json','x-seat-token':controlToken},body:JSON.stringify({type:'set-overlay',patch:{postgamePage}})});assert.equal(response.status,200);};
+  const setPage=async postgamePage=>{const latest=await(await fetch(base+'/api/state')).json();const response=await fetch(base+'/api/action',{method:'POST',headers:{'content-type':'application/json','x-seat-token':controlToken},body:JSON.stringify({type:'set-overlay',patch:{postgamePage},expectedConfigVersion:latest.production.configVersion,requestId:crypto.randomUUID()})});assert.equal(response.status,200,await response.text());};
   await setPage(3);await page.locator('.pr-damage').waitFor();
   const damageBars=await page.locator('.pr-damage .pr-bar>i').evaluateAll(nodes=>nodes.map(n=>({value:Number(n.dataset.damage),ratio:n.getBoundingClientRect().width/n.parentElement.getBoundingClientRect().width})));
   assert.equal(damageBars.length,10);for(const bar of damageBars)assert(Math.abs(bar.ratio-bar.value/29600)<.002);
