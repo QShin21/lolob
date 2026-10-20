@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import {draftArtVariants,cropDraftArt} from './draft-art.mjs';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -7,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const destination = path.join(root, 'public/champion-art');
 const cache = path.join(root, 'data/champion-art-source');
-const variants = { draft: [400, 625], lineup: [400, 864] };
+const variants = { draft: [400, 625], lineup: [400, 864], ...draftArtVariants };
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const verify = process.argv.includes('--verify');
 const offline = process.argv.includes('--offline');
@@ -77,6 +78,7 @@ if (verify) {
         assets[name] = { url: `/${url}`, width, height, sha256: sha256(bytes), source: sourceUrl };
       }
       for (const [name, [width, height]] of Object.entries(variants)) {
+        if(name in draftArtVariants){await save(name,await cropDraftArt(portrait,name,champion.id),width,height,portraitSource);continue;}
         // Bake the exact card canvas once. Retain the entire curated portrait, filling its
         // margins with blurred artwork so runtime layouts never crop a face or weapon again.
         const background = await sharp(portrait).resize(width, height, { fit: 'cover' }).blur(18).modulate({ brightness: 0.6 }).toBuffer();
@@ -94,5 +96,5 @@ if (verify) {
   await writeFile(manifestFile, JSON.stringify({ version, variants, source: 'Riot Games Data Dragon', champions: entries }, null, 2) + '\n');
   const bundled = entries.map(({ id, key, name, title, tags, assets }) => ({ id, key, name, title, tags, assets: Object.fromEntries(Object.entries(assets).map(([name, asset]) => [name, { url: asset.url }])) }));
   await writeFile(catalogFile, JSON.stringify({ version, champions: bundled }, null, 2) + '\n');
-  console.log(`Prepared ${champions.length} champions, two portrait variants and an icon each.`);
+  console.log(`Prepared ${champions.length} champions, four portrait variants and an icon each.`);
 }

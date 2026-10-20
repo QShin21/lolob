@@ -3,8 +3,8 @@
 .broadcast-container.cast-container[data-style-pack][data-pack-background=true] .broadcast-canvas.cast-transparent{background-image:none}
 .broadcast-container.cast-container[data-style-pack][data-pack-textures~=header] :is(.arena-header,.arena-analysis-heading,.pr-header,.rl-header){background-image:var(--pack-header);background-size:100% 100%}
 .broadcast-container.cast-container[data-style-pack][data-pack-textures~=panel] :is(.cast-analysis,.cast-interview,.pb-output,.cast-gold-ranking){background-image:var(--pack-panel);background-size:100% 100%}
-.broadcast-container.cast-container[data-style-pack][data-pack-textures~=cardBlue] :is(.cast-draft-team.blue,.rl-card.blue){background-image:var(--pack-cardBlue);background-size:100% 100%}
-.broadcast-container.cast-container[data-style-pack][data-pack-textures~=cardRed] :is(.cast-draft-team.red,.rl-card.red){background-image:var(--pack-cardRed);background-size:100% 100%}
+.broadcast-container.cast-container[data-style-pack][data-pack-textures~=cardBlue] :is(.cast-draft-team.blue .cast-draft-card,.rl-card.blue){background-image:var(--pack-cardBlue);background-size:100% 100%}
+.broadcast-container.cast-container[data-style-pack][data-pack-textures~=cardRed] :is(.cast-draft-team.red .cast-draft-card,.rl-card.red){background-image:var(--pack-cardRed);background-size:100% 100%}
 .broadcast-container.cast-container[data-style-pack][data-pack-textures~=scoreboard] .lb-scoreboard{background-image:var(--pack-scoreboard);background-size:100% 100%}
 .broadcast-container.cast-container[data-style-pack][data-pack-textures~=rowBlue] .lb-player-row.blue{background-image:var(--pack-rowBlue);background-size:100% 100%}
 .broadcast-container.cast-container[data-style-pack][data-pack-textures~=rowRed] .lb-player-row.red{background-image:var(--pack-rowRed);background-size:100% 100%}

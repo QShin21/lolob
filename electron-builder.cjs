@@ -26,8 +26,11 @@ module.exports = {
         if (!fs.existsSync(location) || createHash('sha256').update(fs.readFileSync(location)).digest('hex') !== expected) throw new Error('内置风格贴图缺失或损坏: ' + entry.manifest.name + '/' + file);
       }
     }
-    for (const champion of require('./shared/champion-art-catalog.json').champions) {
-      if (!fs.existsSync(path.join(appRoot, 'dist/champion-art', champion.id + '-icon.webp'))) throw new Error('OCR 内置头像缺失: ' + champion.id);
+    for (const champion of require('./shared/champion-art-manifest.json').champions) {
+      for(const asset of Object.values(champion.assets)){
+        const file=path.join(appRoot,'dist',asset.url);
+        if (!fs.existsSync(file) || createHash('sha256').update(fs.readFileSync(file)).digest('hex')!==asset.sha256) throw new Error('英雄素材缺失或损坏: ' + champion.id + '/' + asset.url);
+      }
     }
     for (const banner of require('./shared/lineup-banner-catalog.json').champions) {
       if (!fs.existsSync(path.join(appRoot, 'dist/lineup-banners', banner.id + '.webp'))) throw new Error('首发横幅缺失: ' + banner.id);

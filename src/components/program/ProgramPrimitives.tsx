@@ -11,11 +11,16 @@ export function sidePlayers(state: BroadcastState, side: Side) {
   return state.players.filter(p => p.team === side).sort((a, b) => order(a.role) - order(b.role)).slice(0, 5);
 }
 export function ChampionImage({ champions, id, kind = 'icon', art = 'draft', className = '' }: {
-  champions: Champion[]; id: string; kind?: 'icon' | 'splash'; art?: 'draft' | 'lineup'; className?: string;
+  champions: Champion[]; id: string; kind?: 'icon' | 'splash'; art?: 'draft' | 'lineup' | 'draftCompact' | 'draftExpanded'; className?: string;
 }) {
   const champion = championFor(champions, id);
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [id, kind, art]);
+  useEffect(()=>{
+    if(champion&&kind==='splash'&&(art==='draftCompact'||art==='draftExpanded')){
+      const next=new Image();next.src=championArtwork(champion,art==='draftCompact'?'draftExpanded':'draftCompact');
+    }
+  },[champion?.id,kind,art]);
   return <div className={`champion-image ${className}`}>{champion && !failed
     ? <img loading={kind === 'splash' ? 'eager' : 'lazy'} src={kind === 'splash' ? championArtwork(champion, art) : champion.image} alt={champion.name} onError={() => setFailed(true)} />
     : <span className="champion-fallback">{champion?.name || (id ? '英雄图暂不可用' : '待定')}</span>}</div>;

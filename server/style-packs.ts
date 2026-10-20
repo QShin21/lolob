@@ -98,7 +98,7 @@ export function builtinStyleArchive(ref: StylePackRef = BUILTIN_STYLE_REF): Buff
   const manifest = entry.manifest;
   const files: Record<string, Buffer> = { 'manifest.json': Buffer.from(JSON.stringify(manifest, null, 2) + '\n') };
   for (const [id, file] of Object.entries(manifest.assets)) files[file] = builtinAsset(ref, id);
-  files['README.md'] = Buffer.from(`${manifest.name} / RiftCast 1.0.0\n\n内置风格包，可独立导入或用于制作派生美术。派生包请修改 manifest.json 的 id、name 和 version。图片、配色与固定版式共同形成节目外观，赛事数据继续动态绘制。先准备到预监，检查后 TAKE。\n`);
+  files['README.md'] = Buffer.from(`${manifest.name} / RiftCast 1.1.1\n\nBP 卡片支持当前选人放大浮动，锁定后收回小框。cardBlue/cardRed 底纹逐卡片铺设，高亮使用该侧配色。英雄小框和放大框素材由应用独立图库提供，升级应用后即可使用；包内无需重复放入英雄图片。\n\n内置风格包，可独立导入或用于制作派生美术。派生包请修改 manifest.json 的 id、name 和 version。图片、配色与固定版式共同形成节目外观，赛事数据继续动态绘制。先准备到预监，检查后 TAKE。\n`);
   return writeStyleZip(files);
 }
 

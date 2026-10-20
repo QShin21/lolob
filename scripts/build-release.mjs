@@ -78,6 +78,7 @@ await build({ config: { ...require('../electron-builder.cjs'), extraMetadata: { 
 const { builtinStyleArchive } = await tsImport('../server/style-packs.ts', import.meta.url);
 const { BUILTIN_RUNTIME_STYLES } = await tsImport('../shared/style-packs.ts', import.meta.url);
 for (const pack of BUILTIN_RUNTIME_STYLES) await writeFile(path.join(output, `RiftCast-${pkg.version}-${pack.id}.riftstyle.zip`), builtinStyleArchive(pack));
+run(path.join(root,'scripts/export-draft-art.mjs'),[output]);
 const artifacts = [];
 for (const name of await readdir(output)) if (/\.(exe|zip|blockmap)$/.test(name)) { const file = path.join(output, name); artifacts.push({ name, bytes: (await stat(file)).size, sha256: await digest(file) }); }
 await writeFile(path.join(output, 'release-manifest.json'), JSON.stringify({ ...manifest, artifacts }, null, 2) + '\n');

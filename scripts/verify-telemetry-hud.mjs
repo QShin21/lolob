@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import path from 'node:path';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createServer} from 'vite';
 import react from '@vitejs/plugin-react';
@@ -11,7 +11,8 @@ const {createFixture}=await tsImport('../server/test-support/fixture.ts',import.
 const {fallbackChampions}=await tsImport('../server/state.ts',import.meta.url);
 const {gameClockMatchKey}=await tsImport('../shared/game-clock.ts',import.meta.url);
 const {ResourceCache}=await tsImport('../server/resource-cache.ts',import.meta.url);
-const resources=new ResourceCache(path.join(root,'verification-output/release-1.1.0/static-cache'));
+const version=JSON.parse(await readFile(path.join(root,'package.json'),'utf8')).version;
+const resources=new ResourceCache(path.join(root,`verification-output/release-${version}/static-cache`));
 const {chromium}=await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE?pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href:'playwright');
 const state=createFixture(),champions=fallbackChampions();
 state.gameTime=1200;state.paused=true;state.overlay.nativeHud='mask';state.connections.live={status:'connected',updatedAt:new Date().toISOString()};
@@ -40,7 +41,7 @@ const server=http.createServer(async(req,res)=>{
  if(req.url==='/'){res.setHeader('Content-Type','text/html');res.end(await vite.transformIndexHtml('/',`<!doctype html><html><head><meta charset="utf-8"/><style>html,body{margin:0}.fixture-stage .is-output{width:100%;height:100%}</style></head><body><div id="root"></div><script type="module" src="/_telemetry-fixture.tsx"></script></body></html>`));return;}
  vite.middlewares(req,res,()=>{res.statusCode=404;res.end();});
 });
-const dir=path.join(root,'verification-output/release-1.1.0/telemetry-hud'),checks=[],errors=[];let browser;
+const dir=path.join(root,`verification-output/release-${version}/telemetry-hud`),checks=[],errors=[];let browser;
 try{
  await mkdir(dir,{recursive:true});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));

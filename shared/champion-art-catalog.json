@@ -18,6 +18,12 @@
         },
         "icon": {
           "url": "/champion-art/Aatrox-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Aatrox-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Aatrox-draftExpanded.webp"
         }
       }
     },
@@ -39,6 +45,12 @@
         },
         "icon": {
           "url": "/champion-art/Ahri-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ahri-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ahri-draftExpanded.webp"
         }
       }
     },
@@ -59,6 +71,12 @@
         },
         "icon": {
           "url": "/champion-art/Akali-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Akali-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Akali-draftExpanded.webp"
         }
       }
     },
@@ -80,6 +98,12 @@
         },
         "icon": {
           "url": "/champion-art/Akshan-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Akshan-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Akshan-draftExpanded.webp"
         }
       }
     },
@@ -101,6 +125,12 @@
         },
         "icon": {
           "url": "/champion-art/Alistar-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Alistar-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Alistar-draftExpanded.webp"
         }
       }
     },
@@ -122,6 +152,12 @@
         },
         "icon": {
           "url": "/champion-art/Ambessa-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ambessa-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ambessa-draftExpanded.webp"
         }
       }
     },
@@ -143,6 +179,12 @@
         },
         "icon": {
           "url": "/champion-art/Amumu-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Amumu-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Amumu-draftExpanded.webp"
         }
       }
     },
@@ -163,6 +205,12 @@
         },
         "icon": {
           "url": "/champion-art/Anivia-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Anivia-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Anivia-draftExpanded.webp"
         }
       }
     },
@@ -184,6 +232,12 @@
         },
         "icon": {
           "url": "/champion-art/Annie-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Annie-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Annie-draftExpanded.webp"
         }
       }
     },
@@ -204,6 +258,12 @@
         },
         "icon": {
           "url": "/champion-art/Aphelios-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Aphelios-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Aphelios-draftExpanded.webp"
         }
       }
     },
@@ -225,6 +285,12 @@
         },
         "icon": {
           "url": "/champion-art/Ashe-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ashe-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ashe-draftExpanded.webp"
         }
       }
     },
@@ -245,6 +311,12 @@
         },
         "icon": {
           "url": "/champion-art/AurelionSol-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/AurelionSol-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/AurelionSol-draftExpanded.webp"
         }
       }
     },
@@ -266,6 +338,12 @@
         },
         "icon": {
           "url": "/champion-art/Aurora-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Aurora-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Aurora-draftExpanded.webp"
         }
       }
     },
@@ -287,6 +365,12 @@
         },
         "icon": {
           "url": "/champion-art/Azir-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Azir-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Azir-draftExpanded.webp"
         }
       }
     },
@@ -308,6 +392,12 @@
         },
         "icon": {
           "url": "/champion-art/Bard-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Bard-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Bard-draftExpanded.webp"
         }
       }
     },
@@ -328,6 +418,12 @@
         },
         "icon": {
           "url": "/champion-art/Belveth-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Belveth-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Belveth-draftExpanded.webp"
         }
       }
     },
@@ -349,6 +445,12 @@
         },
         "icon": {
           "url": "/champion-art/Blitzcrank-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Blitzcrank-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Blitzcrank-draftExpanded.webp"
         }
       }
     },
@@ -370,6 +472,12 @@
         },
         "icon": {
           "url": "/champion-art/Brand-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Brand-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Brand-draftExpanded.webp"
         }
       }
     },
@@ -391,6 +499,12 @@
         },
         "icon": {
           "url": "/champion-art/Braum-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Braum-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Braum-draftExpanded.webp"
         }
       }
     },
@@ -412,6 +526,12 @@
         },
         "icon": {
           "url": "/champion-art/Briar-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Briar-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Briar-draftExpanded.webp"
         }
       }
     },
@@ -432,6 +552,12 @@
         },
         "icon": {
           "url": "/champion-art/Caitlyn-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Caitlyn-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Caitlyn-draftExpanded.webp"
         }
       }
     },
@@ -453,6 +579,12 @@
         },
         "icon": {
           "url": "/champion-art/Camille-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Camille-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Camille-draftExpanded.webp"
         }
       }
     },
@@ -473,6 +605,12 @@
         },
         "icon": {
           "url": "/champion-art/Cassiopeia-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Cassiopeia-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Cassiopeia-draftExpanded.webp"
         }
       }
     },
@@ -494,6 +632,12 @@
         },
         "icon": {
           "url": "/champion-art/Chogath-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Chogath-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Chogath-draftExpanded.webp"
         }
       }
     },
@@ -515,6 +659,12 @@
         },
         "icon": {
           "url": "/champion-art/Corki-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Corki-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Corki-draftExpanded.webp"
         }
       }
     },
@@ -536,6 +686,12 @@
         },
         "icon": {
           "url": "/champion-art/Darius-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Darius-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Darius-draftExpanded.webp"
         }
       }
     },
@@ -557,6 +713,12 @@
         },
         "icon": {
           "url": "/champion-art/Diana-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Diana-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Diana-draftExpanded.webp"
         }
       }
     },
@@ -577,6 +739,12 @@
         },
         "icon": {
           "url": "/champion-art/Draven-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Draven-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Draven-draftExpanded.webp"
         }
       }
     },
@@ -598,6 +766,12 @@
         },
         "icon": {
           "url": "/champion-art/DrMundo-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/DrMundo-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/DrMundo-draftExpanded.webp"
         }
       }
     },
@@ -619,6 +793,12 @@
         },
         "icon": {
           "url": "/champion-art/Ekko-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ekko-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ekko-draftExpanded.webp"
         }
       }
     },
@@ -640,6 +820,12 @@
         },
         "icon": {
           "url": "/champion-art/Elise-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Elise-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Elise-draftExpanded.webp"
         }
       }
     },
@@ -661,6 +847,12 @@
         },
         "icon": {
           "url": "/champion-art/Evelynn-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Evelynn-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Evelynn-draftExpanded.webp"
         }
       }
     },
@@ -682,6 +874,12 @@
         },
         "icon": {
           "url": "/champion-art/Ezreal-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ezreal-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ezreal-draftExpanded.webp"
         }
       }
     },
@@ -703,6 +901,12 @@
         },
         "icon": {
           "url": "/champion-art/Fiddlesticks-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Fiddlesticks-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Fiddlesticks-draftExpanded.webp"
         }
       }
     },
@@ -724,6 +928,12 @@
         },
         "icon": {
           "url": "/champion-art/Fiora-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Fiora-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Fiora-draftExpanded.webp"
         }
       }
     },
@@ -745,6 +955,12 @@
         },
         "icon": {
           "url": "/champion-art/Fizz-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Fizz-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Fizz-draftExpanded.webp"
         }
       }
     },
@@ -766,6 +982,12 @@
         },
         "icon": {
           "url": "/champion-art/Galio-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Galio-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Galio-draftExpanded.webp"
         }
       }
     },
@@ -786,6 +1008,12 @@
         },
         "icon": {
           "url": "/champion-art/Gangplank-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Gangplank-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Gangplank-draftExpanded.webp"
         }
       }
     },
@@ -807,6 +1035,12 @@
         },
         "icon": {
           "url": "/champion-art/Garen-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Garen-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Garen-draftExpanded.webp"
         }
       }
     },
@@ -828,6 +1062,12 @@
         },
         "icon": {
           "url": "/champion-art/Gnar-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Gnar-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Gnar-draftExpanded.webp"
         }
       }
     },
@@ -849,6 +1089,12 @@
         },
         "icon": {
           "url": "/champion-art/Gragas-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Gragas-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Gragas-draftExpanded.webp"
         }
       }
     },
@@ -869,6 +1115,12 @@
         },
         "icon": {
           "url": "/champion-art/Graves-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Graves-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Graves-draftExpanded.webp"
         }
       }
     },
@@ -889,6 +1141,12 @@
         },
         "icon": {
           "url": "/champion-art/Gwen-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Gwen-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Gwen-draftExpanded.webp"
         }
       }
     },
@@ -910,6 +1168,12 @@
         },
         "icon": {
           "url": "/champion-art/Hecarim-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Hecarim-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Hecarim-draftExpanded.webp"
         }
       }
     },
@@ -931,6 +1195,12 @@
         },
         "icon": {
           "url": "/champion-art/Heimerdinger-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Heimerdinger-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Heimerdinger-draftExpanded.webp"
         }
       }
     },
@@ -952,6 +1222,12 @@
         },
         "icon": {
           "url": "/champion-art/Hwei-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Hwei-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Hwei-draftExpanded.webp"
         }
       }
     },
@@ -973,6 +1249,12 @@
         },
         "icon": {
           "url": "/champion-art/Illaoi-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Illaoi-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Illaoi-draftExpanded.webp"
         }
       }
     },
@@ -994,6 +1276,12 @@
         },
         "icon": {
           "url": "/champion-art/Irelia-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Irelia-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Irelia-draftExpanded.webp"
         }
       }
     },
@@ -1015,6 +1303,12 @@
         },
         "icon": {
           "url": "/champion-art/Ivern-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ivern-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ivern-draftExpanded.webp"
         }
       }
     },
@@ -1036,6 +1330,12 @@
         },
         "icon": {
           "url": "/champion-art/Janna-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Janna-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Janna-draftExpanded.webp"
         }
       }
     },
@@ -1057,6 +1357,12 @@
         },
         "icon": {
           "url": "/champion-art/JarvanIV-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/JarvanIV-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/JarvanIV-draftExpanded.webp"
         }
       }
     },
@@ -1077,6 +1383,12 @@
         },
         "icon": {
           "url": "/champion-art/Jax-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Jax-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Jax-draftExpanded.webp"
         }
       }
     },
@@ -1098,6 +1410,12 @@
         },
         "icon": {
           "url": "/champion-art/Jayce-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Jayce-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Jayce-draftExpanded.webp"
         }
       }
     },
@@ -1119,6 +1437,12 @@
         },
         "icon": {
           "url": "/champion-art/Jhin-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Jhin-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Jhin-draftExpanded.webp"
         }
       }
     },
@@ -1139,6 +1463,12 @@
         },
         "icon": {
           "url": "/champion-art/Jinx-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Jinx-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Jinx-draftExpanded.webp"
         }
       }
     },
@@ -1160,6 +1490,12 @@
         },
         "icon": {
           "url": "/champion-art/Kaisa-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Kaisa-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Kaisa-draftExpanded.webp"
         }
       }
     },
@@ -1180,6 +1516,12 @@
         },
         "icon": {
           "url": "/champion-art/Kalista-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Kalista-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Kalista-draftExpanded.webp"
         }
       }
     },
@@ -1201,6 +1543,12 @@
         },
         "icon": {
           "url": "/champion-art/Karma-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Karma-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Karma-draftExpanded.webp"
         }
       }
     },
@@ -1221,6 +1569,12 @@
         },
         "icon": {
           "url": "/champion-art/Karthus-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Karthus-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Karthus-draftExpanded.webp"
         }
       }
     },
@@ -1242,6 +1596,12 @@
         },
         "icon": {
           "url": "/champion-art/Kassadin-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Kassadin-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Kassadin-draftExpanded.webp"
         }
       }
     },
@@ -1263,6 +1623,12 @@
         },
         "icon": {
           "url": "/champion-art/Katarina-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Katarina-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Katarina-draftExpanded.webp"
         }
       }
     },
@@ -1284,6 +1650,12 @@
         },
         "icon": {
           "url": "/champion-art/Kayle-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Kayle-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Kayle-draftExpanded.webp"
         }
       }
     },
@@ -1305,6 +1677,12 @@
         },
         "icon": {
           "url": "/champion-art/Kayn-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Kayn-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Kayn-draftExpanded.webp"
         }
       }
     },
@@ -1325,6 +1703,12 @@
         },
         "icon": {
           "url": "/champion-art/Kennen-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Kennen-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Kennen-draftExpanded.webp"
         }
       }
     },
@@ -1345,6 +1729,12 @@
         },
         "icon": {
           "url": "/champion-art/Khazix-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Khazix-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Khazix-draftExpanded.webp"
         }
       }
     },
@@ -1365,6 +1755,12 @@
         },
         "icon": {
           "url": "/champion-art/Kindred-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Kindred-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Kindred-draftExpanded.webp"
         }
       }
     },
@@ -1385,6 +1781,12 @@
         },
         "icon": {
           "url": "/champion-art/Kled-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Kled-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Kled-draftExpanded.webp"
         }
       }
     },
@@ -1406,6 +1808,12 @@
         },
         "icon": {
           "url": "/champion-art/KogMaw-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/KogMaw-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/KogMaw-draftExpanded.webp"
         }
       }
     },
@@ -1427,6 +1835,12 @@
         },
         "icon": {
           "url": "/champion-art/KSante-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/KSante-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/KSante-draftExpanded.webp"
         }
       }
     },
@@ -1448,6 +1862,12 @@
         },
         "icon": {
           "url": "/champion-art/Leblanc-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Leblanc-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Leblanc-draftExpanded.webp"
         }
       }
     },
@@ -1469,6 +1889,12 @@
         },
         "icon": {
           "url": "/champion-art/LeeSin-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/LeeSin-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/LeeSin-draftExpanded.webp"
         }
       }
     },
@@ -1490,6 +1916,12 @@
         },
         "icon": {
           "url": "/champion-art/Leona-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Leona-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Leona-draftExpanded.webp"
         }
       }
     },
@@ -1511,6 +1943,12 @@
         },
         "icon": {
           "url": "/champion-art/Lillia-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Lillia-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Lillia-draftExpanded.webp"
         }
       }
     },
@@ -1531,6 +1969,12 @@
         },
         "icon": {
           "url": "/champion-art/Lissandra-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Lissandra-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Lissandra-draftExpanded.webp"
         }
       }
     },
@@ -1552,6 +1996,12 @@
         },
         "icon": {
           "url": "/champion-art/Locke-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Locke-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Locke-draftExpanded.webp"
         }
       }
     },
@@ -1573,6 +2023,12 @@
         },
         "icon": {
           "url": "/champion-art/Lucian-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Lucian-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Lucian-draftExpanded.webp"
         }
       }
     },
@@ -1594,6 +2050,12 @@
         },
         "icon": {
           "url": "/champion-art/Lulu-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Lulu-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Lulu-draftExpanded.webp"
         }
       }
     },
@@ -1615,6 +2077,12 @@
         },
         "icon": {
           "url": "/champion-art/Lux-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Lux-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Lux-draftExpanded.webp"
         }
       }
     },
@@ -1636,6 +2104,12 @@
         },
         "icon": {
           "url": "/champion-art/Malphite-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Malphite-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Malphite-draftExpanded.webp"
         }
       }
     },
@@ -1656,6 +2130,12 @@
         },
         "icon": {
           "url": "/champion-art/Malzahar-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Malzahar-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Malzahar-draftExpanded.webp"
         }
       }
     },
@@ -1677,6 +2157,12 @@
         },
         "icon": {
           "url": "/champion-art/Maokai-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Maokai-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Maokai-draftExpanded.webp"
         }
       }
     },
@@ -1698,6 +2184,12 @@
         },
         "icon": {
           "url": "/champion-art/MasterYi-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/MasterYi-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/MasterYi-draftExpanded.webp"
         }
       }
     },
@@ -1719,6 +2211,12 @@
         },
         "icon": {
           "url": "/champion-art/Mel-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Mel-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Mel-draftExpanded.webp"
         }
       }
     },
@@ -1740,6 +2238,12 @@
         },
         "icon": {
           "url": "/champion-art/Milio-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Milio-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Milio-draftExpanded.webp"
         }
       }
     },
@@ -1761,6 +2265,12 @@
         },
         "icon": {
           "url": "/champion-art/MissFortune-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/MissFortune-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/MissFortune-draftExpanded.webp"
         }
       }
     },
@@ -1782,6 +2292,12 @@
         },
         "icon": {
           "url": "/champion-art/MonkeyKing-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/MonkeyKing-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/MonkeyKing-draftExpanded.webp"
         }
       }
     },
@@ -1803,6 +2319,12 @@
         },
         "icon": {
           "url": "/champion-art/Mordekaiser-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Mordekaiser-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Mordekaiser-draftExpanded.webp"
         }
       }
     },
@@ -1824,6 +2346,12 @@
         },
         "icon": {
           "url": "/champion-art/Morgana-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Morgana-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Morgana-draftExpanded.webp"
         }
       }
     },
@@ -1845,6 +2373,12 @@
         },
         "icon": {
           "url": "/champion-art/Naafiri-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Naafiri-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Naafiri-draftExpanded.webp"
         }
       }
     },
@@ -1866,6 +2400,12 @@
         },
         "icon": {
           "url": "/champion-art/Nami-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Nami-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Nami-draftExpanded.webp"
         }
       }
     },
@@ -1887,6 +2427,12 @@
         },
         "icon": {
           "url": "/champion-art/Nasus-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Nasus-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Nasus-draftExpanded.webp"
         }
       }
     },
@@ -1908,6 +2454,12 @@
         },
         "icon": {
           "url": "/champion-art/Nautilus-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Nautilus-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Nautilus-draftExpanded.webp"
         }
       }
     },
@@ -1929,6 +2481,12 @@
         },
         "icon": {
           "url": "/champion-art/Neeko-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Neeko-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Neeko-draftExpanded.webp"
         }
       }
     },
@@ -1950,6 +2508,12 @@
         },
         "icon": {
           "url": "/champion-art/Nidalee-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Nidalee-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Nidalee-draftExpanded.webp"
         }
       }
     },
@@ -1971,6 +2535,12 @@
         },
         "icon": {
           "url": "/champion-art/Nilah-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Nilah-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Nilah-draftExpanded.webp"
         }
       }
     },
@@ -1992,6 +2562,12 @@
         },
         "icon": {
           "url": "/champion-art/Nocturne-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Nocturne-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Nocturne-draftExpanded.webp"
         }
       }
     },
@@ -2013,6 +2589,12 @@
         },
         "icon": {
           "url": "/champion-art/Nunu-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Nunu-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Nunu-draftExpanded.webp"
         }
       }
     },
@@ -2034,6 +2616,12 @@
         },
         "icon": {
           "url": "/champion-art/Olaf-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Olaf-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Olaf-draftExpanded.webp"
         }
       }
     },
@@ -2055,6 +2643,12 @@
         },
         "icon": {
           "url": "/champion-art/Orianna-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Orianna-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Orianna-draftExpanded.webp"
         }
       }
     },
@@ -2075,6 +2669,12 @@
         },
         "icon": {
           "url": "/champion-art/Ornn-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ornn-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ornn-draftExpanded.webp"
         }
       }
     },
@@ -2096,6 +2696,12 @@
         },
         "icon": {
           "url": "/champion-art/Pantheon-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Pantheon-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Pantheon-draftExpanded.webp"
         }
       }
     },
@@ -2117,6 +2723,12 @@
         },
         "icon": {
           "url": "/champion-art/Poppy-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Poppy-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Poppy-draftExpanded.webp"
         }
       }
     },
@@ -2138,6 +2750,12 @@
         },
         "icon": {
           "url": "/champion-art/Pyke-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Pyke-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Pyke-draftExpanded.webp"
         }
       }
     },
@@ -2158,6 +2776,12 @@
         },
         "icon": {
           "url": "/champion-art/Qiyana-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Qiyana-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Qiyana-draftExpanded.webp"
         }
       }
     },
@@ -2179,6 +2803,12 @@
         },
         "icon": {
           "url": "/champion-art/Quinn-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Quinn-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Quinn-draftExpanded.webp"
         }
       }
     },
@@ -2199,6 +2829,12 @@
         },
         "icon": {
           "url": "/champion-art/Rakan-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Rakan-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Rakan-draftExpanded.webp"
         }
       }
     },
@@ -2219,6 +2855,12 @@
         },
         "icon": {
           "url": "/champion-art/Rammus-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Rammus-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Rammus-draftExpanded.webp"
         }
       }
     },
@@ -2240,6 +2882,12 @@
         },
         "icon": {
           "url": "/champion-art/RekSai-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/RekSai-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/RekSai-draftExpanded.webp"
         }
       }
     },
@@ -2261,6 +2909,12 @@
         },
         "icon": {
           "url": "/champion-art/Rell-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Rell-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Rell-draftExpanded.webp"
         }
       }
     },
@@ -2282,6 +2936,12 @@
         },
         "icon": {
           "url": "/champion-art/Renata-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Renata-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Renata-draftExpanded.webp"
         }
       }
     },
@@ -2303,6 +2963,12 @@
         },
         "icon": {
           "url": "/champion-art/Renekton-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Renekton-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Renekton-draftExpanded.webp"
         }
       }
     },
@@ -2324,6 +2990,12 @@
         },
         "icon": {
           "url": "/champion-art/Rengar-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Rengar-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Rengar-draftExpanded.webp"
         }
       }
     },
@@ -2345,6 +3017,12 @@
         },
         "icon": {
           "url": "/champion-art/Riven-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Riven-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Riven-draftExpanded.webp"
         }
       }
     },
@@ -2366,6 +3044,12 @@
         },
         "icon": {
           "url": "/champion-art/Rumble-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Rumble-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Rumble-draftExpanded.webp"
         }
       }
     },
@@ -2386,6 +3070,12 @@
         },
         "icon": {
           "url": "/champion-art/Ryze-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ryze-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ryze-draftExpanded.webp"
         }
       }
     },
@@ -2407,6 +3097,12 @@
         },
         "icon": {
           "url": "/champion-art/Samira-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Samira-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Samira-draftExpanded.webp"
         }
       }
     },
@@ -2427,6 +3123,12 @@
         },
         "icon": {
           "url": "/champion-art/Sejuani-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Sejuani-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Sejuani-draftExpanded.webp"
         }
       }
     },
@@ -2448,6 +3150,12 @@
         },
         "icon": {
           "url": "/champion-art/Senna-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Senna-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Senna-draftExpanded.webp"
         }
       }
     },
@@ -2469,6 +3177,12 @@
         },
         "icon": {
           "url": "/champion-art/Seraphine-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Seraphine-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Seraphine-draftExpanded.webp"
         }
       }
     },
@@ -2490,6 +3204,12 @@
         },
         "icon": {
           "url": "/champion-art/Sett-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Sett-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Sett-draftExpanded.webp"
         }
       }
     },
@@ -2510,6 +3230,12 @@
         },
         "icon": {
           "url": "/champion-art/Shaco-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Shaco-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Shaco-draftExpanded.webp"
         }
       }
     },
@@ -2530,6 +3256,12 @@
         },
         "icon": {
           "url": "/champion-art/Shen-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Shen-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Shen-draftExpanded.webp"
         }
       }
     },
@@ -2551,6 +3283,12 @@
         },
         "icon": {
           "url": "/champion-art/Shyvana-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Shyvana-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Shyvana-draftExpanded.webp"
         }
       }
     },
@@ -2572,6 +3310,12 @@
         },
         "icon": {
           "url": "/champion-art/Singed-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Singed-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Singed-draftExpanded.webp"
         }
       }
     },
@@ -2593,6 +3337,12 @@
         },
         "icon": {
           "url": "/champion-art/Sion-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Sion-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Sion-draftExpanded.webp"
         }
       }
     },
@@ -2613,6 +3363,12 @@
         },
         "icon": {
           "url": "/champion-art/Sivir-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Sivir-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Sivir-draftExpanded.webp"
         }
       }
     },
@@ -2634,6 +3390,12 @@
         },
         "icon": {
           "url": "/champion-art/Skarner-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Skarner-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Skarner-draftExpanded.webp"
         }
       }
     },
@@ -2655,6 +3417,12 @@
         },
         "icon": {
           "url": "/champion-art/Smolder-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Smolder-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Smolder-draftExpanded.webp"
         }
       }
     },
@@ -2676,6 +3444,12 @@
         },
         "icon": {
           "url": "/champion-art/Sona-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Sona-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Sona-draftExpanded.webp"
         }
       }
     },
@@ -2697,6 +3471,12 @@
         },
         "icon": {
           "url": "/champion-art/Soraka-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Soraka-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Soraka-draftExpanded.webp"
         }
       }
     },
@@ -2718,6 +3498,12 @@
         },
         "icon": {
           "url": "/champion-art/Swain-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Swain-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Swain-draftExpanded.webp"
         }
       }
     },
@@ -2739,6 +3525,12 @@
         },
         "icon": {
           "url": "/champion-art/Sylas-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Sylas-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Sylas-draftExpanded.webp"
         }
       }
     },
@@ -2759,6 +3551,12 @@
         },
         "icon": {
           "url": "/champion-art/Syndra-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Syndra-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Syndra-draftExpanded.webp"
         }
       }
     },
@@ -2780,6 +3578,12 @@
         },
         "icon": {
           "url": "/champion-art/TahmKench-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/TahmKench-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/TahmKench-draftExpanded.webp"
         }
       }
     },
@@ -2801,6 +3605,12 @@
         },
         "icon": {
           "url": "/champion-art/Taliyah-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Taliyah-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Taliyah-draftExpanded.webp"
         }
       }
     },
@@ -2821,6 +3631,12 @@
         },
         "icon": {
           "url": "/champion-art/Talon-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Talon-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Talon-draftExpanded.webp"
         }
       }
     },
@@ -2842,6 +3658,12 @@
         },
         "icon": {
           "url": "/champion-art/Taric-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Taric-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Taric-draftExpanded.webp"
         }
       }
     },
@@ -2863,6 +3685,12 @@
         },
         "icon": {
           "url": "/champion-art/Teemo-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Teemo-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Teemo-draftExpanded.webp"
         }
       }
     },
@@ -2884,6 +3712,12 @@
         },
         "icon": {
           "url": "/champion-art/Thresh-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Thresh-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Thresh-draftExpanded.webp"
         }
       }
     },
@@ -2905,6 +3739,12 @@
         },
         "icon": {
           "url": "/champion-art/Tristana-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Tristana-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Tristana-draftExpanded.webp"
         }
       }
     },
@@ -2926,6 +3766,12 @@
         },
         "icon": {
           "url": "/champion-art/Trundle-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Trundle-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Trundle-draftExpanded.webp"
         }
       }
     },
@@ -2947,6 +3793,12 @@
         },
         "icon": {
           "url": "/champion-art/Tryndamere-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Tryndamere-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Tryndamere-draftExpanded.webp"
         }
       }
     },
@@ -2968,6 +3820,12 @@
         },
         "icon": {
           "url": "/champion-art/TwistedFate-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/TwistedFate-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/TwistedFate-draftExpanded.webp"
         }
       }
     },
@@ -2989,6 +3847,12 @@
         },
         "icon": {
           "url": "/champion-art/Twitch-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Twitch-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Twitch-draftExpanded.webp"
         }
       }
     },
@@ -3010,6 +3874,12 @@
         },
         "icon": {
           "url": "/champion-art/Udyr-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Udyr-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Udyr-draftExpanded.webp"
         }
       }
     },
@@ -3031,6 +3901,12 @@
         },
         "icon": {
           "url": "/champion-art/Urgot-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Urgot-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Urgot-draftExpanded.webp"
         }
       }
     },
@@ -3052,6 +3928,12 @@
         },
         "icon": {
           "url": "/champion-art/Varus-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Varus-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Varus-draftExpanded.webp"
         }
       }
     },
@@ -3073,6 +3955,12 @@
         },
         "icon": {
           "url": "/champion-art/Vayne-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Vayne-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Vayne-draftExpanded.webp"
         }
       }
     },
@@ -3093,6 +3981,12 @@
         },
         "icon": {
           "url": "/champion-art/Veigar-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Veigar-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Veigar-draftExpanded.webp"
         }
       }
     },
@@ -3114,6 +4008,12 @@
         },
         "icon": {
           "url": "/champion-art/Velkoz-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Velkoz-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Velkoz-draftExpanded.webp"
         }
       }
     },
@@ -3134,6 +4034,12 @@
         },
         "icon": {
           "url": "/champion-art/Vex-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Vex-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Vex-draftExpanded.webp"
         }
       }
     },
@@ -3155,6 +4061,12 @@
         },
         "icon": {
           "url": "/champion-art/Vi-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Vi-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Vi-draftExpanded.webp"
         }
       }
     },
@@ -3176,6 +4088,12 @@
         },
         "icon": {
           "url": "/champion-art/Viego-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Viego-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Viego-draftExpanded.webp"
         }
       }
     },
@@ -3196,6 +4114,12 @@
         },
         "icon": {
           "url": "/champion-art/Viktor-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Viktor-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Viktor-draftExpanded.webp"
         }
       }
     },
@@ -3217,6 +4141,12 @@
         },
         "icon": {
           "url": "/champion-art/Vladimir-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Vladimir-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Vladimir-draftExpanded.webp"
         }
       }
     },
@@ -3238,6 +4168,12 @@
         },
         "icon": {
           "url": "/champion-art/Volibear-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Volibear-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Volibear-draftExpanded.webp"
         }
       }
     },
@@ -3259,6 +4195,12 @@
         },
         "icon": {
           "url": "/champion-art/Warwick-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Warwick-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Warwick-draftExpanded.webp"
         }
       }
     },
@@ -3279,6 +4221,12 @@
         },
         "icon": {
           "url": "/champion-art/Xayah-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Xayah-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Xayah-draftExpanded.webp"
         }
       }
     },
@@ -3300,6 +4248,12 @@
         },
         "icon": {
           "url": "/champion-art/Xerath-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Xerath-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Xerath-draftExpanded.webp"
         }
       }
     },
@@ -3321,6 +4275,12 @@
         },
         "icon": {
           "url": "/champion-art/XinZhao-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/XinZhao-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/XinZhao-draftExpanded.webp"
         }
       }
     },
@@ -3342,6 +4302,12 @@
         },
         "icon": {
           "url": "/champion-art/Yasuo-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Yasuo-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Yasuo-draftExpanded.webp"
         }
       }
     },
@@ -3363,6 +4329,12 @@
         },
         "icon": {
           "url": "/champion-art/Yone-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Yone-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Yone-draftExpanded.webp"
         }
       }
     },
@@ -3384,6 +4356,12 @@
         },
         "icon": {
           "url": "/champion-art/Yorick-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Yorick-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Yorick-draftExpanded.webp"
         }
       }
     },
@@ -3404,6 +4382,12 @@
         },
         "icon": {
           "url": "/champion-art/Yunara-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Yunara-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Yunara-draftExpanded.webp"
         }
       }
     },
@@ -3425,6 +4409,12 @@
         },
         "icon": {
           "url": "/champion-art/Yuumi-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Yuumi-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Yuumi-draftExpanded.webp"
         }
       }
     },
@@ -3445,6 +4435,12 @@
         },
         "icon": {
           "url": "/champion-art/Zaahen-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Zaahen-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Zaahen-draftExpanded.webp"
         }
       }
     },
@@ -3466,6 +4462,12 @@
         },
         "icon": {
           "url": "/champion-art/Zac-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Zac-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Zac-draftExpanded.webp"
         }
       }
     },
@@ -3486,6 +4488,12 @@
         },
         "icon": {
           "url": "/champion-art/Zed-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Zed-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Zed-draftExpanded.webp"
         }
       }
     },
@@ -3506,6 +4514,12 @@
         },
         "icon": {
           "url": "/champion-art/Zeri-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Zeri-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Zeri-draftExpanded.webp"
         }
       }
     },
@@ -3526,6 +4540,12 @@
         },
         "icon": {
           "url": "/champion-art/Ziggs-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Ziggs-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Ziggs-draftExpanded.webp"
         }
       }
     },
@@ -3547,6 +4567,12 @@
         },
         "icon": {
           "url": "/champion-art/Zilean-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Zilean-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Zilean-draftExpanded.webp"
         }
       }
     },
@@ -3567,6 +4593,12 @@
         },
         "icon": {
           "url": "/champion-art/Zoe-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Zoe-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Zoe-draftExpanded.webp"
         }
       }
     },
@@ -3588,6 +4620,12 @@
         },
         "icon": {
           "url": "/champion-art/Zyra-icon.webp"
+        },
+        "draftCompact": {
+          "url": "/champion-art/Zyra-draftCompact.webp"
+        },
+        "draftExpanded": {
+          "url": "/champion-art/Zyra-draftExpanded.webp"
         }
       }
     }

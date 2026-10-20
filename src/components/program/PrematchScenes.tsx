@@ -35,12 +35,13 @@ function DraftHistory({ state, champions, side }: { state: BroadcastState; champ
 function DraftTeam({ state, champions, side }: { state: BroadcastState; champions: Champion[]; side: Side }) {
   const picks = state.draft[`${side}Picks`], preselect = state.draft[`${side}Preselect`] || [];
   const assigned = (id: string) => (state.draft.locked || state.production?.assignments.some(a => a.locked && a.championId === id)) ? state.players.find(p => p.team === side && p.championId === id) : undefined;
-  const choosing = !state.draft.locked && state.draft.activeTeam === side && !/ban|禁/i.test(state.draft.action);
+  const choosing = !state.draft.locked && state.draft.activeTeam === side && /^(选择英雄|选人|pick|人工 BP)$/i.test(state.draft.action.trim());
+  const activeIndex = choosing ? Array.from({length:5},(_,i)=>i).find(i=>!picks[i]) : undefined;
   return <section className={`cast-draft-team ${side}`}>
-    <div className="cast-draft-cards">{Array.from({ length: 5 }, (_, i) => {
-      const active = choosing && !picks[i] && i === picks.filter(Boolean).length, hover = active ? preselect[0] : undefined, player = assigned(picks[i]);
+    <div className={`cast-draft-cards ${activeIndex!==undefined?'has-active-pick':''}`}>{Array.from({ length: 5 }, (_, i) => {
+      const active = i === activeIndex, hover = active ? preselect[0] : undefined, player = assigned(picks[i]);
       return <article className={`cast-draft-card ${picks[i] ? 'locked' : 'waiting'} ${active ? 'active-slot' : ''}`} data-state={picks[i] ? 'locked' : hover ? 'preselect' : active ? 'choosing' : 'waiting'} key={i}>
-        <ChampionImage champions={champions} id={picks[i] || hover || ''} kind="splash" />
+        <ChampionImage champions={champions} id={picks[i] || hover || ''} kind="splash" art={active?'draftExpanded':'draftCompact'} />
         <div className="arena-pick-identity"><FitName className="cast-draft-player">{player?.name || ''}</FitName></div>
       </article>;
     })}</div>

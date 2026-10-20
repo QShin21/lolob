@@ -13,6 +13,6 @@ export function localChampionAssets(champions: Champion[]): Champion[] {
     return local ? { ...champion, image: local.assets.icon.url, splash: local.assets.lineup.url } : champion;
   });
 }
-export function championArtwork(champion: Champion, variant: 'draft' | 'lineup'): string {
+export function championArtwork(champion: Champion, variant: 'draft' | 'lineup' | 'draftCompact' | 'draftExpanded'): string {
   return artwork.get(champion.id)?.assets[variant].url || champion.splash;
 }

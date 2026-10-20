@@ -32,13 +32,17 @@
 .cast-history-game .champion-image { aspect-ratio:1; min-width:0; }
 .cast-history-game.is-current .champion-image { filter:saturate(.65); }
 .cast-draft-team { min-width:0; position:relative; border-top:.3cqw solid var(--cast-side); background:var(--cast-ink); }
-.cast-draft-cards { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.06cqw; height:14.8cqw; }
-.cast-draft-card { position:relative; overflow:hidden; min-width:0; }
+.cast-draft-cards { display:flex; align-items:flex-end; gap:.06cqw; height:14.8cqw; isolation:isolate; }
+.cast-draft-card { position:relative; overflow:hidden; min-width:0; flex:1 1 0%; height:100%; background-color:var(--cast-ink); transition:flex-grow 260ms ease,height 260ms ease,box-shadow 260ms ease; }
+.cast-draft-cards.has-active-pick > .cast-draft-card { height:calc(100% - .65cqw); }
+.cast-draft-cards.has-active-pick > .cast-draft-card.active-slot { flex-grow:2.2; height:100%; z-index:2; box-shadow:0 0 .75cqw var(--cast-side); }
 .cast-draft-card > .champion-image { position:absolute; inset:0; }
 .cast-draft-card .champion-image > img { object-fit:cover; object-position:center 20%; }
 .cast-draft-card > .champion-image:after { content:''; position:absolute; inset:70% 0 0; background:linear-gradient(transparent,var(--art-ink, #101923)); }
 .cast-draft-card.active-slot { outline:.14cqw solid var(--cast-side); outline-offset:-.14cqw; }
-.cast-draft .champion-fallback { font-size:0; }
+.cast-draft-card.active-slot:after { content:''; position:absolute; inset:0; box-shadow:inset 0 0 .65cqw var(--cast-side); pointer-events:none; }
+@media (prefers-reduced-motion:reduce) { .cast-draft-card { transition:none; } }
+.cast-draft .cast-draft-card .champion-fallback { font-size:0; }
 .arena-pick-identity { position:absolute; inset:auto .3cqw .4cqw; text-align:center; }
 .cast-draft-player { font-size:1.05cqw; line-height:1.3; }
 .cast-draft-center { background:var(--cast-panel); display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:.7cqw; text-align:center; border-top:.3cqw solid var(--cast-side); min-width:0; }
