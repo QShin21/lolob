@@ -11,7 +11,7 @@ export function sidePlayers(state: BroadcastState, side: Side) {
   return state.players.filter(p => p.team === side).sort((a, b) => order(a.role) - order(b.role)).slice(0, 5);
 }
 export function ChampionImage({ champions, id, kind = 'icon', art = 'draft', className = '' }: {
-  champions: Champion[]; id: string; kind?: 'icon' | 'splash'; art?: 'draft' | 'lineup' | 'draftCompact' | 'draftExpanded'; className?: string;
+  champions: Champion[]; id: string; kind?: 'icon' | 'splash'; art?: 'draft' | 'lineup' | 'draftCompact' | 'draftExpanded' | 'draftReveal'; className?: string;
 }) {
   const champion = championFor(champions, id);
   const [failed, setFailed] = useState(false);
@@ -19,6 +19,7 @@ export function ChampionImage({ champions, id, kind = 'icon', art = 'draft', cla
   useEffect(()=>{
     if(champion&&kind==='splash'&&(art==='draftCompact'||art==='draftExpanded')){
       const next=new Image();next.src=championArtwork(champion,art==='draftCompact'?'draftExpanded':'draftCompact');
+      const reveal=new Image();reveal.src=championArtwork(champion,'draftReveal');
     }
   },[champion?.id,kind,art]);
   return <div className={`champion-image ${className}`}>{champion && !failed

@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {spawnSync} from 'node:child_process';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const destination = path.join(root, 'public/champion-art');
@@ -96,5 +97,7 @@ if (verify) {
   await writeFile(manifestFile, JSON.stringify({ version, variants, source: 'Riot Games Data Dragon', champions: entries }, null, 2) + '\n');
   const bundled = entries.map(({ id, key, name, title, tags, assets }) => ({ id, key, name, title, tags, assets: Object.fromEntries(Object.entries(assets).map(([name, asset]) => [name, { url: asset.url }])) }));
   await writeFile(catalogFile, JSON.stringify({ version, champions: bundled }, null, 2) + '\n');
-  console.log(`Prepared ${champions.length} champions, four portrait variants and an icon each.`);
+  const reveal=spawnSync(process.execPath,[path.join(root,'scripts/prepare-draft-reveal.mjs')],{cwd:root,stdio:'inherit',windowsHide:true});
+  if(reveal.status!==0)throw Error('Lock-reveal artwork preparation failed');
+  console.log(`Prepared ${champions.length} champions, five portrait variants and an icon each.`);
 }

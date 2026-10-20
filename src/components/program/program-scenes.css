@@ -42,6 +42,16 @@
 .cast-draft-card.active-slot { outline:.14cqw solid var(--cast-side); outline-offset:-.14cqw; }
 .cast-draft-card.active-slot:after { content:''; position:absolute; inset:0; box-shadow:inset 0 0 .65cqw var(--cast-side); pointer-events:none; }
 @media (prefers-reduced-motion:reduce) { .cast-draft-card { transition:none; } }
+.draft-lock-reveal { position:absolute; top:0; bottom:0; z-index:4; pointer-events:none; overflow:hidden; background:var(--cast-ink); border-block:.18cqw solid var(--cast-side); animation:draft-lock-reveal 3s cubic-bezier(.2,.7,.2,1) both; }
+.draft-lock-reveal > .champion-image,.draft-lock-reveal img { width:100%; height:100%; }
+.draft-lock-reveal img { object-fit:cover; object-position:center; }
+.draft-lock-reveal:after { content:'';position:absolute;inset:0;box-shadow:inset 0 0 .65cqw var(--cast-side); }
+@keyframes draft-lock-reveal {
+  0% { left:var(--reveal-from-left);width:var(--reveal-from-width);opacity:1; }
+  16%,80% { left:0;width:100%;opacity:1; }
+  100% { left:var(--reveal-to-left);width:var(--reveal-to-width);opacity:0; }
+}
+@media (prefers-reduced-motion:reduce) { .draft-lock-reveal { left:0;width:100%;opacity:1;animation:none; } }
 .cast-draft .cast-draft-card .champion-fallback { font-size:0; }
 .arena-pick-identity { position:absolute; inset:auto .3cqw .4cqw; text-align:center; }
 .cast-draft-player { font-size:1.05cqw; line-height:1.3; }

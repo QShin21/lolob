@@ -80,7 +80,7 @@ jobs:
         run: node scripts/verify-draft-layout-104.mjs
       - name: Verify cooldown HUD, vitals, names and stale data
         run: node scripts/verify-telemetry-hud.mjs
-      - name: Verify floating BP focus and both portrait libraries
+      - name: Verify floating BP, 3-second lock reveal and three portrait libraries
         run: node scripts/verify-draft-focus-111.mjs
       - name: Upload report layout review
         uses: actions/upload-artifact@v4

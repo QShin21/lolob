@@ -21,7 +21,7 @@ const builtins=JSON.parse(await readFile(`verification-output/release-${version}
 const liveOnly=JSON.parse(await readFile(`verification-output/release-${version}/live-only/report.json`,'utf8'));assert.equal(liveOnly.status,'passed');
 const draftLayout=JSON.parse(await readFile(`verification-output/release-${version}/draft-layout/report.json`,'utf8'));assert.equal(draftLayout.status,'passed');
 const telemetryHud=JSON.parse(await readFile(`verification-output/release-${version}/telemetry-hud/report.json`,'utf8'));assert.equal(telemetryHud.status,'passed');
-for(const label of ['Compact','Expanded'])assert.ok(manifest.artifacts.some(a=>a.name===`RiftCast-${version}-Draft-Art-${label}.zip`));
+for(const label of ['Compact','Expanded','LockReveal'])assert.ok(manifest.artifacts.some(a=>a.name===`RiftCast-${version}-Draft-Art-${label}.zip`));
 const draftFocus=JSON.parse(await readFile(`verification-output/release-${version}/draft-focus/report.json`,'utf8'));assert.equal(draftFocus.status,'passed');
 const guide=`RiftCast-${version}-Usage.md`;
 await copyFile(path.join(folder,'使用说明.md'),path.join(folder,guide));
@@ -34,7 +34,7 @@ const gh=args=>execFileSync('gh',args,{encoding:'utf8',stdio:['ignore','pipe','i
 assert.equal(findRelease(tag),undefined,'Version or draft already exists; inspect it before retrying');
 const expected=[];
 for(const name of files){const hash=createHash('sha256');for await(const bytes of fs.createReadStream(path.join(folder,name)))hash.update(bytes);expected.push({name,bytes:fs.statSync(path.join(folder,name)).size,sha256:hash.digest('hex')});}
-gh(['release','create',tag,'--repo',repository,'--target',sha,'--draft','--title',`RiftCast ${version} · 动态 BP 与双尺寸英雄图库`,'--notes-file',`docs/Windows-Release-${version}.md`,...files.map(name=>path.join(folder,name))]);
+gh(['release','create',tag,'--repo',repository,'--target',sha,'--draft','--title',`RiftCast ${version} · 动态 BP、锁定特写与三套英雄图库`,'--notes-file',`docs/Windows-Release-${version}.md`,...files.map(name=>path.join(folder,name))]);
 const created=findRelease(tag);assert.ok(created,'New draft was not found');
 const release=api(`${apiRoot}/releases/${created.id}`);
 assert.equal(release.draft,true);assert.equal(release.tag_name,tag);assert.equal(release.target_commitish,sha);assertAssets(release,expected);

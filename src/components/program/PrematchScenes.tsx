@@ -1,4 +1,5 @@
 import {FitName} from '../FitName';
+import {DraftLockReveal} from './DraftLockReveal';
 import type { BroadcastState, Champion, Side } from '../../../shared/types';
 import { championFor, getTeam, time } from '../../lib';
 import { ArenaHeader, ArenaMark, ChampionImage, MatchStrip, Portrait, TeamMark, TeamName, sideName, sidePlayers } from './ProgramPrimitives';
@@ -45,6 +46,7 @@ function DraftTeam({ state, champions, side }: { state: BroadcastState; champion
         <div className="arena-pick-identity"><FitName className="cast-draft-player">{player?.name || ''}</FitName></div>
       </article>;
     })}</div>
+    <DraftLockReveal state={state} side={side} champions={champions} activeIndex={activeIndex}/>
   </section>;
 }
 

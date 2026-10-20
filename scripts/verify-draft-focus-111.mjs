@@ -28,19 +28,35 @@ try{
  };
  for(const pack of BUILTIN_RUNTIME_STYLES){
   await page.goto(`${origin}?pack=${pack.id}`);await page.locator('[data-style-status=ready]').waitFor();await page.evaluate(()=>document.fonts.ready);await page.waitForFunction(()=>[...document.querySelectorAll('.cast-draft-card img')].every(i=>i.complete&&i.naturalWidth>0));
+  assert.equal(await page.locator('.draft-lock-reveal').count(),0,'Opening a snapshot does not replay old locks');
   assert.equal(await page.locator('.active-slot').count(),1);assert.match(await page.locator('.active-slot img').getAttribute('src'),/Camille-draftExpanded.webp$/);await geometry();
   assert(await page.locator('.cast-draft-card.locked img').evaluateAll(images=>images.every(i=>i.src.endsWith('-draftCompact.webp'))));
   await page.locator('.cast-draft').screenshot({path:path.join(dir,`${pack.id}-blue-focus.png`)});
   await patch({bluePicks:['Gwen','Jinx','Ahri','Camille'],bluePreselect:[],activeTeam:'red',redPreselect:['Rakan']});await geometry();assert.match(await page.locator('.active-slot img').getAttribute('src'),/Rakan-draftExpanded.webp$/);assert.match(await page.locator('.cast-draft-team.blue .cast-draft-card').nth(3).locator('img').getAttribute('src'),/Camille-draftCompact.webp$/);
+  await page.waitForTimeout(300);
+  const reveal=page.locator('.cast-draft-team.blue .draft-lock-reveal');assert.equal(await reveal.getAttribute('data-champion'),'Camille');assert.match(await reveal.locator('img').getAttribute('src'),/Camille-draftReveal.webp$/);
+  assert.equal(await reveal.evaluate(e=>getComputedStyle(e).animationDuration),'3s');
+  const revealBox=await reveal.boundingBox(),teamBox=await page.locator('.cast-draft-team.blue').boundingBox();assert(Math.abs(revealBox.x-teamBox.x)<1&&Math.abs(revealBox.width-teamBox.width)<1,'Wide reveal stays inside its own team region');
+  await page.locator('.cast-draft').screenshot({path:path.join(dir,`${pack.id}-lock-reveal.png`)});
+  await patch({timer:19});await reveal.waitFor({state:'detached',timeout:3000});assert.equal(await page.locator('.draft-lock-reveal').count(),0,'Polling does not restart the lock reveal');
   await page.locator('.cast-draft').screenshot({path:path.join(dir,`${pack.id}-red-focus.png`)});
+  await patch({redPicks:['Nunu','Lucian','Zeri','Rakan'],redPreselect:[]});await page.waitForTimeout(300);
+  const redReveal=page.locator('.cast-draft-team.red .draft-lock-reveal');assert.equal(await redReveal.getAttribute('data-champion'),'Rakan');
+  const redBox=await redReveal.boundingBox(),redTeam=await page.locator('.cast-draft-team.red').boundingBox();assert(Math.abs(redBox.x-redTeam.x)<1&&Math.abs(redBox.width-redTeam.width)<1,'Red reveal stays inside its own team region');
+  await page.locator('.cast-draft').screenshot({path:path.join(dir,`${pack.id}-red-lock-reveal.png`)});await redReveal.waitFor({state:'detached',timeout:3000});
   await patch({redPreselect:[]});assert.equal(await page.locator('.active-slot[data-state=choosing]').count(),1);assert.equal(await page.locator('.active-slot img').count(),0);await geometry();
   await patch({redPicks:['Nunu','','Zeri'],redPreselect:['Rakan']});assert.equal(await page.locator('.cast-draft-team.red .cast-draft-card').nth(1).getAttribute('data-state'),'preselect');
   for(const action of ['禁用英雄','等待选人','等待客户端 BP 数据']){await patch({action});assert.equal(await page.locator('.active-slot').count(),0);}
   await patch({action:'选择英雄',locked:true});assert.equal(await page.locator('.active-slot').count(),0);await geometry();
   await patch({locked:false,redPicks:['Nunu','Lucian','Zeri','Rakan','Braum']});assert.equal(await page.locator('.active-slot').count(),0);
-  checks.push(`${pack.id}: hover, wide/narrow crops, lock, side switch, empty hover, sparse slots, bans/wait/final lock, bounded geometry and themed per-card texture`);
+  checks.push(`${pack.id}: hover, three portrait variants, 3-second side-wide lock reveal without restart on polling, side switch, empty hover, sparse slots, bans/wait/final lock, bounded geometry and themed texture`);
  }
  for(const width of [1280,960]){await page.setViewportSize({width,height:width*9/16});await page.goto(`${origin}?pack=qinghua-celestial`);await page.locator('[data-style-status=ready]').waitFor();await page.waitForTimeout(330);const cards=await page.locator('.cast-draft-card').evaluateAll(nodes=>nodes.map(n=>({width:n.getBoundingClientRect().width,active:n.classList.contains('active-slot')})));assert(cards.find(c=>c.active).width>cards[0].width*2);await page.locator('.cast-draft').screenshot({path:path.join(dir,`qinghua-${width}.png`)});checks.push(`${width}px scaled focus layout`);}
  await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('.cast-draft-card').first().evaluate(e=>getComputedStyle(e).transitionDuration),'0s');checks.push('reduced motion disables transitions');
+ await patch({bluePicks:[],redPicks:[],bluePreselect:['Gwen'],activeTeam:'blue',action:'选择英雄',locked:false});
+ await patch({bluePicks:['Gwen','Jinx']});assert.equal(await page.locator('.draft-lock-reveal').getAttribute('data-champion'),'Gwen');assert.equal(await page.locator('.draft-lock-reveal').evaluate(e=>getComputedStyle(e).animationName),'none');assert((await page.locator('.draft-lock-reveal').boundingBox()).width> (await page.locator('.cast-draft-team.blue').boundingBox()).width-1);
+ await page.waitForFunction(()=>document.querySelector('.draft-lock-reveal')?.getAttribute('data-champion')==='Jinx',undefined,{timeout:3500});await page.locator('.draft-lock-reveal').waitFor({state:'detached',timeout:3500});
+ await patch({bluePicks:['Jinx','Gwen']});assert.equal(await page.locator('.draft-lock-reveal').count(),0,'Swaps do not trigger lock reveals');
+ await patch({bluePicks:['Jinx','Gwen','Ahri']});assert.equal(await page.locator('.draft-lock-reveal').count(),1);await patch({bluePicks:[]});assert.equal(await page.locator('.draft-lock-reveal').count(),0,'Undo/reset cancels current and pending reveals');checks.push('back-to-back locks queue; swaps do not replay; undo cancels; reduced motion keeps 3-second still reveal');
  assert.deepEqual(errors,[]);await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors,scope:'Synthetic BP transitions; no live client or OBS acceptance'},null,2));console.log(JSON.stringify({status:'passed',checks}));
 }finally{await browser?.close();await vite.close();}
