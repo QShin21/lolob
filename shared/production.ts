@@ -46,7 +46,8 @@ export function programState(s: BroadcastState): BroadcastState {
   const recordedKey=gameResultKey({...s,mode:c.mode,match:c.match,production:{...ensureProduction(s),attempt:c.attempt??1}});
   const recorded=s.gameResults?.find(result=>result.key===recordedKey);
   const result=c.key===productionKey(s)?recorded:undefined;
-  const current=result?frozenGameState(s,result):s;
+  const reviewing=s.replayReview?.key===productionKey(s)&&!['postgame','ranking'].includes(s.programScene);
+  const current=result&&!reviewing?frozenGameState(s,result):s;
   const same = c.key === productionKey(s) && (!!result || false || s.players.length>0&&s.phase!=='pregame');
   const view: BroadcastState = { ...current, customScenes: c.customScenes ?? [], ...(same ? {} : c.telemetry), mode: c.mode, match: c.match, teams: c.teams, overlay: c.overlay, selectedPlayerId: c.selectedPlayerId, schedule: c.schedule ?? s.schedule, draftHistory: c.draftHistory,
     production: { ...ensureProduction(s), assignments: c.assignments ?? [], versions: c.versions ?? ensureProduction(s).versions, rules: c.rules ?? ensureProduction(s).rules, attempt: c.attempt ?? 1 },

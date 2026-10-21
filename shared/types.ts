@@ -63,6 +63,7 @@ export type PlayerFeedPair = Record<Side, PlayerFeedSettings>;
 export interface PlayerFeedControl { mode: 'manual' | 'auto'; activeIndex: number; nextSwitchAt?: number }
 export interface OverlaySettings { stylePack?: StylePackRef; postgamePage?: 1 | 2 | 3; preset: BroadcastPreset; scoreboard: boolean; players: boolean; objectives: boolean; ticker: boolean; goldDiff: boolean; sponsor: string; sponsorLogo?: string; tickerText: string; accent: string; scale: number; countdownEnd: number | null; nativeHud?: 'auto' | 'mask' | 'off'; patchVersion?: string; bottomTitle?: string; playerFeeds?: PlayerFeedPair; playerFeedPairs?: PlayerFeedPair[]; playerFeedControl?: PlayerFeedControl; scheduleView?: { page: number; filter: 'all' | 'upcoming' | 'day'; day: string }; interview?: { name: string; team: string; role: string; topic: string; dock: 'left' | 'right' } }
 export interface BroadcastState {
+  replayReview?: {session:string;key:string};
   customScenes?: CustomScene[];
   production?: ProductionState;
   revision: number; mode: SourceMode; phase: Phase; previewScene: Scene; programScene: Scene;

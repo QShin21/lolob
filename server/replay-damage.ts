@@ -43,12 +43,14 @@ export function decodeDamageBlock(block: Block): DamageEvent | undefined {
 
 type Point={time:number;total:number;physical:number;magic:number;trueDamage:number};
 export class ReplayDamageIndex {
+  readonly damageEvents:DamageEvent[];
   readonly tracks=new Map<number,Point[]>();
   readonly received=new Map<number,{time:number;total:number}[]>();
   constructor(readonly heroes:DamageHero[],readonly duration:number,events:DamageEvent[]){
+    this.damageEvents=events.slice().sort((a,b)=>a.time-b.time);
     const roster=new Map(heroes.map(h=>[h.networkId,h]));
     for(const h of heroes){this.tracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);this.received.set(h.networkId,[{time:0,total:0}]);}
-    for(const e of events.sort((a,b)=>a.time-b.time)){
+    for(const e of this.damageEvents){
       const source=roster.get(e.source),target=roster.get(e.target);
       if(target&&e.amount>10000000)throw Error('英雄承伤数值异常');
       if(target){const received=this.received.get(e.target)!;received.push({time:e.time,total:received.at(-1)!.total+e.amount});}

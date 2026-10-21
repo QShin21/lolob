@@ -14,7 +14,7 @@ export interface ReplayDiagnostics {
   status:'ready'|'disabled'|'restart-required'|'not-running'|'unavailable'|'unsupported'|'invalid-response';
   detail:string;lastProbeAt:string;configPath?:string;configEnabled?:boolean|null;restartRequired:boolean;
   endpoints:{path:string;available:boolean;statusCode?:number;errorKind?:LocalApiErrorKind}[];
-  declaredReplayPaths:string[];playback?:{paused:boolean;time:number;speed:number;length?:number};
+  declaredReplayPaths:string[];playback?:{paused:boolean;time:number;speed:number;length?:number;seeking?:boolean};
 }
 const runFile=promisify(execFile);
 const object=(v:unknown):Record<string,any>|null=>v!==null&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:null;

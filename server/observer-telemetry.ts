@@ -7,6 +7,7 @@ import { ReplayDamageTelemetry } from './replay-damage-telemetry';
 import { LiveDamageStream } from './live-damage-stream';
 import { liveChampionId } from '../shared/champion-identity';
 import { selectedRuneIds } from '../shared/lineup-runes';
+import { ReplayDirector } from './replay-director';
 
 type Json = Record<string, any>;
 export interface ObserverStatus { status: 'connected' | 'unavailable'; detail: string; profile?: string; sampledAt?: string }
@@ -82,6 +83,7 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
 
 /** The sampler starts only with a complete spectator API roster and matching replay process. */
 export class ObserverTelemetry {
+  readonly director=new ReplayDirector();
   private worker?: SpectatorOcrWorker;
   private retryAt=0;
   private damage=new ReplayDamageTelemetry();
@@ -90,7 +92,7 @@ export class ObserverTelemetry {
   constructor(private request:(port:number,route:string)=>Promise<any>){}
   async enrich(data:Json):Promise<void> {
     if(process.platform!=='win32'||data.activePlayer?.summonerName||data.activePlayer?.riotId||!data.activePlayer?.error||data.allPlayers?.length!==10) {
-      this.damage.reset();this.liveDamage.reset();this.status={status:'unavailable',detail:'等待完整观战数据'};return;
+      this.damage.reset();this.liveDamage.reset();this.director.reset();this.status={status:'unavailable',detail:'等待完整观战数据'};return;
     }
     if(Date.now()<this.retryAt)return;
     try {
@@ -109,6 +111,9 @@ export class ObserverTelemetry {
       if(sample.pid!==game.processID)throw Error('等待同一画面的完整遥测样本');
       const replayDamage=this.damage.enrich(sample),streamDamage=this.liveDamage.enrich(sample);
       if(!mergeObserverTelemetry(data,sample))throw Error('等待同一画面的完整遥测样本');
+      const stream=this.liveDamage.timeline();
+      const streamMatches=stream&&sample.players.every((p:Json)=>stream.index.heroes.some(h=>h.networkId===p.networkId&&h.champion===p.champion&&h.team===p.team));
+      this.director.observe(data,sample,replayDamage?this.damage.timeline():streamMatches?stream.index:undefined,streamMatches?stream:undefined);
       this.status={status:'connected',detail:'国服只读遥测已连接 · 冷却、生命、资源、经验、增益'+
         (replayDamage?' · 回放逐次伤害':streamDamage?' · 实时观战伤害':sample.replayPath?` · ${this.damage.detail}`:sample.observerSession?` · ${this.liveDamage.detail}`:''),profile:sample.profile,sampledAt:sample.sampledAt};
     } catch(error) {
@@ -116,5 +121,5 @@ export class ObserverTelemetry {
       this.status={status:'unavailable',detail:transient?error.message:'观战遥测暂不可用'};this.retryAt=transient?0:Date.now()+3000;
     }
   }
-  async close(){this.damage.reset();this.liveDamage.reset();await this.worker?.close();}
+  async close(){this.damage.reset();this.liveDamage.reset();this.director.reset();await this.worker?.close();}
 }

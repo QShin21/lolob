@@ -37,6 +37,7 @@ export function normalizeSavedState(saved: BroadcastState): BroadcastState {
   const defaults=createSeed();
   saved=migrateLiveOnly(saved,defaults);
   const restored:BroadcastState={...defaults,...saved,overlay:{...defaults.overlay,...saved.overlay,preset:'arena',playerFeeds:{blue:{...defaults.overlay.playerFeeds!.blue,...saved.overlay.playerFeeds?.blue},red:{...defaults.overlay.playerFeeds!.red,...saved.overlay.playerFeeds?.red}}},settings:{...defaults.settings,...saved.settings}};
+  delete restored.replayReview;
   restored.settings.pollInterval=normalizeClientPollInterval(restored.settings.pollInterval);
   // Persisted scene IDs from the removed ten-minute card now open the live ranking.
   for(const key of ['previewScene','programScene'] as const)if((restored[key] as string)==='income')restored[key]='gold-ranking';

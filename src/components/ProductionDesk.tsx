@@ -13,6 +13,7 @@ import type { ReplayClip } from "../../shared/production-types";
 import { useEffect, useId, useRef, useState } from "react";
 import { OutputSignals } from "./OutputSignals";
 import { AudioWorkspace } from "./AudioWorkspace";
+import { GameReplayDirector } from './GameReplayDirector';
 import type { ObsEngineStatus } from "./EmbeddedObs";
 import type { Scene, StateContext } from "../../shared/types";
 import type { CheckId, ProductionCommand } from "../../shared/production-types";
@@ -701,6 +702,7 @@ function ReplayTask(ctx: TaskContext) {
     [allClips, setAllClips] = useState(false);
   return (
     <div className="production-task">
+      <GameReplayDirector {...ctx} />
       <h3>独立回放缓冲与片段队列 · {p.clips.length} 个片段</h3>
       <p className="muted">
         缓冲初始为 60 秒。片段保留录制中的原比分和时钟，OBS 回放场景关闭实时

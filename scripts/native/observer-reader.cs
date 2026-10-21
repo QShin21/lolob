@@ -120,6 +120,16 @@ public sealed class RiftCastObserverReader : IDisposable {
         }
         return result;
     }
+    object NeutralUnits() {
+        var result=new List<object>();long manager=Ptr(imageBase+0x1ee93b0),list=Ptr(manager+8);int count=Int(manager+16);
+        if(count<1||count>2048)throw new InvalidDataException("neutral-list");
+        for(int i=0;i<count;i++)try {
+            long unit=Ptr(list+i*8);string name=String(unit+0x41d0).ToLowerInvariant();
+            string kind=name=="sru_baron"?"barons":name=="sru_riftherald"?"heralds":name=="sru_horde"?"voidgrubs":name.StartsWith("sru_dragon")?(name.Contains("elder")?"elders":"dragons"):null;
+            if(kind!=null)result.Add(Obj("id",BitConverter.ToUInt32(Read(unit+0xbc,4),0),"kind",kind));
+        }catch { }
+        return result;
+    }
     object NeutralObjectives(long heroes,float time) {
         bool elder=false;string element=null;
         for(int i=0;i<10;i++)try {foreach(var buff in ActiveBuffs(Ptr(heroes+i*8),time)) {
@@ -208,6 +218,7 @@ public sealed class RiftCastObserverReader : IDisposable {
                 var result=Obj("ok",true,"profile","cn-16.20.824.8524","pid",attachedPid,"processSession",attachedStart.ToUniversalTime().Ticks.ToString(),"gameTime",time,"sampledAt",DateTime.UtcNow.ToString("o"),"players",players);
                 try {result["neutralObjectives"]=NeutralObjectives(list,time);} catch { }
                 try {result["objectiveCounts"]=ObjectiveCounts();} catch { }
+                try {result["neutralUnits"]=NeutralUnits();} catch { }
                 return result;
             }
         } catch(InvalidDataException e) {return Obj("ok",false,"reason",e.Message);}

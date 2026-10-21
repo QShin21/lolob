@@ -147,4 +147,5 @@ export class LiveDamageStream {
     this.detail='实时观战逐次伤害已连接';
   }
   async settled(){await this.pending;}
+  timeline(){return this.index?{index:this.index,from:this.from,until:this.until}:undefined;}
 }

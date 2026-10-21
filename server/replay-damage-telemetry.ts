@@ -50,4 +50,5 @@ export class ReplayDamageTelemetry {
   }
   /** Used by bounded integration checks, never to block normal telemetry polling. */
   async settled(){await this.pending;}
+  timeline(){return this.index;}
 }
