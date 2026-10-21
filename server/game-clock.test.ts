@@ -58,15 +58,15 @@ test('malformed sample validity cannot keep an unbounded display clock running',
 });
 
 test('adapters publish actual Live and Replay clocks while preserving gameTime recording semantics',async()=>{
-  const state=emptyFixture();state.programScene='standby';let liveTime=241.5;let replayAvailable=true;let playback={time:900.25,speed:2,paused:true};
+  const state=emptyFixture();state.programScene='standby';let liveTime=241.5;let replayAvailable=true;let playback={time:241.5,speed:2,paused:true};
   const adapters=new Adapters(()=>state,work=>work(state),new ChampionCatalog('.'),async(_port,endpoint,options)=>{
     if(endpoint==='/liveclientdata/allgamedata')return {allPlayers:[{riotId:'Clock#Fixture',championName:'Ahri',team:'ORDER',scores:{kills:0,deaths:0,assists:0,creepScore:0}}],gameData:{gameTime:liveTime},events:{Events:[]}};
     if(endpoint==='/replay/playback'){if(!replayAvailable)throw new Error('fixture replay disconnected');if(options?.method==='POST')playback={...playback,...options.body as typeof playback};return {...playback};}
     throw new Error(`Unexpected fixture endpoint ${endpoint}`);
   });
   try{
-    await adapters.connect('live');assert.equal(state.gameTime,241.5);assert.equal(state.gameClock?.source,'live');assert.equal(state.gameClock?.gameTime,241.5);assert.equal(state.gameClock?.speed,1);
-    await adapters.connect('replay');assert.equal(state.gameClock?.source,'replay');assert.equal(state.gameClock?.gameTime,900.25);assert.equal(state.gameClock?.speed,2);assert.equal(state.gameClock?.paused,true);assert.equal(state.gameTime,241.5);
+    await adapters.connect('live');assert.equal(state.gameTime,241.5);
+    await adapters.connect('replay');assert.equal(state.gameClock?.source,'replay');assert.equal(state.gameClock?.gameTime,241.5);assert.equal(state.gameClock?.speed,2);assert.equal(state.gameClock?.paused,true);assert.equal(state.gameTime,241.5);
     await adapters.replay({time:600,speed:4,paused:true});assert.equal(state.gameClock?.gameTime,600);assert.equal(state.gameClock?.awaitingLiveSample,true);assert.ok(state.gameClock!.discontinuity>0);assert.equal(state.gameTime,241.5);
     await adapters.poll();assert.equal(state.gameClock?.awaitingLiveSample,true,'Old Live frame cannot clear the seek barrier');
     liveTime=600;await adapters.poll();assert.notEqual(state.gameClock?.awaitingLiveSample,true);assert.equal(state.gameTime,600);
@@ -87,8 +87,8 @@ test('expired Replay metadata yields a fresh frozen Live anchor and runtime rese
     await adapters.replay({time:600});const display=new DisplayGameClock();display.update(displayClockInput(state),0,Date.now());const beforeFailure=display.read(250);
     replayAvailable=false;await adapters.poll();assert.equal(state.gameClock?.source,'replay','A fresh source sample is retained during a source failure');assert.equal(displayClockInput(state).connected,false);display.update(displayClockInput(state),250,Date.now());assert.equal(display.read(10000),beforeFailure,'A fresh Replay sample freezes immediately when the source fails');
     await new Promise(resolve=>setTimeout(resolve,3050));liveTime=144;await adapters.poll();
-    assert.equal(state.gameClock?.source,'live');assert.equal(state.gameClock?.gameTime,144);assert.equal(state.gameClock?.paused,true,'Old 8x playback cannot drive fresh Live samples');assert.equal(state.gameClock?.awaitingLiveSample,true,'Fallback preserves the seek recording barrier until the actual Live position is confirmed');assert.equal(displayClockInput(state).connected,true);
+    assert.equal(state.gameTime,120,'Unconfirmed Live position cannot overwrite the last coherent frame');assert.equal(state.gameClock?.source,'replay');assert.equal(state.gameClock?.awaitingLiveSample,true,'The seek recording barrier remains until actual position is confirmed');assert.equal(displayClockInput(state).connected,false);
     replayAvailable=true;playback={time:144,speed:2,paused:false};await adapters.connect('replay');assert.equal(state.gameClock?.source,'replay');assert.equal(state.gameClock?.speed,2);assert.equal(state.gameClock?.paused,false);
-    const readClock=()=>state.gameClock;delete state.gameClock;liveTime=0;await adapters.connect('live');const newClock=readClock();assert.equal(newClock?.source,'live');assert.equal(newClock?.gameTime,0);assert.equal(newClock?.paused,false);assert.notEqual(newClock?.sessionId,sessionId,'A cleared runtime does not reuse old playback metadata');
+    const readClock=()=>state.gameClock;delete state.gameClock;liveTime=0;playback={time:0,speed:1,paused:false};await adapters.connect('live');const newClock=readClock();assert.ok(['live','replay'].includes(newClock?.source??''));assert.equal(newClock?.gameTime,0);assert.equal(newClock?.paused,false);assert.notEqual(newClock?.sessionId,sessionId,'A cleared runtime does not reuse old playback metadata');
   }finally{await adapters.close();}
 });

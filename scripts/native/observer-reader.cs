@@ -219,6 +219,10 @@ public sealed class RiftCastObserverReader : IDisposable {
                 try {result["neutralObjectives"]=NeutralObjectives(list,time);} catch { }
                 try {result["objectiveCounts"]=ObjectiveCounts();} catch { }
                 try {result["neutralUnits"]=NeutralUnits();} catch { }
+                // Reject a read that straddled a seek or a long frame rebuild.
+                float endTime=Range(imageBase+0x1efa788,0,200000);
+                if(endTime<time||endTime-time>2)return Obj("ok",false,"reason","sample-discontinuity");
+                result["sampleEndTime"]=endTime;
                 return result;
             }
         } catch(InvalidDataException e) {return Obj("ok",false,"reason",e.Message);}

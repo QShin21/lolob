@@ -31,6 +31,7 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  const [now,setNow]=useState(Date.now());const {version,items}=useItemCatalog(champions,state.production?.versions.resources);
  useEffect(()=>{if(scene!=='standby'&&scene!=='live')return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[scene]);
  if(scene.startsWith('custom:')){const custom=state.customScenes?.find(s=>s.id===scene);return <div className={`broadcast-container cast-container ${output?'is-output':''}`}><div className="broadcast-canvas cast-canvas">{custom&&<CustomSceneLayout scene={custom} state={state} placeholders={!output}/>}</div></div>;}
+ const telemetryReady=!state.gameClock?.awaitingLiveSample;
  const liveScene=['live','teamfight','gold-ranking','economy','ranking'].includes(scene);
  const overlayScene=['draft','live','teamfight','gold-ranking','economy','ranking','interview'].includes(scene),selected=state.players.some(p=>p.id===state.selectedPlayerId);
  const feed=scene==='draft'||scene==='lineup'?state.connections.lcu:state.connections.live;
@@ -38,16 +39,16 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  return <div className={`broadcast-container cast-container skin-arena ${output?'is-output':''}`} data-style-pack={look.pack.id} data-style-revision={look.pack.revision} data-style-status={look.error?'error':look.loading?'loading':'ready'} data-pack-background={appearance.background} data-pack-textures={appearance.textures} data-pack-elements={appearance.elements} data-pack-body={look.pack.fonts.body} data-pack-display={look.pack.fonts.display} style={appearance.style}><div className={`broadcast-canvas cast-canvas cast-scene-${scene} ${state.overlay.ticker?'has-ticker':''} ${overlayScene&&output?'transparent cast-transparent':''}`} style={{'--hud-scale':state.overlay.scale} as CSSProperties}>
  {overlayScene&&!output&&<CapturePreview scene={scene}/>}
  {liveScene&&<NativeHudLayer state={state}/>}
- {liveScene&&<NeutralTimers state={state}/>}
- {scene==='teamfight'&&<TeamfightOverlay state={state} champions={champions} version={version}/> }
- {scene==='live'&&<LiveBottom state={state} champions={champions} items={items} version={version}/>}
+ {liveScene&&telemetryReady&&<NeutralTimers state={state}/>}
+ {scene==='teamfight'&&telemetryReady&&<TeamfightOverlay state={state} champions={champions} version={version}/> }
+ {scene==='live'&&telemetryReady&&<LiveBottom state={state} champions={champions} items={items} version={version}/>}
  {scene==='standby'&&<Standby state={state} now={now}/>}
  {scene==='draft'&&<DraftOverlay state={state} champions={champions}/>}
  {scene==='lineup'&&<Lineup state={state} champions={champions}/>}
- {liveScene&&state.overlay.scoreboard&&<LiveTop state={state}/>}
- {scene==='gold-ranking'&&<GoldRankingOverlay state={state} champions={champions}/>}
- {scene==='economy'&&<EconomyOverlay state={state}/>}
- {scene==='ranking'&&(selected?<PlayerBuild state={state} champions={champions} bus={bus} output/>:<Performance state={state} champions={champions} items={items} version={version}/>)}
+ {liveScene&&telemetryReady&&state.overlay.scoreboard&&<LiveTop state={state}/>}
+ {scene==='gold-ranking'&&telemetryReady&&<GoldRankingOverlay state={state} champions={champions}/>}
+ {scene==='economy'&&telemetryReady&&<EconomyOverlay state={state}/>}
+ {scene==='ranking'&&telemetryReady&&(selected?<PlayerBuild state={state} champions={champions} bus={bus} output/>:<Performance state={state} champions={champions} items={items} version={version}/>)}
  {scene==='schedule'&&<Schedule state={state}/>}
  {scene==='postgame'&&<Postgame state={state} champions={champions} items={items} version={version}/>}
  {scene==='interview'&&<Interview state={state}/>}
@@ -55,6 +56,7 @@ export function BroadcastCanvas({state:sourceState,champions,scene,output=false,
  {!output&&(look.error||look.loading)&&<span className="style-pack-preview-status" role="status">{look.error?`${look.error}；保留 ${look.pack.name}`:'风格包贴图加载中'}</span>}
  {(state.overlay.sponsor||state.overlay.sponsorLogo)&&<div className="cast-sponsor">{state.overlay.sponsorLogo?<img src={state.overlay.sponsorLogo} alt={state.overlay.sponsor||'赞助商标志'}/>:<span>{state.overlay.sponsor}</span>}</div>}
  {state.overlay.ticker&&<div className="cast-ticker"><b>{state.match.title}</b><span>{state.overlay.tickerText}</span></div>}
+ {!output&&liveScene&&!telemetryReady&&<div className="cast-source-status">正在同步回放数据</div>}
  {sourceIssue&&<div className="cast-source-status">{feed.updatedAt?'比赛数据暂不可用':'等待比赛数据'}{feed.updatedAt&&<span> · 截至 {new Date(feed.updatedAt).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false})}</span>}</div>}
  </div></div>;
 }

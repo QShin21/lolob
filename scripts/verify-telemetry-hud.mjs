@@ -68,7 +68,7 @@ try{
  await page.evaluate(()=>window.hudFixture.setState(s=>({...s,gameTime:1205,gameClock:{...s.gameClock,gameTime:1205,sampledAt:new Date().toISOString()}})));
  await page.waitForFunction(()=>document.querySelector('.lb-spells .lb-cooldown-seconds')?.textContent==='4');checks.push('game-time advance updates seconds');
  await page.evaluate(()=>window.hudFixture.setState(s=>({...s,gameClock:{...s.gameClock,awaitingLiveSample:true}})));
- await page.waitForFunction(()=>document.querySelectorAll('.lb-cooldown-mask').length===0);checks.push('seek waits for the current live sample');
+ await page.waitForFunction(()=>document.querySelectorAll('.lb-cooldown-mask').length===0);assert.equal(await page.locator('.lb-scoreboard,.live-top').count(),0,'Unconfirmed old metrics are hidden during seeks');checks.push('seek hides the old scoreboard until a coherent current frame arrives');
  await page.evaluate(()=>window.hudFixture.setState(s=>({...s,gameClock:{...s.gameClock,awaitingLiveSample:false}})));
  await page.waitForFunction(()=>document.querySelectorAll('.lb-cooldown-mask').length>0);
  await page.evaluate(()=>window.hudFixture.setState(s=>({...s,players:s.players.map(p=>({...p,telemetry:{...p.telemetry,sampledAt:'2000-01-01T00:00:00Z'}}))})));

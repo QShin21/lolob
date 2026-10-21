@@ -8,6 +8,8 @@ import { LiveDamageStream } from './live-damage-stream';
 import { liveChampionId } from '../shared/champion-identity';
 import { selectedRuneIds } from '../shared/lineup-runes';
 import { ReplayDirector } from './replay-director';
+import {recoverFightBaseline} from './replay-sampling';
+import type {BroadcastState} from '../shared/types';
 
 type Json = Record<string, any>;
 export interface ObserverStatus { status: 'connected' | 'unavailable'; detail: string; profile?: string; sampledAt?: string }
@@ -46,6 +48,9 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
     const side=api.team==='ORDER'?'blue':api.team==='CHAOS'?'red':'';
     const memory=index.get(key(champion,side));
     if(!memory||api.level!==memory.level)return false;
+    if(object(memory.scores)&&['kills','deaths','assists','creepScore'].every(k=>Number.isInteger(memory.scores[k])&&memory.scores[k]>=0)&&
+      (!['kills','deaths','assists'].every(k=>memory.scores[k]===api.scores?.[k])||
+       memory.scores.creepScore!==api.scores?.creepScore&&Math.floor(memory.scores.creepScore/10)*10!==api.scores?.creepScore))return false;
     pairs.push({api,memory});index.delete(key(champion,side));
   }
   data._observerProfile=sample.profile;
@@ -58,7 +63,7 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
       totalGold:m.totalGold,currentGold:m.currentGold,ultimate:m.spells[3],_observerStamp:stamp});
     if(object(m.scores)&&['kills','deaths','assists','creepScore'].every(k=>Number.isInteger(m.scores[k])&&m.scores[k]>=0)&&
       ['kills','deaths','assists'].every(k=>m.scores[k]===api.scores?.[k])&&
-      Math.floor(m.scores.creepScore/10)*10===api.scores?.creepScore){
+      (m.scores.creepScore===api.scores?.creepScore||Math.floor(m.scores.creepScore/10)*10===api.scores?.creepScore)){
       api.scores={...api.scores,...m.scores};api._observerScores=true;
     }
     if(nonnegative(m.visionScore)){api.visionScore=m.visionScore;api._observerVision=true;}
@@ -90,7 +95,12 @@ export class ObserverTelemetry {
   private liveDamage=new LiveDamageStream();
   status:ObserverStatus={status:'unavailable',detail:'等待国服观战或回放'};
   constructor(private request:(port:number,route:string)=>Promise<any>){}
-  async enrich(data:Json):Promise<void> {
+  recoverFight(state:BroadcastState){
+    const replay=this.damage.timeline(),stream=this.liveDamage.timeline();
+    if(replay&&state.players.every(p=>p.telemetryDamageSession?.startsWith('replay:')))recoverFightBaseline(state,replay);
+    else if(stream&&state.players.every(p=>p.telemetryDamageSession&&!p.telemetryDamageSession.startsWith('replay:')))recoverFightBaseline(state,stream.index,stream.from,stream.until);
+  }
+  async enrich(data:Json,current:()=>boolean=()=>true):Promise<void> {
     if(process.platform!=='win32'||data.activePlayer?.summonerName||data.activePlayer?.riotId||!data.activePlayer?.error||data.allPlayers?.length!==10) {
       this.damage.reset();this.liveDamage.reset();this.director.reset();this.status={status:'unavailable',detail:'等待完整观战数据'};return;
     }
@@ -100,17 +110,20 @@ export class ObserverTelemetry {
       if(!Number.isInteger(game.processID)||game.processID<=0)throw Error('无法确认观战进程');
       this.worker??=new SpectatorOcrWorker({spawn:()=>spawn('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',script],{windowsHide:true,stdio:'pipe'}),timeoutMs:6000});
       const sample=await this.worker.request([]) as Json;
+      if(!current())return;
       if(!sample.ok) {
+        if(sample.reason==='sample-discontinuity'){data._observerIncoherent=true;throw Error('等待同一画面的完整遥测样本');}
         const detail=sample.reason==='unsupported-build'?`游戏 ${sample.version??''} 尚无匹配读取配置`:sample.reason==='access-unavailable'?'游戏未开放只读访问':`观战遥测暂不可用（${sample.reason??'读取失败'}）`;
         this.status={status:'unavailable',detail};this.retryAt=Date.now()+10000;return;
       }
       const after=await this.request(2999,'/liveclientdata/allgamedata');
+      if(!current())return;
       if(after.activePlayer?.summonerName||after.activePlayer?.riotId||!after.activePlayer?.error||after.allPlayers?.length!==10)throw Error('等待同一画面的完整遥测样本');
       invalidateChangedItemSlots(data,after,sample);
       Object.assign(data,after);
       if(sample.pid!==game.processID)throw Error('等待同一画面的完整遥测样本');
       const replayDamage=this.damage.enrich(sample),streamDamage=this.liveDamage.enrich(sample);
-      if(!mergeObserverTelemetry(data,sample))throw Error('等待同一画面的完整遥测样本');
+      if(!mergeObserverTelemetry(data,sample)){data._observerIncoherent=true;throw Error('等待同一画面的完整遥测样本');}
       const stream=this.liveDamage.timeline();
       const streamMatches=stream&&sample.players.every((p:Json)=>stream.index.heroes.some(h=>h.networkId===p.networkId&&h.champion===p.champion&&h.team===p.team));
       this.director.observe(data,sample,replayDamage?this.damage.timeline():streamMatches?stream.index:undefined,streamMatches?stream:undefined);

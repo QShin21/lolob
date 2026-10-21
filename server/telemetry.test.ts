@@ -72,7 +72,7 @@ test('native exact CS, vision and six objective counters replace rounded API and
  (data as any)._observerCounts.sampledAt=new Date(Date.now()-4000).toISOString();
  assert.equal(normalizeLive(data,[]).stats.blue.objectivesAvailable,false);
  const invalid=fixture();Object.assign(invalid.sample.players[0],{scores:{kills:99,deaths:0,assists:0,creepScore:19}});
- assert(mergeObserverTelemetry(invalid.data,invalid.sample));
+ assert.equal(mergeObserverTelemetry(invalid.data,invalid.sample),false);
  assert(!normalizeLive(invalid.data,[]).players.some(p=>p.statsSource==='memory'));
 });
 test('join reordered objects by champion and side; preserve equipment slot through price sorting',()=>{

@@ -25,6 +25,12 @@ export function syncFightSegment(state: BroadcastState, now=Date.now()): void {
   const onAir=(!state.production?.program||state.production.program.key===key)&&state.programScene==='teamfight'&&state.phase==='live'&&!state.production?.playingClipId;
   if(segment&&segment.key!==key){delete state.fightSegment;segment=undefined;}
   if(!onAir){if(segment?.active){segment.active=false;segment.endedAt=state.gameTime;}return;}
+  // A seek starts a new interval when its first coherent frame arrives. While loading,
+  // keep damage unavailable so an old baseline cannot be subtracted from a new position.
+  if(clock?.awaitingLiveSample){if(segment){segment.active=false;for(const row of Object.values(segment.players))row.total=undefined;}return;}
+  if(segment?.active&&(state.gameTime<segment.lastTime-.5||clock?.sessionId!==segment.clockSession||clock?.discontinuity!==segment.discontinuity)){
+    segment.active=false;
+  }
   if(!segment?.active){
     segment={id:`${now}:${state.revision}`,key,active:true,startedAt:state.gameTime,lastTime:state.gameTime,
       clockSession:clock?.sessionId,discontinuity:clock?.discontinuity,players:{}};

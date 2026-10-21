@@ -19,8 +19,8 @@ test('preview does not start damage; missing baseline, postgame totals and stale
  assert.equal(s.fightSegment!.players[s.players[0].id].total,undefined);assert.equal(s.fightSegment!.players[s.players[1].id].total,undefined);
  syncFightSegment(s,now+10000);assert.equal(s.fightSegment!.players[s.players[2].id].total,undefined);
 });
-test('seek, decreasing counters, replacement champions invalidate a segment until next entry',()=>{
- for(const scenario of ['seek','counter','champion']){const s=fight();syncFightSegment(s,now);const p=s.players[0];p.telemetryDamage!.toChampions=1400;syncFightSegment(s,now+1000);
+test('decreasing counters and replacement champions invalidate a segment until next entry',()=>{
+ for(const scenario of ['counter','champion']){const s=fight();syncFightSegment(s,now);const p=s.players[0];p.telemetryDamage!.toChampions=1400;syncFightSegment(s,now+1000);
  if(scenario==='seek')s.gameTime=1100;if(scenario==='counter')p.telemetryDamage!.toChampions=1200;if(scenario==='champion')p.championId='Gwen';syncFightSegment(s,now+1500);assert.equal(s.fightSegment!.players[p.id].invalid,true);assert.equal(s.fightSegment!.players[p.id].total,undefined);}
 });
 test('packet stream capture epochs and incomplete origins invalidate the active fight',()=>{
