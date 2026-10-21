@@ -1,0 +1,182 @@
+[
+  {
+    "champion": "Zaahen",
+    "team": "blue",
+    "runes": [
+      8437,
+      8446,
+      8473,
+      8451,
+      8345,
+      8347
+    ],
+    "shards": [
+      5005,
+      5008,
+      5013
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Naafiri",
+    "team": "blue",
+    "runes": [
+      8010,
+      9111,
+      9105,
+      8014,
+      8347,
+      8321
+    ],
+    "shards": [
+      5008,
+      5008,
+      5001
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Ambessa",
+    "team": "blue",
+    "runes": [
+      8230,
+      8275,
+      8210,
+      8237,
+      8143,
+      8106
+    ],
+    "shards": [
+      5008,
+      5008,
+      5011
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Kaisa",
+    "team": "blue",
+    "runes": [
+      8008,
+      8009,
+      9104,
+      8014,
+      8321,
+      8313
+    ],
+    "shards": [
+      5005,
+      5008,
+      5011
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Elise",
+    "team": "blue",
+    "runes": [
+      8112,
+      8143,
+      8137,
+      8105,
+      9111,
+      8014
+    ],
+    "shards": [
+      5008,
+      5008,
+      5011
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Jax",
+    "team": "red",
+    "runes": [
+      8437,
+      8446,
+      8444,
+      8451,
+      8316,
+      8313
+    ],
+    "shards": [
+      5005,
+      5008,
+      5011
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Nunu",
+    "team": "red",
+    "runes": [
+      8112,
+      8126,
+      8137,
+      8105,
+      8306,
+      8313
+    ],
+    "shards": [
+      5007,
+      5008,
+      5011
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Smolder",
+    "team": "red",
+    "runes": [
+      8005,
+      9111,
+      9103,
+      8017,
+      8473,
+      8451
+    ],
+    "shards": [
+      5005,
+      5008,
+      5011
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Xayah",
+    "team": "red",
+    "runes": [
+      8008,
+      8009,
+      9103,
+      8014,
+      8321,
+      8313
+    ],
+    "shards": [
+      5005,
+      5008,
+      5001
+    ],
+    "officialMatch": true
+  },
+  {
+    "champion": "Leona",
+    "team": "red",
+    "runes": [
+      8439,
+      8463,
+      8444,
+      8451,
+      8143,
+      8135
+    ],
+    "shards": [
+      5007,
+      5001,
+      5011
+    ],
+    "officialMatch": true
+  }
+]

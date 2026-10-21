@@ -44,6 +44,19 @@ function fixture(){
  const sample={ok:true,gameTime:120,sampledAt:stamp.sampledAt,players:allPlayers.map((p,i)=>({champion:`Hero${i}`,team:i<5?'blue':'red',level:3,health:600,maxHealth:800,resource:200,maxResource:300,experienceTotal:700,currentGold:100,totalGold:900,buffs:{baron:true},spells:Array.from({length:13},(_,slot)=>({level:slot===3?0:1,readyAt:slot===4?145:slot===9?126:0,totalCooldown:slot===4?300:120,state:slot===3?'unlearned':'cooldown'}))})).reverse()};
  return {data:{allPlayers,gameData:{gameTime:120},activePlayer:{error:'no active player'},events:{Events:[]}},sample};
 }
+test('complete rune pages join reordered ten-player roster and reject mismatching keystone or trees',()=>{
+ const ids=[8437,8446,8473,8451,8345,8347],alternate=[8010,9111,9105,8014,8347,8321];
+ const {data,sample}=fixture();
+ for(const [i,p] of data.allPlayers.entries())Object.assign(p,{runes:{keystone:{id:i%2?8010:8437},primaryRuneTree:{id:i%2?8000:8400},secondaryRuneTree:{id:8300}}});
+ for(const p of sample.players){const odd=Number(p.champion.slice(4))%2;Object.assign(p,{fullRunes:{generalRunes:(odd?alternate:ids).map(id=>({id})),statRunes:[5008,5008,5001].map(id=>({id})),primaryRuneTree:{id:odd?8000:8400},secondaryRuneTree:{id:8300}}});}
+ assert(mergeObserverTelemetry(data,sample,now));
+ const players=normalizeLive(data,[]).players;
+ for(const p of players){assert.deepEqual(p.fullRuneIds,Number(p.championId.slice(4))%2?alternate:ids);assert.deepEqual(p.statRuneIds,[5008,5008,5001]);}
+ for(const mutation of [(p:any)=>p.fullRunes.generalRunes[0].id=8112,(p:any)=>p.fullRunes.primaryRuneTree.id=8100,(p:any)=>p.fullRunes.secondaryRuneTree.id=8200,(p:any)=>p.fullRunes.generalRunes.pop()]){
+  const invalid=structuredClone(sample);mutation(invalid.players[0]);const fresh=structuredClone(data);for(const p of fresh.allPlayers)delete (p as any).fullRunes;
+  assert(mergeObserverTelemetry(fresh,invalid,now));assert.equal(normalizeLive(fresh,[]).players.find(p=>p.championId==='Hero9')?.fullRuneIds,undefined);
+ }
+});
 test('native exact CS, vision and six objective counters replace rounded API and incomplete event history',()=>{
  const {data,sample}=fixture();
  Object.assign(data.gameData,{mapNumber:11});

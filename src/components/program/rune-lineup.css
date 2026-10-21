@@ -6,3 +6,6 @@
 .cast-scene-lineup>.cast-sponsor,.cast-scene-lineup>.cast-ticker{display:none}
 
 .rl-card.red .rl-runes{flex-direction:row-reverse}
+
+.rl-runes>.rl-secondary{margin-inline-start:.35cqw}
+.rl-card.red .rl-runes>.rl-secondary{margin-inline-start:0;margin-inline-end:.35cqw}

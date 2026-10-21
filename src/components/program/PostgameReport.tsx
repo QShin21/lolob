@@ -11,7 +11,7 @@ import {FitName} from '../FitName';
 import type {ItemAssets} from '../useItemCatalog';
 import {ChampionImage,Equipment,TeamMark,sidePlayers} from './ProgramPrimitives';
 import {Lane} from './RuneLineup';
-import {lineupRunes} from '../../../shared/lineup-runes';
+import {compactRunes as lineupRunes} from '../../../shared/lineup-runes';
 import {runeImage} from '../../../shared/player-assets';
 import './postgame-report.css';
 const sides:Side[]=['blue','red'];

@@ -6,6 +6,7 @@ import { nonnegative, object } from './telemetry-normalize';
 import { ReplayDamageTelemetry } from './replay-damage-telemetry';
 import { LiveDamageStream } from './live-damage-stream';
 import { liveChampionId } from '../shared/champion-identity';
+import { selectedRuneIds } from '../shared/lineup-runes';
 
 type Json = Record<string, any>;
 export interface ObserverStatus { status: 'connected' | 'unavailable'; detail: string; profile?: string; sampledAt?: string }
@@ -61,6 +62,10 @@ export function mergeObserverTelemetry(data: Json, sample: Json, now = Date.now(
     }
     if(nonnegative(m.visionScore)){api.visionScore=m.visionScore;api._observerVision=true;}
     if(object(m.buffs))api.buffs=m.buffs;
+    const runeIds=selectedRuneIds(m.fullRunes);
+    if(runeIds&&runeIds[0]===api.runes?.keystone?.id&&
+      m.fullRunes.primaryRuneTree?.id===api.runes?.primaryRuneTree?.id&&
+      m.fullRunes.secondaryRuneTree?.id===api.runes?.secondaryRuneTree?.id)api.fullRunes=m.fullRunes;
     if(object(m.damageStats)){
       api.damageStats=m.damageStats;
       if(m.damageStatsSource==='packets'){api._damageStatsSource='packets';api._damageStatsSession=m.damageStatsSession;api._damageStatsSince=m.damageStatsSince;}

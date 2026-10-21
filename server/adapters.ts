@@ -94,7 +94,12 @@ export function normalizeLive(data:Json,champions:Champion[]):{players:Player[];
     if(p._observerScores)Object.assign(combat,{statsSource:'memory',statsSampledAt:p._observerStamp.sampledAt,statsGameTime:p._observerStamp.gameTime,statsExpiresAt:new Date(Date.parse(p._observerStamp.sampledAt)+3000).toISOString()});
     const vision=p._observerVision?p.visionScore:scores.wardScore;
     if(positive(vision))Object.assign(combat,{visionScore:vision,visionSource:p._observerVision?'memory':'api',visionSampledAt:p._observerVision?p._observerStamp.sampledAt:sampledAt,visionExpiresAt:new Date(Date.parse(p._observerVision?p._observerStamp.sampledAt:sampledAt)+3000).toISOString()});
-    const fullRuneIds=selectedRuneIds(p.fullRunes??(activeIdentity(p)?active.fullRunes:undefined));if(fullRuneIds)combat.fullRuneIds=fullRuneIds;
+    const fullRunes=p.fullRunes??(activeIdentity(p)?active.fullRunes:undefined);
+    const fullRuneIds=selectedRuneIds(fullRunes);if(fullRuneIds){
+      combat.fullRuneIds=fullRuneIds;
+      const shards=list(fullRunes?.statRunes).map(r=>r.id);
+      if(shards.length===3&&shards.every(id=>Number.isInteger(id)&&[5001,5005,5007,5008,5010,5011,5013].includes(id)))combat.statRuneIds=shards;
+    }
     const runeIds=[p.runes?.keystone?.id,p.runes?.primaryRuneTree?.id,p.runes?.secondaryRuneTree?.id].filter((id):id is number=>Number.isInteger(id)&&id>0);if(runeIds.length)combat.runeIds=runeIds;
     return [{id:`live-${text(p.riotId)||text(p.summonerName)||i}`,name:text(p.riotIdGameName)||text(p.summonerName)||text(p.riotId)||`选手 ${i+1}`,role:roleNames[text(p.position).toUpperCase()]??'待分路',championId:c?.id??raw,championName:c?.name??text(p.championName,'未知英雄'),statsAvailable,...(statsAvailable?{statsSource:'api' as const,statsSampledAt:sampledAt,statsGameTime:gameTime}:{}),kills:n(scores.kills),deaths:n(scores.deaths),assists:n(scores.assists),cs:n(scores.creepScore),level:n(p.level,1),gold:total,items:liveItems.sort((a,b)=>n(a.slot)-n(b.slot)).map(i=>n(i.itemID)).filter(i=>i>0),...(itemSlots?{itemSlots}:{}),team:side,runes:[text(p.runes?.keystone?.displayName),text(p.runes?.primaryRuneTree?.displayName),text(p.runes?.secondaryRuneTree?.displayName)].filter(Boolean),...combat}];
   }).sort((a,b)=>a.team.localeCompare(b.team)||((roleOrder.indexOf(a.role)<0?5:roleOrder.indexOf(a.role))-(roleOrder.indexOf(b.role)<0?5:roleOrder.indexOf(b.role))));

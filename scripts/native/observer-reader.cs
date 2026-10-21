@@ -40,6 +40,20 @@ public sealed class RiftCastObserverReader : IDisposable {
         return Obj("level",level,"readyAt",Math.Max(0,end),"totalCooldown",Math.Max(0,duration),
           "state",index<4&&level==0?"unlearned":index>=6&&level==0?"unknown":end>time?"cooldown":"ready");
     }
+    // Same page used by Live Client fullRunes. Six choices followed by three stat shards.
+    Dictionary<string,object> Runes(long hero) {
+        long page=hero+0x4f28,begin=Ptr(page+0x230),end=Ptr(page+0x238);
+        if(begin<65536||end-begin!=9*0x50)throw new InvalidDataException("rune-page");
+        int primary=Int(Ptr(page+0x198)),secondary=Int(Ptr(page+0x1e8));
+        if(primary==secondary||primary<8000||primary>8400||primary%100!=0||secondary<8000||secondary>8400||secondary%100!=0)throw new InvalidDataException("rune-trees");
+        var general=new List<object>();var stats=new List<object>();var unique=new HashSet<int>();
+        for(int i=0;i<9;i++) {
+            int id=Int(Ptr(begin+i*0x50)+8);
+            if(i<6){if(id<8000||id>10000||!unique.Add(id))throw new InvalidDataException("rune-id");general.Add(Obj("id",id));}
+            else {if(id<5001||id>5013)throw new InvalidDataException("rune-shard");stats.Add(Obj("id",id));}
+        }
+        return Obj("generalRunes",general,"statRunes",stats,"primaryRuneTree",Obj("id",primary),"secondaryRuneTree",Obj("id",secondary));
+    }
     Dictionary<string,object> Buffs(long hero,float time) {
         long start=Ptr(hero+0x2e68),end=Ptr(hero+0x2e70);long count=(end-start)/16;
         if(start<65536||end<start||(end-start)%16!=0||count>256)throw new InvalidDataException("buff-list");
@@ -185,6 +199,7 @@ public sealed class RiftCastObserverReader : IDisposable {
                         "experienceTotal",Range(hero+0x4bb8,0,1000000),"currentGold",Range(hero+0x2848,0,1000000),"totalGold",Range(hero+0x2870,0,1000000),"spells",spells);
                     // A broken optional list must not discard valid health and cooldown samples.
                     try {player["buffs"]=Buffs(hero,time);} catch { }
+                    try {player["fullRunes"]=Runes(hero);} catch { }
                     Dictionary<string,object> score;
                     if(scores!=null&&scores.TryGetValue((uint)player["networkId"],out score))player["scores"]=score;
                     try {player["visionScore"]=Range(hero+0x53a8,0,10000);}catch { }
