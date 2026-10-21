@@ -32,18 +32,18 @@ export function damageStart(events:DamageEvent[],target:number,time:number,previ
 /** Connected combat episodes keep simultaneous, disjoint skirmishes separate. */
 export function detectTeamfights(index:ReplayDamageIndex,until=index.duration):ReplayMoment[]{
  const heroes=new Map(index.heroes.map(h=>[h.networkId,h]));
- type Fight={id:string;start:number;end:number;ids:Set<number>};const active:Fight[]=[],finished:Fight[]=[];
+ type Fight={id:string;start:number;end:number;firstSource:number;ids:Set<number>};const active:Fight[]=[],finished:Fight[]=[];
  for(const e of index.damageEvents){if(e.time>until)break;const a=heroes.get(e.source),b=heroes.get(e.target);if(!a||!b||a.team===b.team||e.amount<=0)continue;
   for(let i=active.length-1;i>=0;i--)if(e.time-active[i].end>gap)finished.push(...active.splice(i,1));
   const related=active.filter(f=>f.ids.has(e.source)||f.ids.has(e.target));
-  const f=related.shift()??{id:`fight:${e.time.toFixed(3)}:${Math.min(e.source,e.target)}-${Math.max(e.source,e.target)}`,start:e.time,end:e.time,ids:new Set<number>()};
+  const f=related.shift()??{id:`fight:${e.time.toFixed(3)}:${Math.min(e.source,e.target)}-${Math.max(e.source,e.target)}`,start:e.time,end:e.time,firstSource:e.source,ids:new Set<number>()};
   if(!active.includes(f))active.push(f);
-  for(const other of related){if(other.start<f.start){f.start=other.start;f.id=other.id;}for(const id of other.ids)f.ids.add(id);active.splice(active.indexOf(other),1);}
+  for(const other of related){if(other.start<f.start){f.start=other.start;f.id=other.id;f.firstSource=other.firstSource;}for(const id of other.ids)f.ids.add(id);active.splice(active.indexOf(other),1);}
   f.ids.add(e.source);f.ids.add(e.target);f.end=e.time;
  }
  finished.push(...active);
  return finished.filter(f=>{const blue=[...f.ids].filter(id=>heroes.get(id)!.team==='blue').length;return blue>=2&&f.ids.size-blue>=2&&f.ids.size>=5;}).map(f=>({
-  id:f.id,kind:'teamfight',title:`团战 · ${f.ids.size} 人参战`,time:f.start,start:Math.max(0,f.start-5),end:f.end,basis:'damage',participants:[...f.ids].map(id=>heroes.get(id)!.champion)
+  id:f.id,kind:'teamfight',title:`团战 · ${f.ids.size} 人参战`,time:f.start,start:Math.max(0,f.start-5),end:f.end,basis:'damage',participants:[...f.ids].map(id=>heroes.get(id)!.champion),focus:{champion:heroes.get(f.firstSource)!.champion,name:heroes.get(f.firstSource)!.champion,reason:'participant'}
  }));
 }
 
@@ -71,6 +71,7 @@ export class ReplayDirector {
     const start=starts.length?Math.min(...starts):undefined;
     const id=`objective:${side}:${kind}:${after}`;
     this.observed.set(id,{id,kind:'objective',objective:kind,title:`${side==='blue'?'蓝方':'红方'}击杀${name}${after-before>1?` ×${after-before}`:''}`,time:eventTime,start:Math.max(0,(start??eventTime)-3),end:eventTime,basis:start===undefined?'event':'damage',participants:[]});
+    const killer=last&&index?.heroes.find(h=>h.networkId===last.source);if(killer)this.observed.get(id)!.focus={champion:killer.champion,name:killer.champion,reason:'killer'};
    }
   }
   this.previous=counts?{time:sample.gameTime,at:now,counts:structuredClone(counts)}:undefined;
@@ -78,9 +79,10 @@ export class ReplayDirector {
   const signature=JSON.stringify([raw,[...this.observed.values()],this.source==='observer'?Math.floor(sample.gameTime):0]);
   if(this.cachedIndex===index&&this.cachedEvents===signature)return;
   this.cachedIndex=index;this.cachedEvents=signature;
-  const aliases=new Map<string,{id:number;champion:string}|null>();
+  const aliases=new Map<string,{id:number;champion:string}|null>(),names=new Map<string,string>();
   for(const p of data.allPlayers??[]){
    const m=sample.players.find((m:Json)=>p.team===(m.team==='blue'?'ORDER':'CHAOS')&&String(p.rawChampionName).toLowerCase().endsWith(m.champion.toLowerCase()));if(!m)continue;
+   const name=p.riotIdGameName||p.summonerName||p.riotId;if(typeof name==='string')names.set(m.champion,name.replace(/#[^#]*$/,''));
    for(const value of [p.summonerName,p.riotId,p.riotIdGameName])if(typeof value==='string'&&value){
     for(const name of new Set([value,value.replace(/#[^#]*$/,'')])){
      const existing=aliases.get(name);
@@ -97,13 +99,21 @@ export class ReplayDirector {
     const damage=heroDamage&&victim?damageStart(heroDamage,victim.id,e.EventTime,deaths.get(victim.id)):undefined;
     if(victim)deaths.set(victim.id,e.EventTime);
     events.push({id:`kill:${JSON.stringify([e.KillerName,e.VictimName,e.EventTime])}`,kind:'kill',title:`${e.KillerName||'野怪/防御塔'} → ${e.VictimName||'英雄'}`,time:e.EventTime,start:Math.max(0,(damage??e.EventTime)-3),end:e.EventTime,basis:damage===undefined?'event':'damage',participants:[killer?.champion,victim?.champion].filter((s):s is string=>!!s)});
-   }else if(objectiveNames[e.EventName])events.push({id:`api:${e.EventID}:${e.EventTime}`,kind:'objective',objective:e.DragonType==='Elder'?'elders':objectiveKinds[e.EventName],title:`${e.KillerName||''} 击杀${e.DragonType==='Elder'?'远古龙':objectiveNames[e.EventName]}`,time:e.EventTime,start:Math.max(0,e.EventTime-3),end:e.EventTime,basis:'event',participants:[]});
+    const target=killer??victim;if(target)events.at(-1)!.focus={champion:target.champion,name:names.get(target.champion)??target.champion,reason:killer?'killer':'victim'};
+   }else if(objectiveNames[e.EventName]){
+    events.push({id:`api:${e.EventID}:${e.EventTime}`,kind:'objective',objective:e.DragonType==='Elder'?'elders':objectiveKinds[e.EventName],title:`${e.KillerName||''} 击杀${e.DragonType==='Elder'?'远古龙':objectiveNames[e.EventName]}`,time:e.EventTime,start:Math.max(0,e.EventTime-3),end:e.EventTime,basis:'event',participants:[]});
+    const killer=aliases.get(e.KillerName);if(killer)events.at(-1)!.focus={champion:killer.champion,name:names.get(killer.champion)??killer.champion,reason:'killer'};
+   }
   }
   for(const e of this.observed.values()){
    const existing=events.find(v=>v.kind==='objective'&&v.objective===e.objective&&Math.abs(v.time-e.time)<4);
-   if(!existing)events.push(e);else if(e.basis==='damage'){existing.start=e.start;existing.basis='damage';}
+   if(!existing)events.push(e);else{if(e.basis==='damage'){existing.start=e.start;existing.basis='damage';}if(!existing.focus&&e.focus)existing.focus=e.focus;}
   }
-  if(index)events.push(...detectTeamfights(index,this.source==='replay'?index.duration:Math.min(sample.gameTime,this.until)));
+  if(index)for(const fight of detectTeamfights(index,this.source==='replay'?index.duration:Math.min(sample.gameTime,this.until))){
+   const kill=events.find(e=>e.kind==='kill'&&e.time>=fight.time&&e.time<=fight.end+2&&e.focus?.reason==='killer'&&fight.participants.includes(e.focus.champion));
+   if(kill?.focus)fight.focus={...kill.focus};events.push(fight);
+  }
+  for(const e of events)if(e.focus)e.focus={...e.focus,name:names.get(e.focus.champion)??e.focus.name};
   this.moments=events.sort((a,b)=>a.time-b.time).slice(-2000);
  }
  snapshot(now=Date.now()):ReplayDirectorView {

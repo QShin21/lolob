@@ -56,6 +56,19 @@ test('tagless kill names match full Riot IDs only when the player alias is uniqu
  const other=new ReplayDirector();data.allPlayers[6].summonerName='Hero6#67890';other.observe(data,sample,index);
  assert.equal(other.snapshot().moments[0].basis,'event');
 });
+
+test('events prefer the killer camera, fall back to the victim, and select a killer within the teamfight',()=>{
+ const d=new ReplayDirector(),{data,sample}=inputs();
+ data.events.Events=[{EventID:1,EventName:'ChampionKill',EventTime:105,KillerName:'Hero3',VictimName:'Hero6'},
+  {EventID:2,EventName:'ChampionKill',EventTime:130,KillerName:'Turret',VictimName:'Hero7'},
+  {EventID:3,EventName:'DragonKill',EventTime:150,KillerName:'Hero2',DragonType:'Fire'}];
+ const index=new ReplayDamageIndex(heroes,200,[damage(100,1,6),damage(101,2,6),damage(102,7,2),damage(104,3,7),damage(105,3,6)]);
+ d.observe(data,sample,index);const events=d.snapshot().moments;
+ assert.deepEqual(events.find(e=>e.kind==='kill'&&e.time===105)?.focus,{champion:'Hero3',name:'Hero3',reason:'killer'});
+ assert.equal(events.find(e=>e.kind==='teamfight')?.focus?.champion,'Hero3');
+ assert.equal(events.find(e=>e.time===130)?.focus?.reason,'victim');assert.equal(events.find(e=>e.time===130)?.focus?.champion,'Hero7');
+ assert.equal(events.find(e=>e.kind==='objective')?.focus?.champion,'Hero2');
+});
 test('resource counters only create events during continuous coverage; seeks and new sessions never fabricate kills',()=>{
  const d=new ReplayDirector(),{data,sample}=inputs(100);data.events.Events=[];Object.assign(sample,{neutralUnits:[{id:99,kind:'dragons'}]});
  const index=new ReplayDamageIndex(heroes,200,[damage(95,1,99),damage(99,1,99),damage(101,1,99)]);
@@ -92,6 +105,8 @@ test('explicit director seek works on air, bounds time, rejects old sessions and
  let posted:any[]=[];let processID=10;let release:(()=>void)|undefined;let blocked=false;
  const adapters=new Adapters(()=>state,f=>f(state),new ChampionCatalog('.'),async(_port,route,options)=>{
   if(route==='/replay/game')return {processID};
+  if(route==='/liveclientdata/gamestats')return {gameTime:92};
+  if(route==='/replay/render')return {cameraMode:'top',cameraAttached:true,selectionName:'Hero1'};
   if(options?.method==='POST'){posted.push(options.body);if(blocked)await new Promise<void>(r=>{release=r;});return {time:92,paused:false,speed:1,length:200};}
   return {time:100,paused:false,speed:1,length:200};
  });
