@@ -200,6 +200,7 @@ export class Adapters {
   }
   private async pollLive(){
     if(this.replayWriting)return;
+    if(!this.get().gameClock||this.get().gameClock?.matchKey!==gameClockMatchKey(this.get()))this.ensureClockSession(this.get());
     const generation=this.samplingGeneration,sequence=++this.liveSampleSequence,context=productionKey(this.get());
     const current=()=>generation===this.samplingGeneration&&sequence===this.liveSampleSequence&&context===productionKey(this.get())&&!this.replayWriting;
     const before=await this.playbackMark();

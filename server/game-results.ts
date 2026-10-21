@@ -1,8 +1,16 @@
 import { currentOcrMatch } from '../shared/hud-ocr';
 import { randomUUID } from 'node:crypto';
 import type { BroadcastState, GameResult, Player, Recording, Side } from '../shared/types';
-import { currentGameResult, gameResultKey, rosterFingerprint } from '../shared/game-results';
-import { ensureProduction } from '../shared/production';
+import { currentGameResult, frozenGameState, gameResultKey, rosterFingerprint } from '../shared/game-results';
+import { ensureProduction, productionKey } from '../shared/production';
+
+/** The archive stays immutable; an explicit same-match replay review owns the live frame. */
+export function reconcileArchivedFrame(state:BroadcastState):void {
+  if(!currentGameResult(state)||state.replayReview?.key===productionKey(state))return;
+  const frozen=frozenGameState(state);
+  Object.assign(state,{players:frozen.players,stats:frozen.stats,events:frozen.events,economy:frozen.economy,draft:frozen.draft,gameTime:frozen.gameTime,economyFeed:frozen.economyFeed,phase:'postgame',paused:true});
+  delete state.gameClock;
+}
 
 export function explicitWinner(value: unknown): Side | undefined {
   if(typeof value==='string')value=value.toUpperCase();

@@ -5,6 +5,8 @@ import {ReplayDamageIndex} from './replay-damage';
 import {Adapters,ChampionCatalog} from './adapters';
 import {createFixture} from './test-support/fixture';
 import {syncFightSegment} from '../shared/combat-display';
+import {finalizeGame,reconcileArchivedFrame} from './game-results';
+import {productionKey,programState,captureProgram} from '../shared/production';
 import {EconomyBridge} from './economy';
 
 test('playback bracket rejects seeks, stale data and speed/pause changes; accepts 8x and paused frames',()=>{
@@ -90,4 +92,14 @@ test('fight waits through seek, establishes a new coherent baseline, then resume
   const index=new ReplayDamageIndex([{networkId:1,champion:p.championId,team:p.team,officialTotal:100},{networkId:2,champion:enemy.championId,team:enemy.team,officialTotal:0}],200,[{time:90,source:1,target:2,amount:40,type:0},{time:103,source:1,target:2,amount:60,type:0}]);
   s.gameTime=105;p.telemetryDamageSource='packets';p.telemetryDamageSession='replay:one';p.telemetryDamage={toChampions:100};p.telemetry={source:'memory',gameTime:105,sampledAt:new Date().toISOString(),validForMs:3000};
   recoverFightBaseline(s,index);syncFightSegment(s);assert.equal(s.fightSegment!.players[p.id].baseline,40);assert.equal(s.fightSegment!.players[p.id].total,60);
+ });
+
+ test('service commit preserves reviewed live metrics after match end while archived reports remain frozen',()=>{
+  const s=createFixture();s.programScene='live';s.phase='live';captureProgram(s);
+  const result=finalizeGame(s,{source:'manual',winner:'blue'})!,original=structuredClone(result.snapshot);
+  s.replayReview={session:'replay:one',key:productionKey(s)};s.gameTime=100;s.players=structuredClone(s.players);s.players[0].cs=12;s.players[0].gold=900;s.phase='live';
+  reconcileArchivedFrame(s);assert.equal(s.gameTime,100);assert.equal(s.players[0].cs,12);assert.equal(programState(s).players[0].gold,900);assert.deepEqual(result.snapshot,original);
+  s.programScene='postgame';assert.equal(programState(s).gameTime,original.duration);
+  delete s.replayReview;reconcileArchivedFrame(s);assert.equal(s.gameTime,original.duration);assert.equal(s.players[0].cs,original.players[0].cs);
+  s.replayReview={session:'old',key:'old-match'};s.gameTime=90;reconcileArchivedFrame(s);assert.equal(s.gameTime,original.duration);
  });
