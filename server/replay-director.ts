@@ -7,6 +7,18 @@ const objectiveNames:Record<string,string>={DragonKill:'巨龙',BaronKill:'男�
 const countNames:Record<string,string>={dragons:'巨龙',barons:'男爵',heralds:'峡谷先锋',voidgrubs:'虚空巢虫',elders:'远古龙'};
 const objectiveKinds:Record<string,string>={DragonKill:'dragons',BaronKill:'barons',HeraldKill:'heralds',HordeKill:'voidgrubs',VoidGrubKill:'voidgrubs',ElderDragonKill:'elders'};
 
+/** Seeking can replay the same notification with a new EventID and sub-second clock drift. */
+function uniqueReplayEvents(events:Json[]):Json[]{
+ const result:Json[]=[],last=new Map<string,number>();
+ for(const e of [...events].sort((a,b)=>a.EventTime-b.EventTime)){
+  const identity=JSON.stringify([e.EventName,e.KillerName??'',e.VictimName??'',e.DragonType??'',e.MonsterType??'',e.EventName==='ChampionKill'?null:e.EventID]);
+  const previous=last.get(identity),tolerance=e.EventName==='ChampionKill'?1:.001;
+  if(previous!==undefined&&e.EventTime-previous<=tolerance)continue;
+  last.set(identity,e.EventTime);result.push(e);
+ }
+ return result;
+}
+
 /** Walk only the victim's current uninterrupted damage chain, bounded by its previous death. */
 export function damageStart(events:DamageEvent[],target:number,time:number,previousDeath=0):number|undefined {
  let lo=0,hi=events.length;while(lo<hi){const mid=(lo+hi)>>>1;if(events[mid].time<=time+.15)lo=mid+1;else hi=mid;}
@@ -62,21 +74,29 @@ export class ReplayDirector {
    }
   }
   this.previous=counts?{time:sample.gameTime,at:now,counts:structuredClone(counts)}:undefined;
-  const raw=(Array.isArray(data.events?.Events)?data.events.Events:[]).filter((e:Json)=>Number.isFinite(e.EventTime)&&e.EventTime>=0&&(this.source==='replay'||e.EventTime<=sample.gameTime+.1));
+  const raw=uniqueReplayEvents((Array.isArray(data.events?.Events)?data.events.Events:[]).filter((e:Json)=>Number.isFinite(e.EventTime)&&e.EventTime>=0&&(this.source==='replay'||e.EventTime<=sample.gameTime+.1)));
   const signature=JSON.stringify([raw,[...this.observed.values()],this.source==='observer'?Math.floor(sample.gameTime):0]);
   if(this.cachedIndex===index&&this.cachedEvents===signature)return;
   this.cachedIndex=index;this.cachedEvents=signature;
-  const aliases=new Map<string,{id:number;champion:string}>();
-  for(const p of data.allPlayers??[]){const m=sample.players.find((m:Json)=>p.team===(m.team==='blue'?'ORDER':'CHAOS')&&String(p.rawChampionName).toLowerCase().endsWith(m.champion.toLowerCase()));if(!m)continue;for(const name of [p.summonerName,p.riotId,p.riotIdGameName])if(name)aliases.set(name,{id:m.networkId,champion:m.champion});}
+  const aliases=new Map<string,{id:number;champion:string}|null>();
+  for(const p of data.allPlayers??[]){
+   const m=sample.players.find((m:Json)=>p.team===(m.team==='blue'?'ORDER':'CHAOS')&&String(p.rawChampionName).toLowerCase().endsWith(m.champion.toLowerCase()));if(!m)continue;
+   for(const value of [p.summonerName,p.riotId,p.riotIdGameName])if(typeof value==='string'&&value){
+    for(const name of new Set([value,value.replace(/#[^#]*$/,'')])){
+     const existing=aliases.get(name);
+     aliases.set(name,existing===null||existing&&existing.id!==m.networkId?null:{id:m.networkId,champion:m.champion});
+    }
+   }
+  }
   const deaths=new Map<number,number>(),events:ReplayMoment[]=[];
   const teams=new Map(index?.heroes.map(h=>[h.networkId,h.team]));
   const heroDamage=index?.damageEvents.filter(d=>teams.has(d.source)&&teams.has(d.target)&&teams.get(d.source)!==teams.get(d.target));
-  for(const e of raw.sort((a:Json,b:Json)=>a.EventTime-b.EventTime)){
+  for(const e of raw){
    if(e.EventName==='ChampionKill'){
     const victim=aliases.get(e.VictimName),killer=aliases.get(e.KillerName);
     const damage=heroDamage&&victim?damageStart(heroDamage,victim.id,e.EventTime,deaths.get(victim.id)):undefined;
     if(victim)deaths.set(victim.id,e.EventTime);
-    events.push({id:`kill:${e.EventID}:${e.EventTime}`,kind:'kill',title:`${e.KillerName||'野怪/防御塔'} → ${e.VictimName||'英雄'}`,time:e.EventTime,start:Math.max(0,(damage??e.EventTime)-3),end:e.EventTime,basis:damage===undefined?'event':'damage',participants:[killer?.champion,victim?.champion].filter((s):s is string=>!!s)});
+    events.push({id:`kill:${JSON.stringify([e.KillerName,e.VictimName,e.EventTime])}`,kind:'kill',title:`${e.KillerName||'野怪/防御塔'} → ${e.VictimName||'英雄'}`,time:e.EventTime,start:Math.max(0,(damage??e.EventTime)-3),end:e.EventTime,basis:damage===undefined?'event':'damage',participants:[killer?.champion,victim?.champion].filter((s):s is string=>!!s)});
    }else if(objectiveNames[e.EventName])events.push({id:`api:${e.EventID}:${e.EventTime}`,kind:'objective',objective:e.DragonType==='Elder'?'elders':objectiveKinds[e.EventName],title:`${e.KillerName||''} 击杀${e.DragonType==='Elder'?'远古龙':objectiveNames[e.EventName]}`,time:e.EventTime,start:Math.max(0,e.EventTime-3),end:e.EventTime,basis:'event',participants:[]});
   }
   for(const e of this.observed.values()){

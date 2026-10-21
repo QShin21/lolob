@@ -20,7 +20,7 @@ try{browser=await chromium.launch({headless:true});const page=await browser.newP
  const origin=`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-${version}/replay-director/index.html`;
  await page.goto(origin);await page.locator('.replay-event').first().waitFor();assert.equal(await page.locator('.replay-event').count(),4);
  await page.getByRole('button',{name:/选手甲/}).click();await page.getByLabel('游戏回放时间').filter({hasText:'08:02'}).waitFor();assert.equal(posts.at(-1).eventId,'kill-1');
- await page.getByRole('button',{name:/返回跳转前/}).click();await page.getByLabel('游戏回放时间').filter({hasText:'10:00'}).waitFor();
+ await page.getByRole('button',{name:/返回原进度/}).click();await page.getByLabel('游戏回放时间').filter({hasText:'10:00'}).waitFor();
  await page.getByRole('button',{name:'暂停',exact:true}).click();await page.getByRole('button',{name:'播放',exact:true}).waitFor();
  await page.getByLabel('游戏回放倍速').selectOption('0.5');assert.equal(posts.at(-1).speed,.5);
  await page.getByLabel('跳转时间',{exact:true}).fill('12:30');await page.getByRole('button',{name:'跳转',exact:true}).click();await page.getByLabel('游戏回放时间').filter({hasText:'12:30'}).waitFor();assert.equal(posts.at(-1).time,750);
@@ -31,7 +31,18 @@ try{browser=await chromium.launch({headless:true});const page=await browser.newP
  checks.push('single-click event navigation, return position, pause, speed, exact seek, input validation, event filters and teamfight TAKE');
  for(const theme of ['light','dark'])for(const width of [540,360]){await page.setViewportSize({width,height:1050});await page.goto(`${origin}?theme=${theme}`);await page.locator('.replay-event').first().waitFor();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:path.join(dir,`${theme}-${width}.png`)});}checks.push('light/dark sidebar at 540 and 360 pixels, no horizontal overflow');
  unavailable=true;await page.getByRole('alert').waitFor();assert(await page.getByRole('button',{name:'暂停',exact:true}).isDisabled());unavailable=false;
- view={...view,session:'new-game',moments:[]};await page.locator('.replay-event').waitFor({state:'detached'});assert.equal(await page.getByRole('button',{name:/返回跳转前/}).count(),0);checks.push('disconnect disables controls and a new game clears event and return state');
+ view={...view,session:'new-game',moments:[]};await page.locator('.replay-event').waitFor({state:'detached'});assert.equal(await page.getByRole('button',{name:/返回原进度/}).count(),0);checks.push('disconnect disables controls and a new game clears event and return state');
  view=structuredClone(initial);await page.goto(`${origin}?readonly=1`);await page.locator('.replay-event').first().waitFor();assert(await page.locator('.replay-event').first().isDisabled());assert(await page.getByRole('button',{name:'切入团战视图',exact:true}).isDisabled());checks.push('non-host or non-owner cannot operate game playback');
+ view=structuredClone(initial);view.playback.time=735;
+ await page.clock.install({time:new Date('2026-01-01T00:00:00Z')});await page.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
+ await page.goto(origin);await page.locator('.replay-event').first().waitFor();
+ await page.getByRole('button',{name:/选手甲/}).click();await page.getByLabel('游戏回放时间').filter({hasText:'08:02'}).waitFor();
+ await page.getByRole('button',{name:'暂停',exact:true}).click();await page.getByRole('button',{name:'播放',exact:true}).waitFor();
+ await page.getByLabel('游戏回放倍速').selectOption('0.5');
+ await page.clock.runFor(17000);await page.getByRole('button',{name:'返回原进度 · 12:32',exact:true}).waitFor();
+ await page.getByRole('button',{name:/团战 · 8/}).click();await page.getByLabel('游戏回放时间').filter({hasText:'16:35'}).waitFor();
+ await page.getByRole('button',{name:'返回原进度 · 12:32',exact:true}).click();
+ await page.getByLabel('游戏回放时间').filter({hasText:'12:32'}).waitFor();assert.equal(posts.at(-1).time,752);assert.equal(posts.at(-1).speed,1);assert.equal(posts.at(-1).paused,false);
+ checks.push('return timeline advances 12:15 to 12:32 after 17 seconds independently of replay pause, speed and repeated event jumps');
  assert.deepEqual(errors,[]);await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors},null,2));console.log(checks);
 }finally{await browser?.close();await vite.close();}

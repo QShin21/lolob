@@ -3,9 +3,16 @@ import {ReplayDirector,damageStart,detectTeamfights} from './replay-director';
 import {ReplayDamageIndex,type DamageEvent,type DamageHero} from './replay-damage';
 import {Adapters,ChampionCatalog} from './adapters';import {createFixture} from './test-support/fixture';
 import {finalizeGame} from './game-results';import {programState,productionKey} from '../shared/production';import {normalizeSavedState} from './state';
+import {advancingReplayTime} from '../shared/replay-director';
 const heroes:DamageHero[]=Array.from({length:10},(_,i)=>({networkId:i+1,champion:`Hero${i+1}`,team:i<5?'blue':'red',officialTotal:0}));
 const damage=(time:number,source:number,target:number):DamageEvent=>({time,source,target,amount:50,type:0});
 function inputs(time=100){return {sample:{ok:true,pid:10,processSession:'first',replayPath:'C:/a.rofl',gameTime:time,players:heroes.map(h=>({...h})),objectiveCounts:{blue:{dragons:0},red:{dragons:0}}},data:{allPlayers:heroes.map(h=>({rawChampionName:`game_character_displayname_${h.champion}`,team:h.team==='blue'?'ORDER':'CHAOS',summonerName:h.champion})),events:{Events:[{EventID:1,EventName:'ChampionKill',EventTime:102,KillerName:'Hero1',VictimName:'Hero6'},{EventID:2,EventName:'DragonKill',EventTime:150,KillerName:'Hero2',DragonType:'Elder'}]}}};}
+
+test('return position advances 12:15 to 12:32 in 17 seconds and stops at replay end',()=>{
+ assert.equal(advancingReplayTime(735,17000,1800),752);
+ assert.equal(advancingReplayTime(1795,17000,1800),1800);
+ assert.equal(advancingReplayTime(735,-100),735);
+});
 test('kill starts at continuous victim damage, preserves pre-roll, and respects previous death',()=>{
  const events=[damage(20,1,6),damage(70,1,6),damage(95,1,6),damage(98,2,6),damage(101,1,6)];
  assert.equal(damageStart(events,6,102),95);assert.equal(damageStart(events,6,102,96),98);assert.equal(damageStart(events,6,110),undefined);
@@ -15,6 +22,39 @@ test('kill starts at continuous victim damage, preserves pre-roll, and respects 
 test('teamfights require connected five-player involvement with both sides; disjoint lanes stay separate',()=>{
  const index=new ReplayDamageIndex(heroes,300,[damage(10,1,6),damage(11,2,7),damage(12,3,8),damage(13,4,9),damage(100,1,6),damage(101,2,6),damage(102,7,2),damage(104,3,7),damage(105,1,6),damage(150,1,6)]);
  const fights=detectTeamfights(index);assert.equal(fights.length,1);assert.equal(fights[0].start,95);assert.equal(fights[0].time,100);assert.equal(fights[0].end,105);assert.equal(fights[0].participants.length,5);assert.equal(detectTeamfights(index,102).length,0);
+});
+
+test('repeated kill notifications after seeking retain one combat onset despite changed event IDs and clock drift',()=>{
+ const d=new ReplayDirector(),{data,sample}=inputs();
+ const kill=data.events.Events[0];
+ data.events.Events=[kill,{...kill,EventID:99,EventTime:102.357},{...kill,EventID:204,EventTime:102.357},{...kill,EventID:205}];
+ const index=new ReplayDamageIndex(heroes,200,[damage(95,1,6),damage(101,1,6)]);
+ d.observe(data,sample,index);let events=d.snapshot().moments;
+ assert.equal(events.length,1);assert.equal(events[0].start,92);assert.equal(events[0].basis,'damage');const id=events[0].id;
+ data.events.Events=data.events.Events.map(e=>({...e,EventID:e.EventID+500})).reverse();sample.gameTime=50;
+ d.observe(data,sample,index);events=d.snapshot().moments;assert.equal(events.length,1);assert.equal(events[0].id,id);assert.equal(events[0].start,92);
+});
+
+test('deduplication preserves different victims, later deaths and separate objective kills',()=>{
+ const d=new ReplayDirector(),{data,sample}=inputs();const kill={EventID:1,EventName:'ChampionKill',EventTime:102,KillerName:'Hero1',VictimName:'Hero6'};
+ data.events.Events=[kill,{...kill,EventID:3,VictimName:'Hero7'}, {...kill,EventID:4,EventTime:130},
+  {EventID:5,EventName:'HordeKill',EventTime:140,KillerName:'Hero1',VictimName:''},
+  {EventID:5,EventName:'HordeKill',EventTime:140,KillerName:'Hero1',VictimName:''},
+  {EventID:7,EventName:'HordeKill',EventTime:140.5,KillerName:'Hero1',VictimName:''}];
+ const index=new ReplayDamageIndex(heroes,200,[damage(95,1,6),damage(99,1,7),damage(101,1,6),damage(101,1,7),damage(126,1,6),damage(129,1,6)]);
+ d.observe(data,sample,index);const events=d.snapshot().moments;
+ assert.equal(events.filter(e=>e.kind==='kill').length,3);assert.equal(events.find(e=>e.time===130)?.start,123);
+ assert.equal(events.filter(e=>e.kind==='objective').length,2);
+});
+
+test('tagless kill names match full Riot IDs only when the player alias is unique',()=>{
+ const d=new ReplayDirector(),{data,sample}=inputs();data.events.Events=[data.events.Events[0]];
+ for(const p of data.allPlayers)p.summonerName+='#12345';
+ const index=new ReplayDamageIndex(heroes,200,[damage(95,1,6),damage(101,1,6)]);
+ d.observe(data,sample,index);assert.equal(d.snapshot().moments[0].start,92);assert.equal(d.snapshot().moments[0].basis,'damage');
+ // A second player with the same display name must not inherit the first player's damage.
+ const other=new ReplayDirector();data.allPlayers[6].summonerName='Hero6#67890';other.observe(data,sample,index);
+ assert.equal(other.snapshot().moments[0].basis,'event');
 });
 test('resource counters only create events during continuous coverage; seeks and new sessions never fabricate kills',()=>{
  const d=new ReplayDirector(),{data,sample}=inputs(100);data.events.Events=[];Object.assign(sample,{neutralUnits:[{id:99,kind:'dragons'}]});
