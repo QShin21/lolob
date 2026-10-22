@@ -2,6 +2,7 @@ import type { StylePackRef } from './style-packs';
 import type { FightSegment, NeutralSample } from './combat-display';
 import type { Cooldown, TelemetryStamp, ItemCooldown, PlayerBuffs, DamageTotals } from './player-telemetry';
 import type { ProductionState, ProductionCommand } from './production-types';
+import type { Tournament, TournamentConfig, TournamentMatch, GameArchive } from './tournament-types';
 export type Phase = 'pregame' | 'draft' | 'live' | 'postgame';
 export type BuiltinScene = 'standby' | 'draft' | 'lineup' | 'live' | 'economy' | 'ranking' | 'schedule' | 'postgame' | 'interview' | 'teamfight' | 'gold-ranking';
 export type Scene = BuiltinScene | `custom:${string}`;
@@ -63,6 +64,7 @@ export type PlayerFeedPair = Record<Side, PlayerFeedSettings>;
 export interface PlayerFeedControl { mode: 'manual' | 'auto'; activeIndex: number; nextSwitchAt?: number }
 export interface OverlaySettings { stylePack?: StylePackRef; postgamePage?: 1 | 2 | 3; preset: BroadcastPreset; scoreboard: boolean; players: boolean; objectives: boolean; ticker: boolean; goldDiff: boolean; sponsor: string; sponsorLogo?: string; tickerText: string; accent: string; scale: number; countdownEnd: number | null; nativeHud?: 'auto' | 'mask' | 'off'; patchVersion?: string; bottomTitle?: string; playerFeeds?: PlayerFeedPair; playerFeedPairs?: PlayerFeedPair[]; playerFeedControl?: PlayerFeedControl; scheduleView?: { page: number; filter: 'all' | 'upcoming' | 'day'; day: string }; interview?: { name: string; team: string; role: string; topic: string; dock: 'left' | 'right' } }
 export interface BroadcastState {
+  tournaments?: Tournament[];
   replayReview?: {session:string;key:string};
   customScenes?: CustomScene[];
   production?: ProductionState;
@@ -81,6 +83,11 @@ export interface Asset { id: string; name: string; url: string; type: string; cr
 export interface Recording { id: string; title: string; createdAt: string; observedAt?: string; sourceGameTime?: number; duration: number; mode: SourceMode; players: Player[]; stats: BroadcastState['stats']; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed; ocrMatch?: OcrMatchData; result?: { resultId: string; seriesId: string; game: number; attempt: number; winner: Side | null; winnerTeamId?: string; version: number; terminalComplete: boolean; seriesComplete: boolean; blueScore: number; redScore: number; valid?: boolean; invalidReason?: string } }
 export interface GameResult { id: string; key: string; seriesId: string; matchId?: string; game: number; blueTeamId: string; redTeamId: string; winner: Side | null; winnerTeamId?: string; endedAt: string; source: 'live' | 'lcu' | 'manual'; sourceGameId?: string; snapshot: Recording; match: BroadcastState['match']; teams: Team[]; draft: DraftState; seriesComplete: boolean; terminalSampleAccepted?: boolean; terminalSampleComplete?: boolean; selectedPlayerId?: string | null }
 export type BroadcastAction = (
+  | { type: 'create-tournament'; config: TournamentConfig; newTeamNames?: string[] }
+  | { type: 'set-tournament-result'; matchId: string; blueScore: number; redScore: number; reason: string }
+  | { type: 'update-tournament'; tournamentId: string; name?: string; assetIds?: string[] }
+  | { type: 'reschedule-tournament-match'; matchId: string; scheduledAt: string; format: string }
+  | { type: 'retry-game-archive'; resultId: string }
   | { type: 'set-style-pack'; id: string; revision: string }
   | { type: 'save-custom-scene'; scene: CustomScene }
   | { type: 'delete-custom-scene'; id: string }
@@ -106,3 +113,7 @@ export type NoticeKind = 'success' | 'info' | 'warning' | 'error' | 'loading';
 export interface Notice { id: number; message: string; kind: NoticeKind }
 export interface ControlSeat { id: string; name: string; role: import('./production-types').SeatRole }
 export interface StateContext { state: BroadcastState; send: (action: BroadcastAction) => Promise<void>; champions: Champion[]; notify: (message: string, kind?: NoticeKind) => void; seat?: ControlSeat; connected?: boolean }
+export interface Match { tournament?: TournamentMatch }
+export interface Player { registeredPlayerId?: string }
+export interface GameResult { tournamentId?: string; archive?: GameArchive }
+export interface Recording { neutralObjectives?: NeutralSample; fightSegment?: FightSegment }

@@ -1,3 +1,6 @@
+import { tournamentReport, tournamentCsv } from '../shared/tournament-report';
+import { exportTournament } from './tournament-export';
+import { PostgameArchiveStore, PostgameCollector } from './postgame-archive';
 import {reconcileArchivedFrame} from './game-results';
 import { syncFightSegment } from '../shared/combat-display';
 import { clientPollScheduler } from './client-poll';
@@ -68,7 +71,7 @@ function persist():Promise<void>{
 function broadcast(scheduleWrite=true){if(shuttingDown)return;syncFightSegment(state);void adapters.syncPlayerFeeds().catch(()=>{});const value=JSON.stringify(publicState(state));for(const socket of wss.clients)if(socket.readyState===WebSocket.OPEN){if(socket.bufferedAmount>1024*1024)socket.close(1013,'客户端接收速度过慢');else socket.send(value);}if(scheduleWrite){if(writeTimer)clearTimeout(writeTimer);writeTimer=setTimeout(()=>{void persist().catch(()=>{});},250);}}
 function commit(work:(s:BroadcastState)=>void){if(shuttingDown)return;const beforeResult=currentGameResult(state),beforeWinner=beforeResult?.winner,beforeTerminal=beforeResult?.terminalSampleAccepted;work(state);reconcileArchivedFrame(state);state.revision++;broadcast();const afterResult=currentGameResult(state);if(afterResult&&(afterResult.id!==beforeResult?.id||afterResult.winner!==beforeWinner||afterResult.terminalSampleAccepted!==beforeTerminal))void persist().catch(()=>{});}
 const economy:EconomyBridge=new EconomyBridge(()=>state,commit,{goldSource:'direct',frame:():Promise<Buffer>=>adapters.spectatorFrame()});state.economyFeed=economy.status();
-const catalog=new ChampionCatalog(dataDir);const adapters:Adapters=new Adapters(()=>state,commit,catalog,undefined,economy);void catalog.load();
+const catalog=new ChampionCatalog(dataDir);const archiveStore=new PostgameArchiveStore(path.join(dataDir,'match-archives'));const archives=new PostgameCollector(archiveStore,()=>state,commit,()=>catalog.champions);const adapters:Adapters=new Adapters(()=>state,commit,catalog,undefined,economy,archives);void catalog.load();
 const resources=new ResourceCache(path.join(dataDir,'resources'));
 await adapters.initializeObsEngine({root,dataDir,overlayUrl:`http://127.0.0.1:${port}/overlay`});
 const monitorWss=new WebSocketServer({noServer:true,maxPayload:64,perMessageDeflate:false});
@@ -183,7 +186,17 @@ app.post('/api/obs/engine/output',async(req,res)=>{const result=await adapters.o
 app.get('/api/obs/production',async(_req,res)=>{res.setHeader('Cache-Control','no-store');res.json(await adapters.productionStatus());});
 app.post('/api/obs/production',async(req,res,next)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'制作引擎仅支持在导播主机操作'});return;}const run=actionQueue.catch(()=>{}).then(async()=>{seats.authorize(req.headers['x-seat-token'],'obs-production');if(['play-clip','emergency','return-live','audio','tracks','start-buffer','stop-buffer'].includes(String(req.body?.action)))seats.authorize(req.headers['x-seat-token'],'output');const result=await adapters.productionControl(req.body);await persist();res.json(result);});actionQueue=run;try{await run;}catch(error){next(error);}});
 app.get('/api/obs/game-frame',async(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).end();return;}res.setHeader('Cache-Control','no-store');res.type('png').send(await adapters.spectatorFrame());});
-app.get('/api/archive',(_req,res)=>{res.setHeader('Content-Disposition','attachment; filename="riftcast-event-package.json"');res.json({version:'0.3.0',exportedAt:new Date().toISOString(),match:state.match,teams:state.teams,schedule:state.schedule,results:state.gameResults,recordings:state.recordings,production:state.production});});
+app.get('/api/tournaments/:id/export',async(req,res)=>{
+  const snapshot=structuredClone(state),t=snapshot.tournaments?.find(t=>t.id===req.params.id);if(!t)throw new ValidationError('赛事不存在');
+  const format=req.query.format??'zip';if(!['zip','json','csv'].includes(String(format)))throw new ValidationError('导出格式需为 zip、json 或 csv');
+  if(format==='zip'){await exportTournament(snapshot,t,archiveStore,uploadDir,res);return;}
+  res.setHeader('Content-Disposition',`attachment; filename="${t.id}.${format}"`);
+  if(format==='csv'){res.type('text/csv; charset=utf-8').send(tournamentCsv(snapshot,t));return;}
+  const report=tournamentReport(snapshot,t),raw:Record<string,unknown>={};for(const r of report.results)raw[r.id]=await archiveStore.all(r.id);
+  res.json({schemaVersion:1,exportedAt:new Date().toISOString(),tournament:t,...report,raw});
+});
+app.get('/api/game-archives/:id',async(req,res)=>{const result=state.gameResults?.find(r=>r.id===req.params.id);if(!result)throw new ValidationError('比赛记录不存在');res.setHeader('Content-Disposition',`attachment; filename="${result.id}.json"`);res.json({schemaVersion:1,result,raw:await archiveStore.all(result.id)});});
+app.get('/api/archive',(_req,res)=>{res.setHeader('Content-Disposition','attachment; filename="riftcast-event-package.json"');res.json({version:'0.3.0',exportedAt:new Date().toISOString(),match:state.match,teams:state.teams,schedule:state.schedule,results:state.gameResults,tournaments:state.tournaments,recordings:state.recordings,production:state.production});});
 app.get('/api/clips/:id/file',(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).end();return;}const clip=state.production?.clips.find(c=>c.id===req.params.id);if(!clip)throw new ValidationError('片段不存在');res.sendFile(path.resolve(clip.file));});
 app.get('/api/videos/:id/file',(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).end();return;}const video=state.production?.videos.find(v=>v.id===req.params.id&&v.file);if(!video)throw new ValidationError('录像文件待确认');res.download(path.resolve(video.file));});
 app.get('/api/resources/inventory',async(_req,res)=>res.json(await resourceInventory(root,dataDir,state)));

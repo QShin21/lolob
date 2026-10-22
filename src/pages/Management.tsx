@@ -1,3 +1,4 @@
+import { TournamentWorkspace } from "./TournamentWorkspace";
 import { useEffect, useRef, useState } from "react";
 import {
   CalendarDays,
@@ -17,7 +18,7 @@ import { ManagementRecords, HeroLibrary } from "./ManagementRecords";
 import "../components/domain-workspace.css";
 import "./management-workspace.css";
 
-export type ManagementTab = "schedule" | "teams" | "assets" | "recordings";
+export type ManagementTab = "schedule" | "matches" | "teams" | "assets" | "recordings";
 type Draft<T> = { value: T; version?: number };
 const roles = ["上单", "打野", "中单", "下路", "辅助"];
 const id = () =>
@@ -78,7 +79,7 @@ export function Management(
     seat?.role === "director" &&
     state.production?.control?.owner === seat.id;
   const matchList = [
-    ...state.schedule,
+    ...state.schedule.filter(m => !m.tournament),
     ...Object.values(matches)
       .map((d) => d.value)
       .filter((d) => !state.schedule.some((m) => m.id === d.id)),
@@ -94,7 +95,7 @@ export function Management(
   const matchEdit = match && matches[match.id],
     teamEdit = team && teams[team.id];
   const currentDraft =
-    tab === "teams" ? teamEdit : tab === "schedule" ? matchEdit : undefined;
+    tab === "teams" ? teamEdit : tab === "matches" ? matchEdit : undefined;
   const serverObject =
     tab === "teams"
       ? state.teams.find((t) => t.id === team?.id)
@@ -246,7 +247,8 @@ export function Management(
       </header>
       <TaskTabs
         items={[
-          { id: "schedule", label: `赛事赛程 · ${state.schedule.length}` },
+          { id: "schedule", label: `赛事中心 · ${state.tournaments?.length ?? 0}` },
+          { id: "matches", label: `独立对阵 · ${state.schedule.filter(m => !m.tournament).length}` },
           { id: "teams", label: `战队与选手 · ${state.teams.length}` },
           { id: "assets", label: `图片素材 · ${state.assets.length}` },
           { id: "recordings", label: `比赛记录 · ${state.recordings.length}` },
@@ -268,7 +270,8 @@ export function Management(
           {receipt} · 正在播出的资料由 TAKE 更新。
         </div>
       )}
-      {(tab === "schedule" || tab === "teams") && (
+      {tab === "schedule" && <TournamentWorkspace {...ctx} />}
+      {(tab === "matches" || tab === "teams") && (
         <div className="manage-split">
           <aside className="manage-directory">
             <label className="domain-search">
@@ -281,7 +284,7 @@ export function Management(
               />
             </label>
             <div className="manage-list domain-scroll">
-              {tab === "schedule"
+              {tab === "matches"
                 ? matchFilter.map((m) => (
                     <button
                       className="manage-object"
@@ -336,7 +339,7 @@ export function Management(
               className="button"
               disabled={!canEdit || busy}
               onClick={() => {
-                if (tab === "schedule") {
+                if (tab === "matches") {
                   const value: Match = {
                     id: id(),
                     title: "自定义赛事",
@@ -396,7 +399,7 @@ export function Management(
                         ...d,
                         [team.id]: { ...d[team.id], version },
                       }));
-                    if (tab === "schedule" && match)
+                    if (tab === "matches" && match)
                       setMatches((d) => ({
                         ...d,
                         [match.id]: { ...d[match.id], version },
@@ -409,7 +412,7 @@ export function Management(
                 </button>
               </details>
             )}
-            {tab === "schedule" &&
+            {tab === "matches" &&
               (matchEdit ? (
                 <MatchForm
                   value={matchEdit.value}

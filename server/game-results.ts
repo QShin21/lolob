@@ -1,3 +1,4 @@
+import { advanceTournaments } from '../shared/tournaments';
 import { currentOcrMatch } from '../shared/hud-ocr';
 import { randomUUID } from 'node:crypto';
 import type { BroadcastState, GameResult, Player, Recording, Side } from '../shared/types';
@@ -48,6 +49,22 @@ function applyWinner(state:BroadcastState,result:GameResult,winner:Side):void {
   const match=result.matchId?state.schedule.find(m=>m.id===result.matchId):undefined;
   if(match){match.blueScore=match.blueTeamId===result.blueTeamId?state.match.blueScore:state.match.redScore;match.redScore=match.redTeamId===result.redTeamId?state.match.redScore:state.match.blueScore;match.status=result.seriesComplete?'finished':'live';}
   syncResultRecording(state, result);
+  if(advanceTournaments(state))ensureProduction(state).configVersion++;
+}
+/** Late official metadata can confirm a stored game's winner after another series was loaded. */
+export function confirmArchivedWinner(state:BroadcastState,result:GameResult,winner:Side):void {
+  if(result.winner)return;
+  if(result.seriesId===state.match.seriesId){applyWinner(state,result,winner);return;}
+  result.winner=winner;result.winnerTeamId=result[`${winner}TeamId`];
+  for(const row of state.gameResults??[])if(row.seriesId===result.seriesId&&row.game>=result.game){
+    const side=row.blueTeamId===result.winnerTeamId?'blue':'red';row.match[`${side}Score`]++;
+    row.seriesComplete=Math.max(row.match.blueScore,row.match.redScore)>=Math.floor(Number(row.match.format.slice(2))/2)+1;
+    syncResultRecording(state,row);
+  }
+  const latest=state.gameResults?.filter(r=>r.seriesId===result.seriesId).sort((a,b)=>a.game-b.game).at(-1);
+  const match=state.schedule.find(m=>m.id===result.matchId);
+  if(match&&latest){match.blueScore=match.blueTeamId===latest.blueTeamId?latest.match.blueScore:latest.match.redScore;match.redScore=match.redTeamId===latest.redTeamId?latest.match.redScore:latest.match.blueScore;match.status=latest.seriesComplete?'finished':'live';}
+  if(advanceTournaments(state))ensureProduction(state).configVersion++;
 }
 export function terminalComplete(players: Player[]): boolean {
   return players.length === 10 && players.every(p => p.statsAvailable !== false && Number.isFinite(p.statsGameTime) && [p.kills,p.deaths,p.assists,p.cs].every(v => Number.isInteger(v) && v >= 0) && p.gold !== null);
@@ -65,7 +82,7 @@ export function finalizeGame(state:BroadcastState,options:{source:GameResult['so
   if(existing){state.finishedGameId=existing.id;state.reportGameId=existing.id;state.phase='postgame';state.paused=true;if(existing.sourceGameId&&options.sourceGameId&&existing.sourceGameId!==options.sourceGameId)return existing;if(!existing.sourceGameId&&options.sourceGameId)existing.sourceGameId=options.sourceGameId;if(!existing.winner&&options.winner)applyWinner(state,existing,options.winner);return existing;}
   if(state.activeSourceGameId&&options.sourceGameId&&state.activeSourceGameId!==options.sourceGameId)return undefined;
   if(state.awaitingNextGame)return undefined;
-  if(options.sourceGameId&&state.gameResults?.some(result=>result.seriesId===state.match.seriesId&&result.sourceGameId===options.sourceGameId))return undefined;
+  if(options.sourceGameId&&state.gameResults?.some(result=>result.sourceGameId===options.sourceGameId))return undefined;
   if(state.mode==='live'&&(!state.players.some(p=>p.statsSource==='api'||p.statsSource==='ocr'||p.id.startsWith('live-'))||state.events.some(e=>e.id.startsWith('demo-'))))return undefined;
   const now=options.now??Date.now(),id=`game-${randomUUID()}`,endedAt=new Date(now).toISOString();
   const observed=state.players.map(p=>p.statsSampledAt).filter((value):value is string=>!!value&&Number.isFinite(Date.parse(value))).sort();
@@ -73,6 +90,11 @@ export function finalizeGame(state:BroadcastState,options:{source:GameResult['so
   const result:GameResult={id,key,seriesId:state.match.seriesId||state.match.title,...(state.match.seriesId?.startsWith(`${state.mode}:schedule:`)?{matchId:state.match.seriesId.slice(`${state.mode}:schedule:`.length)}:{}),game:state.match.game,blueTeamId:state.match.blueTeamId,redTeamId:state.match.redTeamId,winner:null,endedAt,source:options.source,...(options.sourceGameId?{sourceGameId:options.sourceGameId}:state.activeSourceGameId?{sourceGameId:state.activeSourceGameId}:{}),snapshot,match:structuredClone(state.match),teams:structuredClone(state.teams),draft:structuredClone(state.draft),seriesComplete:false,terminalSampleAccepted:options.terminal===true};
   result.terminalSampleComplete = options.terminal === true && terminalComplete(state.players);
   result.selectedPlayerId=state.selectedPlayerId;
+  const tournamentId=state.schedule.find(m=>m.id===result.matchId)?.tournament?.tournamentId;if(tournamentId)result.tournamentId=tournamentId;
+  result.archive={sources:{}};
+  if(state.neutralObjectives)snapshot.neutralObjectives=structuredClone(state.neutralObjectives);
+  if(state.fightSegment)snapshot.fightSegment=structuredClone(state.fightSegment);
+  for(const p of snapshot.players){const roster=state.teams.find(t=>t.id===result[`${p.team}TeamId`])?.players??[];const matches=roster.filter(member=>member.name===p.name||member.account===p.id);if(matches.length===1&&matches[0].id)p.registeredPlayerId=matches[0].id;}
   state.gameResults=[...(state.gameResults??[]),result];state.finishedGameId=id;state.reportGameId=id;state.phase='postgame';state.paused=true;delete state.gameClock;
   if(options.winner)applyWinner(state,result,options.winner);
   syncResultRecording(state,result);
@@ -113,7 +135,7 @@ export function absorbTerminalGameSample(state:BroadcastState,sample:TerminalSam
   // A partial terminal response must not replace valid observed scores with normalization defaults.
   for(const player of snapshot.players){
     const previous=previousPlayers.find(p=>p.id===player.id);
-    for(const key of ["damageDealt","damageTaken","telemetryDamage","telemetryDamageSource","telemetryDamageSession","telemetryDamageSince"] as const)if(player[key]===undefined&&previous?.[key]!==undefined)Object.assign(player,{[key]:previous[key]});
+    for(const key of ["registeredPlayerId","damageDealt","damageTaken","telemetryDamage","telemetryDamageSource","telemetryDamageSession","telemetryDamageSince"] as const)if(player[key]===undefined&&previous?.[key]!==undefined)Object.assign(player,{[key]:previous[key]});
     if(previous?.telemetryDamageSource==='postgame'){
       player.telemetryDamage=structuredClone(previous.telemetryDamage);player.telemetryDamageSource='postgame';
       player.damageDealt=previous.damageDealt;player.damageTaken=previous.damageTaken;
