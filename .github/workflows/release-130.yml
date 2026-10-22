@@ -5,6 +5,10 @@ on:
   push:
     branches: [new]
     paths:
+      - 'server/**'
+      - 'shared/**'
+      - 'src/**'
+      - 'scripts/verify-tournaments-130.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/release-130.yml'

@@ -110,4 +110,9 @@ test('automatically archived BO games advance the event and loading its next mat
   assert.equal(acceptNextGameSample(next, { players: r.snapshot.players, gameTime: 1800, ended: true, sourceGameId: r.sourceGameId }), false);
   assert.equal(acceptNextGameSample(next, { players: r.snapshot.players, gameTime: 0, ended: false, sourceGameId: 'event-game-2' }), true);
   assert.equal(next.gameResults!.length, 1);
+  const remake = applyAction(s, { type: 'production', command: { op: 'remake', reason: '裁判宣布重赛' } });
+  assert.equal(remake.schedule[0].blueScore, 0); assert.equal(remake.schedule[0].redScore, 0);
+  assert.equal(remake.schedule[0].tournament!.state, 'ready'); assert.equal(remake.schedule[2].blueTeamId, '');
+  assert.equal(remake.schedule[2].tournament!.state, 'waiting');
+  assert.equal(remake.production!.invalidAttempts.at(-1)!.result!.id, r.id);
 });

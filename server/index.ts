@@ -192,10 +192,10 @@ app.get('/api/tournaments/:id/export',async(req,res)=>{
   if(format==='zip'){await exportTournament(snapshot,t,archiveStore,uploadDir,res);return;}
   res.setHeader('Content-Disposition',`attachment; filename="${t.id}.${format}"`);
   if(format==='csv'){res.type('text/csv; charset=utf-8').send(tournamentCsv(snapshot,t));return;}
-  const report=tournamentReport(snapshot,t),raw:Record<string,unknown>={};for(const r of report.results)raw[r.id]=await archiveStore.all(r.id);
+  const report=tournamentReport(snapshot,t),raw:Record<string,unknown>={};for(const r of [...report.results,...report.invalidAttempts.flatMap(a=>a.result?[a.result]:[])])raw[r.id]=await archiveStore.all(r.id);
   res.json({schemaVersion:1,exportedAt:new Date().toISOString(),tournament:t,...report,raw});
 });
-app.get('/api/game-archives/:id',async(req,res)=>{const result=state.gameResults?.find(r=>r.id===req.params.id);if(!result)throw new ValidationError('比赛记录不存在');res.setHeader('Content-Disposition',`attachment; filename="${result.id}.json"`);res.json({schemaVersion:1,result,raw:await archiveStore.all(result.id)});});
+app.get('/api/game-archives/:id',async(req,res)=>{const result=state.gameResults?.find(r=>r.id===req.params.id)??state.production?.invalidAttempts.find(a=>a.result?.id===req.params.id)?.result;if(!result)throw new ValidationError('比赛记录不存在');res.setHeader('Content-Disposition',`attachment; filename="${result.id}.json"`);res.json({schemaVersion:1,result,raw:await archiveStore.all(result.id)});});
 app.get('/api/archive',(_req,res)=>{res.setHeader('Content-Disposition','attachment; filename="riftcast-event-package.json"');res.json({version:'0.3.0',exportedAt:new Date().toISOString(),match:state.match,teams:state.teams,schedule:state.schedule,results:state.gameResults,tournaments:state.tournaments,recordings:state.recordings,production:state.production});});
 app.get('/api/clips/:id/file',(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).end();return;}const clip=state.production?.clips.find(c=>c.id===req.params.id);if(!clip)throw new ValidationError('片段不存在');res.sendFile(path.resolve(clip.file));});
 app.get('/api/videos/:id/file',(req,res)=>{if(!isLoopback(req.socket.remoteAddress)){res.status(403).end();return;}const video=state.production?.videos.find(v=>v.id===req.params.id&&v.file);if(!video)throw new ValidationError('录像文件待确认');res.download(path.resolve(video.file));});

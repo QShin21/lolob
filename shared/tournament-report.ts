@@ -16,6 +16,8 @@ export function tournamentAssets(s: BroadcastState, t: Tournament) {
 }
 export function tournamentReport(s: BroadcastState, t: Tournament) {
   const results = tournamentResults(s, t), matches = s.schedule.filter(m => m.tournament?.tournamentId === t.id);
+  const matchIds = new Set(matches.map(m => m.id));
+  const invalidAttempts = s.production?.invalidAttempts.filter(attempt => attempt.result?.matchId && matchIds.has(attempt.result.matchId)) ?? [];
   type Row = { id: string; teamId: string; name: string; games: number; wins: number; kills: number; deaths: number; assists: number; cs: number; gold: number; damage: number; vision: number; scoreGames: number; goldGames: number; damageGames: number; visionGames: number };
   const players = new Map<string, Row>();
   for (const r of results) for (const p of r.snapshot.players) {
@@ -28,7 +30,7 @@ export function tournamentReport(s: BroadcastState, t: Tournament) {
     if (p.visionScore !== undefined) { row.vision += p.visionScore; row.visionGames++; }
     players.set(id, row);
   }
-  return { results, matches, standings: tournamentStandings(t, matches), groups: t.groups.map(g => ({ ...g, standings: tournamentStandings(t, matches, g.id) })), players: [...players.values()].sort((a, b) => b.games - a.games || b.kills - a.kills),
+  return { results, matches, invalidAttempts, standings: tournamentStandings(t, matches), groups: t.groups.map(g => ({ ...g, standings: tournamentStandings(t, matches, g.id) })), players: [...players.values()].sort((a, b) => b.games - a.games || b.kills - a.kills),
     completed: matches.filter(m => m.tournament!.state === 'complete').length,
     actual: matches.filter(m => !['bye', 'skipped'].includes(m.tournament!.state)).length,
     assets: tournamentAssets(s, t) };

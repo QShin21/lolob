@@ -189,6 +189,10 @@ export function advanceTournaments(state: BroadcastState, strict = false): boole
     const before = JSON.stringify([matches, t.status, t.championTeamId, t.blockedReason]);
     delete t.blockedReason;
     const byId = new Map(matches.map(m => [m.id, m]));
+    const resultsByMatch = new Map<string, NonNullable<BroadcastState['gameResults']>>();
+    for (const result of state.gameResults ?? []) if (result.matchId && byId.has(result.matchId)) {
+      const rows = resultsByMatch.get(result.matchId) ?? []; rows.push(result); resultsByMatch.set(result.matchId, rows);
+    }
     const locked = (m: Match) => !!m.tournament?.manualResult || m.status === 'live' || state.gameResults?.some(r => r.matchId === m.id) || state.match.seriesId === `live:schedule:${m.id}`;
     const conflict = (m: Match) => { const message = `「${m.title}」已经载入或记录赛果，前序修订会改变其对阵；请先处理该场结果`; if (strict) throw new Error(message); t.blockedReason = message; };
     const resolve = (e: TournamentEntry): string | null | undefined => {
@@ -236,6 +240,12 @@ export function advanceTournaments(state: BroadcastState, strict = false): boole
         else if (!a || !b) { meta.state = 'bye'; meta.winnerTeamId = a || b || undefined; m.status = 'finished'; m.blueScore = 0; m.redScore = 0; }
         else {
           if (meta.manualResult) { m.blueScore = meta.manualResult.blue; m.redScore = meta.manualResult.red; }
+          else {
+            const results = resultsByMatch.get(m.id) ?? [];
+            m.blueScore = results.filter(r => r.winnerTeamId === a).length;
+            m.redScore = results.filter(r => r.winnerTeamId === b).length;
+            m.status = results.length || state.match.seriesId === `live:schedule:${m.id}` && ['draft', 'live'].includes(state.phase) ? 'live' : 'scheduled';
+          }
           const target = winTarget(m.format);
           if (Math.max(m.blueScore, m.redScore) >= target && m.blueScore !== m.redScore) {
             meta.state = 'complete'; meta.winnerTeamId = m.blueScore > m.redScore ? a : b; meta.loserTeamId = meta.winnerTeamId === a ? b : a; m.status = 'finished';
