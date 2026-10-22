@@ -1,9 +1,16 @@
 import type { BroadcastState, Player } from './types';
 
 export interface GoldRankingRow { player: Player; gold: number | null; rank: number | null; percentage: number }
-export function rankingGold(state: Pick<BroadcastState, 'mode' | 'gameClock' | 'connections'>, player: Player, now = Date.now()): number | null {
+export function rankingGold(state: Pick<BroadcastState, 'mode' | 'gameTime' | 'gameClock' | 'connections'>, player: Player, now = Date.now()): number | null {
   if (player.gold == null || !Number.isFinite(player.gold) || player.gold < 0) return null;
   if (state.gameClock?.awaitingLiveSample) return null;
+  if (player.goldSource === 'memory') {
+    const sampled = Date.parse(player.goldSampledAt ?? '');
+    const expires = Math.min(sampled + 3000, Date.parse(player.goldExpiresAt ?? ''));
+    return state.connections.live.status === 'connected' && Number.isFinite(sampled) && Number.isFinite(expires) &&
+      now >= sampled - 1000 && now < expires && Number.isFinite(player.goldGameTime) &&
+      Math.abs(player.goldGameTime! - state.gameTime) <= 2 ? player.gold : null;
+  }
   if (player.goldSource === 'ocr') return Date.parse(player.goldExpiresAt ?? '') > now ? player.gold : null;
   if (player.goldSource === 'api') {
     const sampled = Date.parse(player.goldSampledAt ?? state.connections.live.updatedAt ?? '');

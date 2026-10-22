@@ -42,3 +42,17 @@ test('equal totals stay in a stable order when incoming roster order changes', (
   const expected = goldRanking(state).map(row => row.player.id);
   state.players.reverse(); assert.deepEqual(goldRanking(state).map(row => row.player.id), expected);
 });
+
+test('direct memory gold populates all ten ranks and rejects stale, disconnected or wrong-time frames',()=>{
+  const state=createSeed(),now=Date.now();state.gameTime=500;state.connections.live.status='connected';
+  state.players.forEach(p=>Object.assign(p,{goldSource:'memory',goldGameTime:500,goldSampledAt:new Date(now).toISOString(),goldExpiresAt:new Date(now+3000).toISOString(),currentGold:99999}));
+  const rows=goldRanking(state,now);
+  assert.equal(rows.filter(r=>r.gold!==null).length,10);assert.equal(rows[0].gold,11100);assert.equal(rows[0].percentage,100);
+  const p=state.players[0];assert.equal(rankingGold(state,p,now),9400);
+  for(const mutate of [(s:typeof state)=>s.connections.live.status='disconnected',(s:typeof state)=>s.gameTime=400,(s:typeof state)=>s.gameTime=600,(s:typeof state)=>s.gameClock={awaitingLiveSample:true} as typeof state.gameClock]){
+    const invalid=structuredClone(state);mutate(invalid);assert.equal(rankingGold(invalid,invalid.players[0],now),null);
+  }
+  assert.equal(rankingGold(state,p,now+3000),null);assert.equal(rankingGold(state,p,now-1001),null);
+  for(const patch of [{goldExpiresAt:'invalid'},{goldSampledAt:undefined},{goldGameTime:undefined},{gold:NaN}])assert.equal(rankingGold(state,{...p,...patch},now),null);
+  assert.equal(rankingGold(state,{...p,gold:0},now),0);
+});

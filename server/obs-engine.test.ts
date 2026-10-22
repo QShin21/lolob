@@ -297,6 +297,8 @@ test('startup migrates the owned profile to hardware encoding while retaining de
   assert.match(await readFile(profile, 'utf8'), /VBitrate=4321/);
   internal.connected = true; obs.encoder = 'nvenc'; await engine.setup({});
   assert.equal(obs.requests.find(request => request.type === 'SetVideoSettings')!.data.fpsNumerator, 60);
+  const video = obs.requests.find(request => request.type === 'SetVideoSettings')!.data;
+  assert.deepEqual([video.baseWidth, video.baseHeight, video.outputWidth, video.outputHeight], [1920, 1080, 1920, 1080]);
   assert.equal(obs.requests.find(request => request.type === 'CreateInput' && request.data.inputName === hud)!.data.inputSettings.fps, 60);
   assert.ok(!obs.requests.some(request => ['SetStreamServiceSettings', 'StartStream', 'StopStream'].includes(request.type)));
   obs.requests = []; await engine.setup({ outputFps: 30 });
