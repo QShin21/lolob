@@ -174,7 +174,7 @@ Twitch 当前软件仅订阅读取已存在的投票、预测和聊天事件，�
 
 `scripts/verify-lineup-runes-117.mjs` 已按新九格展示更新断言：每位选手六项符文与三项属性碎片、合计 90 张本地图标，顺序与类型正确，四边均在信息卡内；六套风格 × 1920×1080/1280×720 共 12 个场景通过，缺失数据为 90 个未知占位。12 张截图已逐张目视，无九格裁切，0 页面异常。证据在 `verification-output/release-1.4.0/runes/`。
 
-图形和风格验证见 [图形分析审计](leaguebroadcast-overlay-audit.md)；镜头、手柄、热键验证见 [镜头审计](leaguebroadcast-camera-audit.md)。归档图形新增 5 项测试及既有 4 项符文测试通过，`scripts/verify-archive-graphics.mjs` 14 组浏览器场景通过，负责代理已目视各图形。风格吸附/撤销及文本模板通过 8 项测试、9 组浏览器流程、4 张截图目视，导出 ZIP 以 Ajv Draft 2020-12 校验；证据在 `verification-output/style-editor/`。本轮总测试、构建、安装包及远端发布信息由发布记录追加。
+图形和风格验证见 [图形分析审计](leaguebroadcast-overlay-audit.md)；镜头、手柄、热键验证见 [镜头审计](leaguebroadcast-camera-audit.md)。归档图形新增 5 项测试及既有 4 项符文测试通过，`scripts/verify-archive-graphics.mjs` 15 组浏览器场景通过，负责代理已目视各图形。风格吸附/撤销及文本模板通过 8 项测试、9 组浏览器流程、4 张截图目视，导出 ZIP 以 Ajv Draft 2020-12 校验；证据在 `verification-output/style-editor/`。本轮总测试、构建、安装包及远端发布信息由发布记录追加。
 
 现场待验事项：Replay API 实际游戏画面、实体手柄、后台键与真实 OBS 联动、真实 Twitch OAuth/事件推送、真实 Webhook 接收端、持续运行及实播观众画面。各项需使用相应设备或服务完成联调。
 

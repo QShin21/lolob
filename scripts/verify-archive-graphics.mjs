@@ -64,6 +64,12 @@ try {
   await page.screenshot({ path: path.join(dir, 'damage-1280.png') }); checks.push('1280px responsive damage layout');
   await page.goto(`${url}?result=g7&mode=items`); await page.locator('.ag-items article').first().waitFor();
   assert.equal(await page.locator('.ag-items article').count(), 2); assert.match(await page.locator('.ag-items').innerText(), /测试选手/); checks.push('route wrapper loads exact participant identity and raw timeline for fixed result');
+  for(const viewport of [{width:1280,height:720},{width:1000,height:900}]){
+    await page.setViewportSize(viewport);await page.locator('.ag-items article').first().waitFor();
+    const box=await page.locator('.archive-graphic').boundingBox();assert(box.width>500&&box.height>250);assert(Math.abs(box.width/box.height-16/9)<.01);assert(box.x>=0&&box.y>=0&&box.x+box.width<=viewport.width+1&&box.y+box.height<=viewport.height+1);
+    assert.equal(await page.locator('.ag-body').evaluate(n=>n.clientHeight>0&&n.scrollHeight<=n.clientHeight+2),true);await page.screenshot({path:path.join(dir,`archive-route-${viewport.width}.png`)});
+  }
+  checks.push('Styled standalone archive route retains a visible 16:9 canvas in both wide and portrait viewports');await page.setViewportSize({width:1280,height:720});
   await page.goto(url); await page.evaluate(() => window.fixture.controls(true));
   await page.getByLabel('归档图形模式').selectOption('fearless-tree'); await page.getByLabel('归档图形页码').fill('2');
   const link = await page.getByLabel('归档图形链接').inputValue(); assert.match(link, /result=g7/); assert.match(link, /mode=fearless-tree/); assert.match(link, /page=2/);

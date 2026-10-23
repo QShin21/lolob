@@ -67,7 +67,7 @@ Global Scoreboard 的 Power Play 已在后续开发补齐：`shared/power-play.t
 
 装备时间线保留原始毫秒时间换算后的秒数以及撤销交易前后物品编号；同一时间的多次购买分别保留。详情的比赛 ID 必须匹配存档，重复参与者 ID 保持未匹配。分路与参与者身份均使用原始关联字段，未确认信息单独展示。
 
-归档新增单测 5 项通过，覆盖换边、无效/重复局、完整队伍统计、缺失伤害、Fearless 规则与分路、装备事件及身份关联。`scripts/verify-archive-graphics.mjs` 通过 14 组浏览器检查：七种图形、原始时序缺失、70 个未知分路英雄、1280px 适配、归档接口身份关联、可复制链接，以及选手装备面板完整九项符文与缺失占位。截图已目视检查；结果位于 `verification-output/archive-graphics/report.json`。该验证使用隔离存档和模拟原始接口及装备资产，实局采集和 OBS 播出由发布验证单独记录。
+归档新增单测 5 项通过，覆盖换边、无效/重复局、完整队伍统计、缺失伤害、Fearless 规则与分路、装备事件及身份关联。`scripts/verify-archive-graphics.mjs` 通过 15 组浏览器检查：七种图形、原始时序缺失、70 个未知分路英雄、1280px 适配、归档接口身份关联、可复制链接，以及选手装备面板完整九项符文与缺失占位。截图已目视检查；结果位于 `verification-output/archive-graphics/report.json`。该验证使用隔离存档和模拟原始接口及装备资产，实局采集和 OBS 播出由发布验证单独记录。
 
 选手装备面板 `PlayerBuild` 同步补齐六项选择符文和三项属性碎片，复用 `lineupRunes`、`lineupStatRunes` 和本地 `runeImage` 素材，节目图层和工作台面板均可见。缺失字段保留对应未知位置，文本说明仍在工作台展示。归档与符文相关单测合计 9 项通过，TypeScript 检查通过。
 
