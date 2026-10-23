@@ -66,3 +66,13 @@ test('queued camera updates recheck the current director after another seat take
  const request=(body:unknown)=>new Promise<unknown>((resolve,reject)=>{const res={json:resolve,status:()=>res};handler({body,headers:{'x-seat-token':owner.token}},res,reject);});
  const first=request({op:'generate'});await entered;const second=request({op:'enabled',enabled:true});seats.claim(replacement.token,'接管回归');release();await first;await assert.rejects(second,/当前主导播/);assert.equal(calls,1);assert.equal(service.snapshot(state).enabled,false);
 });
+
+test('unpaired remote manager reads cannot inherit local maintenance access before the first seat exists',async()=>{
+ const state=createFixture(),seats=new ControlSeats(),service=new VdoNinjaService(),routes=new Map<string,Function>();await service.update(state,{op:'generate'});
+ await mountVdoNinjaRoutes({get:(p:string,h:Function)=>routes.set(p,h),post:()=>{}} as never,{getState:()=>state,authorize:req=>{seats.authorize(req.headers['x-seat-token'],'output');},service});
+ const read=(remoteAddress:string,token?:unknown)=>{let status=200,body:any,error:any;const response={setHeader:()=>{},status:(v:number)=>{status=v;return response;},json:(v:unknown)=>{body=v;}};routes.get('/api/vdo-ninja')!({socket:{remoteAddress},headers:token?{'x-seat-token':token}:{}},response,(e:unknown)=>{error=e;});return {status,body,error};};
+ assert.equal(read('192.168.1.30').status,403);assert.equal(read('192.168.1.30').body.invitations,undefined);assert.ok(read('192.168.1.30','invented-token').error);
+ assert.equal(read('127.0.0.1').body.invitations.length,10);
+ const director=seats.issue({role:'director'},true);assert.equal(read('192.168.1.30',director.token).body.invitations.length,10);
+ const data=seats.issue({role:'data'},true);assert.ok(read('192.168.1.30',data.token).error);assert.equal(read('192.168.1.30').status,403);
+});

@@ -42,7 +42,12 @@ export class VdoNinjaService {
 export async function mountVdoNinjaRoutes(app: Express, options: { getState: () => BroadcastState; getOutputState?: () => BroadcastState; authorize: (req: Request) => void; file?: string; service?: VdoNinjaService }) {
   const service = options.service ?? new VdoNinjaService(options.file); await service.load();
   let queue = Promise.resolve<unknown>(undefined);
-  app.get('/api/vdo-ninja', (req, res, next) => { try { options.authorize(req); res.setHeader('Cache-Control', 'no-store'); res.json(service.snapshot(options.getState())); } catch (e) { next(e); } });
+  app.get('/api/vdo-ninja', (req, res, next) => { try {
+    res.setHeader('Cache-Control', 'no-store');
+    // Seat-less maintenance belongs to the local host, including immediately after restart.
+    if(!isLoopback(req.socket.remoteAddress)&&!req.headers['x-seat-token']){res.status(403).json({error:'查看选手邀请需要已授权的主导播席位'});return;}
+    options.authorize(req);res.json(service.snapshot(options.getState()));
+  } catch (e) { next(e); } });
   app.get('/api/vdo-ninja/feeds', (req, res) => { res.setHeader('Cache-Control', 'no-store'); if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'远程画面链接仅供导播主机输出使用'});return;} const { enabled, feeds } = service.snapshot((options.getOutputState ?? options.getState)()); res.json({ enabled, feeds }); });
   app.post('/api/vdo-ninja', (req, res, next) => {
     try { options.authorize(req); } catch (e) { next(e); return; }
