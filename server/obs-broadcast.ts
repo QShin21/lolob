@@ -39,9 +39,18 @@ export class ObsBroadcast {
   }
   private ensureConnected(){if(!this.connected())throw new Error('请先连接 OBS WebSocket 5.x');}
   private async call<T extends keyof OBSRequestTypes>(request:T,data?:OBSRequestTypes[T]):Promise<OBSResponseTypes[T]>{
-    // OBS/plugin errors may contain request data. Return only our fixed message.
+    // OBS/plugin errors may contain request data. Expose only the request name
+    // and numeric status code so failures remain diagnosable without credentials.
     let timer:ReturnType<typeof setTimeout>|undefined;
-    try{return await Promise.race([this.request(request,data),new Promise<never>((_resolve,reject)=>{timer=setTimeout(()=>reject(new Error('OBS 请求超时')),5000);})]);}catch{throw new Error(request==='SetStreamServiceSettings'?'OBS 推流配置写入失败，请确认 OBS 已停止推流且支持 WebSocket 5.x':request==='CreateInput'?(data as OBSRequestTypes['CreateInput'])?.inputKind==='dshow_input'?'OBS 无法创建摄像头来源，请确认 Windows 摄像头权限和视频采集设备组件':'OBS 无法创建浏览器来源，请确认 OBS 已安装浏览器来源组件':'OBS 操作失败，请确认连接仍然有效');}finally{if(timer)clearTimeout(timer);}
+    let timedOut=false;
+    try{return await Promise.race([this.request(request,data),new Promise<never>((_resolve,reject)=>{timer=setTimeout(()=>{timedOut=true;reject(new Error('OBS 请求超时'));},5000);})]);}
+    catch(error){
+      const code=error!==null&&typeof error==='object'&&'code' in error?error.code:undefined;
+      const status=typeof code==='number'&&Number.isInteger(code)&&code>=100&&code<=999?`，错误码 ${code}`:'';
+      const kind=request==='CreateInput'?(data as OBSRequestTypes['CreateInput'])?.inputKind:undefined;
+      const detail=timedOut?'OBS 请求超时':request==='SetStreamServiceSettings'?'OBS 推流配置写入失败，请确认 OBS 已停止推流且支持 WebSocket 5.x':request==='CreateInput'?kind==='dshow_input'?'OBS 无法创建摄像头来源，请确认 Windows 摄像头权限和视频采集设备组件':kind==='browser_source'?'OBS 无法创建浏览器来源，请确认 OBS 已安装浏览器来源组件':'OBS 无法创建来源':'OBS 操作失败';
+      throw new Error(`${detail}（${request}${status}）`);
+    }finally{if(timer)clearTimeout(timer);}
   }
   async status(){
     this.ensureConnected();

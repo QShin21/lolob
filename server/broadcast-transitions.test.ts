@@ -7,11 +7,12 @@ import { ObsTransitions, type TransitionObsCall } from './obs-transitions';
 import { EventTransitionRules, defaultTransitionSettings, validateTransitionSettings, type TransitionConfig } from '../shared/broadcast-transitions';
 import { createFixture } from './test-support/fixture';
 
-async function harness(options: { failAfterPublish?: boolean; media?: number[] } = {}) {
+async function harness(options: { failAfterPublish?: boolean; media?: number[]; override?: { transitionName: string | null; transitionDuration: number | null } } = {}) {
   const dir = await mkdtemp(path.join(tmpdir(), 'riftcast-transition-')), video = path.join(dir, 'test.webm'); await writeFile(video, 'synthetic');
   const calls: { name: string; data: any }[] = [], items: { sceneItemId: number; sourceName: string }[] = [];
   let program = 'RiftCast 节目', transition = '原硬切', duration = 400, ms = 1000, published = false, nextId = 0, cursor = 0;
   const scenes = new Set([program, '目标场景']);
+  let override = options.override ?? { transitionName: '场景原转场', transitionDuration: 650 };
   const call = (async (name: string, data: any) => {
     calls.push({ name, data });
     if (options.failAfterPublish && published && name === 'SetCurrentProgramScene') throw new Error('模拟切换失败');
@@ -31,14 +32,42 @@ async function harness(options: { failAfterPublish?: boolean; media?: number[] }
       case 'CreateSceneItem': { const item = { sceneItemId: ++nextId, sourceName: data.sourceName }; items.push(item); return item; }
       case 'CreateInput': { const item = { sceneItemId: ++nextId, sourceName: data.inputName }; items.push(item); return item; }
       case 'GetSceneItemList': return { sceneItems: items };
-      case 'GetSceneSceneTransitionOverride': return { transitionName: '场景原转场', transitionDuration: 650 };
+      case 'GetSceneSceneTransitionOverride': return { ...override };
+      case 'SetSceneSceneTransitionOverride': {
+        // OBS validates these fields before changing either setting. null clears;
+        // an empty name and a zero duration are invalid protocol values.
+        if (data.transitionName === '') throw Object.assign(new Error('Transition name must not be empty.'), { code: 403 });
+        if (data.transitionName !== undefined && data.transitionName !== null && !['场景原转场', '原硬切', '原淡化'].includes(data.transitionName)) throw Object.assign(new Error('No scene transition was found by that name.'), { code: 600 });
+        if (data.transitionDuration !== undefined && data.transitionDuration !== null && (!Number.isFinite(data.transitionDuration) || data.transitionDuration < 50 || data.transitionDuration > 20000)) throw Object.assign(new Error('Transition duration out of range.'), { code: 401 });
+        override = { transitionName: data.transitionName === undefined ? override.transitionName : data.transitionName, transitionDuration: data.transitionDuration === undefined ? override.transitionDuration : data.transitionDuration };
+        return;
+      }
       case 'GetMediaInputStatus': { const values = options.media ?? [0, 300, 600, 1000]; const value = values[Math.min(cursor++, values.length - 1)]; return { mediaState: value >= 1000 ? 'OBS_MEDIA_STATE_ENDED' : 'OBS_MEDIA_STATE_PLAYING', mediaCursor: value, mediaDuration: 1000 }; }
       default: return {};
     }
   }) as TransitionObsCall;
   const controller = new ObsTransitions(call, dir, { now: () => ms, delay: async n => { ms += n; } });
-  return { dir, video, calls, controller, scene: () => program, publish: () => { published = true; calls.push({ name: 'PUBLISH', data: cursor }); }, cleanup: () => rm(dir, { recursive: true, force: true }) };
+  return { dir, video, calls, controller, scene: () => program, override: () => override, publish: () => { published = true; calls.push({ name: 'PUBLISH', data: cursor }); }, cleanup: () => rm(dir, { recursive: true, force: true }) };
 }
+
+test('all transition kinds clear overrides with null and restore absent or partial settings exactly', async () => {
+  for (const kind of ['cut', 'fade', 'stinger'] as const) for (const override of [
+    { transitionName: null, transitionDuration: null },
+    { transitionName: '原硬切', transitionDuration: null },
+    { transitionName: null, transitionDuration: 900 },
+  ]) {
+    const h = await harness({ override });
+    try {
+      const config: TransitionConfig = kind === 'stinger' ? { kind, durationMs: 1000, pointMs: 500, stingerPath: h.video } : { kind, durationMs: 300 };
+      const result = await h.controller.run(config, { prepare: async () => '目标场景', publish: h.publish });
+      assert.equal(result.status, 'applied', `${kind}: ${result.detail}`);
+      assert.equal(result.published, true);
+      assert.deepEqual(h.calls.find(c => c.name === 'SetSceneSceneTransitionOverride')?.data, { sceneName: '目标场景', transitionName: null, transitionDuration: null });
+      assert.deepEqual(h.override(), override);
+      assert.equal(h.calls.filter(c => c.name === 'PUBLISH').length, 1);
+    } finally { await h.cleanup(); }
+  }
+});
 test('cut prepares and publishes once, confirms OBS scene and restores transition overrides', async () => {
   const h = await harness(); try {
     const r = await h.controller.run({ kind: 'cut', durationMs: 300 }, { prepare: async () => '目标场景', publish: h.publish });

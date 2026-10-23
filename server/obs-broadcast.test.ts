@@ -38,6 +38,19 @@ test('RTMP validation and OBS failures never include stream credentials in error
   for(const invalid of [{server:'https://example.test',key:destination.key},{server:'rtmp://user:password@example.test/live',key:destination.key},{server:`rtmp://example.test/live?key=${destination.key}`,key:destination.key},{server:destination.server,key:'\nsecret'}])await assert.rejects(controller.configure(invalid),error=>error instanceof Error&&!error.message.includes(destination.key));
 });
 
+test('OBS failures identify the rejected request and numeric code without forwarding plugin data',async()=>{
+  for(const code of [403,600,401,destination.key,NaN]){
+    const controller=new ObsBroadcast(()=>true,(async()=>{throw Object.assign(new Error(`Rejected ${destination.key}`),{code});}) as OBSWebSocket['call']);
+    await assert.rejects(controller.status(),error=>{
+      assert(error instanceof Error);
+      assert.match(error.message,/OBS 操作失败（GetStreamStatus/);
+      assert.equal(error.message.includes('错误码'),typeof code==='number'&&Number.isFinite(code));
+      assert(!error.message.includes(destination.key));
+      return true;
+    });
+  }
+});
+
 test('HUD installation creates a transparent browser input and safely reuses matching sources',async()=>{
   let existing=false,added=false;const requests:{type:string;data:any}[]=[];
   const controller=new ObsBroadcast(()=>true,(async(type,data)=>{

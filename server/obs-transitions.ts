@@ -30,6 +30,12 @@ export class ObsTransitions {
     let cut = '', fade = '', detail = '', status: TransitionReceipt['status'] = 'failed', fadeDuration: number | undefined;
     const setScene = async (name: string) => { await this.call('SetCurrentProgramScene', { sceneName: name }); if ((await this.call('GetCurrentProgramScene')).sceneName !== name) throw new Error('OBS 节目场景确认失败'); };
     const select = async (name: string, duration?: number) => { await this.call('SetCurrentSceneTransition', { transitionName: name }); if (duration !== undefined) await this.call('SetCurrentSceneTransitionDuration', { transitionDuration: duration }); };
+    const setOverride = (sceneName: string, value?: OBSResponseTypes['GetSceneSceneTransitionOverride']) => {
+      // WebSocket 5.x uses null to erase either override. The generated client
+      // types omit null; keep the protocol correction at this request boundary.
+      const data = { sceneName, transitionName: value?.transitionName ?? null, transitionDuration: value?.transitionDuration ?? null };
+      return this.call('SetSceneSceneTransitionOverride', data as OBSRequestTypes['SetSceneSceneTransitionOverride']);
+    };
     try {
       previous = (await this.call('GetCurrentProgramScene')).sceneName;
       if (!previous || previous.startsWith('RiftCast 转场 ')) throw new Error('请先恢复有效节目场景再重试转场');
@@ -58,7 +64,7 @@ export class ObsTransitions {
         if (!target || target === bridge) throw new Error('目标场景无效');
         const scenes = await this.call('GetSceneList'); if (!scenes.scenes.some(s => s.sceneName === target)) throw new Error('目标场景不存在');
         override = await this.call('GetSceneSceneTransitionOverride', { sceneName: target });
-        await this.call('SetSceneSceneTransitionOverride', { sceneName: target, transitionName: '', transitionDuration: 0 });
+        await setOverride(target);
         if (config.kind === 'fade') {
           await work.publish(); published = true; await this.clock.delay(150);
           await select(fade); fadeDuration = (await this.call('GetCurrentSceneTransition')).transitionDuration;
@@ -92,7 +98,7 @@ export class ObsTransitions {
       } else {
         target = await work.prepare();
         override = await this.call('GetSceneSceneTransitionOverride', { sceneName: target });
-        await this.call('SetSceneSceneTransitionOverride', { sceneName: target, transitionName: '', transitionDuration: 0 });
+        await setOverride(target);
         await select(cut); await work.publish(); published = true; await setScene(target);
       }
       status = 'applied'; detail = 'OBS 转场已完成，节目场景已确认';
@@ -101,7 +107,7 @@ export class ObsTransitions {
       if (cut && (published ? target : previous)) { await select(cut).catch(() => {}); await setScene(published ? target : previous).catch(() => {}); }
       detail += published ? '；新节目内容已发布，请核对实际画面' : '；节目内容未发布';
     } finally {
-      if (override && target) await this.call('SetSceneSceneTransitionOverride', { sceneName: target, transitionName: override.transitionName ?? '', transitionDuration: override.transitionDuration ?? 0 }).catch(() => {});
+      if (override && target) await setOverride(target, override).catch(() => {});
       if (fadeDuration !== undefined && fadeDuration >= 50) await select(fade, fadeDuration).catch(() => {});
       if (original?.transitionName) { await select(original.transitionName, !original.transitionFixed && original.transitionDuration >= 50 ? original.transitionDuration : undefined).catch(() => {}); }
       const safeToRemove = await this.call('GetCurrentProgramScene').then(v => v.sceneName !== bridge, () => false);
