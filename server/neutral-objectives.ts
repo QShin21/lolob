@@ -4,7 +4,7 @@ import type { NeutralObjective, NeutralSample } from '../shared/combat-display';
 export function neutralObjectives(data: Record<string,any>, now=Date.now()): NeutralSample | undefined {
   const time=data.gameData?.gameTime,raw=data.events?.Events;
   const observed=data._observerObjectives;
-  if(data.gameData?.mapNumber===11&&data.gameData?.gameMode==='CLASSIC'&&observed&&observed.profile==='cn-16.20.824.8524'&&Math.abs(observed.gameTime-time)<2&&now-Date.parse(observed.sampledAt)>=-1000&&now-Date.parse(observed.sampledAt)<=3000&&Array.isArray(observed.objectives)&&observed.objectives.length===2&&observed.objectives.every((o:any)=>['grubs','herald','baron','dragon','elder'].includes(o.kind)&&['alive','countdown','unknown'].includes(o.state)&&(o.state!=='countdown'||Number.isFinite(o.dueAt)&&o.dueAt>time&&o.dueAt<time+900)))return observed;
+  if(data.gameData?.mapNumber===11&&data.gameData?.gameMode==='CLASSIC'&&observed&&['cn-16.20.824.8524','cn-16.21.829.9102'].includes(observed.profile)&&Math.abs(observed.gameTime-time)<2&&now-Date.parse(observed.sampledAt)>=-1000&&now-Date.parse(observed.sampledAt)<=3000&&Array.isArray(observed.objectives)&&observed.objectives.length===2&&observed.objectives.every((o:any)=>['grubs','herald','baron','dragon','elder'].includes(o.kind)&&['alive','countdown','unknown'].includes(o.state)&&(o.state!=='countdown'||Number.isFinite(o.dueAt)&&o.dueAt>time&&o.dueAt<time+900)))return observed;
   if(!Number.isFinite(time)||time<0||data.gameData?.mapNumber!==11||data.gameData?.gameMode!=='CLASSIC'||!Array.isArray(raw))return;
   const profile=String(data._observerProfile??data.gameData?.gameVersion??'');
   if(!/^(cn-16\.|16\.|26\.)/.test(profile))return;

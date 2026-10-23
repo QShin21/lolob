@@ -1,7 +1,7 @@
 import http from 'node:http';
 import { gunzipSync } from 'node:zlib';
 import { Blowfish } from 'egoroof-blowfish';
-import { DAMAGE_BUILD, damageBlocks, decodeDamageBlock, ReplayDamageIndex, type DamageEvent, type DamageHero } from './replay-damage';
+import { DAMAGE_BUILD, damageProtocolForProfile, damageBlocks, decodeDamageBlock, ReplayDamageIndex, type DamageEvent, type DamageHero } from './replay-damage';
 
 type Json=Record<string,any>;
 export interface ObserverStreamContext {host:string;gameId:string;platform:string;target:string;key:string}
@@ -25,7 +25,8 @@ export const fetchObserverBytes:Fetch=(url,headers,signal)=>new Promise((resolve
   request.on('error',reject);
 });
 
-export function decodeObserverChunk(encrypted:Buffer,key:Uint8Array):Chunk{
+export function decodeObserverChunk(encrypted:Buffer,key:Uint8Array,build=DAMAGE_BUILD):Chunk{
+  if(!damageProtocolForProfile(`cn-${build}`))throw Error('观战版本尚无伤害解析配置');
   if(encrypted.length===0||encrypted.length>16*1024*1024||encrypted.length%8!==0||key.length<4||key.length>56)throw Error('观战分片格式无效');
   const cipher=new Blowfish(key,Blowfish.MODE.ECB,Blowfish.PADDING.PKCS5);
   const compressed=cipher.decode(encrypted,Blowfish.TYPE.UINT8_ARRAY);
@@ -36,7 +37,7 @@ export function decodeObserverChunk(encrypted:Buffer,key:Uint8Array):Chunk{
     from??=block.time;
     if(block.time<until-.01)throw Error('观战分片时间倒退');
     until=block.time;
-    const event=decodeDamageBlock(block);if(event)events.push(event);
+    const event=decodeDamageBlock(block,build);if(event)events.push(event);
   }
   if(from===undefined||until<from||until-from>90)throw Error('观战分片时间范围无效');
   return {from,until,events};
@@ -71,11 +72,12 @@ export class LiveDamageStream {
     this.from=0;this.until=0;this.retryAt=0;this.pending=undefined;this.detail='等待实时观战伤害';
   }
   enrich(sample:Json,now=Date.now()):boolean{
-    if(!sample.ok||sample.profile!==`cn-${DAMAGE_BUILD}`||!Number.isInteger(sample.pid)||typeof sample.processSession!=='string'||
+    const protocol=damageProtocolForProfile(sample.profile);
+    if(!sample.ok||!protocol||!Number.isInteger(sample.pid)||typeof sample.processSession!=='string'||
       !validContext(sample.observerSession)||!Array.isArray(sample.players)||sample.players.length!==10){
       if(this.session)this.reset();return false;
     }
-    const context=sample.observerSession,session=`${sample.pid}:${sample.processSession}:${context.gameId}`;
+    const context=sample.observerSession,session=`${sample.profile}:${sample.pid}:${sample.processSession}:${context.gameId}`;
     if(session!==this.session){this.reset();this.session=session;}
     const heroes:DamageHero[]=sample.players.map((p:Json)=>({networkId:p.networkId,champion:p.champion,team:p.team,officialTotal:0}));
     if(new Set(heroes.map(h=>h.networkId)).size!==10||heroes.some(h=>!Number.isSafeInteger(h.networkId)||h.networkId<=0||
@@ -83,7 +85,7 @@ export class LiveDamageStream {
     if(!this.pending&&now>=this.retryAt){
       const generation=this.generation,signal=this.controller.signal;
       this.retryAt=now+3000;
-      this.pending=this.poll(context,heroes,generation,signal).catch(()=>{
+      this.pending=this.poll(context,heroes,protocol.build,generation,signal).catch(()=>{
         if(generation===this.generation)this.detail='等待完整观战伤害分片';
       }).finally(()=>{if(generation===this.generation)this.pending=undefined;});
     }
@@ -96,7 +98,7 @@ export class LiveDamageStream {
     }
     return true;
   }
-  private async poll(c:ObserverStreamContext,heroes:DamageHero[],generation:number,signal:AbortSignal){
+  private async poll(c:ObserverStreamContext,heroes:DamageHero[],build:string,generation:number,signal:AbortSignal){
     const origin=`http://${c.host}`,path=`${encodeURIComponent(c.platform)}/${c.gameId}`;
     const request=(route:string,headers:Record<string,string>={})=>this.fetch(new URL(route,origin),headers,signal);
     const info=JSON.parse((await request(`/observer-mode/rest/consumer/getLastChunkInfo/${path}/1/token`)).toString('utf8'));
@@ -123,7 +125,7 @@ export class LiveDamageStream {
     await Promise.all(missing.map(async id=>{
       try{
         const data=await request(`/rest/spectator-consumer/shards/${encodeURIComponent(c.platform)}/players/${encodeURIComponent(c.target)}/game/chunks/${id}`,{'X-Riot-Spectator-Key':c.key});
-        loaded.set(id,decodeObserverChunk(data,key));
+        loaded.set(id,decodeObserverChunk(data,key,build));
       }catch(error){failed.set(id,error);}
     }));
     if(generation!==this.generation)return;
@@ -140,7 +142,7 @@ export class LiveDamageStream {
       until=chunk.until;events.push(...chunk.events);
       if(events.length>1000000)throw Error('伤害采集数据量过大');
     }
-    const index=new ReplayDamageIndex(heroes,until,events);
+    const index=new ReplayDamageIndex(heroes,until,events,build);
     this.chunks=combined;this.first=first;
     this.from=this.chunks.get(first)!.from;this.until=until;
     this.index=index;

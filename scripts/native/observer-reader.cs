@@ -11,7 +11,83 @@ public sealed class RiftCastObserverReader : IDisposable {
     [DllImport("kernel32.dll", SetLastError=true)] static extern IntPtr OpenProcess(uint access, bool inherit, int pid);
     [DllImport("kernel32.dll", SetLastError=true)] static extern bool ReadProcessMemory(IntPtr handle, IntPtr address, byte[] buffer, UIntPtr size, out UIntPtr read);
     [DllImport("kernel32.dll")] static extern bool CloseHandle(IntPtr handle);
-    const string SupportedHash = "EE3C887B4579AEAB12CA77B2A43CC1CC3411A8AA30BC43D2DFEA856F6CE497C8";
+    // Each layout is selected by the complete on-disk executable SHA-256.
+    // Keep previous builds explicit so a patch never reuses another build's offsets.
+    sealed class Layout {
+        public string Profile = "cn-16.20.824.8524";
+        public bool EncodedBuffExpiry;
+        public int SpellReadyAt = 0x30, SpellDuration = 0x74;
+        public int GameTime = 0x1efa788;
+        public int Heroes = 0x1ee9370;
+        public int Minions = 0x1ee93b0;
+        public int Scores = 0x1ee9418;
+        public int Objectives = 0x1ee9298;
+        public int Turrets = 0x1ef3218;
+        public int Champion = 0x41d0;
+        public int Team = 0x239;
+        public int NetworkId = 0xbc;
+        public int Health = 0x1060;
+        public int MaxHealth = 0x1088;
+        public int Resource = 0x340;
+        public int MaxResource = 0x368;
+        public int Level = 0x4be0;
+        public int Experience = 0x4bb8;
+        public int CurrentGold = 0x2848;
+        public int TotalGold = 0x2870;
+        public int Vision = 0x53a8;
+        public int Spells = 0x3be0;
+        public int BuffStart = 0x2e68;
+        public int BuffEnd = 0x2e70;
+        public int Runes = 0x4f28;
+        public int PositionX = 0x1e0;
+        public int PositionZ = 0x1e8;
+    }
+    static Layout SelectLayout(string hash) {
+        if(hash=="EE3C887B4579AEAB12CA77B2A43CC1CC3411A8AA30BC43D2DFEA856F6CE497C8")return new Layout();
+        if(hash=="6CA9446AC4E65A311CB0796B72A459097CDF912A337619D1D1FD207E01AEDD6F")return new Layout {
+            Profile="cn-16.21.829.9102", EncodedBuffExpiry=true, SpellReadyAt=0x38, SpellDuration=0x80,
+            GameTime=0x1c88618,
+            Heroes=0x1c7bfb0,
+            Minions=0x1c7bff0,
+            Scores=0x1c7c058,
+            Objectives=0x1c7bed8,
+            Turrets=0x1c84ac8,
+            Champion=0x3890,
+            Team=0x158,
+            NetworkId=0x78,
+            Health=0x930,
+            MaxHealth=0x958,
+            Resource=0x238,
+            MaxResource=0x260,
+            Level=0x4048,
+            Experience=0x4020,
+            CurrentGold=0x2030,
+            TotalGold=0x2058,
+            Vision=0x47f0,
+            Spells=0x3388,
+            BuffStart=0x2600,
+            BuffEnd=0x2608,
+            Runes=0x4380,
+            PositionX=0xf0,
+            PositionZ=0xf8,
+        };
+        return null;
+    }
+    Layout layout;
+    static uint RotateLeft(uint value,int count) {return (value<<count)|(value>>(32-count));}
+    float BuffExpiry(long buff) {
+        if(!layout.EncodedBuffExpiry)return Float(buff+0x1c);
+        return DecodeBuffExpiry(BitConverter.ToUInt32(Read(buff+0x1c,4),0));
+    }
+    static float DecodeBuffExpiry(uint bits) {
+        // Inverse of the 16.21 BuffInstance expiry setter at RVA 0x732bd8.
+        // Decode the copied four bytes locally; the observer process remains read-only.
+        unchecked {bits=RotateLeft(bits^0x496e69c7,4)^0x496e69c7;bits=RotateLeft(bits-0x7fefb89b,18)-0x0b5af6f5;}
+        float value=BitConverter.ToSingle(BitConverter.GetBytes(bits),0);
+        // Permanent cosmetic/system buffs use very distant finite expiry times.
+        if(float.IsNaN(value)||float.IsInfinity(value))throw new InvalidDataException("buff-expiry");
+        return value;
+    }
     IntPtr handle; long imageBase; int attachedPid; DateTime attachedStart;
     public void Dispose() { if(handle != IntPtr.Zero) CloseHandle(handle); handle=IntPtr.Zero; attachedPid=0; }
     static Dictionary<string,object> Obj(params object[] pairs) { var d=new Dictionary<string,object>(); for(int i=0;i<pairs.Length;i+=2)d[(string)pairs[i]]=pairs[i+1];return d; }
@@ -32,8 +108,8 @@ public sealed class RiftCastObserverReader : IDisposable {
     }
     string CString(long a) {var bytes=Read(a,128);int n=Array.IndexOf(bytes,(byte)0);if(n<1||n>100)return "";return Encoding.ASCII.GetString(bytes,0,n);}
     Dictionary<string,object> Spell(long hero,int index,float time) {
-        long slot=Ptr(hero+0x3be0+index*8);if(slot==0)return Obj("state","unknown");
-        int level=Int(slot+0x28);float end=Range(slot+0x30,-1,200000),duration=Float(slot+0x74);
+        long slot=Ptr(hero+layout.Spells+index*8);if(slot==0)return Obj("state","unknown");
+        int level=Int(slot+0x28);float end=Range(slot+layout.SpellReadyAt,-1,200000),duration=Float(slot+layout.SpellDuration);
         if(level<0||level>6)return Obj("state","unknown");
         // Form changes can retain a negative historical duration after expiry.
         if(duration>10000||duration<0&&end>time)return Obj("state","unknown");
@@ -42,7 +118,7 @@ public sealed class RiftCastObserverReader : IDisposable {
     }
     // Same page used by Live Client fullRunes. Six choices followed by three stat shards.
     Dictionary<string,object> Runes(long hero) {
-        long page=hero+0x4f28,begin=Ptr(page+0x230),end=Ptr(page+0x238);
+        long page=hero+layout.Runes,begin=Ptr(page+0x230),end=Ptr(page+0x238);
         if(begin<65536||end-begin!=9*0x50)throw new InvalidDataException("rune-page");
         int primary=Int(Ptr(page+0x198)),secondary=Int(Ptr(page+0x1e8));
         if(primary==secondary||primary<8000||primary>8400||primary%100!=0||secondary<8000||secondary>8400||secondary%100!=0)throw new InvalidDataException("rune-trees");
@@ -55,12 +131,12 @@ public sealed class RiftCastObserverReader : IDisposable {
         return Obj("generalRunes",general,"statRunes",stats,"primaryRuneTree",Obj("id",primary),"secondaryRuneTree",Obj("id",secondary));
     }
     Dictionary<string,object> Buffs(long hero,float time) {
-        long start=Ptr(hero+0x2e68),end=Ptr(hero+0x2e70);long count=(end-start)/16;
+        long start=Ptr(hero+layout.BuffStart),end=Ptr(hero+layout.BuffEnd);long count=(end-start)/16;
         if(start<65536||end<start||(end-start)%16!=0||count>256)throw new InvalidDataException("buff-list");
         var result=Obj("baron",false,"elder",false);
         for(int i=0;i<count;i++) {
             long buff=Ptr(start+i*16);if(buff==0)continue;
-            float from=Float(buff+0x18),until=Float(buff+0x1c);
+            float from=Float(buff+0x18),until=BuffExpiry(buff);
             if(from>time||until<=time||Int(buff+0x38)<=0)continue;
             string name=CString(Ptr(Ptr(buff+0x10)+8)).ToLowerInvariant();
             if(name=="exaltedwithbaronnashor") {result["baron"]=true;result["baronExpiresAt"]=until;}
@@ -69,11 +145,11 @@ public sealed class RiftCastObserverReader : IDisposable {
         return result;
     }
     IEnumerable<Dictionary<string,object>> ActiveBuffs(long obj,float time) {
-        long start=Ptr(obj+0x2e68),end=Ptr(obj+0x2e70);
+        long start=Ptr(obj+layout.BuffStart),end=Ptr(obj+layout.BuffEnd);
         if(start<65536||end<start||(end-start)%16!=0||(end-start)/16>256)yield break;
         for(long entry=start;entry<end;entry+=16) {
             long buff=Ptr(entry);if(buff==0)continue;
-            float from=Float(buff+0x18),until=Float(buff+0x1c);
+            float from=Float(buff+0x18),until=BuffExpiry(buff);
             if(from>time||until<=time||Int(buff+0x38)<=0)continue;
             yield return Obj("name",CString(Ptr(Ptr(buff+0x10)+8)).ToLowerInvariant(),"until",until);
         }
@@ -89,7 +165,7 @@ public sealed class RiftCastObserverReader : IDisposable {
     }
     // Same statistics tree used by Live Client scores; retain exact CS before its /10 truncation.
     Dictionary<uint,Dictionary<string,object>> Scores() {
-        long head=Ptr(Ptr(imageBase+0x1ee9418)+0x30);
+        long head=Ptr(Ptr(imageBase+layout.Scores)+0x30);
         var pending=new Stack<long>();pending.Push(Ptr(head+8));
         var seen=new HashSet<long>();var result=new Dictionary<uint,Dictionary<string,object>>();
         while(pending.Count>0) {
@@ -108,7 +184,7 @@ public sealed class RiftCastObserverReader : IDisposable {
     }
     // Native replay scoreboard uses this per-team objective manager, independent of event history.
     object ObjectiveCounts() {
-        long manager=Ptr(imageBase+0x1ee9298),turrets=Ptr(imageBase+0x1ef3218);
+        long manager=Ptr(imageBase+layout.Objectives),turrets=Ptr(imageBase+layout.Turrets);
         var result=Obj();
         for(int side=0;side<2;side++) {
             long row=manager+(side==0?0x18:0x68);
@@ -121,12 +197,12 @@ public sealed class RiftCastObserverReader : IDisposable {
         return result;
     }
     object NeutralUnits() {
-        var result=new List<object>();long manager=Ptr(imageBase+0x1ee93b0),list=Ptr(manager+8);int count=Int(manager+16);
+        var result=new List<object>();long manager=Ptr(imageBase+layout.Minions),list=Ptr(manager+8);int count=Int(manager+16);
         if(count<1||count>2048)throw new InvalidDataException("neutral-list");
         for(int i=0;i<count;i++)try {
-            long unit=Ptr(list+i*8);string name=String(unit+0x41d0).ToLowerInvariant();
+            long unit=Ptr(list+i*8);string name=String(unit+layout.Champion).ToLowerInvariant();
             string kind=name=="sru_baron"?"barons":name=="sru_riftherald"?"heralds":name=="sru_horde"?"voidgrubs":name.StartsWith("sru_dragon")?(name.Contains("elder")?"elders":"dragons"):null;
-            if(kind!=null)result.Add(Obj("id",BitConverter.ToUInt32(Read(unit+0xbc,4),0),"kind",kind));
+            if(kind!=null)result.Add(Obj("id",BitConverter.ToUInt32(Read(unit+layout.NetworkId,4),0),"kind",kind));
         }catch { }
         return result;
     }
@@ -140,13 +216,13 @@ public sealed class RiftCastObserverReader : IDisposable {
             }
             if(name=="aspectofthedragon")elder=true;
         }} catch { }
-        long manager=Ptr(imageBase+0x1ee93b0),list=Ptr(manager+8);int count=Int(manager+16);
+        long manager=Ptr(imageBase+layout.Minions),list=Ptr(manager+8);int count=Int(manager+16);
         if(count<1||count>2048)throw new InvalidDataException("neutral-list");
         Dictionary<string,object> top=null,bottom=null;float topDue=0,bottomDue=0;
         for(int i=0;i<count;i++)try {
-            long obj=Ptr(list+i*8);string name=String(obj+0x41d0).ToLowerInvariant();
+            long obj=Ptr(list+i*8);string name=String(obj+layout.Champion).ToLowerInvariant();
             if(!name.StartsWith("sru_"))continue;
-            float hp=Range(obj+0x1060,0,200000);if(hp<=0)continue;
+            float hp=Range(obj+layout.Health,0,200000);if(hp<=0)continue;
             if(name=="sru_baron")top=Obj("kind","baron","state","alive");
             else if(name=="sru_riftherald")top=Obj("kind","herald","state","alive");
             else if(name=="sru_horde")top=Obj("kind","grubs","state","alive");
@@ -154,7 +230,7 @@ public sealed class RiftCastObserverReader : IDisposable {
                 bottom=Obj("kind",name.Contains("elder")?"elder":"dragon","state","alive");
                 var current=DragonElement(name);if(current!=null)bottom["element"]=current;
             } else if(name=="sru_camprespawnmarker") {
-                float x=Float(obj+0x1e0),z=Float(obj+0x1e8);
+                float x=Float(obj+layout.PositionX),z=Float(obj+layout.PositionZ);
                 bool upper=Math.Abs(x-5007)<500&&Math.Abs(z-10471)<500;
                 bool lower=Math.Abs(x-9866)<500&&Math.Abs(z-4414)<500;
                 if(!upper&&!lower)continue;
@@ -187,40 +263,41 @@ public sealed class RiftCastObserverReader : IDisposable {
                 if(handle==IntPtr.Zero||attachedPid!=process.Id||attachedStart!=process.StartTime) {
                     Dispose();var module=process.MainModule;
                     string hash;using(var sha=SHA256.Create())using(var file=File.OpenRead(module.FileName))hash=BitConverter.ToString(sha.ComputeHash(file)).Replace("-","");
-                    if(hash!=SupportedHash)return Obj("ok",false,"reason","unsupported-build","version",module.FileVersionInfo.FileVersion);
+                    layout=SelectLayout(hash);
+                    if(layout==null)return Obj("ok",false,"reason","unsupported-build","version",module.FileVersionInfo.FileVersion);
                     handle=OpenProcess(0x1010,false,process.Id);if(handle==IntPtr.Zero)return Obj("ok",false,"reason","access-unavailable");
                     attachedPid=process.Id;attachedStart=process.StartTime;imageBase=module.BaseAddress.ToInt64();
                 }
-                float time=Range(imageBase+0x1efa788,0,200000);
-                long manager=Ptr(imageBase+0x1ee9370),list=Ptr(manager+8);int count=Int(manager+16);
+                float time=Range(imageBase+layout.GameTime,0,200000);
+                long manager=Ptr(imageBase+layout.Heroes),list=Ptr(manager+8);int count=Int(manager+16);
                 if(count!=10)throw new InvalidDataException("roster-incomplete");
                 var players=new List<object>();var unique=new HashSet<string>();
                 Dictionary<uint,Dictionary<string,object>> scores=null;try {scores=Scores();}catch { }
                 for(int i=0;i<count;i++) {
-                    long hero=Ptr(list+i*8);string champion=String(hero+0x41d0);int side=Read(hero+0x239,1)[0];
+                    long hero=Ptr(list+i*8);string champion=String(hero+layout.Champion);int side=Read(hero+layout.Team,1)[0];
                     if(!System.Text.RegularExpressions.Regex.IsMatch(champion,"^[A-Za-z0-9]{2,40}$")||(side!=1&&side!=2)||!unique.Add(side+":"+champion))throw new InvalidDataException("roster-invalid");
-                    float hp=Range(hero+0x1060,0,200000),maxHp=Range(hero+0x1088,1,200000);
-                    float resource=Range(hero+0x340,0,200000),maxResource=Range(hero+0x368,0,200000);
-                    int level=Int(hero+0x4be0);if(level<1||level>30||hp>maxHp+1||resource>maxResource+1)throw new InvalidDataException("vitals-invalid");
+                    float hp=Range(hero+layout.Health,0,200000),maxHp=Range(hero+layout.MaxHealth,1,200000);
+                    float resource=Range(hero+layout.Resource,0,200000),maxResource=Range(hero+layout.MaxResource,0,200000);
+                    int level=Int(hero+layout.Level);if(level<1||level>30||hp>maxHp+1||resource>maxResource+1)throw new InvalidDataException("vitals-invalid");
                     var spells=new List<object>();for(int j=0;j<13;j++) {
                         try {spells.Add(Spell(hero,j,time));} catch {spells.Add(Obj("state","unknown"));}
                     }
-                    var player=Obj("champion",champion,"networkId",BitConverter.ToUInt32(Read(hero+0xbc,4),0),"team",side==1?"blue":"red","level",level,"health",hp,"maxHealth",maxHp,"resource",resource,"maxResource",maxResource,
-                        "experienceTotal",Range(hero+0x4bb8,0,1000000),"currentGold",Range(hero+0x2848,0,1000000),"totalGold",Range(hero+0x2870,0,1000000),"spells",spells);
+                    var player=Obj("champion",champion,"networkId",BitConverter.ToUInt32(Read(hero+layout.NetworkId,4),0),"team",side==1?"blue":"red","level",level,"health",hp,"maxHealth",maxHp,"resource",resource,"maxResource",maxResource,
+                        "experienceTotal",Range(hero+layout.Experience,0,1000000),"currentGold",Range(hero+layout.CurrentGold,0,1000000),"totalGold",Range(hero+layout.TotalGold,0,1000000),"spells",spells);
                     // A broken optional list must not discard valid health and cooldown samples.
                     try {player["buffs"]=Buffs(hero,time);} catch { }
                     try {player["fullRunes"]=Runes(hero);} catch { }
                     Dictionary<string,object> score;
                     if(scores!=null&&scores.TryGetValue((uint)player["networkId"],out score))player["scores"]=score;
-                    try {player["visionScore"]=Range(hero+0x53a8,0,10000);}catch { }
+                    try {player["visionScore"]=Range(hero+layout.Vision,0,10000);}catch { }
                     players.Add(player);
                 }
-                var result=Obj("ok",true,"profile","cn-16.20.824.8524","pid",attachedPid,"processSession",attachedStart.ToUniversalTime().Ticks.ToString(),"gameTime",time,"sampledAt",DateTime.UtcNow.ToString("o"),"players",players);
+                var result=Obj("ok",true,"profile",layout.Profile,"pid",attachedPid,"processSession",attachedStart.ToUniversalTime().Ticks.ToString(),"gameTime",time,"sampledAt",DateTime.UtcNow.ToString("o"),"players",players);
                 try {result["neutralObjectives"]=NeutralObjectives(list,time);} catch { }
                 try {result["objectiveCounts"]=ObjectiveCounts();} catch { }
                 try {result["neutralUnits"]=NeutralUnits();} catch { }
                 // Reject a read that straddled a seek or a long frame rebuild.
-                float endTime=Range(imageBase+0x1efa788,0,200000);
+                float endTime=Range(imageBase+layout.GameTime,0,200000);
                 if(endTime<time||endTime-time>2)return Obj("ok",false,"reason","sample-discontinuity");
                 result["sampleEndTime"]=endTime;
                 return result;

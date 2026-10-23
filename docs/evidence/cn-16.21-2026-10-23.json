@@ -1,0 +1,674 @@
+{
+  "version": "1.4.1",
+  "verifiedAt": "2026-10-23T08:31:36.216Z",
+  "build": "16.21.829.9102",
+  "executableSha256": "6CA9446AC4E65A311CB0796B72A459097CDF912A337619D1D1FD207E01AEDD6F",
+  "scope": "Current CN spectator: native reader, official API roster join, normalized telemetry, and live packet damage. Broadcast output and full-match 16.21 ROFL acceptance are separate.",
+  "nativeSourceSha256": "8fe8cc41c2ef7849c2ba9af2ac23d9756c565ee4532d53f13619bd9fb54c171a",
+  "damageOracle": {
+    "status": "passed",
+    "packets": 2367,
+    "fixtureSamples": 18,
+    "damageTypes": [
+      0,
+      1,
+      2
+    ]
+  },
+  "samples": [
+    {
+      "gameTime": 882.0023193359375,
+      "profile": "cn-16.21.829.9102",
+      "players": 10,
+      "completeRunePages": 10,
+      "damagePlayers": 10,
+      "activeSummonerCooldowns": 12,
+      "objectives": {
+        "gameTime": 881.9805,
+        "sampledAt": "2026-10-23T08:31:34.0539098Z",
+        "validForMs": 3000,
+        "profile": "cn-16.21.829.9102",
+        "objectives": [
+          {
+            "kind": "herald",
+            "state": "countdown",
+            "dueAt": 900.0752
+          },
+          {
+            "kind": "dragon",
+            "state": "countdown",
+            "dueAt": 923.864258
+          }
+        ]
+      },
+      "stats": {
+        "blue": {
+          "kills": 20,
+          "gold": 30009.62698,
+          "towers": 2,
+          "dragons": 1,
+          "barons": 0,
+          "elders": 0,
+          "heralds": 0,
+          "objectivesAvailable": true,
+          "voidgrubs": 3,
+          "objectivesSource": "memory",
+          "objectivesSampledAt": "2026-10-23T08:31:34.0539098Z",
+          "objectivesExpiresAt": "2026-10-23T08:31:37.053Z"
+        },
+        "red": {
+          "kills": 13,
+          "gold": 25476.06923,
+          "towers": 0,
+          "dragons": 0,
+          "barons": 0,
+          "elders": 0,
+          "heralds": 0,
+          "objectivesAvailable": true,
+          "voidgrubs": 0,
+          "objectivesSource": "memory",
+          "objectivesSampledAt": "2026-10-23T08:31:34.0539098Z",
+          "objectivesExpiresAt": "2026-10-23T08:31:37.053Z"
+        }
+      },
+      "champions": [
+        {
+          "champion": "Darius",
+          "team": "blue",
+          "cs": 127,
+          "visionScore": 0,
+          "gold": 6871.682,
+          "currentGold": 171.663712,
+          "damage": {
+            "toChampions": 1840.8961601257324,
+            "taken": 1390.6706075668335,
+            "physicalToChampions": 1063.0961723327637,
+            "magicToChampions": 0,
+            "trueToChampions": 777.7999877929688
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Khazix",
+          "team": "blue",
+          "cs": 94,
+          "visionScore": 15.1299038,
+          "gold": 7212.379,
+          "currentGold": 650.368164,
+          "damage": {
+            "toChampions": 2266.208921968937,
+            "taken": 2786.9070773124695,
+            "physicalToChampions": 1648.7260437011719,
+            "magicToChampions": 264.9352035522461,
+            "trueToChampions": 352.54767471551895
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Galio",
+          "team": "blue",
+          "cs": 115,
+          "visionScore": 6.87826252,
+          "gold": 6490.16943,
+          "currentGold": 690.1496,
+          "damage": {
+            "toChampions": 1960.9918975830078,
+            "taken": 2610.3189454078674,
+            "physicalToChampions": 133.71008682250977,
+            "magicToChampions": 1827.281810760498,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Jinx",
+          "team": "blue",
+          "cs": 80,
+          "visionScore": 6.926848,
+          "gold": 5266.378,
+          "currentGold": 26.352005,
+          "damage": {
+            "toChampions": 565.8040390014648,
+            "taken": 1393.631682395935,
+            "physicalToChampions": 504.9385299682617,
+            "magicToChampions": 60.865509033203125,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Xerath",
+          "team": "blue",
+          "cs": 20,
+          "visionScore": 15.8772612,
+          "gold": 4169.01855,
+          "currentGold": 208.976471,
+          "damage": {
+            "toChampions": 1980.052547454834,
+            "taken": 650.243839263916,
+            "physicalToChampions": 88.67349243164062,
+            "magicToChampions": 1891.3790550231934,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Nasus",
+          "team": "red",
+          "cs": 62,
+          "visionScore": 8.784631,
+          "gold": 3404.71167,
+          "currentGold": 654.681763,
+          "damage": {
+            "toChampions": 1194.924958705902,
+            "taken": 4039.666372895241,
+            "physicalToChampions": 617.6953277587891,
+            "magicToChampions": 577.229630947113,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Warwick",
+          "team": "red",
+          "cs": 66,
+          "visionScore": 5.2508316,
+          "gold": 4451.705,
+          "currentGold": 376.6806,
+          "damage": {
+            "toChampions": 916.0163593292236,
+            "taken": 1808.3757514953613,
+            "physicalToChampions": 518.3202972412109,
+            "magicToChampions": 397.6960620880127,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Qiyana",
+          "team": "red",
+          "cs": 71,
+          "visionScore": 5.3531,
+          "gold": 5742.37256,
+          "currentGold": 1242.34277,
+          "damage": {
+            "toChampions": 3127.0887784957886,
+            "taken": 2859.0805334448814,
+            "physicalToChampions": 2629.694076538086,
+            "magicToChampions": 183.8656940460205,
+            "trueToChampions": 313.52900791168213
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Kaisa",
+          "team": "red",
+          "cs": 104,
+          "visionScore": 5.30042648,
+          "gold": 6202.773,
+          "currentGold": 1122.74988,
+          "damage": {
+            "toChampions": 562.4715347290039,
+            "taken": 143.5771827697754,
+            "physicalToChampions": 127.16911506652832,
+            "magicToChampions": 435.3024196624756,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Mel",
+          "team": "red",
+          "cs": 49,
+          "visionScore": 39.1813469,
+          "gold": 5674.507,
+          "currentGold": 829.4338,
+          "damage": {
+            "toChampions": 992.3097219467163,
+            "taken": 1116.5115518569946,
+            "physicalToChampions": 44.21229553222656,
+            "magicToChampions": 948.0974264144897,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        }
+      ]
+    },
+    {
+      "gameTime": 883.0885009765625,
+      "profile": "cn-16.21.829.9102",
+      "players": 10,
+      "completeRunePages": 10,
+      "damagePlayers": 10,
+      "activeSummonerCooldowns": 12,
+      "objectives": {
+        "gameTime": 883.066345,
+        "sampledAt": "2026-10-23T08:31:35.1407527Z",
+        "validForMs": 3000,
+        "profile": "cn-16.21.829.9102",
+        "objectives": [
+          {
+            "kind": "herald",
+            "state": "countdown",
+            "dueAt": 900.0752
+          },
+          {
+            "kind": "dragon",
+            "state": "countdown",
+            "dueAt": 923.864258
+          }
+        ]
+      },
+      "stats": {
+        "blue": {
+          "kills": 20,
+          "gold": 30046.277490000004,
+          "towers": 2,
+          "dragons": 1,
+          "barons": 0,
+          "elders": 0,
+          "heralds": 0,
+          "objectivesAvailable": true,
+          "voidgrubs": 3,
+          "objectivesSource": "memory",
+          "objectivesSampledAt": "2026-10-23T08:31:35.1407527Z",
+          "objectivesExpiresAt": "2026-10-23T08:31:38.140Z"
+        },
+        "red": {
+          "kills": 13,
+          "gold": 25492.71983,
+          "towers": 0,
+          "dragons": 0,
+          "barons": 0,
+          "elders": 0,
+          "heralds": 0,
+          "objectivesAvailable": true,
+          "voidgrubs": 0,
+          "objectivesSource": "memory",
+          "objectivesSampledAt": "2026-10-23T08:31:35.1407527Z",
+          "objectivesExpiresAt": "2026-10-23T08:31:38.140Z"
+        }
+      },
+      "champions": [
+        {
+          "champion": "Darius",
+          "team": "blue",
+          "cs": 127,
+          "visionScore": 0,
+          "gold": 6874.742,
+          "currentGold": 174.723724,
+          "damage": {
+            "toChampions": 1840.8961601257324,
+            "taken": 1390.6706075668335,
+            "physicalToChampions": 1063.0961723327637,
+            "magicToChampions": 0,
+            "trueToChampions": 777.7999877929688
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Khazix",
+          "team": "blue",
+          "cs": 94,
+          "visionScore": 15.1299038,
+          "gold": 7215.439,
+          "currentGold": 653.4282,
+          "damage": {
+            "toChampions": 2266.208921968937,
+            "taken": 2786.9070773124695,
+            "physicalToChampions": 1648.7260437011719,
+            "magicToChampions": 264.9352035522461,
+            "trueToChampions": 352.54767471551895
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Galio",
+          "team": "blue",
+          "cs": 115,
+          "visionScore": 6.87826252,
+          "gold": 6513.22949,
+          "currentGold": 713.209656,
+          "damage": {
+            "toChampions": 1960.9918975830078,
+            "taken": 2610.3189454078674,
+            "physicalToChampions": 133.71008682250977,
+            "magicToChampions": 1827.281810760498,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Jinx",
+          "team": "blue",
+          "cs": 80,
+          "visionScore": 6.926848,
+          "gold": 5269.438,
+          "currentGold": 29.4120064,
+          "damage": {
+            "toChampions": 565.8040390014648,
+            "taken": 1393.631682395935,
+            "physicalToChampions": 504.9385299682617,
+            "magicToChampions": 60.865509033203125,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Xerath",
+          "team": "blue",
+          "cs": 20,
+          "visionScore": 15.8772612,
+          "gold": 4173.429,
+          "currentGold": 213.386475,
+          "damage": {
+            "toChampions": 1980.052547454834,
+            "taken": 650.243839263916,
+            "physicalToChampions": 88.67349243164062,
+            "magicToChampions": 1891.3790550231934,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Nasus",
+          "team": "red",
+          "cs": 62,
+          "visionScore": 8.784631,
+          "gold": 3407.77173,
+          "currentGold": 657.7418,
+          "damage": {
+            "toChampions": 1194.924958705902,
+            "taken": 4050.0967289209366,
+            "physicalToChampions": 617.6953277587891,
+            "magicToChampions": 577.229630947113,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Warwick",
+          "team": "red",
+          "cs": 66,
+          "visionScore": 5.2508316,
+          "gold": 4454.765,
+          "currentGold": 379.74057,
+          "damage": {
+            "toChampions": 916.0163593292236,
+            "taken": 1808.3757514953613,
+            "physicalToChampions": 518.3202972412109,
+            "magicToChampions": 397.6960620880127,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Qiyana",
+          "team": "red",
+          "cs": 71,
+          "visionScore": 5.3531,
+          "gold": 5745.43262,
+          "currentGold": 1245.40283,
+          "damage": {
+            "toChampions": 3127.0887784957886,
+            "taken": 2859.0805334448814,
+            "physicalToChampions": 2629.694076538086,
+            "magicToChampions": 183.8656940460205,
+            "trueToChampions": 313.52900791168213
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Kaisa",
+          "team": "red",
+          "cs": 104,
+          "visionScore": 5.30042648,
+          "gold": 6205.833,
+          "currentGold": 1125.80994,
+          "damage": {
+            "toChampions": 562.4715347290039,
+            "taken": 143.5771827697754,
+            "physicalToChampions": 127.16911506652832,
+            "magicToChampions": 435.3024196624756,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Mel",
+          "team": "red",
+          "cs": 49,
+          "visionScore": 39.1813469,
+          "gold": 5678.91748,
+          "currentGold": 833.8437,
+          "damage": {
+            "toChampions": 992.3097219467163,
+            "taken": 1116.5115518569946,
+            "physicalToChampions": 44.21229553222656,
+            "magicToChampions": 948.0974264144897,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        }
+      ]
+    },
+    {
+      "gameTime": 884.150390625,
+      "profile": "cn-16.21.829.9102",
+      "players": 10,
+      "completeRunePages": 10,
+      "damagePlayers": 10,
+      "activeSummonerCooldowns": 12,
+      "objectives": {
+        "gameTime": 884.122,
+        "sampledAt": "2026-10-23T08:31:36.2040245Z",
+        "validForMs": 3000,
+        "profile": "cn-16.21.829.9102",
+        "objectives": [
+          {
+            "kind": "herald",
+            "state": "countdown",
+            "dueAt": 900.0752
+          },
+          {
+            "kind": "dragon",
+            "state": "countdown",
+            "dueAt": 923.864258
+          }
+        ]
+      },
+      "stats": {
+        "blue": {
+          "kills": 20,
+          "gold": 30057.37816,
+          "towers": 2,
+          "dragons": 1,
+          "barons": 0,
+          "elders": 0,
+          "heralds": 0,
+          "objectivesAvailable": true,
+          "voidgrubs": 3,
+          "objectivesSource": "memory",
+          "objectivesSampledAt": "2026-10-23T08:31:36.2040245Z",
+          "objectivesExpiresAt": "2026-10-23T08:31:39.204Z"
+        },
+        "red": {
+          "kills": 13,
+          "gold": 25503.82043,
+          "towers": 0,
+          "dragons": 0,
+          "barons": 0,
+          "elders": 0,
+          "heralds": 0,
+          "objectivesAvailable": true,
+          "voidgrubs": 0,
+          "objectivesSource": "memory",
+          "objectivesSampledAt": "2026-10-23T08:31:36.2040245Z",
+          "objectivesExpiresAt": "2026-10-23T08:31:39.204Z"
+        }
+      },
+      "champions": [
+        {
+          "champion": "Darius",
+          "team": "blue",
+          "cs": 127,
+          "visionScore": 0,
+          "gold": 6876.782,
+          "currentGold": 176.763733,
+          "damage": {
+            "toChampions": 1840.8961601257324,
+            "taken": 1390.6706075668335,
+            "physicalToChampions": 1063.0961723327637,
+            "magicToChampions": 0,
+            "trueToChampions": 777.7999877929688
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Khazix",
+          "team": "blue",
+          "cs": 94,
+          "visionScore": 15.1299038,
+          "gold": 7217.479,
+          "currentGold": 655.468262,
+          "damage": {
+            "toChampions": 2266.208921968937,
+            "taken": 2786.9070773124695,
+            "physicalToChampions": 1648.7260437011719,
+            "magicToChampions": 264.9352035522461,
+            "trueToChampions": 352.54767471551895
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Galio",
+          "team": "blue",
+          "cs": 115,
+          "visionScore": 6.87826252,
+          "gold": 6515.26953,
+          "currentGold": 715.2497,
+          "damage": {
+            "toChampions": 1960.9918975830078,
+            "taken": 2610.3189454078674,
+            "physicalToChampions": 133.71008682250977,
+            "magicToChampions": 1827.281810760498,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Jinx",
+          "team": "blue",
+          "cs": 80,
+          "visionScore": 6.926848,
+          "gold": 5271.478,
+          "currentGold": 31.4520073,
+          "damage": {
+            "toChampions": 565.8040390014648,
+            "taken": 1393.631682395935,
+            "physicalToChampions": 504.9385299682617,
+            "magicToChampions": 60.865509033203125,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Xerath",
+          "team": "blue",
+          "cs": 20,
+          "visionScore": 15.8772612,
+          "gold": 4176.36963,
+          "currentGold": 216.326477,
+          "damage": {
+            "toChampions": 1980.052547454834,
+            "taken": 650.243839263916,
+            "physicalToChampions": 88.67349243164062,
+            "magicToChampions": 1891.3790550231934,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Nasus",
+          "team": "red",
+          "cs": 62,
+          "visionScore": 8.784631,
+          "gold": 3409.81177,
+          "currentGold": 659.78186,
+          "damage": {
+            "toChampions": 1194.924958705902,
+            "taken": 4081.387796998024,
+            "physicalToChampions": 617.6953277587891,
+            "magicToChampions": 577.229630947113,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Warwick",
+          "team": "red",
+          "cs": 66,
+          "visionScore": 5.2508316,
+          "gold": 4456.805,
+          "currentGold": 381.780548,
+          "damage": {
+            "toChampions": 916.0163593292236,
+            "taken": 1808.3757514953613,
+            "physicalToChampions": 518.3202972412109,
+            "magicToChampions": 397.6960620880127,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Qiyana",
+          "team": "red",
+          "cs": 71,
+          "visionScore": 5.3531,
+          "gold": 5747.47266,
+          "currentGold": 1247.44287,
+          "damage": {
+            "toChampions": 3127.0887784957886,
+            "taken": 2859.0805334448814,
+            "physicalToChampions": 2629.694076538086,
+            "magicToChampions": 183.8656940460205,
+            "trueToChampions": 313.52900791168213
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Kaisa",
+          "team": "red",
+          "cs": 104,
+          "visionScore": 5.30042648,
+          "gold": 6207.873,
+          "currentGold": 1127.85,
+          "damage": {
+            "toChampions": 562.4715347290039,
+            "taken": 143.5771827697754,
+            "physicalToChampions": 127.16911506652832,
+            "magicToChampions": 435.3024196624756,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        },
+        {
+          "champion": "Mel",
+          "team": "red",
+          "cs": 49,
+          "visionScore": 39.1813469,
+          "gold": 5681.858,
+          "currentGold": 836.7836,
+          "damage": {
+            "toChampions": 992.3097219467163,
+            "taken": 1116.5115518569946,
+            "physicalToChampions": 44.21229553222656,
+            "magicToChampions": 948.0974264144897,
+            "trueToChampions": 0
+          },
+          "damageSince": 750.4356079101562
+        }
+      ]
+    }
+  ]
+}

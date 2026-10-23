@@ -15,8 +15,8 @@ ID 下方依次为紫色经验、绿色生命、蓝色法力／黄色能量。�
 ## 当前读取配置
 
 - 系统：Windows x64；单个 `League of Legends.exe` 进程。
-- 已验证游戏文件版本：`16.20.824.8524`。
-- 文件 SHA-256：`EE3C887B4579AEAB12CA77B2A43CC1CC3411A8AA30BC43D2DFEA856F6CE497C8`。
+- 当前已验证游戏文件版本：`16.21.829.9102`，SHA-256：`6CA9446AC4E65A311CB0796B72A459097CDF912A337619D1D1FD207E01AEDD6F`。
+- 同时保留 `16.20.824.8524`，SHA-256：`EE3C887B4579AEAB12CA77B2A43CC1CC3411A8AA30BC43D2DFEA856F6CE497C8`。各构建独立选择布局，定位和实测见 [16.21 维护记录](CN-16.21-Maintenance.md)。
 - 只在 Live Client Data 返回完整观战名单、没有活动玩家且 Replay API 返回相同进程 ID 时接入。
 - 游戏文件校验失败时停止原生采样，继续使用可用的官方 API 数据。设置 → 数据 → 观战遥测显示连接状态。
 - 采样器只请求 `PROCESS_VM_READ | PROCESS_QUERY_LIMITED_INFORMATION`，使用有界 `ReadProcessMemory`。不向游戏写内存，不加载 DLL，不安装驱动，不调用游戏内部函数。
@@ -26,9 +26,9 @@ ID 下方依次为紫色经验、绿色生命、蓝色法力／黄色能量。�
 
 ## 伤害数据边界
 
-`telemetryDamage` 支持对英雄伤害、承受伤害、物理／魔法／真实对英雄伤害。`telemetryDamageSource` 记录 `api`、`memory` 或 `postgame` 来源。记录 JSON 和 CSV 保留这些数据，新字段未接入节目画面。
+`telemetryDamage` 支持对英雄伤害、承受伤害、物理／魔法／真实对英雄伤害。`telemetryDamageSource` 记录 `api`、`memory`、`packets` 或 `postgame` 来源。观战逐次伤害用于团战与历史战斗分析，记录 JSON 和 CSV 保留数据来源。
 
-当前游戏版本的实时伤害累计内存字段尚未确认，原生采样器不会伪造伤害值。Live Client Data 实际提供相关累计字段时会保存；对局结束后，可通过匹配同一对局 ID、同队同英雄的官方 LCU 赛后统计补录。后续终局样本不会清空已保存的伤害数据。回放无对应官方赛后数据时，伤害列保持“不可用”。血量差、技能理论伤害与击杀事件不会作为伤害统计替代来源。
+国服 16.20 与 16.21 通过各自的逐次伤害协议读取观战分片。实时观战记录覆盖起点，按当前游戏时间查询；ROFL 回放完成十人官方终局累计校验后开放逐次伤害。对局结束后，可通过同一对局 ID、同队同英雄的官方 LCU 赛后统计补录。详见 [伤害采集记录](Native-Damage-Research.md)。
 
 ## 验证
 

@@ -6,7 +6,7 @@ Source: https://github.com/shyunku-libraries/rofl-parser
 Commit: 73530424162672aa7daafe233f647cc655607880 (package 26.16.1).
 The upstream package declares ISC in package.json; this revision has no separate LICENSE file or author notice.
 
-RiftCast used its executable-analysis generator with a CN factory adapter to derive the packet-359 decoder in server/protocol/cn-16.20-damage.ts. The generated decoder was reduced to this one packet, its lookup tables deduplicated, and bounds checks added. RiftCast implements its own bounded replay reader, live transport, indexing and broadcast integration. The upstream repository is not shipped as a runtime dependency. See docs/Native-Damage-Research.md for provenance and validation.
+RiftCast used its executable-analysis generator with CN factory adapters to derive the packet-359 decoder in server/protocol/cn-16.20-damage.ts and packet-978 decoder in server/protocol/cn-16.21-damage.ts. Each generated decoder was reduced to its damage packet, its lookup tables deduplicated, and bounds checks added. RiftCast implements its own bounded replay reader, live transport, indexing and broadcast integration. The upstream repository is not shipped as a runtime dependency. See docs/Native-Damage-Research.md and docs/CN-16.21-Maintenance.md for provenance and validation.
 
 ISC license terms:
 

@@ -1,5 +1,5 @@
 import { open } from 'node:fs/promises';
-import { DAMAGE_BUILD, parseReplayDamage, type ReplayDamageIndex } from './replay-damage';
+import { damageProtocolForProfile, parseReplayDamage, type ReplayDamageIndex } from './replay-damage';
 
 type Json=Record<string,any>;
 async function loadReplay(file:string,cancelled:()=>boolean):Promise<ReplayDamageIndex>{
@@ -26,11 +26,12 @@ export class ReplayDamageTelemetry {
     this.detail='等待回放伤害数据';
   }
   enrich(sample:Json):boolean{
-    if(sample.profile!==`cn-${DAMAGE_BUILD}`||!sample.ok||!Number.isInteger(sample.pid)||
+    const protocol=damageProtocolForProfile(sample.profile);
+    if(!protocol||!sample.ok||!Number.isInteger(sample.pid)||
       typeof sample.processSession!=='string'||typeof sample.replayPath!=='string'||!sample.replayPath.toLowerCase().endsWith('.rofl')){
       if(this.session)this.reset();return false;
     }
-    const session=`${sample.pid}:${sample.processSession}:${sample.replayPath}`;
+    const session=`${sample.profile}:${sample.pid}:${sample.processSession}:${sample.replayPath}`;
     if(session!==this.session){
       this.reset();this.session=session;this.detail='正在解析回放逐次伤害';
       const generation=this.generation;
@@ -40,7 +41,7 @@ export class ReplayDamageTelemetry {
         if(generation===this.generation)this.detail='当前回放伤害校验未通过';
       });
     }
-    if(!this.index||!Array.isArray(sample.players)||sample.players.length!==10)return false;
+    if(!this.index||this.index.build!==protocol.build||!Array.isArray(sample.players)||sample.players.length!==10)return false;
     const roster=new Map(this.index.heroes.map(h=>[h.networkId,h]));
     const pairs=sample.players.map((p:Json)=>({p,h:roster.get(p.networkId),damage:this.index!.at(p.networkId,sample.gameTime)}));
     if(new Set(sample.players.map((p:Json)=>p.networkId)).size!==10||

@@ -6,19 +6,20 @@ import {Blowfish} from 'egoroof-blowfish';
 import {decodeObserverChunk,LiveDamageStream} from './live-damage-stream';
 
 const fixture=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.20.json',import.meta.url),'utf8'));
+const current=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.21.json',import.meta.url),'utf8'));
 const key=Buffer.from('test-key-16bytes!');
-function block(time:number,damage=false){
-  const s=fixture.samples[0],payload=damage?Buffer.from(s.payload):Buffer.alloc(0),b=Buffer.alloc(15+payload.length);
-  b.writeFloatLE(time,1);b.writeUInt32LE(payload.length,5);b.writeUInt16LE(damage?359:1,9);b.writeUInt32LE(damage?s.param:0,11);payload.copy(b,15);return b;
+function block(time:number,damage=false,input=fixture){
+  const s=input.samples[0],payload=damage?Buffer.from(s.payload):Buffer.alloc(0),b=Buffer.alloc(15+payload.length);
+  b.writeFloatLE(time,1);b.writeUInt32LE(payload.length,5);b.writeUInt16LE(damage?(input===current?978:359):1,9);b.writeUInt32LE(damage?s.param:0,11);payload.copy(b,15);return b;
 }
-function chunk(id:number){
+function chunk(id:number,input=fixture){
   return Buffer.from(new Blowfish(key,Blowfish.MODE.ECB,Blowfish.PADDING.PKCS5).encode(gzipSync(Buffer.concat([
-    block((id-1)*30),block((id-1)*30+15,true),block(id*30-.01)]))));
+    block((id-1)*30),block((id-1)*30+15,true,input),block(id*30-.01)]))));
 }
 function sample(time=70,pid=10):any{return {ok:true,pid,processSession:'session',profile:'cn-16.20.824.8524',gameTime:time,
   observerSession:{host:'spectator.test:8080',gameId:'123',platform:'TEST',target:'test-player-123456789',key:'private-test-key'},
   players:Array.from({length:10},(_,i)=>({networkId:1073741998+i,champion:`Hero${i}`,team:i<5?'blue':'red'}))};}
-function backend(){
+function backend(input=fixture){
   const state={last:5,fail:0,expired:0,calls:[] as number[],wrongGame:false};
   const stream=new LiveDamageStream(async(url,headers)=>{
     if(url.pathname.includes('getLastChunkInfo'))return Buffer.from(JSON.stringify({chunkId:state.last,startGameChunkId:1}));
@@ -26,7 +27,7 @@ function backend(){
     assert.equal(headers['X-Riot-Spectator-Key'],'private-test-key');
     const id=Number(url.pathname.split('/').at(-1));state.calls.push(id);
     if(id===state.expired)throw Error('HTTP 404');
-    if(id===state.fail)throw Error('unavailable');return chunk(id);
+    if(id===state.fail)throw Error('unavailable');return chunk(id,input);
   });return {state,stream};
 }
 test('encrypted spectator chunks decode real damage and reject corrupt bodies',()=>{
@@ -34,6 +35,18 @@ test('encrypted spectator chunks decode real damage and reject corrupt bodies',(
   assert.equal(c.events[0].amount,fixture.samples[0].amount);
   const bad=chunk(1);bad[0]^=255;assert.throws(()=>decodeObserverChunk(bad,key));
   assert.throws(()=>decodeObserverChunk(Buffer.alloc(7),key));
+});
+
+test('16.21 encrypted stream selects its protocol and invalidates cached damage when the build changes',async()=>{
+  const decoded=decodeObserverChunk(chunk(1,current),key,current.build);
+  assert.equal(decoded.events[0].amount,current.samples[0].amount);
+  assert.throws(()=>decodeObserverChunk(chunk(1,current),key,'16.21.unknown'),/版本/);
+  const {stream}=backend(current),s=sample();s.profile=`cn-${current.build}`;
+  stream.enrich(s,0);await stream.settled();assert.equal(stream.enrich(s,1),true);
+  const source=s.players.find((p:any)=>p.networkId===current.samples[0].source);
+  assert.equal(source.damageStats.toChampions,current.samples[0].amount*2);
+  assert.equal(stream.enrich(sample(),2),false,'an older build must start a new capture');
+  assert.equal(stream.timeline(),undefined);stream.reset();
 });
 test('retention race trims only expired leading history and preserves explicit capture origin',async()=>{
   const {state,stream}=backend();state.expired=1;stream.enrich(sample(),0);await stream.settled();

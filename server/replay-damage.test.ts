@@ -4,8 +4,10 @@ import { readFile } from 'node:fs/promises';
 import { damageBlocks, decodeDamageBlock, parseReplayDamage, ReplayDamageIndex, type DamageHero } from './replay-damage';
 import { ReplayDamageTelemetry } from './replay-damage-telemetry';
 import { decodeCnDamageParameters } from './protocol/cn-16.20-damage';
+import { decodeCn1621DamageParameters } from './protocol/cn-16.21-damage';
 
 const fixture=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.20.json',import.meta.url),'utf8'));
+const current=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.21.json',import.meta.url),'utf8'));
 const heroes:DamageHero[]=Array.from({length:10},(_,i)=>({networkId:1073741998+i,champion:`Hero${i}`,team:i<5?'blue':'red',officialTotal:0}));
 const events=fixture.samples.map((s:any)=>({time:s.time,source:s.source,target:s.target,amount:s.amount,type:s.type}));
 function block(id:number,param:number,time:number,payload:number[]=[]){
@@ -16,14 +18,16 @@ function chunk(id:number,type:number,blocks:Buffer[]){
   const body=Buffer.concat(blocks),head=Buffer.alloc(17);head.writeUInt32LE(id);head.writeUInt32LE(id+1,4);
   head[8]=type;head.writeUInt32LE(body.length,9);return Buffer.concat([head,body]);
 }
-function replay(extraGameChunk?:Buffer){
-  const version=Buffer.from(fixture.build),header=Buffer.alloc(15);header.write('RIOT');header.writeUInt16LE(2,4);header[14]=version.length;
-  const keyframe=chunk(1,2,heroes.flatMap(h=>[block(1093,h.networkId,0),block(853,h.networkId,0)]));
-  const game=chunk(1,1,fixture.samples.map((s:any)=>block(359,s.param,s.time,s.payload)));
+function replay(extraGameChunk?:Buffer,input=fixture){
+  const version=Buffer.from(input.build),header=Buffer.alloc(15);header.write('RIOT');header.writeUInt16LE(2,4);header[14]=version.length;
+  const modern=input===current,avatar=modern?929:1093,statsId=modern?267:853,damage=modern?978:359;
+  const keyframe=chunk(1,2,heroes.flatMap(h=>[block(avatar,h.networkId,0),block(statsId,h.networkId,0)]));
+  const game=chunk(1,1,input.samples.map((s:any)=>block(damage,s.param,s.time,s.payload)));
+  const events=input.samples;
   const stats=heroes.map(h=>({SKIN:h.champion,TEAM:h.team==='blue'?100:200,
     TOTAL_DAMAGE_TAKEN:Math.floor(events.filter((e:any)=>e.target===h.networkId).reduce((sum:number,e:any)=>sum+e.amount,0)),
     TOTAL_DAMAGE_DEALT_TO_CHAMPIONS:Math.floor(events.filter((e:any)=>e.source===h.networkId).reduce((sum:number,e:any)=>sum+e.amount,0))}));
-  const footer=Buffer.from(JSON.stringify({gameLength:200000,statsJson:JSON.stringify(stats)})),size=Buffer.alloc(4);size.writeUInt32LE(footer.length);
+  const footer=Buffer.from(JSON.stringify({gameLength:modern?600000:200000,statsJson:JSON.stringify(stats)})),size=Buffer.alloc(4);size.writeUInt32LE(footer.length);
   return Buffer.concat([header,version,keyframe,game,...extraGameChunk?[extraGameChunk]:[],Buffer.alloc(256),footer,size]);
 }
 test('captured CN packets decode physical, magic and true damage with exact source and target',()=>{
@@ -33,6 +37,32 @@ test('captured CN packets decode physical, magic and true damage with exact sour
     assert.throws(()=>decodeCnDamageParameters(Uint8Array.from(sample.payload.slice(0,-1))));
     assert.throws(()=>decodeCnDamageParameters(Uint8Array.from([...sample.payload,0])));
   }
+});
+
+test('16.21 captured damage matches native deserialization for all three damage types and proxy targets',()=>{
+  assert.deepEqual([...new Set(current.samples.map((s:any)=>s.type))].sort(),[0,1,2]);
+  assert(current.samples.some((s:any)=>s.param!==s.target));
+  for(const s of current.samples){
+    const block={id:978,param:s.param,time:s.time,payload:Uint8Array.from(s.payload)};
+    assert.deepEqual(decodeDamageBlock(block,current.build),{time:s.time,source:s.source,target:s.target,amount:s.amount,type:s.type});
+    assert.equal(decodeDamageBlock(block,fixture.build),undefined);
+    assert.throws(()=>decodeCn1621DamageParameters(block.payload.subarray(0,-1)));
+    assert.throws(()=>decodeCn1621DamageParameters(Uint8Array.from([...s.payload,0])));
+    assert.throws(()=>decodeDamageBlock(block,'16.21.829.9999'),/版本/);
+  }
+  assert.throws(()=>decodeCn1621DamageParameters(Uint8Array.from([0,0,0,0,16,16,16,16,16])),/varuint/);
+});
+
+test('16.21 replay uses its own snapshot IDs, validates totals, and cannot attach to another build',async()=>{
+  const index=await parseReplayDamage(replay(undefined,current));
+  assert.equal(index.build,current.build);
+  for(const h of index.heroes)assert(Math.abs(index.at(h.networkId,600)!.toChampions!-h.officialTotal)<1.1);
+  const reader=new ReplayDamageTelemetry(async()=>index),s=sample();s.profile=`cn-${current.build}`;s.gameTime=600;
+  assert.equal(reader.enrich(s),false);await reader.settled();assert.equal(reader.enrich(s),true);
+  const old=sample();assert.equal(reader.enrich(old),false);await reader.settled();assert.equal(reader.enrich(old),false);
+  const sameRosterWrongIds=replay(undefined,current);
+  sameRosterWrongIds.writeUInt16LE(1093,15+Buffer.byteLength(current.build)+17+9);
+  await assert.rejects(parseReplayDamage(sameRosterWrongIds),/英雄标识/);
 });
 test('ROFL2 relative timestamp, inherited packet id and relative param retain exact packet boundaries',()=>{
   const absolute=block(359,1073741998,60,[1,2]);

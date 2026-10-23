@@ -2,8 +2,17 @@ import { decompress } from 'fzstd';
 import { setImmediate } from 'node:timers/promises';
 import type { DamageTotals } from '../shared/player-telemetry';
 import { decodeCnDamageParameters } from './protocol/cn-16.20-damage';
+import { decodeCn1621DamageParameters } from './protocol/cn-16.21-damage';
 
 export const DAMAGE_BUILD = '16.20.824.8524';
+const damageProtocols = new Map([
+  [DAMAGE_BUILD, {build:DAMAGE_BUILD, packet:359, avatar:1093, stats:853,
+    decode:decodeCnDamageParameters, target:1, source:8, amount:9, type:2}],
+  ['16.21.829.9102', {build:'16.21.829.9102', packet:978, avatar:929, stats:267,
+    decode:decodeCn1621DamageParameters, target:0, source:5, amount:4, type:3}],
+]);
+export const damageProtocolForProfile = (profile:unknown) =>
+  typeof profile==='string'&&profile.startsWith('cn-')?damageProtocols.get(profile.slice(3)):undefined;
 export interface DamageEvent { time: number; source: number; target: number; amount: number; type: 0 | 1 | 2 }
 export interface DamageHero { networkId: number; champion: string; team: 'blue' | 'red'; officialTotal: number; officialTaken?: number }
 interface Block { time: number; id: number; param: number; payload: Uint8Array }
@@ -30,15 +39,17 @@ export function* damageBlocks(data: Uint8Array): Generator<Block> {
   }
 }
 
-export function decodeDamageBlock(block: Block): DamageEvent | undefined {
-  if(block.id!==359)return;
-  const v=decodeCnDamageParameters(block.payload);
-  const bytes=Buffer.allocUnsafe(4);bytes.writeUInt32LE(v[9]);const amount=bytes.readFloatLE();
+export function decodeDamageBlock(block: Block, build=DAMAGE_BUILD): DamageEvent | undefined {
+  const protocol=damageProtocols.get(build);
+  if(!protocol)throw Error('观战版本尚无伤害解析配置');
+  if(block.id!==protocol.packet)return;
+  const v=protocol.decode(block.payload);
+  const bytes=Buffer.allocUnsafe(4);bytes.writeUInt32LE(v[protocol.amount]);const amount=bytes.readFloatLE();
   // The block param can identify a proxy object; use the decoded target/source fields.
   // Scripted non-hero self-destruction can carry very large finite damage.
-  if(!Number.isFinite(amount)||amount<0||![0,1,2].includes(v[2]))
+  if(!Number.isFinite(amount)||amount<0||![0,1,2].includes(v[protocol.type]))
     throw Error('伤害数据包字段校验失败');
-  return {time:block.time,target:v[1],source:v[8],amount,type:v[2] as 0|1|2};
+  return {time:block.time,target:v[protocol.target],source:v[protocol.source],amount,type:v[protocol.type] as 0|1|2};
 }
 
 type Point={time:number;total:number;physical:number;magic:number;trueDamage:number};
@@ -46,7 +57,7 @@ export class ReplayDamageIndex {
   readonly damageEvents:DamageEvent[];
   readonly tracks=new Map<number,Point[]>();
   readonly received=new Map<number,{time:number;total:number}[]>();
-  constructor(readonly heroes:DamageHero[],readonly duration:number,events:DamageEvent[]){
+  constructor(readonly heroes:DamageHero[],readonly duration:number,events:DamageEvent[],readonly build=DAMAGE_BUILD){
     this.damageEvents=events.slice().sort((a,b)=>a.time-b.time);
     const roster=new Map(heroes.map(h=>[h.networkId,h]));
     for(const h of heroes){this.tracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);this.received.set(h.networkId,[{time:0,total:0}]);}
@@ -77,7 +88,8 @@ export class ReplayDamageIndex {
 export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<ReplayDamageIndex>{
   if(b.length<300||b.length>128*1024*1024||b.toString('ascii',0,4)!=='RIOT'||b.readUInt16LE(4)!==2)throw Error('不支持的回放格式');
   const headerEnd=15+b[14];
-  if(b.toString('utf8',15,headerEnd)!==DAMAGE_BUILD)throw Error('回放版本尚无伤害解析配置');
+  const protocol=damageProtocols.get(b.toString('utf8',15,headerEnd));
+  if(!protocol)throw Error('回放版本尚无伤害解析配置');
   const footerLength=b.readUInt32LE(b.length-4),footerStart=b.length-4-footerLength,end=footerStart-256;
   if(footerLength<1||footerLength>2*1024*1024||end<headerEnd)throw Error('回放元数据范围异常');
   const footer=JSON.parse(b.toString('utf8',footerStart,b.length-4));
@@ -100,10 +112,10 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
       if(kind===1)chunkIds.add(id);
       for(const block of damageBlocks(data)){
         if(kind===2){
-          if(block.id===1093)avatar.push(block.param);
-          if(block.id===853)heroStats.push(block.param);
+          if(block.id===protocol.avatar)avatar.push(block.param);
+          if(block.id===protocol.stats)heroStats.push(block.param);
         }else{
-          const event=decodeDamageBlock(block);
+          const event=decodeDamageBlock(block,protocol.build);
           if(event){events.push(event);if(events.length>1000000)throw Error('伤害数据量异常');}
         }
       }
@@ -121,7 +133,7 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
     return {networkId:ids[i],champion,team:team===100?'blue':'red',officialTotal,...(p.TOTAL_DAMAGE_TAKEN!==undefined&&Number.isFinite(taken)&&taken>=0?{officialTaken:taken}:{})};
   });
   if(new Set(heroes.map(h=>`${h.team}:${h.champion}`)).size!==10)throw Error('回放英雄对应关系不唯一');
-  const index=new ReplayDamageIndex(heroes,duration,events);
+  const index=new ReplayDamageIndex(heroes,duration,events,protocol.build);
   // A new packet variant, missing pet attribution or unsupported mechanics must remain unknown.
   for(const hero of heroes){
     const total=index.at(hero.networkId,duration)?.toChampions;
