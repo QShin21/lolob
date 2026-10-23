@@ -12,6 +12,11 @@ export function useConfigDraft<T extends object>(
     baseKey = JSON.stringify(base);
   const dirty = draftKey !== baseKey,
     conflict = dirty && incomingKey !== baseKey && incomingKey !== draftKey;
+  // Submit only edits owned by this draft. Independent editors may have saved
+  // other fields since the draft was opened; version checks still gate writes.
+  const localPatch = Object.fromEntries(Object.keys(draft)
+    .filter(key => JSON.stringify(draft[key as keyof T]) !== JSON.stringify(base[key as keyof T]))
+    .map(key => [key, draft[key as keyof T]])) as Partial<T>;
   useEffect(() => {
     if (incomingKey === baseKey) baseVersion.current = version;
     if (!dirty || incomingKey === draftKey) {
@@ -43,6 +48,7 @@ export function useConfigDraft<T extends object>(
     draft,
     setDraft,
     dirty,
+    localPatch,
     conflict,
     baseVersion,
     discard,

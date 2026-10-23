@@ -2,7 +2,7 @@ import { LayoutTemplate, Radio, Eye, PictureInPicture2 } from 'lucide-react';
 import { styleRef } from '../../shared/style-packs';
 import type { StateContext } from '../../shared/types';
 
-export function BroadcastLook({state,send}:StateContext) {
+export function BroadcastLook({state,send,overlay = state.overlay,onOverlayChange}:StateContext & {overlay?:StateContext['state']['overlay'];onOverlayChange?:(patch:Partial<StateContext['state']['overlay']>)=>void}) {
   return <section className="director-look" aria-label="转播风格">
     <div className="look-heading"><LayoutTemplate size={18}/><div><strong>转播视觉</strong><span>赛前 / BP / 局内 / 赛后共用</span></div></div>
     <div className="look-identity">
@@ -10,6 +10,6 @@ export function BroadcastLook({state,send}:StateContext) {
       <div><strong>{styleRef(state.overlay.stylePack).name}</strong><span>场景库内管理与导入 · TAKE 后上节目</span></div>
       <small>STYLE PACK V1</small>
     </div>
-    <div className="look-toggles">{([{key:'scoreboard',name:'顶部计分板',icon:Radio},{key:'players',name:'底部五行计分板',icon:Eye},{key:'ticker',name:'公告字幕',icon:PictureInPicture2}] as const).map(v=><button aria-pressed={state.overlay[v.key]} className={state.overlay[v.key]?'enabled':''} key={v.key} onClick={()=>void send({type:'set-overlay',patch:{[v.key]:!state.overlay[v.key]}}).catch(()=>{})}><v.icon size={14}/>{v.name}<span>{state.overlay[v.key]?'ON':'OFF'}</span></button>)}</div>
+    <div className="look-toggles">{([{key:'scoreboard',name:'顶部计分板',icon:Radio},{key:'players',name:'底部五行计分板',icon:Eye},{key:'ticker',name:'公告字幕',icon:PictureInPicture2}] as const).map(v=><button aria-pressed={overlay[v.key]} className={overlay[v.key]?'enabled':''} key={v.key} onClick={()=>{const patch={[v.key]:!overlay[v.key]};if(onOverlayChange)onOverlayChange(patch);else void send({type:'set-overlay',patch}).catch(()=>{});}}><v.icon size={14}/>{v.name}<span>{overlay[v.key]?'ON':'OFF'}</span></button>)}</div>
   </section>;
 }

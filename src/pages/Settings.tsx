@@ -11,10 +11,11 @@ import { CinematicWorkspace } from '../components/CinematicWorkspace';
 import { BroadcastAnalysisControls } from '../components/BroadcastAnalysis';
 import { CLIENT_POLL_MIN, CLIENT_POLL_MAX, normalizeClientPollInterval } from '../../shared/client-poll';
 import {ProductionDesk} from '../components/ProductionDesk';
+import {TaskTabs} from '../components/ConsoleUI';
 import {GraphicControls} from '../components/GraphicControls';
 import {useConfigDraft} from '../useConfigDraft';
 import { useEffect, useRef, useState } from 'react';
-import { Activity, Check, Copy, ExternalLink, Layers, Monitor, Palette, Pause, Play, Plug, Radio, RefreshCw, Save, Settings2, Smartphone, Timer, Users, Volume2, Wifi } from 'lucide-react';
+import { Activity, Check, Copy, ExternalLink, Layers, Monitor, Palette, Pause, Play, Plug, Radio, RefreshCw, Save, Search, Settings2, Smartphone, Timer, Users, Volume2, Wifi, X } from 'lucide-react';
 import type { BroadcastState, StateContext } from '../../shared/types';
 import { api, outputUrl } from '../lib';
 import { ReplayDiagnostics } from '../components/ReplayDiagnostics';
@@ -59,16 +60,34 @@ const settingsTasks: { id: SettingsSection; label: string; description: string; 
   { id: 'appearance', label: '工作台外观', description: '操作界面主题与本机偏好', icon: Palette },
 ];
 
+const settingsGroups: {label:string;ids:SettingsSection[]}[] = [
+  {label:'信号与输出',ids:['data','video','audio','output']},
+  {label:'节目制作',ids:['graphics','transitions','cinematics','vdo']},
+  {label:'资源与扩展',ids:['resources','audience','integrations','demo']},
+  {label:'工作台',ids:['collaboration','diagnostics','appearance']},
+];
+const graphicsTasks = [
+  {id:'identity',label:'身份与品牌'}, {id:'analysis',label:'局内与分析'}, {id:'countdown',label:'赛前倒计时'},
+  {id:'players',label:'选手画面'}, {id:'native',label:'原生 HUD'}, {id:'graphics',label:'临场图形'},
+] as const;
+type GraphicsTask = typeof graphicsTasks[number]['id'];
+
 type Props = StateContext & { onOpenStudio?: () => void; outputReady?: boolean; onOutputReady?: (ready: boolean) => void; focusTask?:{section:SettingsSection;sequence:number} };
 export function Settings({ state, send, notify, champions, seat, connected, onOpenStudio, outputReady, onOutputReady, focusTask }: Props) {
   const settingsDraft=useConfigDraft(state.settings,state.production?.configVersion),settings=settingsDraft.draft,setSettings=settingsDraft.setDraft;
   const [section, setSection] = useState<SettingsSection>('output');
-  useEffect(()=>{if(focusTask)setSection(focusTask.section);},[focusTask]);
+  const [taskSearch,setTaskSearch] = useState('');
+  const [graphicsTask,setGraphicsTask] = useState<GraphicsTask>('identity');
+  const [audioDevices,setAudioDevices] = useState(false);
+  const directoryTasks = settingsGroups.flatMap(group=>group.ids.map(id=>settingsTasks.find(t=>t.id===id)!)).filter(task=>`${task.label} ${task.description}`.includes(taskSearch.trim()));
+  const directoryTabStop = directoryTasks.some(task=>task.id===section) ? section : directoryTasks[0]?.id;
+  useEffect(()=>{if(focusTask){setTaskSearch('');setSection(focusTask.section);}},[focusTask]);
+  useEffect(()=>{document.getElementById('settings-nav-'+section)?.scrollIntoView({block:'nearest'});},[section,taskSearch]);
   const workspaceScroll = useRef<HTMLDivElement>(null);
   const operationActive = useRef(false);
   const [operationError, setOperationError] = useState('');
   const [operationReceipt, setOperationReceipt] = useState('');
-  useEffect(() => { workspaceScroll.current?.scrollTo({ top: 0 }); }, [section]);
+  useEffect(() => { workspaceScroll.current?.scrollTo({ top: 0 }); }, [section,graphicsTask]);
   const overlayDraft=useConfigDraft(state.overlay,state.production?.configVersion),overlay=overlayDraft.draft,setOverlay=overlayDraft.setDraft;
   const [pending, setPending] = useState<string | null>(null);
   const [scenes, setScenes] = useState<ObsScene[]>([]);
@@ -138,27 +157,32 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
     patch: { ...settings, pollInterval: normalizeClientPollInterval(settings.pollInterval) },
   }), '客户端设置已保存');
   const saveOverlay = () => run('save-overlay', () => send({
-    type: 'set-overlay', expectedConfigVersion: overlayDraft.baseVersion.current, patch: overlay,
-  }), '节目包装已保存到待播，核对预监后再整体切入');
+    type: 'set-overlay', expectedConfigVersion: overlayDraft.baseVersion.current, patch: overlayDraft.localPatch,
+  }), '基础包装草稿已保存到待播，核对预监后切入');
+  const sharedGraphics = graphicsTask === 'identity' || graphicsTask === 'analysis';
+  const graphicsChanges = Object.keys(overlayDraft.localPatch).length;
 
   return <div className="settings-workspace">
     <aside className="settings-directory">
       <div className="settings-directory-title"><Settings2 size={18} /><strong>连接与输出</strong></div>
+      <label className="settings-directory-search"><Search size={16}/><input aria-label="搜索设置任务" placeholder="搜索任务" value={taskSearch} onChange={event=>setTaskSearch(event.target.value)}/>{taskSearch&&<button aria-label="清空任务搜索" onClick={()=>setTaskSearch('')}><X size={15}/></button>}</label>
       <nav role="tablist" aria-orientation="vertical" aria-label="连接与输出任务">
-        {settingsTasks.map((task, index) => <button key={task.id} id={'settings-nav-' + task.id} role="tab"
-          aria-selected={section === task.id} aria-controls="settings-current-task" tabIndex={section === task.id ? 0 : -1}
+        {settingsGroups.map(group=><div className="settings-directory-group" key={group.label} hidden={!directoryTasks.some(task=>group.ids.includes(task.id))}><h2>{group.label}</h2>{directoryTasks.filter(task=>group.ids.includes(task.id)).map(task => <button key={task.id} id={'settings-nav-' + task.id} role="tab"
+          aria-selected={section === task.id} aria-controls="settings-current-task" tabIndex={directoryTabStop === task.id ? 0 : -1}
           onClick={() => setSection(task.id)}
           onKeyDown={event => {
-            const next = event.key === 'ArrowDown' ? (index + 1) % settingsTasks.length
-              : event.key === 'ArrowUp' ? (index + settingsTasks.length - 1) % settingsTasks.length
-              : event.key === 'Home' ? 0 : event.key === 'End' ? settingsTasks.length - 1 : -1;
+            const index = directoryTasks.findIndex(item=>item.id===task.id);
+            const next = event.key === 'ArrowDown' ? (index + 1) % directoryTasks.length
+              : event.key === 'ArrowUp' ? (index + directoryTasks.length - 1) % directoryTasks.length
+              : event.key === 'Home' ? 0 : event.key === 'End' ? directoryTasks.length - 1 : -1;
             if (next < 0) return;
-            event.preventDefault(); setSection(settingsTasks[next].id);
-            (event.currentTarget.parentElement?.children[next] as HTMLButtonElement)?.focus();
+            event.preventDefault(); setSection(directoryTasks[next].id);
+            document.getElementById('settings-nav-'+directoryTasks[next].id)?.focus();
           }}>
           <task.icon size={17} /><span>{task.label}</span>
           {(task.id === 'data' && settingsDraft.dirty || task.id === 'graphics' && overlayDraft.dirty) && <i aria-label="有本地修改" />}
-        </button>)}
+        </button>)}</div>)}
+        {!directoryTasks.length&&<p className="settings-search-empty">没有匹配任务，试试“声音”“包装”或“外观”。</p>}
       </nav>
       <div className="settings-directory-footer">
         <span>{connected === false ? '同步中断' : '工作台已同步'}</span>
@@ -173,6 +197,8 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
         {section === 'graphics' && <span className="settings-task-state">修改先进入待播</span>}
         {section === 'appearance' && <span className="settings-task-state">不改变节目画面</span>}
       </header>
+      {section==='graphics'&&<div className="settings-subtask-heading"><TaskTabs items={graphicsTasks} value={graphicsTask} onChange={setGraphicsTask} label="节目包装子任务"/><p className="settings-scope-note">{sharedGraphics?'基础包装草稿 · 身份、品牌与局内分析共用下方保存条':graphicsTask==='countdown'?'独立操作 · 倒计时按钮直接提交到待播':graphicsTask==='players'?'独立保存 · 选手画面使用本面板的保存按钮':graphicsTask==='native'?'独立保存 · 原生 HUD 与 BP 统计各自提交配置':'独立保存 · 各临场图形使用自身保存按钮'}{!sharedGraphics&&graphicsChanges>0&&<button onClick={()=>setGraphicsTask('identity')}>{graphicsChanges} 项基础包装待保存 →</button>}</p></div>}
+      {section==='audio'&&<div className="settings-audio-toolbar"><span><Volume2 size={16}/>增益、静音与播放直接作用于节目</span><button className="button small" aria-expanded={audioDevices} onClick={()=>setAudioDevices(!audioDevices)}><Settings2 size={15}/>{audioDevices?'收起采集设备':'采集设备'}</button></div>}
       <div className="settings-task-scroll" ref={workspaceScroll}>
         {(settingsDraft.conflict || overlayDraft.conflict) && <div className="settings-conflict" role="alert">
           <strong>其他席位更新了配置，本地输入已保留</strong>
@@ -215,7 +241,10 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
           </section>
         </div>
 
-        <div className="settings-task-pane" hidden={!(['video', 'audio', 'output'] as string[]).includes(section)}>
+        <div className="settings-task-pane settings-mixer-pane" hidden={section !== 'audio'}>
+          <ProductionDesk {...{ state, send, notify, champions, seat, connected }} initialTask="audio" allowedTasks={['audio']} />
+        </div>
+        <div className="settings-task-pane settings-engine-pane" hidden={!(['video', 'audio', 'output'] as string[]).includes(section) || section==='audio'&&!audioDevices}>
           <EmbeddedObs notify={notify} onStatus={setObsEngine} onOpenStudio={onOpenStudio} onConnectExternal={() => connect('obs')}
             outputReady={outputReady} onOutputReady={onOutputReady} connectionBusy={busy} section={section} onSection={setSection} controlReason={controlReason} />
         </div>
@@ -238,10 +267,6 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
           </section>}
         </div>
 
-        <div className="settings-task-pane settings-mixer-pane" hidden={section !== 'audio'}>
-          <ProductionDesk {...{ state, send, notify, champions, seat, connected }} initialTask="audio" allowedTasks={['audio']} />
-        </div>
-
         {section === 'cinematics' && <div className="settings-task-pane"><GlobalShortcutControls {...{state,seat,connected,send,notify,champions}}/><CinematicWorkspace state={state} disabled={seat?.role!=='director'||state.production?.control?.owner!==seat.id}/></div>}
         {section === 'resources' && <div className="settings-task-pane"><ResourceMaintenanceWorkspace/></div>}
         {section === 'transitions' && <div className="settings-task-pane"><TransitionControls disabled={connected===false||seat?.role!=='director'||state.production?.control?.owner!==seat.id} value={state.broadcastTransitions} receipt={state.transitionReceipt} scenes={[...Object.entries(sceneInfo).map(([id,v])=>({id:id as import('../../shared/types').Scene,name:v.name})),...(state.customScenes??[]).map(s=>({id:s.id,name:s.name}))]} onSave={async value=>{await api('/api/transitions',{method:'POST',body:JSON.stringify(value)});notify('转场配置已保存');}}/></div>}
@@ -250,11 +275,11 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
         {section === 'audience' && <div className="settings-task-pane"><TwitchAudienceWorkspace/></div>}
         {section === 'integrations' && <div className="settings-task-pane"><IntegrationWorkspace disabled={seat?.role!=='director'||state.production?.control?.owner!==seat.id}/></div>}
         <div className="settings-task-pane" hidden={section !== 'graphics'}>
-          <section className="settings-block"><header><h2>BP 与选手布局</h2></header><label className="field">BP 构图<select aria-label="BP 构图" value={overlay.draftLayout??'bottom'} onChange={e=>setOverlay({...overlay,draftLayout:e.target.value as 'bottom'|'full-height'})}><option value="bottom">底部横排</option><option value="full-height">全高双队</option></select></label><label className="settings-toggle"><span>双侧英雄状态栏<small>英雄、等级、生命资源、技能冷却、计分与复活倒计时</small></span><input type="checkbox" checked={!!overlay.championTabs} onChange={e=>setOverlay({...overlay,championTabs:e.target.checked})}/></label></section>
-          <section className="settings-block settings-analysis-block"><header><h2>局内分析与事件图层</h2><p>保存到待播后，在导播台预监局内计分板并 TAKE。</p></header><BroadcastAnalysisControls mode={overlay.analysisMode??'off'} onModeChange={analysisMode=>setOverlay({...overlay,analysisMode})} killFeed={!!overlay.killFeed} onKillFeedChange={killFeed=>setOverlay({...overlay,killFeed})} announcer={!!overlay.announcer} onAnnouncerChange={announcer=>setOverlay({...overlay,announcer})} inhibitors={!!overlay.inhibitorTimers} onInhibitorsChange={inhibitorTimers=>setOverlay({...overlay,inhibitorTimers})}/><label className="settings-toggle"><span>L 形品牌框<small>内置 OBS 游戏画面等比缩放，左侧选手与底部品牌</small></span><input type="checkbox" checked={!!overlay.lFrame} onChange={e=>setOverlay({...overlay,lFrame:e.target.checked})}/></label><label className="settings-toggle"><span>完整顶部计分板<small>显示击杀、双方经济、资源与比赛时钟</small></span><input type="checkbox" checked={!!overlay.fullScoreboard} onChange={e=>setOverlay({...overlay,fullScoreboard:e.target.checked})}/></label></section>
-          <section className="settings-block">
-            <header><h2>ARENA 节目身份</h2><p>包装编辑保存后进入待播；在预监核对，再由主导播切入正式节目。</p></header>
-            <div className="settings-look"><BroadcastLook {...{ state, champions, send, notify }} /></div>
+          <section className="settings-block" hidden={graphicsTask!=='identity'}><header><h2>BP 与选手布局</h2></header><label className="field">BP 构图<select aria-label="BP 构图" value={overlay.draftLayout??'bottom'} onChange={e=>setOverlay({...overlay,draftLayout:e.target.value as 'bottom'|'full-height'})}><option value="bottom">底部横排</option><option value="full-height">全高双队</option></select></label><label className="settings-toggle"><span>双侧英雄状态栏<small>英雄、等级、生命资源、技能冷却、计分与复活倒计时</small></span><input type="checkbox" checked={!!overlay.championTabs} onChange={e=>setOverlay({...overlay,championTabs:e.target.checked})}/></label></section>
+          <section className="settings-block settings-analysis-block" hidden={graphicsTask!=='analysis'}><header><h2>局内分析与事件图层</h2><p>保存到待播后，在导播台预监局内计分板并 TAKE。</p></header><BroadcastAnalysisControls mode={overlay.analysisMode??'off'} onModeChange={analysisMode=>setOverlay({...overlay,analysisMode})} killFeed={!!overlay.killFeed} onKillFeedChange={killFeed=>setOverlay({...overlay,killFeed})} announcer={!!overlay.announcer} onAnnouncerChange={announcer=>setOverlay({...overlay,announcer})} inhibitors={!!overlay.inhibitorTimers} onInhibitorsChange={inhibitorTimers=>setOverlay({...overlay,inhibitorTimers})}/><label className="settings-toggle"><span>L 形品牌框<small>内置 OBS 游戏画面等比缩放，左侧选手与底部品牌</small></span><input type="checkbox" checked={!!overlay.lFrame} onChange={e=>setOverlay({...overlay,lFrame:e.target.checked})}/></label><label className="settings-toggle"><span>完整顶部计分板<small>显示击杀、双方经济、资源与比赛时钟</small></span><input type="checkbox" checked={!!overlay.fullScoreboard} onChange={e=>setOverlay({...overlay,fullScoreboard:e.target.checked})}/></label></section>
+          <section className="settings-block" hidden={graphicsTask!=='identity'}>
+            <header><h2>ARENA 节目身份</h2><p>基础包装草稿保存后进入待播；在预监核对，再由主导播切入正式节目。</p></header>
+            <div className="settings-look"><BroadcastLook {...{ state, champions, send, notify }} overlay={overlay} onOverlayChange={patch=>setOverlay(current=>({...current,...patch}))} /></div>
             <div className="settings-fields settings-two-column">
               <div className="settings-toggle-list">
                 {([{ key: 'objectives', name: '地图资源', note: '顶部显示防御塔、巨龙与男爵' }, { key: 'goldDiff', name: '经济差', note: '数据可用时显示双方经济' }] as const).map(item => <label className="settings-toggle" key={item.key}><span>{item.name}<small>{item.note}</small></span><input type="checkbox" checked={overlay[item.key]} onChange={event => setOverlay({ ...overlay, [item.key]: event.target.checked })} /></label>)}
@@ -268,7 +293,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
               <label className="field settings-span-all">底部公告<textarea rows={3} maxLength={500} value={overlay.tickerText} onChange={event => setOverlay({ ...overlay, tickerText: event.target.value })} placeholder="填写本场赛事的公告内容" /></label>
             </div>
           </section>
-          <section className="settings-block">
+          <section className="settings-block" hidden={graphicsTask!=='countdown'}>
             <header><h2>赛前倒计时</h2><p>倒计时单独提交；按既有待播与切入流程核对节目。</p></header>
             <div className="settings-countdown">
               <label className="field">时长（秒）<input type="number" min="1" max="86400" value={countdown} onChange={event => setCountdown(Number(event.target.value))} /></label>
@@ -277,10 +302,9 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
               <span>{state.overlay.countdownEnd ? '结束时间 ' + new Date(state.overlay.countdownEnd).toLocaleTimeString('zh-CN') : '尚未启动倒计时'}</span>
             </div>
           </section>
-          <LiveBottomControls {...{ state, champions, send, notify }} />
-          <NativeHudControls {...{ state, champions, send, notify }} />
-          <DraftStatisticsControls {...{ state, send, notify, seat, connected }} />
-          <GraphicControls {...{ state, send, notify, champions }} />
+          <div className="graphics-subtask" hidden={graphicsTask!=='players'}><LiveBottomControls {...{ state, champions, send, notify }} /></div>
+          <div className="graphics-subtask" hidden={graphicsTask!=='native'}><NativeHudControls {...{ state, champions, send, notify }} /><DraftStatisticsControls {...{ state, send, notify, seat, connected }} /></div>
+          <div className="graphics-subtask" hidden={graphicsTask!=='graphics'}><GraphicControls {...{ state, send, notify, champions }} /></div>
         </div>
 
         <div className="settings-task-pane" hidden={section !== 'diagnostics'}>
@@ -323,7 +347,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
       </div>
 
       {section === 'data' && <footer className="settings-savebar"><div><strong>{settingsDraft.dirty ? '客户端配置有未保存修改' : '客户端配置已同步'}</strong><small>连接服务时会一并提交当前客户端设置</small></div><button className="button" disabled={!settingsDraft.dirty || busy} onClick={settingsDraft.discard}>放弃修改</button><button className="button primary" disabled={!settingsDraft.dirty || busy} onClick={() => void saveSettings()}><Save size={14} />{pending === 'save-settings' ? '保存中…' : '保存客户端设置'}</button></footer>}
-      {section === 'graphics' && <footer className="settings-savebar"><div><strong>{overlayDraft.dirty ? '包装有未保存修改' : '包装与待播配置一致'}</strong><small>保存不改变正在播出的节目</small></div><button className="button" disabled={!overlayDraft.dirty || busy} onClick={overlayDraft.discard}>放弃修改</button><button className="button primary" disabled={!overlayDraft.dirty || busy} onClick={() => void saveOverlay()}><Save size={14} />{pending === 'save-overlay' ? '保存中…' : '保存到待播'}</button></footer>}
+      {section === 'graphics' && sharedGraphics && <footer className="settings-savebar" aria-label="基础包装草稿保存"><div><strong>{overlayDraft.dirty ? `${graphicsChanges} 项基础包装修改待保存` : '基础包装与待播配置一致'}</strong><small>范围：身份、品牌与局内分析 · 核对预监后 TAKE</small></div><button className="button" disabled={!overlayDraft.dirty || busy} onClick={overlayDraft.discard}>放弃修改</button><button className="button primary" disabled={!overlayDraft.dirty || busy} onClick={() => void saveOverlay()}><Save size={14} />{pending === 'save-overlay' ? '保存中…' : '保存基础包装到待播'}</button></footer>}
     </section>
   </div>;
 }

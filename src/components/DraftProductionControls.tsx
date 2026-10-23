@@ -11,6 +11,7 @@ export function DraftProductionControls(
   ctx: StateContext & {
     task: DraftControlTask;
     onTaskChange: (task: DraftControlTask) => void;
+    hideNavigation?: boolean;
   },
 ) {
   const { state, task, onTaskChange } = ctx,
@@ -28,7 +29,7 @@ export function DraftProductionControls(
   ];
   return (
     <section className="bp-production" aria-label="BP 归属与同步控制">
-      <div className="bp-task-tabs" role="tablist" aria-label="BP 制作任务">
+      <div className="bp-task-tabs" role="tablist" aria-label="BP 制作任务" hidden={ctx.hideNavigation}>
         {tabs.map((tab, index) => (
           <button
             key={tab.id}

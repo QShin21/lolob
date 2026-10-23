@@ -54,6 +54,14 @@ const cameras = Array.from({ length: 10 }, (_, index) => ({
   name: `Fixture camera ${index + 1}`,
   id: `camera-${index}`,
 }));
+// Keep the synthetic feed sampling while UI interactions run. Expiry is tested explicitly below.
+let refreshGold = true;
+function refreshFixtureGold() {
+  if (!refreshGold) return;
+  const sampledAt = new Date().toISOString();
+  state.connections.live = { ...state.connections.live, status: "connected", updatedAt: sampledAt };
+  for (const player of state.players) Object.assign(player, { goldSource: "api", goldSampledAt: sampledAt, goldGameTime: state.gameTime });
+}
 const requests = [],
   errors = [],
   checks = [];
@@ -90,6 +98,7 @@ const json = (res, value, status = 200) => {
 const server = http.createServer(async (req, res) => {
   try {
     if (req.url === "/fixture/state") {
+      refreshFixtureGold();
       json(res, state);
       return;
     }
@@ -115,6 +124,7 @@ const server = http.createServer(async (req, res) => {
       const action = JSON.parse(Buffer.concat(chunks).toString());
       requests.push(action);
       state = applyAction(state, action);
+      refreshFixtureGold();
       if (action.type === "take" && state.production?.application)
         state.production.application.status = "applied";
       json(res, state);
@@ -293,6 +303,7 @@ try {
     .click();
   await page.locator(".cast-gold-ranking").waitFor();
   const expected = goldRanking(state);
+  assert.ok(expected.every(row => Number.isFinite(row.gold)), "fresh synthetic feed supplies ten numeric gold samples");
   assert.deepEqual(
     await page
       .locator(".cast-gold-columns li")
@@ -323,7 +334,7 @@ try {
   );
   assert.deepEqual(
     await page.locator(".cast-gold-amount").allTextContents(),
-    expected.map((row) => Math.round(row.gold).toLocaleString("zh-CN")),
+    expected.map((row) => row.gold === null ? "—" : Math.round(row.gold).toLocaleString("zh-CN")),
   );
   await page
     .locator(".fixture-stage")
@@ -331,6 +342,13 @@ try {
   checks.push(
     "Unified descending ranking renders five rows per column, ten local champion icons, bars and full gold numbers",
   );
+  refreshGold = false;
+  state.players.forEach(player => { player.goldSampledAt = new Date(Date.now() - 30000).toISOString(); });
+  await page.waitForFunction(() => document.querySelectorAll(".cast-gold-columns li.is-unavailable").length === 10);
+  assert.deepEqual(await page.locator(".cast-gold-amount").allTextContents(), Array(10).fill("—"));
+  refreshGold = true;
+  await page.waitForFunction(() => document.querySelectorAll(".cast-gold-columns li.is-unavailable").length === 0);
+  checks.push("Expired synthetic gold shows unavailable values, then recovers only after fresh samples");
   // Check every actual hero in both runtime programs, including the final short batch.
   const coverage = new Set();
   for (let start = 0; start < champions.length; start += 10) {
@@ -344,11 +362,13 @@ try {
       window.broadcastFixture.setState(value);
       window.broadcastFixture.setScene("draft");
     }, state);
-    await page.waitForFunction(() =>
-      [...document.querySelectorAll(".cast-draft-card img")].every(
-        (image) => image.complete && image.naturalWidth === 400,
-      ),
-    );
+    await page.waitForFunction((ids) => {
+      const images = [...document.querySelectorAll(".cast-draft-card img")];
+      return images.length === ids.length && images.every((image, i) =>
+        image.complete && new URL(image.src).pathname.includes('/' + ids[i] + '-') &&
+        (image.src.includes('-draftCompact.webp') ? image.naturalWidth === 360 && image.naturalHeight === 760
+          : image.src.includes('-draftExpanded.webp') && image.naturalWidth === 800 && image.naturalHeight === 800));
+    }, batch.map(champion => champion.id));
     assert.equal(
       await page.locator(".cast-draft-card img").count(),
       batch.length,
@@ -368,16 +388,13 @@ try {
         .locator(".fixture-stage")
         .screenshot({ path: path.join(evidence, "draft-local-art.png") });
     await page.evaluate(() => window.broadcastFixture.setScene("lineup"));
-    await page.waitForFunction(() =>
-      [...document.querySelectorAll(".cast-lineup-photo img")].every(
-        (image) =>
-          image.complete &&
-          image.naturalWidth === 400 &&
-          image.naturalHeight === 864,
-      ),
-    );
+    await page.waitForFunction((ids) => {
+      const images = [...document.querySelectorAll(".rl-art img")];
+      return images.length === ids.length && images.every(image => image.complete && image.naturalWidth === 1200 && image.naturalHeight === 312) &&
+        images.map(image => new URL(image.src).pathname).sort().join('|') === ids.map(id => '/lineup-banners/' + id + '.webp').sort().join('|');
+    }, batch.map(champion => champion.id));
     assert.equal(
-      await page.locator(".cast-lineup-photo img").count(),
+      await page.locator(".rl-art img").count(),
       batch.length,
     );
     if (start === 0)
@@ -457,11 +474,11 @@ try {
     );
     await page.locator(".cast-scene-" + scene).waitFor();
     if (scene === "draft")
-      assert.equal(await page.locator(".cast-history-game").count(), 8);
+      assert.equal(await page.locator(".cast-history-game.is-history").count(), 8);
     if (scene === "lineup")
       await page.waitForFunction(() =>
-        [...document.querySelectorAll(".cast-lineup-photo img")].every(
-          (i) => i.complete && i.naturalWidth > 0,
+        document.querySelectorAll(".rl-art img").length === 10 && [...document.querySelectorAll(".rl-art img")].every(
+          (i) => i.complete && i.naturalWidth === 1200,
         ),
       );
     if (scene === "schedule")

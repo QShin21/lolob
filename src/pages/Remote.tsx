@@ -13,7 +13,7 @@ import { programState } from "../../shared/production";
 import type { ControlSeat, Notice, Scene, StateContext } from "../../shared/types";
 import { MonitorPane } from "../components/MonitorPane";
 import { BroadcastCanvas } from "../components/BroadcastCanvas";
-import { Notification, TakeControl } from "../components/ConsoleUI";
+import { Notification, TakeControl, TaskTabs } from "../components/ConsoleUI";
 import { ProductionDesk } from "../components/ProductionDesk";
 import { SeatRecovery, type SeatRecoveryProps } from "../components/SeatRecovery";
 import {
@@ -69,6 +69,8 @@ export function Remote(
   const viewport = useRemoteViewport();
   const [monitor, setMonitor] = useState<"program" | "preview">("program"),
     [seatIssue, setSeatIssue] = useState("");
+  const [remoteView,setRemoteView] = useState<'tasks'|'monitor'>('tasks');
+  useEffect(()=>{if(displaySeat)setRemoteView(displaySeat.role==='readonly'?'monitor':'tasks');},[displaySeat?.role]);
   const seatIdentity = useRef(seat?.id);
   useEffect(() => {
     if (seatIdentity.current !== seat?.id) {
@@ -151,7 +153,9 @@ export function Remote(
           <Notification notice={toast} dismiss={dismissNotice} />
         </div>
       )}
-      <section className="remote-monitor" aria-label="节目与预监核对">
+      <div className="remote-quick-status"><div><span className="bus-tag pgm">PGM</span><strong>{sceneDetails(onAir,state.programScene).name}</strong></div><div><span className="bus-tag pvw">PVW</span><strong>{sceneDetails(state,state.previewScene).name}</strong></div><small>{applicationLabel(state)} · {pending.length} 类待播变化</small></div>
+      <div className="remote-surface-tabs"><TaskTabs label="遥控工作区" value={remoteView} onChange={setRemoteView} items={[{id:'tasks',label:role==='readonly'?'状态详情':'当前席位任务'},{id:'monitor',label:'节目与预监'}]}/></div>
+      <section className="remote-monitor" aria-label="节目与预监核对" hidden={remoteView!=='monitor'}>
         <div className="remote-match">
           <span title={displayState.match.title}>
             {displayState.match.title}
@@ -274,7 +278,7 @@ export function Remote(
           </p>
         </div>
       )}
-      <section className="remote-role-task" aria-label={identity.title}>
+      <section className="remote-role-task" aria-label={identity.title} hidden={remoteView!=='tasks'}>
         <header className="remote-task-heading">
           <h2>{identity.title}</h2>
           <p>{identity.detail}</p>

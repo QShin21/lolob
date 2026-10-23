@@ -7,22 +7,29 @@ import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tsImport } from 'tsx/esm/api';
+import { createSyntheticAdaptersHook } from './ui-测试辅助.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const evidence = path.join(root, 'verification-output', `ui-theme-${version}`);
 await mkdir(evidence, { recursive: true });
 const { scenes } = await tsImport('../server/state.ts', import.meta.url);
+const { captureProgram } = await tsImport('../shared/production.ts', import.meta.url);
+const { defaultTransitionSettings } = await tsImport('../shared/broadcast-transitions.ts', import.meta.url);
 const seed = createSeed();
 seed.paused = true;
 seed.previewScene = seed.programScene = 'standby';
+seed.overlay.nativeHud = 'off';
+seed.broadcastTransitions = defaultTransitionSettings();
+seed.production.program = captureProgram(seed);
 const dir = await mkdtemp(path.join(tmpdir(), 'riftcast-ui-theme-'));
 await writeFile(path.join(dir, 'state.json'), JSON.stringify(seed));
+const synthetic = await createSyntheticAdaptersHook({ root, work: dir, fixture: seed });
 const port = 52000 + Math.floor(Math.random() * 10000);
 const base = `http://127.0.0.1:${port}`;
-const child = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], {
+const child = spawn(process.execPath, ['--import', 'tsx', ...synthetic.importArgs, 'server/index.ts'], {
   cwd: root, windowsHide: true,
-  env: { ...process.env, PORT: String(port), ENABLE_LAN: '0', RIFTCAST_DATA_DIR: dir,
+  env: { ...process.env, ...synthetic.env, PORT: String(port), ENABLE_LAN: '0', RIFTCAST_DATA_DIR: dir,
     RIFTCAST_AUTO_CONNECT: '0', RIFTCAST_OBS_AUTOSTART: '0', RIFTCAST_OFFLINE: '1' },
   stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
 });
@@ -126,9 +133,33 @@ try {
   await overlay.locator('.broadcast-canvas').waitFor();
   await overlay.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important}' });
   assert.equal(await theme(overlay), 'dark');
+  const offline = await page.evaluate(async () => {
+    const before = await fetch('/api/state').then(r => r.json());
+    const response = await fetch('/api/action', { method: 'POST', headers: {
+      'Content-Type': 'application/json', 'x-seat-token': sessionStorage.getItem('riftcast-seat-token'),
+    }, body: JSON.stringify({ type: 'take', requestId: crypto.randomUUID(), expectedConfigVersion: before.production.configVersion }) });
+    return { before, status: response.status, body: await response.json(), after: await fetch('/api/state').then(r => r.json()) };
+  });
+  assert.equal(await page.getByRole('region', { name: '固定播出与应急控制' }).getByRole('button', { name: /^切入节目/ }).isEnabled(), false);
+  assert.equal(offline.status, 400);
+  assert.equal(offline.body.error, '请先连接 OBS，再核对预监后切入');
+  assert.deepEqual(offline.after.production.program, offline.before.production.program);
+  assert.equal(offline.after.programScene, offline.before.programScene);
+  tests.push('offline TAKE is disabled and rejected by HTTP; programme snapshot and scene stay unchanged');
+  await page.evaluate(async () => {
+    const response = await fetch('/api/connect', { method: 'POST', headers: {
+      'Content-Type': 'application/json', 'x-seat-token': sessionStorage.getItem('riftcast-seat-token'),
+    }, body: JSON.stringify({ target: 'obs' }) });
+    if (!response.ok) throw Error((await response.json()).error);
+    const state = await response.json();
+    if (state.connections.obs.status !== 'connected' || !state.connections.obs.detail.includes('SYNTHETIC')) throw Error('Expected labelled synthetic OBS connection');
+  });
   for (const scene of scenes) {
     await action({ type: 'preview-scene', scene });
-    await action({ type: 'take' });
+    const accepted = await action({ type: 'take' });
+    assert.equal(accepted.production.application.status, 'applied');
+    assert.equal(accepted.transitionReceipt.published, true);
+    assert.match(accepted.transitionReceipt.detail, /SYNTHETIC/);
     await overlay.locator(`.cast-scene-${scene}`).waitFor();
     await studio.locator(`.monitor-pane.preview .cast-scene-${scene}`).waitFor();
     await studio.locator(`.monitor-pane.program .cast-scene-${scene}`).waitFor();
@@ -187,8 +218,11 @@ try {
   await blocked.close();
   tests.push('blocked storage is disclosed on first load and both themes remain switchable');
   assert.deepEqual(errors, []);
+  const syntheticEvents = (await readFile(synthetic.auditFile, 'utf8')).trim().split('\n').filter(Boolean).map(line => JSON.parse(line));
+  assert.equal(syntheticEvents.filter(event => event.kind === 'transition').length, scenes.length);
+  await writeFile(path.join(evidence, 'synthetic-adapter-events.json'), JSON.stringify(syntheticEvents, null, 2));
   await writeFile(path.join(evidence, 'report.json'), JSON.stringify({ version, tests, errors, comparisons,
-    boundary: 'Built Chromium UI with an isolated paused demo service and offline resources. No operator data, OBS, Riot game, physical media, streaming platform or live production was exercised.' }, null, 2));
+    engine: 'synthetic-test-only', boundary: synthetic.boundary }, null, 2));
   await rm(path.join(evidence, 'failure.json'), { force: true });
   await rm(path.join(evidence, 'failure.png'), { force: true });
   console.log(`UI theme: ${tests.length} checks passed. Evidence: ${evidence}`);

@@ -3,7 +3,7 @@ import { styleRef } from '../../shared/style-packs';
 import { useRef, useState } from "react";
 import type { BroadcastState, Champion, Scene, CustomScene, StateContext } from "../../shared/types";
 import { sceneDetails, sceneInfo } from "../lib";
-import { Palette, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { ArrowLeft, Palette, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
 import { CustomSceneEditor } from "./CustomSceneEditor";
 import { TaskTabs } from "./ConsoleUI";
 import { SceneCard, reportPageNames } from "./SceneCard";
@@ -100,7 +100,7 @@ export function SceneLibrary(props: {
                   )
                 }
               >
-                {favorites.includes(scene) ? "★" : "☆"}
+                <Star size={15} fill={favorites.includes(scene) ? 'currentColor' : 'none'}/>
               </button>
               {group === "favorites" && (
                 <button
@@ -116,7 +116,7 @@ export function SceneLibrary(props: {
                     save(next);
                   }}
                 >
-                  ←
+                  <ArrowLeft size={15}/>
                 </button>
               )}
               {scene.startsWith('custom:') && <><button className="custom-scene-edit" disabled={!canEdit} title="编辑场景" aria-label={`编辑 ${sceneDetails(props.state,scene).name}`} onClick={() => setEditor(custom.find(s => s.id === scene)!)}><Pencil size={13}/></button><button disabled={!canEdit} title={customSceneFacts(custom.find(s => s.id === scene)!, props.state).deleteReason || '删除场景'} aria-label={`删除 ${sceneDetails(props.state,scene).name}`} onClick={() => { setDeleteError(''); setDeleting(custom.find(s => s.id === scene)!); }}><Trash2 size={13}/></button></>}

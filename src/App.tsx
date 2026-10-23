@@ -109,7 +109,7 @@ export default function App() {
           <Suspense fallback={<div className="page-loading" role="status">正在载入页面…</div>}>
             {visited.has('studio') && <div className="control-page control-studio-page" hidden={page !== 'studio'}><Studio {...ctx} onSettings={() => navigate('settings')} onDraft={() => navigate('draft')} onRecords={records}/></div>}
             {visited.has('draft') && <div className="control-page" hidden={page !== 'draft'}><Draft {...ctx} focusTask={draftFocus}/></div>}
-            {visited.has('data') && <div className="control-page" hidden={page !== 'data'}><LiveData {...ctx}/></div>}
+            {visited.has('data') && <div className="control-page" hidden={page !== 'data'}><LiveData {...ctx} onOpenConnections={()=>guideNavigate('settings','data')}/></div>}
             {visited.has('manage') && <div className="control-page" hidden={page !== 'manage'}><Management {...ctx} initialTab={managementTab} onOpenSettings={() => navigate('settings')}/></div>}
             {visited.has('settings') && <div className="control-page" hidden={page !== 'settings'}><Settings {...ctx} focusTask={settingsFocus} outputReady={streamReady} onOpenStudio={() => navigate('studio')} onOutputReady={setStreamReady}/></div>}
             {visited.has('help') && <div className="control-page" hidden={page !== 'help'}><Help state={state} onNavigate={guideNavigate}/></div>}

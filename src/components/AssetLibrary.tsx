@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Image, Search, Upload } from "lucide-react";
 import type { StateContext } from "../../shared/types";
 import { programState } from "../../shared/production";
@@ -41,6 +41,7 @@ export function AssetLibrary({
   notify,
   disabled = false,
 }: Pick<StateContext, "state" | "notify"> & { disabled?: boolean }) {
+  const uploadInput=useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState(""),
     [category, setCategory] = useState<keyof typeof categories>("other"),
     [filter, setFilter] = useState("all");
@@ -179,6 +180,7 @@ export function AssetLibrary({
           {progress === null ? "批量导入图片" : "正在导入…"}
           <input
             aria-label="批量导入图片"
+            ref={uploadInput}
             type="file"
             multiple
             accept="image/png,image/jpeg,image/webp,image/gif"
@@ -256,6 +258,7 @@ export function AssetLibrary({
                 PNG、JPEG、WebP、GIF；单张上限 8
                 MB。队标、人物与赞助商图片按实际授权导入。
               </p>
+              {!state.assets.length&&<button className="button primary" disabled={disabled||progress!==null} onClick={()=>uploadInput.current?.click()}><Upload size={16}/>选择图片导入</button>}
             </div>
           )}
         </div>

@@ -577,19 +577,10 @@ export function Management(
                   }
                 />
               ) : team ? (
-                <div className="domain-empty">
-                  <Users size={32} />
-                  <strong>{team.name}</strong>
-                  <p>
-                    选择左侧战队，编辑名称、稳定选手身份、游戏账号与照片。保存只进入待播资料。
-                  </p>
-                  <button
-                    className="button"
-                    disabled={!canEdit}
-                    onClick={() => editTeam(team)}
-                  >
-                    编辑战队资料
-                  </button>
+                <div className="manage-team-summary">
+                  <header><div className="manage-team-mark" style={{borderColor:team.color}}>{team.logo?<img src={team.logo} alt={`${team.name} 队标`}/>:<Users size={28}/>}</div><div><small>{team.tag}</small><h3>{team.name}</h3><p>{team.players.length} 名选手 · {team.players.filter(player=>!!player.account).length} 个已填账号</p></div><button className="button primary" disabled={!canEdit} onClick={()=>editTeam(team)}>编辑战队资料</button></header>
+                  <div className="manage-roster" aria-label="战队选手名单">{team.players.length?team.players.map((player,index)=><div className="manage-roster-player" key={player.id||index}><span className="manage-roster-role">{player.role||`选手 ${index+1}`}</span>{player.portrait?<img src={player.portrait} alt=""/>:<span className="manage-player-placeholder"><Users size={18}/></span>}<div><strong>{player.name||'姓名待填写'}</strong><small>{player.account||'游戏账号待填写'}</small></div><span className={player.account?'roster-complete':'roster-incomplete'}>{player.account?'已填账号':'待补充'}</span></div>):<div className="domain-empty"><p>这支战队还没有选手。编辑资料后可加入本局名单。</p><button className="button" disabled={!canEdit} onClick={()=>editTeam(team)}>添加选手</button></div>}</div>
+                  <p className="manage-team-note">队伍身份、选手账号与照片在这里核对。编辑保存后进入待播资料。</p>
                 </div>
               ) : (
                 <div className="domain-empty">先新建两支战队，再准备对阵。</div>

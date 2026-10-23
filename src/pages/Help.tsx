@@ -315,19 +315,13 @@ export function Help({
                 <span>{guide.group}</span>
                 <h2>{guide.title}</h2>
                 <p>{guide.summary}</p>
+                <button className="button primary guide-primary-action" onClick={()=>onNavigate(guide.page,guide.target)}>{guide.action}<ArrowRight size={16}/></button>
               </header>
               <ol className="guide-steps">
                 {guide.steps.map((step) => (
                   <li key={step}>{step}</li>
                 ))}
               </ol>
-              <button
-                className="button primary"
-                onClick={() => onNavigate(guide.page, guide.target)}
-              >
-                {guide.action}
-                <ArrowRight size={16} />
-              </button>
               <section className="guide-live-facts">
                 <h3>工作站当前事实</h3>
                 <dl className="domain-facts">

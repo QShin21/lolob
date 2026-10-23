@@ -47,7 +47,8 @@ export function LiveData({
   champions,
   send,
   notify,
-}: StateContext) {
+  onOpenConnections,
+}: StateContext & {onOpenConnections?:()=>void}) {
   const result = currentGameResult(sourceState),
     state = frozenGameState(sourceState);
   const [tab, setTab] = useState<"players" | "overview" | "events" | "health">(
@@ -350,6 +351,7 @@ export function LiveData({
                 {state.players.length
                   ? "没有匹配的选手，调整搜索或阵营范围。"
                   : "等待本局名单。连接客户端后，在这里核对十人数据。"}
+                {!state.players.length&&onOpenConnections&&<button className="button primary" onClick={onOpenConnections}>打开数据连接</button>}
               </div>
             )}
           </div>

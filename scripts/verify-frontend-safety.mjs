@@ -1,6 +1,6 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Focused browser regressions for the independent 35893d9 findings.
-// Real isolated HTTP + renderer; only the notification case uses a labelled engine stub.
+// Real isolated HTTP + renderer, with explicitly labelled synthetic device acknowledgements.
 import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -9,6 +9,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tsImport } from 'tsx/esm/api';
+import { createSyntheticAdaptersHook, syntheticBoundary } from './ui-测试辅助.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
@@ -22,6 +23,7 @@ const evidence = path.join(root, 'verification-output', `frontend-safety-${sourc
 await mkdir(evidence, { recursive: true });
 const work = await mkdtemp(path.join(tmpdir(), 'riftcast-frontend-safety-'));
 const { captureProgram } = await tsImport('../shared/production.ts', import.meta.url);
+const { defaultTransitionSettings } = await tsImport('../shared/broadcast-transitions.ts', import.meta.url);
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const results = [], errors = [], services = [], requests = [];
 let browser;
@@ -36,21 +38,24 @@ async function freePort() {
 }
 async function start({ previous, mock = false } = {}) {
   const dir = previous?.dir || await mkdtemp(path.join(work, mock ? 'synthetic-' : 'http-'));
+  let seed;
   if (!previous) {
-    const seed = createSeed(); seed.paused = true; seed.phase = 'draft'; seed.overlay.nativeHud = 'off';
+    seed = createSeed(); seed.paused = true; seed.phase = 'draft'; seed.overlay.nativeHud = 'off';
     seed.programScene = seed.previewScene = 'draft'; seed.production.rules.mode = 'standard';
+    seed.broadcastTransitions = defaultTransitionSettings();
     seed.production.program = captureProgram(seed);
     await writeFile(path.join(dir, 'state.json'), JSON.stringify(seed));
   }
   const port = previous?.port || await freePort(), base = `http://127.0.0.1:${port}`;
+  const synthetic = await createSyntheticAdaptersHook({ root, work, dataDir: dir, fixture: seed, initialObsConnected: mock });
   const hook = path.join(work, 'synthetic-engine.mjs');
   if (mock) await writeFile(hook, `import { Adapters } from ${JSON.stringify(pathToFileURL(path.join(root, 'server/adapters.ts')).href)};
 Adapters.prototype.initializeObsEngine = async function(){this.commit(s=>{s.paused=true;s.connections.obs={status:'connected',detail:'SYNTHETIC ONLY — no OBS instance'};});};
 Adapters.prototype.syncPlayerFeeds = async()=>({applied:false});
 for(const method of ['productionApply','obsEngineStart','obsEngineOutput','obsEngineSetup','obsEnginePrepareCompanion','obsEngineInstallVirtualCamera','obsEngineMonitor','obsEngineLiveFrame','obsMusicImport','obsMusicControl'])Adapters.prototype[method]=async()=>{throw Error('Safety fixture forbids physical OBS/device actions');};
 `);
-  const child = spawn(process.execPath, ['--import', 'tsx', ...(mock ? ['--import', pathToFileURL(hook).href] : []), 'server/index.ts'], {
-    cwd: root, windowsHide: true, env: { ...process.env, PORT: String(port), ENABLE_LAN: '0', RIFTCAST_DATA_DIR: dir,
+  const child = spawn(process.execPath, ['--import', 'tsx', ...synthetic.importArgs, ...(mock ? ['--import', pathToFileURL(hook).href] : []), 'server/index.ts'], {
+    cwd: root, windowsHide: true, env: { ...process.env, ...synthetic.env, PORT: String(port), ENABLE_LAN: '0', RIFTCAST_DATA_DIR: dir,
       RIFTCAST_AUTO_CONNECT: '0', RIFTCAST_OBS_AUTOSTART: '0', RIFTCAST_OFFLINE: '1', RIFTCAST_OBS_MODE: 'external' },
     stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
   });
@@ -60,7 +65,7 @@ for(const method of ['productionApply','obsEngineStart','obsEngineOutput','obsEn
     if (child.exitCode !== null) throw new Error(`Isolated service exited: ${log}`);
     try { const health = await fetch(base + '/api/health').then(r => r.json()); return health.status === 'ok' && health.version === version; } catch { return false; }
   }, 'Actual isolated HTTP startup failed');
-  console.log(`READY ${source}: ${base}, ${mock ? 'labelled synthetic engine' : 'pure HTTP; no OBS'}`);
+  console.log(`READY ${source}: ${base}, labelled synthetic transport; no real OBS`);
   return service;
 }
 async function stop(service) {
@@ -130,7 +135,7 @@ try {
     assert.equal(requests.filter(r => r.type === 'take').length, count);
   });
   await check('bp-save-only-keeps-rendered-program', program, async () => {
-    const before = await state(service), visible = await program.locator('.cast-draft-champion').allTextContents();
+    const before = await state(service), visible = await program.locator('.cast-draft-card img').evaluateAll(images => images.map(image => image.getAttribute('src')));
     const takes = requests.filter(r => r.type === 'take').length;
     await page.locator('.bp-pick-row').first().click();
     await page.getByRole('searchbox', { name: '搜索英雄', exact: true }).fill('Akali');
@@ -140,13 +145,22 @@ try {
     await delay(250);
     const next = await state(service); assert.equal(next.draft.bluePicks[0], 'Akali');
     assert.deepEqual(next.production.program, before.production.program);
-    assert.deepEqual(await program.locator('.cast-draft-champion').allTextContents(), visible);
+    assert.deepEqual(await program.locator('.cast-draft-card img').evaluateAll(images => images.map(image => image.getAttribute('src'))), visible);
     assert.equal(requests.filter(r => r.type === 'take').length, takes);
   });
+  await check('bp-disconnected-take-rejected', program, async () => {
+    const before = await state(service);
+    const response = await fetch(service.base + '/api/action', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Seat-Token': owner },
+      body: JSON.stringify({ type: 'take', scene: 'draft', expectedConfigVersion: before.production.configVersion, requestId: crypto.randomUUID() }) });
+    assert.equal(response.status, 400); assert.match((await response.json()).error, /OBS/);
+    assert.deepEqual((await state(service)).production.program, before.production.program);
+  });
   await check('bp-explicit-same-scene-take-publishes', program, async () => {
+    await post(service, '/api/connect', { target: 'obs' }, owner);
     const next = await action(service, { type: 'take', scene: 'draft' }, owner);
-    assert.equal(next.production.application.status, 'requested', 'offline API acceptance must never claim OBS success');
-    await until(async () => (await program.locator('.cast-draft-champion').allTextContents())[0].includes('离群之刺'), 'explicit re-TAKE did not publish Akali');
+    assert.equal(next.production.application.status, 'applied', 'labelled synthetic transport acknowledges publish');
+    assert.match(next.transitionReceipt.detail, /SYNTHETIC/);
+    await until(async () => (await program.locator('.cast-draft-card img').first().getAttribute('src'))?.includes('/Akali-'), 'explicit re-TAKE did not publish Akali');
     assert.equal(next.programScene, 'draft');
   });
   const invite = await post(service, '/api/control/invite', { name: '安全回归字幕席', role: 'subtitle' }, owner);
@@ -228,7 +242,7 @@ try {
     const badge = document.createElement('div'); badge.textContent = '合成引擎 / 设备桩 · 非真实音画';
     badge.style.cssText = 'position:fixed;top:1px;right:1px;background:#ffe69c;color:#111;font:11px sans-serif;z-index:10000;pointer-events:none'; document.body.append(badge);
   });
-  const stopButton = toastPage.getByRole('button', { name: '按住停止伴侣音画', exact: true });
+  const stopButton = toastPage.getByRole('button', { name: '按住停止伴侣送出', exact: true });
   const rect = await stopButton.boundingBox(); assert.ok(rect);
   await toastPage.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2); await toastPage.mouse.down(); await delay(1150); await toastPage.mouse.up();
   await toastPage.locator('.toast.notice-error').waitFor();
@@ -239,13 +253,15 @@ try {
       const observation = await toastPage.evaluate(() => {
         const take = document.querySelector('.broadcast-status .take-button'), toast = document.querySelector('.toast.notice-error'), footer = document.querySelector('.broadcast-status');
         const t = take.getBoundingClientRect(), n = toast.getBoundingClientRect(), f = footer.getBoundingClientRect();
-        const points = [[t.left + 2, t.top + 2], [t.right - 2, t.top + 2], [t.left + 2, t.bottom - 2], [t.right - 2, t.bottom - 2], [t.x + t.width / 2, t.y + t.height / 2]];
+        // Sample inside the 7px rounded corners as well as the centre.
+        const points = [[t.left + 8, t.top + 8], [t.right - 8, t.top + 8], [t.left + 8, t.bottom - 8], [t.right - 8, t.bottom - 8], [t.x + t.width / 2, t.y + t.height / 2]];
         return { enabled: !take.disabled, footerTop: f.top, toastBottom: n.bottom, bottom: t.bottom,
           hits: points.map(([x, y]) => take.contains(document.elementFromPoint(x, y))),
           text: toast.querySelector('span').textContent, scrollable: toast.scrollHeight > toast.clientHeight };
       });
-      assert.ok(observation.enabled); assert.ok(observation.hits.every(Boolean)); assert.ok(observation.bottom <= height);
-      assert.ok(observation.toastBottom < observation.footerTop); assert.equal(observation.text, message); assert.ok(observation.scrollable);
+      const diagnostic = JSON.stringify({ ...observation, text: undefined });
+      assert.ok(observation.enabled, 'TAKE enabled: ' + diagnostic); assert.ok(observation.hits.every(Boolean), 'TAKE hit targets: ' + diagnostic); assert.ok(observation.bottom <= height, 'TAKE visible: ' + diagnostic);
+      assert.ok(observation.toastBottom < observation.footerTop, 'Toast above footer: ' + diagnostic); assert.equal(observation.text, message); assert.ok(observation.scrollable, 'Toast content scrolls: ' + diagnostic);
       const { text, ...geometry } = observation; return geometry;
     });
   }
@@ -255,6 +271,6 @@ finally {
   await browser?.close(); for (const service of services) await stop(service);
   await writeFile(path.join(evidence, 'result.json'), JSON.stringify({ source, dirty, version, work, results, errors,
     services: services.map(({ base, dir, mock }) => ({ base, dir, mock })),
-    limits: 'Linux/browser geometry if run on Linux. No real OBS, stream, devices, Windows/native window or audience acceptance.' }, null, 2));
+    limits: syntheticBoundary }, null, 2));
   console.log(JSON.stringify({ source, passed: results.filter(r => r.passed).length, failed: results.filter(r => !r.passed).length, errors: errors.length, evidence }));
 }

@@ -7,24 +7,32 @@ import path from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { tsImport } from "tsx/esm/api";
+import { createSyntheticAdaptersHook } from "./ui-测试辅助.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { version } = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const evidence = path.join(root, "verification-output", `production-${version}`);
 await mkdir(evidence, { recursive: true });
 const seed = createSeed();
+const { captureProgram } = await tsImport("../shared/production.ts", import.meta.url);
+const { defaultTransitionSettings } = await tsImport("../shared/broadcast-transitions.ts", import.meta.url);
 seed.paused = true;
 seed.previewScene = "standby";
 seed.programScene = "standby";
+seed.overlay.nativeHud = "off";
+seed.broadcastTransitions = defaultTransitionSettings();
+seed.production.program = captureProgram(seed);
 const dir = await mkdtemp(path.join(tmpdir(), "riftcast-production-ui-"));
 await writeFile(path.join(dir, "state.json"), JSON.stringify(seed));
+const synthetic = await createSyntheticAdaptersHook({ root, work: dir, fixture: seed });
 const port = 52000 + Math.floor(Math.random() * 10000),
   base = `http://127.0.0.1:${port}`;
-const child = spawn(process.execPath, ["--import", "tsx", "server/index.ts"], {
+const child = spawn(process.execPath, ["--import", "tsx", ...synthetic.importArgs, "server/index.ts"], {
   cwd: root,
   windowsHide: true,
   env: {
     ...process.env,
+    ...synthetic.env,
     PORT: String(port),
     ENABLE_LAN: "0",
     RIFTCAST_DATA_DIR: dir,
@@ -128,8 +136,28 @@ try {
     .first()
     .waitFor();
   tests.push("UI blocks TAKE with a visible reason when OBS is disconnected");
-  // Exercise the service snapshot contract independently of the disabled UI; no engine is running.
-  await action({ type: "take" });
+  const offline = await page.evaluate(async () => {
+    const before = await fetch("/api/state").then(r => r.json());
+    const response = await fetch("/api/action", { method: "POST", headers: {
+      "Content-Type": "application/json", "x-seat-token": sessionStorage.getItem("riftcast-seat-token"),
+    }, body: JSON.stringify({ type: "take", requestId: crypto.randomUUID(), expectedConfigVersion: before.production.configVersion }) });
+    return { before, status: response.status, body: await response.json(), after: await fetch("/api/state").then(r => r.json()) };
+  });
+  assert.equal(offline.status, 400);
+  assert.equal(offline.body.error, "请先连接 OBS，再核对预监后切入");
+  assert.deepEqual(offline.after.production.program, offline.before.production.program);
+  assert.equal(offline.after.programScene, offline.before.programScene);
+  tests.push("offline TAKE is rejected by HTTP and preserves the programme scene and complete snapshot");
+  await page.evaluate(async () => {
+    const response = await fetch("/api/connect", { method: "POST", headers: {
+      "Content-Type": "application/json", "x-seat-token": sessionStorage.getItem("riftcast-seat-token"),
+    }, body: JSON.stringify({ target: "obs" }) });
+    if (!response.ok) throw Error((await response.json()).error);
+    const state = await response.json();
+    if (state.connections.obs.status !== "connected" || !state.connections.obs.detail.includes("SYNTHETIC")) throw Error("Expected labelled synthetic OBS connection");
+  });
+  await until(() => take.isEnabled(), "TAKE enables after synthetic OBS connection");
+  await take.click();
   await overlay
     .getByText("隔离验证 · 待播标题", { exact: true })
     .first()
@@ -138,8 +166,13 @@ try {
     (await state()).production.program.version,
     (await state()).production.configVersion,
   );
+  const accepted = await state();
+  assert.equal(accepted.production.application.status, "applied");
+  assert.equal(accepted.transitionReceipt.published, true);
+  assert.match(accepted.transitionReceipt.detail, /SYNTHETIC/);
+  assert.equal(accepted.production.program.overlay.tickerText, "隔离验证字幕");
   tests.push(
-    "service same-scene TAKE commits staged content, with engine application still unconfirmed",
+    "UI same-scene TAKE publishes staged title and ticker through the actual service with a labelled synthetic OBS acknowledgement",
   );
   await page.getByRole("button", { name: "赛事与素材", exact: true }).click();
   assert.ok(
@@ -147,6 +180,9 @@ try {
   );
   await page.getByRole("tab", { name: /战队与选手/ }).click();
   await page.locator('.manage-object[data-kind="team"]').first().click();
+  if (!await page.getByLabel("选手 1 游戏账号", { exact: true }).isVisible())
+    await page.getByRole("button", { name: "编辑战队资料", exact: true }).click();
+  const originalAccount = (await state()).teams[0].players[0].account;
   await page
     .getByLabel("选手 1 游戏账号", { exact: true })
     .fill("fixture-account");
@@ -163,7 +199,7 @@ try {
       exact: true,
     })
     .waitFor();
-  assert.equal((await state()).teams[0].players[0].account, undefined);
+  assert.equal((await state()).teams[0].players[0].account, originalAccount);
   assert.equal((await state()).production.configVersion, openedVersion + 1);
   tests.push("stale team editor is rejected without overwriting new settings");
   await page.getByRole("button", { name: "BP 与阵容", exact: true }).click();
@@ -179,25 +215,24 @@ try {
     async () => (await state()).production.draftMode === "manual",
     "manual BP",
   );
-  await page.getByRole("tab", { name: "规则与历史", exact: true }).click();
-  await page.getByText("推进局号与新系列赛", { exact: true }).click();
-  const hold = page.getByRole("button", { name: "按住开启新系列赛", exact: true });
-  await hold.click();
-  assert.equal((await state()).match.seriesId, seed.match.seriesId);
-  const box = await hold.boundingBox();
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  await page.mouse.down();
-  await new Promise((r) => setTimeout(r, 1150));
-  await page.mouse.up();
-  await until(
-    async () => (await state()).match.seriesId !== seed.match.seriesId,
-    "held series reset",
-  );
-  assert.deepEqual(
-    [(await state()).match.blueScore, (await state()).match.redScore],
-    [0, 0],
-  );
-  tests.push("short clicks do not reset series; held actions start at 0:0");
+  // Run the destructive series reset after populated-data/scene checks so they exercise the full fixture.
+  const verifyHeldSeriesReset = async () => {
+    await page.getByRole("button", { name: "BP 与阵容", exact: true }).click();
+    await page.getByRole("tab", { name: "规则与历史", exact: true }).click();
+    await page.getByText("推进局号与新系列赛", { exact: true }).click();
+    const hold = page.getByRole("button", { name: "按住开启新系列赛", exact: true });
+    await hold.click();
+    assert.equal((await state()).match.seriesId, seed.match.seriesId);
+    const box = await hold.boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await new Promise((r) => setTimeout(r, 1150));
+    await page.mouse.up();
+    await until(async () => (await state()).match.seriesId !== seed.match.seriesId, "held series reset");
+    const reset = await state();
+    assert.deepEqual([reset.match.blueScore, reset.match.redScore, reset.match.game], [0, 0, 1]);
+    tests.push("short clicks do not reset series; held actions start game one at 0:0");
+  };
   await page.getByRole("button", { name: "导播工作台", exact: true }).click();
   await page.screenshot({
     path: path.join(evidence, "studio-1920.png"),
@@ -326,7 +361,9 @@ try {
     .click();
   const settingsTabs = page.getByRole("tablist", { name: "连接与输出任务" });
   await settingsTabs.waitFor();
-  assert.equal(await settingsTabs.getByRole('tab').count(), 8);
+  const expectedSettingsTasks = ["数据连接","画面","声音","输出","节目包装","诊断","协作","镜头制作","资源维护","转场与事件","远程选手画面","图形演示","观众互动","数据集成","工作台外观"];
+  assert.equal(await settingsTabs.getByRole('tab').count(), expectedSettingsTasks.length);
+  for (const name of expectedSettingsTasks) assert.equal(await settingsTabs.getByRole('tab', { name, exact: true }).count(), 1, 'settings task: ' + name);
   for (const tab of await settingsTabs.getByRole("tab").all()) {
       await tab.click();
       assert.equal(
@@ -374,6 +411,7 @@ try {
   tests.push(
     "all eleven audience scenes render; teamfight includes ten status cards with transparent gameplay area",
   );
+  await verifyHeldSeriesReset();
   const mobileContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     locale: "zh-CN",
@@ -407,7 +445,7 @@ try {
     ["replay", "回放席"],
   ]) {
     const token = await page.evaluate(async (role) => {
-      const response = await fetch("/api/control/seat", {
+      const response = await fetch("/api/control/invite", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -467,6 +505,9 @@ try {
     await readFile(path.join(dir, "state.json"), "utf8"),
   );
   assert.equal(saved.production.rundown.length, 1);
+  const syntheticEvents = (await readFile(synthetic.auditFile, "utf8")).trim().split("\n").filter(Boolean).map(line => JSON.parse(line));
+  assert.equal(syntheticEvents.filter(event => event.kind === "transition").length, 1);
+  await writeFile(path.join(evidence, "synthetic-adapter-events.json"), JSON.stringify(syntheticEvents, null, 2));
   await writeFile(
     path.join(evidence, "report.json"),
     JSON.stringify(
@@ -474,13 +515,15 @@ try {
         version,
         tests,
         errors,
-        boundary:
-          "Built browser UI and actual isolated service, explicit demo seed and stubbed static metadata. No operator data, real OBS, Riot game, physical camera/microphone, streaming platform or long-run performance was exercised.",
+        engine: "synthetic-test-only",
+        boundary: synthetic.boundary,
       },
       null,
       2,
     ),
   );
+  await rm(path.join(evidence, "failure.json"), { force: true });
+  await rm(path.join(evidence, "failure.png"), { force: true });
   console.log(
     `Production workflow: ${tests.length} checks passed. Evidence: ${evidence}`,
   );

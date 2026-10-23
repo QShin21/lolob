@@ -10,7 +10,7 @@ import {
 import type { StateContext } from "../../shared/types";
 import { productionKey } from "../../shared/production";
 import { championFor, getTeam } from "../lib";
-import { TakeControl } from "../components/ConsoleUI";
+import { TakeControl, TaskTabs } from "../components/ConsoleUI";
 import { BroadcastCanvas, ChampionImage } from "../components/BroadcastCanvas";
 import {
   DraftProductionControls,
@@ -34,6 +34,7 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
   const [slot, setSlot] = useState<DraftSlot | null>(null),
     [task, setTask] = useState<DraftControlTask>("assignments"),
     [preview, setPreview] = useState(false);
+  const [workspace,setWorkspace] = useState<'overview'|DraftControlTask>('overview');
   const [preparing, setPreparing] = useState(false),
     [error, setError] = useState("");
   const canPrepare =
@@ -56,14 +57,13 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
       : { side: state.draft.activeTeam, kind: activeKind, index: nextIndex };
   const openTask = (next: DraftControlTask) => {
     setTask(next);
+    setWorkspace(next);
     requestAnimationFrame(() => {
       productionSection.current?.scrollIntoView({
         block: "nearest",
         behavior: "auto",
       });
-      productionSection.current
-        ?.querySelector<HTMLButtonElement>(`[role="tab"][aria-selected="true"]`)
-        ?.focus();
+      document.querySelector<HTMLButtonElement>('.bp-workspace-tabs [role="tab"][aria-selected="true"]')?.focus();
     });
   };
   useEffect(()=>{if(ctx.focusTask)openTask(ctx.focusTask.task);},[ctx.focusTask]);
@@ -139,6 +139,8 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
                 : "正在验证操作席位。")}
         </div>
       )}
+      <div className="bp-workspace-tabs"><TaskTabs label="BP 工作区" value={workspace} onChange={next=>{setWorkspace(next);if(next!=='overview')setTask(next);}} items={[{id:'overview',label:'BP 总览'},{id:'assignments',label:'最终归属'},{id:'sync',label:'接管与客户端差异'},{id:'rules',label:'规则与历史'}]}/><span>英雄选择 → 归属核对 → 保存待播</span></div>
+      <div className="bp-overview" hidden={workspace!=='overview'}>
       <div className="bp-team-boards">
         {(["blue", "red"] as const).map((side) => {
           const team = getTeam(state, side),
@@ -323,16 +325,19 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
               : "将 BP 设为预监"}
         </button>
       </div>
-      <div ref={productionSection}>
+      </div>
+      <div ref={productionSection} hidden={workspace==='overview'}>
         <DraftProductionControls
           key={productionKey(state)}
           {...ctx}
           task={task}
           onTaskChange={setTask}
+          hideNavigation
         />
       </div>
       <details
         className="bp-layout-review"
+        hidden={workspace!=='overview'}
         open={preview}
         onToggle={(event) => setPreview(event.currentTarget.open)}
       >

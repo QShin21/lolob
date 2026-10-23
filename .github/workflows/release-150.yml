@@ -1,0 +1,225 @@
+name: Release 1.5.0
+
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+
+concurrency:
+  group: release-1.5.0
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'QShin21/lolob' && github.ref == 'refs/heads/new'
+    runs-on: windows-2022
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify version and source branch
+        run: |
+          node -e "require('node:assert/strict').equal(require('./package.json').version, '1.5.0')"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git fetch origin new
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced concurrently; build its latest revision' }
+      - run: npm ci
+      - name: Prepare pinned VB-CABLE archive for tests (download only)
+        run: node scripts/ensure-vbcable.cjs
+      - run: npm run check
+      - run: npm run verify:builtin-assets
+      - name: Verify all bundled champion crops and hashes
+        run: npm run prepare:champion-art -- --verify
+      - name: Windows tests including production OCR worker
+        timeout-minutes: 15
+        run: |
+          New-Item -ItemType Directory -Force verification-output/release-1.5.0 | Out-Null
+          $tests = @(Get-ChildItem server -Filter '*.test.ts' | ForEach-Object FullName)
+          node --import tsx --test --test-concurrency=1 @tests 2>&1 | Tee-Object verification-output/release-1.5.0/tests.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify report fixture through service restart
+        run: node scripts/verify-report-fixture-093.mjs
+      - run: npm run build
+      - run: npm run verify:builtin-contracts
+      - name: Prepare isolated browser test dependency
+        run: |
+          npm install --prefix "$env:RUNNER_TEMP/rc-playwright" --no-save --package-lock=false playwright@1.56.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "RIFTCAST_PLAYWRIGHT_MODULE=$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/index.mjs" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          node "$env:RUNNER_TEMP/rc-playwright/node_modules/playwright/cli.js" install chromium
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify operator UI, keyboard workflows and responsive layouts
+        run: node scripts/verify-operator-ui-150.mjs
+      - name: Verify theme persistence and audience canvas isolation
+        run: npm run verify:ui-theme
+      - name: Verify production workflow and staged TAKE
+        run: npm run verify:production
+      - name: Verify frontend permissions and state safety
+        run: npm run verify:frontend-safety
+      - name: Verify broadcast controls
+        run: npm run verify:broadcast-controls
+      - name: Verify feature parity integration and programme isolation
+        run: node scripts/verify-feature-parity.mjs
+      - name: Verify cinematic editor with Replay API test service
+        run: node scripts/verify-cinematics.mjs
+      - name: Verify analysis graphics and missing telemetry
+        run: node scripts/verify-broadcast-analysis.mjs
+      - name: Verify visual style editor and derived packages
+        run: node scripts/verify-style-editor.mjs
+      - name: Verify season statistics and Twitch audience graphics
+        run: node scripts/verify-season-twitch-parity.mjs
+      - name: Verify global shortcut controls and role changes
+        run: node scripts/verify-global-shortcuts.mjs
+      - name: Verify postgame damage composition
+        run: node scripts/verify-postgame-composition.mjs
+      - name: Verify full-height draft and champion tabs
+        run: node scripts/verify-program-layouts.mjs
+      - name: Verify archive graphics and series history
+        run: node scripts/verify-archive-graphics.mjs
+      - name: Verify packet analysis and historical fights
+        run: node scripts/verify-combat-review.mjs
+      - name: Verify transition controls and Power Play
+        run: node scripts/verify-transitions.mjs
+      - name: Verify expanded dynamic text targets
+        run: node scripts/verify-dynamic-text.mjs
+      - name: Verify roster identity and automatic side controls
+        run: node scripts/verify-player-identity.mjs
+      - name: Verify VDO feeds, demo graphics and resource maintenance
+        run: node scripts/verify-vdo-demo-resources.mjs
+      - name: Verify update controls, local reports and first-use guide
+        run: node scripts/verify-app-operations.mjs
+      - name: Verify player skin graphics and unknown fields
+        run: node scripts/verify-skin-display.mjs
+      - name: Verify BP statistics sources, samples and programme isolation
+        run: node scripts/verify-draft-statistics.mjs
+      - name: Verify live-only startup, upgrade and polling controls
+        run: node scripts/verify-live-only.mjs
+      - name: Verify full tournament creation, progression, archives and restart
+        run: node scripts/verify-tournaments-130.mjs
+      - name: Verify direct-memory gold ranking and stale readings
+        run: node scripts/verify-gold-ranking-123.mjs
+      - name: Verify player rotation controls
+        run: node scripts/verify-player-rotation-115.mjs
+      - name: Verify postgame crops, damage shares and scene entries
+        run: node scripts/verify-postgame-116.mjs
+      - name: Verify full rune lineup in six styles
+        run: node scripts/verify-lineup-runes-117.mjs
+      - name: Verify replay director controls and event navigation
+        run: node scripts/verify-replay-director-120.mjs
+      - name: Verify report layouts
+        run: node scripts/verify-report-093.mjs
+      - name: Verify style pack import, preview, all scenes and service restart
+        run: npm run verify:style-packs
+      - name: Verify deletion, permissions and restart
+        run: node scripts/verify-style-deletion.mjs
+      - name: Verify all six builtins, default migration and 78 scene renders
+        run: npm run verify:builtin-styles
+      - name: Verify BP stacks and larger scoreboard across all styles
+        run: node scripts/verify-draft-layout-104.mjs
+      - name: Verify cooldown HUD, vitals, names and stale data
+        run: node scripts/verify-telemetry-hud.mjs
+      - name: Verify floating BP, 3-second lock reveal and three portrait libraries
+        run: node scripts/verify-draft-focus-111.mjs
+      - name: Verify teamfight, objectives and third report page across all styles
+        run: node scripts/verify-combat-112.mjs
+      - name: Upload report layout review
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-layout-1.5.0
+          retention-days: 30
+          path: |
+            verification-output/release-0.9.3/layout/*.json
+            verification-output/release-0.9.3/layout/*.png
+            verification-output/release-1.5.0/styles/*.json
+            verification-output/release-1.5.0/styles/*.png
+            verification-output/release-1.5.0/builtins/*.json
+            verification-output/release-1.5.0/builtins/*.png
+      - name: Build Windows Setup and ZIP
+        run: npm run release:win
+      - name: Verify isolated packaged report
+        run: node scripts/verify-packaged-report-150.mjs
+      - name: Confirm exact new revision before publication
+        run: |
+          git fetch origin new
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced while building; publication stopped' }
+      - name: Publish verified release and check remote digests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/publish-release-150.mjs
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-1.5.0
+          retention-days: 30
+          path: |
+            verification-output/operator-ui-1.5.0/**
+            verification-output/ui-theme-1.5.0/**
+            verification-output/production-1.5.0/**
+            verification-output/frontend-safety-*/**
+            verification-output/broadcast-controls/**
+            verification-output/release-1.5.0/*.txt
+            verification-output/release-1.5.0/*.json
+            verification-output/release-1.5.0/*.png
+            verification-output/release-0.9.3/layout/*.json
+            verification-output/release-0.9.3/layout/*.png
+            verification-output/release-1.5.0/styles/*.json
+            verification-output/release-1.5.0/styles/*.png
+            verification-output/release-1.5.0/builtins/*.json
+            verification-output/release-1.5.0/builtins/*.png
+            verification-output/release-1.5.0/draft-layout/**
+            release/1.5.0/release-manifest.json
+            release/1.5.0/SHA256SUMS.txt
+            verification-output/release-1.5.0/deletion/*.json
+            verification-output/release-1.5.0/deletion/*.png
+            verification-output/release-1.5.0/live-only/*.json
+            verification-output/release-1.5.0/live-only/*.png
+            verification-output/release-1.5.0/telemetry-hud/**
+            verification-output/release-1.5.0/draft-focus/**
+            verification-output/release-1.5.0/combat/**
+            verification-output/release-1.5.0/rotation/**
+            verification-output/release-1.5.0/postgame/**
+            verification-output/release-1.5.0/runes/**
+            verification-output/release-1.5.0/replay-director/**
+            verification-output/release-1.5.0/gold-ranking/**
+            verification-output/release-1.5.0/tournaments/**
+            verification-output/release-1.5.0/feature-parity/**
+            verification-output/release-1.5.0/cinematics/**
+            verification-output/release-1.5.0/global-shortcuts/*.json
+            verification-output/release-1.5.0/global-shortcuts/*.png
+            verification-output/program-layouts/*.json
+            verification-output/program-layouts/*.png
+            verification-output/archive-graphics/*.json
+            verification-output/archive-graphics/*.png
+            verification-output/postgame-composition/*.json
+            verification-output/postgame-composition/*.png
+            verification-output/broadcast-analysis/*.json
+            verification-output/broadcast-analysis/*.png
+            verification-output/style-editor/*.json
+            verification-output/style-editor/*.png
+            verification-output/leaguebroadcast-parity-ui/*.json
+            verification-output/leaguebroadcast-parity-ui/*.png
+            verification-output/combat-review/*.json
+            verification-output/combat-review/*.png
+            verification-output/transitions/*.json
+            verification-output/transitions/*.png
+            verification-output/dynamic-text/*.json
+            verification-output/dynamic-text/*.png
+            verification-output/player-identity/*.json
+            verification-output/player-identity/*.png
+            verification-output/vdo-demo-resources/*.json
+            verification-output/vdo-demo-resources/*.png
+            verification-output/app-operations/*.json
+            verification-output/app-operations/*.png
+            verification-output/skin-display/*.json
+            verification-output/skin-display/*.png
+            verification-output/draft-statistics/*.json
+            verification-output/draft-statistics/*.png

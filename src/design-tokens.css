@@ -1,21 +1,23 @@
 /* Operator tokens do not enter /overlay. Dark is the existing unsaved preference. */
 .app-shell,.remote-page,.remote-workbench,.loading-screen:not(.output-loading){
-  --ui-bg:#11151b;--ui-surface:#181e26;--ui-raised:#222a34;--ui-border:#36414e;
-  --ui-text:#eff3f7;--ui-muted:#adb8c7;--ui-accent:#70d7c2;--ui-hover:#27343d;
-  --ui-selected:#203c45;--ui-selection-border:#83b8dd;--ui-focus:#b4d7ff;
-  --ui-pgm:#ff8a8f;--ui-pvw:#7ad7ae;--ui-error:#ff9e9e;--ui-warning:#f0c37f;
-  --ui-warning-bg:#362c1b;--ui-danger-bg:#392329;--ui-info:#98c9ef;--ui-info-bg:#1b3146;--ui-success-bg:#1c3731;
-  --ui-radius:6px;--ui-shadow:none;
+  --ui-bg:#0b1018;--ui-surface:#131b27;--ui-raised:#1b2635;--ui-border:#334257;--ui-control-border:#60718a;
+  --ui-text:#f3f6fb;--ui-muted:#a7b6c9;--ui-accent:#8ab8ff;--ui-on-accent:#0b1018;--ui-hover:#243248;
+  --ui-selected:#213758;--ui-selection-border:#78aef5;--ui-focus:#a4caff;
+  --ui-pgm:#ff909b;--ui-pvw:#61d6ac;--ui-error:#ff909b;--ui-warning:#f6c66d;
+  --ui-take-bg:#be2d43;--ui-on-take:#fff;
+  --ui-warning-bg:#33291a;--ui-danger-bg:#351e29;--ui-info:#8ab8ff;--ui-info-bg:#182c47;--ui-success-bg:#15362c;
+  --ui-radius:10px;--ui-shadow:0 12px 36px #0002;
+  --input-bg:var(--ui-bg);--surface-muted:var(--ui-raised);--danger:var(--ui-error);--border-color:var(--ui-border);
   --bg:var(--ui-bg);--panel:var(--ui-surface);--panel-soft:var(--ui-raised);--surface:var(--ui-bg);--border:var(--ui-border);--line:var(--ui-border);
   --text:var(--ui-text);--muted:var(--ui-muted);--text-muted:var(--ui-muted);--accent:var(--ui-accent);--blue:#84c9f3;--red:#f69aa9;--program:var(--ui-pgm);--preview:var(--ui-pvw);
-  font-family:'Segoe UI','Microsoft YaHei','PingFang SC',sans-serif;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums;color:var(--ui-text);color-scheme:dark;
+  font-family:'Segoe UI Variable Text','Segoe UI','Microsoft YaHei','PingFang SC',sans-serif;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums;color:var(--ui-text);color-scheme:dark;
 }
 :root[data-ui-theme=light] :is(.app-shell,.remote-page,.remote-workbench,.loading-screen:not(.output-loading)){
-  --ui-bg:#f2f4f6;--ui-surface:#fff;--ui-raised:#e8edf2;--ui-border:#b8c4d0;
-  --ui-text:#17212c;--ui-muted:#536273;--ui-accent:#146e61;--ui-hover:#e7eef3;
-  --ui-selected:#e0edf5;--ui-selection-border:#3e7098;--ui-focus:#145e99;
-  --ui-pgm:#b72f42;--ui-pvw:#176d47;--ui-error:#ae2639;--ui-warning:#855a17;
-  --ui-warning-bg:#fff3db;--ui-danger-bg:#fff0ef;--ui-info:#1d6792;--ui-info-bg:#e8f3fa;--ui-success-bg:#e4f2eb;
+  --ui-bg:#f2f5fa;--ui-surface:#fff;--ui-raised:#edf2f8;--ui-border:#b6c3d3;--ui-control-border:#8595aa;
+  --ui-text:#152438;--ui-muted:#526379;--ui-accent:#245fc8;--ui-on-accent:#fff;--ui-hover:#e6edf7;
+  --ui-selected:#e1edff;--ui-selection-border:#376fc9;--ui-focus:#175cd3;
+  --ui-pgm:#b42338;--ui-pvw:#116b4d;--ui-error:#b42338;--ui-warning:#986400;
+  --ui-warning-bg:#fff3db;--ui-danger-bg:#fff0f2;--ui-info:#245fc8;--ui-info-bg:#eaf1ff;--ui-success-bg:#e4f5ed;
   --blue:#126a9c;--red:#b83d43;color-scheme:light;
 }
 /* The media palette is fixed for both UI themes. Never filter/recolor broadcast images. */
