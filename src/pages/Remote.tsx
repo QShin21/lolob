@@ -1,3 +1,4 @@
+import { CasterControls } from '../components/CasterControls';
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   Check,
@@ -298,6 +299,7 @@ export function Remote(
               allowedTasks={["replay", "rundown"]}
             />
           )}
+          {displaySeat && role === "director" && <CasterControls {...ctx}/>}
           {displaySeat && role === "director" && (
             <ProductionDesk
               {...ctx}

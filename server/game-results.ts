@@ -121,9 +121,9 @@ export function absorbTerminalGameSample(state:BroadcastState,sample:TerminalSam
       const incoming=sample.players.find(p=>p.id===player.id&&p.team===player.team&&p.championId===player.championId);
       if(!incoming?.telemetryDamage||player.telemetryDamageSource==='postgame')continue;
       if(incoming.telemetryDamageSource==='packets'&&(incoming.telemetryDamageSince===undefined||incoming.telemetryDamageSince>1))continue;
-      const missing=(['toChampions','taken'] as const).some(key=>player.telemetryDamage?.[key]===undefined&&incoming.telemetryDamage?.[key]!==undefined);
+      const missing=(['toChampions','taken','physicalToChampions','magicToChampions','trueToChampions'] as const).some(key=>player.telemetryDamage?.[key]===undefined&&incoming.telemetryDamage?.[key]!==undefined);
       if(!missing)continue;
-      player.telemetryDamage={...player.telemetryDamage,...incoming.telemetryDamage};player.telemetryDamageSource=incoming.telemetryDamageSource;
+      player.telemetryDamage={...incoming.telemetryDamage,...player.telemetryDamage};player.telemetryDamageSource=incoming.telemetryDamageSource;
       player.telemetryDamageSession=incoming.telemetryDamageSession;player.telemetryDamageSince=incoming.telemetryDamageSince;changed=true;
     }
     if(changed)syncResultRecording(state,result);

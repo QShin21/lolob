@@ -6,6 +6,7 @@
 
 
 .pb-trinket .pb-image{border-radius:50%}.pb-trinket{align-self:center}
+.pb-rune-icons{display:flex;gap:7px;align-items:center}.pb-rune-icons>span{width:32px;height:32px;flex:none}.pb-rune-icons .pb-image{width:100%;height:100%;background:transparent;border:0}.pb-rune-icons .pb-image img{object-fit:contain}.pb-rune-icons>.pb-rune-secondary,.pb-rune-icons>.pb-shard-first{margin-left:7px}.pb-rune-icons>.pb-rune-shard{width:24px;height:24px}.pb-rune-unknown{width:100%;height:100%;display:grid;place-items:center;color:#8293a3;background:#ffffff08;border-radius:50%;font-size:11px}.pb-output .pb-rune-icons{gap:.35cqw}.pb-output .pb-rune-icons>span{width:1.9cqw;height:1.9cqw}.pb-output .pb-rune-icons>.pb-rune-shard{width:1.4cqw;height:1.4cqw}.pb-output .pb-rune-icons>.pb-rune-secondary,.pb-output .pb-rune-icons>.pb-shard-first{margin-left:.35cqw}.pb-output .pb-rune-unknown{font-size:.7cqw}.pb-output .pb-focus-footer{align-items:center}
 /* Programme focus is a portrait/identity column beside data and equipment. */
 .pb-output{position:absolute;left:16%;bottom:calc(.65cqw + var(--ob-bottom,0cqw));width:68%;z-index:3;background:var(--cast-ink);border:1px solid var(--cast-line);border-top:.2cqw solid var(--pb-side);font-family:var(--cast-font);transform:scale(clamp(.5,var(--hud-scale,1),1));transform-origin:bottom center}
 .pb-focus-header{display:flex;align-items:center;gap:1cqw;height:3.5cqw;padding:.65cqw 1.3cqw;border-bottom:1px solid var(--cast-line)}

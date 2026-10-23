@@ -126,7 +126,7 @@ export class ObserverTelemetry {
       if(!mergeObserverTelemetry(data,sample)){data._observerIncoherent=true;throw Error('等待同一画面的完整遥测样本');}
       const stream=this.liveDamage.timeline();
       const streamMatches=stream&&sample.players.every((p:Json)=>stream.index.heroes.some(h=>h.networkId===p.networkId&&h.champion===p.champion&&h.team===p.team));
-      this.director.observe(data,sample,replayDamage?this.damage.timeline():streamMatches?stream.index:undefined,streamMatches?stream:undefined);
+      this.director.observe(data,sample,replayDamage?this.damage.timeline():streamMatches?stream.index:undefined,replayDamage?undefined:streamMatches?stream:undefined);
       this.status={status:'connected',detail:'国服只读遥测已连接 · 冷却、生命、资源、经验、增益'+
         (replayDamage?' · 回放逐次伤害':streamDamage?' · 实时观战伤害':sample.replayPath?` · ${this.damage.detail}`:sample.observerSession?` · ${this.liveDamage.detail}`:''),profile:sample.profile,sampledAt:sample.sampledAt};
     } catch(error) {

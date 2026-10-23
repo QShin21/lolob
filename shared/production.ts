@@ -2,6 +2,8 @@ import type { BroadcastState, Player } from './types';
 import type { CheckId, ProgramContent, ProductionState, Telemetry } from './production-types';
 import { bundledChampionVersion } from './champion-art';
 import { currentGameResult, frozenGameState, gameResultKey, reportGameResult } from './game-results';
+import { parseRiotId } from './player-identity';
+import { combatReviewWithRoster } from './combat-review';
 
 export const productionKey = (s: BroadcastState) => JSON.stringify([s.mode, s.match.seriesId, s.match.game, s.production?.attempt ?? 1, s.match.blueTeamId, s.match.redTeamId]);
 export function productionDefaults(): ProductionState {
@@ -22,7 +24,7 @@ export function ensureProduction(s: BroadcastState): ProductionState {
   return p;
 }
 export function telemetry(s: BroadcastState): Telemetry {
-  return structuredClone({ neutralObjectives:s.neutralObjectives, fightSegment:s.fightSegment, players: s.players, stats: s.stats, events: s.events, economy: s.economy, economyFeed: s.economyFeed, ocrMatch: s.ocrMatch, activeSourceGameId: s.activeSourceGameId, gameTime: s.gameTime, gameClock: s.gameClock, paused: s.paused, phase: s.phase });
+  return structuredClone({ powerPlay:s.powerPlay, combatReview:s.combatReview, neutralObjectives:s.neutralObjectives, fightSegment:s.fightSegment, players: s.players, stats: s.stats, events: s.events, economy: s.economy, economyFeed: s.economyFeed, ocrMatch: s.ocrMatch, activeSourceGameId: s.activeSourceGameId, gameTime: s.gameTime, gameClock: s.gameClock, paused: s.paused, phase: s.phase });
 }
 export function captureProgram(s: BroadcastState): ProgramContent {
   const p = ensureProduction(s);
@@ -67,6 +69,7 @@ export function programState(s: BroadcastState): BroadcastState {
     return { ...player, ...(previous ? { name: previous.name, portrait: previous.portrait, ...(staged&&!assignment?{role:previous.role,championId:previous.championId,championName:previous.championName}:{}) } : {}),
       ...(assignment ? { championId: assignment.championId, role: assignment.role, championName: previous?.championName ?? player.championName } : {}) };
   });
+  if(view.combatReview)view.combatReview=combatReviewWithRoster(view.combatReview,view.players);
   return view;
 }
 export function objectiveRemaining(s: BroadcastState, objective: ProductionState['objectives'][number], now=Date.now()): number | null {
@@ -143,10 +146,15 @@ export const checkValid = (s: BroadcastState, id: CheckId) => s.production?.chec
 export function applyIdentity(s: BroadcastState, players: Player[]): Player[] {
   return players.map(player => {
     const team = s.teams.find(t => t.id === s.match[`${player.team}TeamId`]);
-    const matches = team?.players.filter(p => p.account && (p.account === player.id.replace(/^(live|lcu)-/, '') || p.account === player.name)) ?? [];
+    const observedId=player.id.replace(/^(live|lcu)-/,''),identity=parseRiotId(observedId);
+    const matches = team?.players.filter(p => {
+      if(!p.account)return false;
+      const account=parseRiotId(p.account);
+      return account?!!identity&&account.key===identity.key:!p.account.includes('#')&&(p.account===observedId||p.account===player.name);
+    }) ?? [];
     const member = matches.length === 1 ? matches[0] : undefined;
     const assignment = s.production?.assignments.find(a => a.playerId === player.id && a.team === player.team && a.locked);
-    return { ...player, ...(member ? { name: member.name, role: member.role, portrait: member.portrait } : {}), ...(assignment ? { role: assignment.role } : {}) };
+    return { ...player, ...(member ? { registeredPlayerId: member.id, name: member.name, role: member.role, portrait: member.portrait } : {}), ...(assignment ? { role: assignment.role } : {}) };
   });
 }
 export function dataHealth(s: BroadcastState, now = Date.now()) {

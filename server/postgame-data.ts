@@ -29,7 +29,7 @@ export function enrichPostgame(state:BroadcastState,data:any,champions:Champion[
    physicalToChampions:stats.PHYSICAL_DAMAGE_DEALT_TO_CHAMPIONS??stats.physicalDamageDealtToChampions,
    magicToChampions:stats.MAGIC_DAMAGE_DEALT_TO_CHAMPIONS??stats.magicDamageDealtToChampions,
    trueToChampions:stats.TRUE_DAMAGE_DEALT_TO_CHAMPIONS??stats.trueDamageDealtToChampions});
- if(damage){p.telemetryDamage={...damage};p.telemetryDamageSource='postgame';delete p.telemetryDamageSession;delete p.telemetryDamageSince;}
+ if(damage){const previous=p.telemetryDamageSource==='postgame'?p.telemetryDamage:undefined;p.telemetryDamage={...(previous?.toChampions===damage.toChampions?previous:{}),...damage};p.telemetryDamageSource='postgame';delete p.telemetryDamageSession;delete p.telemetryDamageSince;}
  }
  }
  for(const side of ['blue','red']as const){const players=result.snapshot.players.filter(p=>p.team===side);if(players.length===5&&players.every(p=>p.statsAvailable!==false))result.snapshot.stats[side].kills=players.reduce((sum,p)=>sum+p.kills,0);if(players.length===5&&players.every(p=>p.gold!==null))result.snapshot.stats[side].gold=players.reduce((sum,p)=>sum+(p.gold??0),0);}

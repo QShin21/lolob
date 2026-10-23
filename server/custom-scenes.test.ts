@@ -85,6 +85,7 @@ class FakeObs {
     }
     if (type === 'GetInputPropertiesListPropertyItems') return { propertyItems: this.windows.map(w => ({ itemName: 'Fixture app', itemValue: w, itemEnabled: true })) };
     if (type === 'SetSceneItemTransform') { if (this.failTransform) throw new Error('Transform failed'); return {}; }
+    if (type === 'SetInputMute') return {};
     if (type === 'RemoveScene') { this.scenes.delete(data.sceneName); return {}; }
     if (type === 'RemoveInput') { this.inputs.delete(data.inputName); return {}; }
     throw new Error(`Unexpected OBS request: ${type}`);
@@ -125,6 +126,27 @@ test('OBS builds independent layers, validates missing windows and preserves bor
     assert.ok(!obs.scenes.has(preview)); assert.ok(obs.scenes.has(program)); assert.ok(obs.scenes.has(edited));
     assert.ok(!obs.requests.some(r => r.type === 'SetCurrentProgramScene' || r.type === 'SetInputSettings'));
   } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+test('browser layers validate protocols and create muted independent OBS browser sources', async () => {
+  const source = { id: 'web', name: '数据网页', kind: 'browser' as const, url: 'https://example.com/overlay?event=sample', x: 20, y: 30, width: 1280, height: 720, fit: 'contain' as const, visible: true };
+  const custom: CustomScene = { ...scene, sources: [source] };
+  const saved = applyAction(seed(), { type: 'save-custom-scene', scene: custom });
+  assert.equal(saved.customScenes?.[0].sources[0].url, source.url);
+  for (const url of ['javascript:alert(1)', 'file:///C:/secret.txt', 'data:text/html,hello', 'https://user:password@example.com/', 'https://example.com/\nattack']) {
+    assert.throws(() => applyAction(seed(), { type: 'save-custom-scene', scene: { ...custom, sources: [{ ...source, url }] } }), /HTTP/);
+  }
+  const obs = new FakeObs(), compositor = new ObsCustomScenes(obs.call, tmpdir());
+  const preview = await compositor.prepare(custom, saved, 'preview');
+  const program = await compositor.prepare(custom, saved, 'program');
+  assert.notEqual(preview, program);
+  const browsers = obs.requests.filter(r => r.type === 'CreateInput' && r.data.inputKind === 'browser_source');
+  assert.equal(browsers.length, 2); assert.notEqual(browsers[0].data.inputName, browsers[1].data.inputName);
+  assert.equal(browsers[0].data.inputSettings.url, source.url);
+  assert.equal(browsers[0].data.inputSettings.width, 1280);
+  assert.equal(browsers[0].data.inputSettings.height, 720);
+  assert.equal(obs.requests.filter(r => r.type === 'SetInputMute' && r.data.inputMuted).length, 2);
+  assert.equal(obs.program, 'live');
 });
 
 

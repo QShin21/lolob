@@ -33,7 +33,7 @@ foreach($name in @('scaled','empty','cropped','neutral','multiple')){
 }
 $results|ConvertTo-Json -Compress
 `);
-  const {stdout}=await promisify(execFile)('powershell.exe',['-NoProfile','-NonInteractive','-File',script,'-Source',path.resolve('scripts/spectator-portrait-matcher.cs'),'-Directory',directory],{windowsHide:true,timeout:20000});
+  const {stdout}=await promisify(execFile)('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',script,'-Source',path.resolve('scripts/spectator-portrait-matcher.cs'),'-Directory',directory],{windowsHide:true,timeout:20000});
   assert.deepEqual(JSON.parse(stdout),{scaled:'3',empty:null,cropped:null,neutral:null,multiple:null});
  }finally{
   assert.equal(path.dirname(path.resolve(directory)),path.resolve(os.tmpdir()));

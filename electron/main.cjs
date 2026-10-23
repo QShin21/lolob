@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, dialog, shell, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, Menu, dialog, shell, ipcMain, screen, globalShortcut } = require('electron');
 const { spawn } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -20,12 +20,36 @@ let quitting = false;
 let stoppingService = false;
 let logPath;
 let exitApproved = false;
+let desktopUpdater;
 const nativePreviewSources = new Map();
 const nativePositionRequests = new Map();
 const closingProjectors = new Map();
 let previewOperations = Promise.resolve();
 let projectorHelperPromise;
 const programWindow = require('./program-window.cjs').createProgramWindow({ monitor: monitorRequest, command: projectorCommand });
+const backgroundKeys = require('./global-shortcuts.cjs').createGlobalShortcuts({
+  registry: globalShortcut,
+  authorize: verifyShortcutSeat,
+  dispatch: event => { if (mainWindow && trustedRenderer(mainWindow.webContents)) mainWindow.webContents.send('riftcast:global-shortcut', event); },
+  changed: status => { if (mainWindow && trustedRenderer(mainWindow.webContents)) mainWindow.webContents.send('riftcast:global-shortcut-status', status); },
+});
+
+function verifyShortcutSeat(token) {
+  return new Promise((resolve, reject) => {
+    const req = http.get(`${serviceOrigin}/api/control/seat`, { timeout: 2000, headers: { 'X-Seat-Token': token } }, res => {
+      let body = '';
+      res.setEncoding('utf8');
+      res.on('data', chunk => { body += chunk; if (body.length > 16384) req.destroy(new Error('席位响应无效')); });
+      res.on('end', () => {
+        try { if (res.statusCode !== 200) throw new Error(); resolve(JSON.parse(body)); }
+        catch { reject(new Error('操作席位已失效，后台快捷键已关闭')); }
+      });
+      res.on('error', () => reject(new Error('席位连接中断，后台快捷键已关闭')));
+    });
+    req.on('timeout', () => req.destroy(new Error('席位验证超时，后台快捷键已关闭')));
+    req.on('error', () => reject(new Error('席位连接中断，后台快捷键已关闭')));
+  });
+}
 
 function previewOperation(operation) {
   const pending = previewOperations.then(operation);
@@ -149,6 +173,16 @@ async function closeProjector(prepared) {
 }
 
 function installPreviewBridge() {
+  ipcMain.handle('riftcast:update', (event, action) => {
+    if (!trustedRenderer(event.sender, event.senderFrame) || !['status','check','download','cancel','show-file'].includes(action)) throw new Error('应用更新请求来源或操作无效');
+    desktopUpdater ??= require('./update-service.cjs').createUpdateService({currentVersion:app.getVersion(),downloadsDir:app.getPath('downloads')});
+    if(action==='show-file') { const file=desktopUpdater.readyPath();if(!file)throw new Error('请先下载并校验安装包');shell.showItemInFolder(file);return desktopUpdater.status(); }
+    return desktopUpdater[action]();
+  });
+  ipcMain.handle('riftcast:global-shortcuts', (event, request) => {
+    if (!trustedRenderer(event.sender, event.senderFrame)) throw new Error('后台快捷键请求来源无效');
+    return backgroundKeys.configure(request);
+  });
   ipcMain.handle('riftcast:program-window', (event, action) => {
     if (!trustedRenderer(event.sender, event.senderFrame) || !['open', 'close', 'status'].includes(action)) throw new Error('节目窗口请求无效');
     return previewOperation(() => programWindow[action]());
@@ -287,6 +321,7 @@ function installPreviewBridge() {
   });
   mainWindow.webContents.on('did-start-navigation', (_event, _url, isInPlace, isMainFrame) => {
     if (!isMainFrame || isInPlace) return;
+    backgroundKeys.disable('界面正在重新载入，后台快捷键已关闭');
     nativePositionRequests.clear();
     void previewOperation(async () => {
       const projectors = [...nativePreviewSources.values()];
@@ -294,6 +329,7 @@ function installPreviewBridge() {
       for (const projector of projectors) await closeProjector(projector);
     });
   });
+  mainWindow.webContents.on('render-process-gone', () => backgroundKeys.disable('界面进程已结束，后台快捷键已关闭'));
 }
 
 function engineStatus() {
@@ -489,6 +525,7 @@ function createWindow() {
     });
   });
   mainWindow.on('closed', () => {
+    backgroundKeys.disable();
     void previewOperation(() => programWindow.close()).catch(error => log(error.message));
     const projectors = [...nativePreviewSources.values()];
     nativePositionRequests.clear();
@@ -532,6 +569,8 @@ else {
       return;
     }
     quitting = true;
+    desktopUpdater?.cancel();
+    backgroundKeys.disable();
     if (ownsService && serviceProcess && serviceProcess.exitCode === null) {
       event.preventDefault();
       if (stoppingService) return;

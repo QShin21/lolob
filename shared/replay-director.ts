@@ -2,7 +2,7 @@ export interface ReplayFocus {champion:string;name:string;reason:'killer'|'victi
 export interface ReplayCameraStatus {status:'following'|'unavailable';detail:string;target?:string}
 export interface ReplayMoment {
  id:string;kind:'kill'|'objective'|'teamfight';title:string;time:number;start:number;end:number;
- basis:'damage'|'event';participants:string[];objective?:string;focus?:ReplayFocus;
+ basis:'damage'|'event';participants:string[];participantIds?:number[];victim?:string;victimId?:number;objective?:string;focus?:ReplayFocus;
 }
 export interface ReplayDirectorView {
  session:string;connected:boolean;source:'replay'|'observer'|'waiting';detail:string;

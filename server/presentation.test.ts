@@ -119,6 +119,10 @@ test("schedule pagination covers every match, clamps stale pages and uses Beijin
   );
   s.overlay.scheduleView = { filter: "upcoming", page: 0, day: "" };
   assert.equal(schedulePage(s).total, 8);
+  s.overlay.scheduleView = { filter: "finished", page: 50, day: "" };
+  assert.equal(schedulePage(s).total, 1);
+  assert.equal(schedulePage(s).index, 0);
+  assert.deepEqual(schedulePage(s).matches.map(m => m.id), ["0"]);
 });
 test("interview, schedule and crop edits remain staged, survive restart and reject malformed input", () => {
   let s = createSeed();
@@ -136,13 +140,14 @@ test("interview, schedule and crop edits remain staged, survive restart and reje
         topic: "赛后采访",
         dock: "right",
       },
-      scheduleView: { filter: "all", page: 1, day: "" },
+      scheduleView: { filter: "finished", page: 1, day: "" },
       playerFeedPairs: pairs,
     },
   });
   assert.deepEqual(programState(s).overlay, before);
   const restored = normalizeSavedState(s);
   assert.equal(restored.overlay.interview?.dock, "right");
+  assert.equal(restored.overlay.scheduleView?.filter, "finished");
   assert.equal(restored.overlay.playerFeedPairs?.[0].blue.focusX, 80);
   assert.throws(() =>
     applyAction(s, {

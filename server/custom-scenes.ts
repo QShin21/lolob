@@ -31,8 +31,19 @@ export function validateCustomScene(value: unknown, state: BroadcastState): Cust
     } else if (s.kind === 'obs') {
       result.inputName = str(s.inputName, 200);
       if (!result.inputName.trim() || result.inputName.startsWith('RiftCast 自定义')) throw new ValidationError('请选择可用的 OBS 来源');
+    } else if (s.kind === 'browser') {
+      result.url = validateBrowserSourceUrl(s.url);
     } else throw new ValidationError('不支持的素材类型');
     return result;
   });
   return { id: id as CustomScene['id'], name, background: v.background, sources };
+}
+
+export function validateBrowserSourceUrl(value: unknown): string {
+  const url = str(value, 4096).trim();
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password || /[\u0000-\u0020]/.test(url)) throw new Error();
+    return parsed.href;
+  } catch { throw new ValidationError('浏览器来源需要完整的 HTTP / HTTPS 地址，凭据请通过服务自身的登录或访问参数配置'); }
 }

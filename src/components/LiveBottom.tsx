@@ -1,3 +1,4 @@
+import { StyleText } from './StyleText';
 import {FitName} from './FitName';
 import { useEffect, useState } from 'react';
 import type { BroadcastState, Champion, Player, Side } from '../../shared/types';
@@ -52,7 +53,7 @@ function Identity({player,ultimateIcon,time,fresh}:{player?:Player;ultimateIcon?
   const status=state==='ready'?'终极技能就绪':state==='unlearned'?'终极技能尚未学习':state==='cooldown'?`终极技能冷却${ultimate?.cooldownRemaining!=null?` ${Math.ceil(ultimate.cooldownRemaining)} 秒`:''}`:'终极技能状态未提供';
   return <div className="lb-identity">
     <div className="lb-identity-line">
-      <FitName className="lb-player-name">{scoreboardName(player?.name||'—')}</FitName>
+      <FitName className="lb-player-name" textTarget="liveName" textContext={{player}}>{scoreboardName(player?.name||'—')}</FitName>
     </div>
     <div className="lb-status-line">
       <span className={`lb-ultimate ${fresh?state:'unknown'}`} title={status} aria-label="终极技能">
@@ -120,7 +121,7 @@ export function LiveBottom({state,champions,items,version}:{state:BroadcastState
   const ultimateIcons=useUltimateIcons(version,state.players.map(player=>championFor(champions,player.championId)?.id||player.championId));
   const ultimateFor=(player?:Player)=>{const champion=championFor(champions,player?.championId||'');return champion?ultimateIcons[champion.id]:undefined;};
   return <div className="live-bottom" aria-label="局内底部转播包装">
-    <div className="lb-patch" aria-label={`游戏版本 ${state.overlay.patchVersion??'26.18'}`}><div><strong>游戏版本</strong><span>GAME PATCH</span></div><b>{state.overlay.patchVersion??'26.18'}</b></div>
+    <div className="lb-patch" aria-label={`游戏版本 ${state.overlay.patchVersion??'26.18'}`}><div><strong>游戏版本</strong><span>GAME PATCH</span></div><b><StyleText target="patchText">{state.overlay.patchVersion??'26.18'}</StyleText></b></div>
     <PlayerFeed state={state} side="blue"/>
     {state.overlay.players&&<section className="lb-scoreboard" aria-label="底部十人计分板">
       <div className="lb-scoreboard-rows">{Array.from({length:5},(_,i)=>{

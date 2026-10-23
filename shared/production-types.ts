@@ -2,7 +2,7 @@ import type { BroadcastState, DraftState, GameResult, OverlaySettings, Player, S
 
 export type CheckId = 'identity' | 'game' | 'data' | 'audio' | 'disk' | 'program' | 'platform';
 export type SeatRole = 'readonly' | 'data' | 'subtitle' | 'replay' | 'director';
-export type Telemetry = Pick<BroadcastState, 'neutralObjectives' | 'fightSegment' | 'players' | 'stats' | 'events' | 'economy' | 'economyFeed' | 'ocrMatch' | 'activeSourceGameId' | 'gameTime' | 'gameClock' | 'paused' | 'phase'>;
+export type Telemetry = Pick<BroadcastState, 'powerPlay' | 'combatReview' | 'neutralObjectives' | 'fightSegment' | 'players' | 'stats' | 'events' | 'economy' | 'economyFeed' | 'ocrMatch' | 'activeSourceGameId' | 'gameTime' | 'gameClock' | 'paused' | 'phase'>;
 export interface ProgramContent {
   customScenes?: BroadcastState['customScenes'];
   version: number; key: string; takenAt: string;
@@ -50,6 +50,9 @@ export interface ProductionState {
   videos: VideoRecord[];
   rundown: { id: string; scene: Scene; title: string; seconds: number; status: 'pending' | 'ready' | 'aired' }[];
   hotkeys: { take: string; live: string; analysis: string; feeds: string; emergency: string; undo: string };
+  hotkeyAliases?: import('./caster-controls').HotkeyAliases;
+  autoSides?: boolean;
+  casterButtons?: import('./caster-controls').CasterButton[];
   audit: { id: string; type: string; actor: string; at: string; reason?: string }[];
   application?: { id?: string; version: number; status: 'requested' | 'applied' | 'failed' | 'confirmed'; detail: string; at: string };
   persistence?: { status: 'saving' | 'saved' | 'failed'; at: string; revision: number; detail?: string };
@@ -68,7 +71,7 @@ export type ProductionCommand =
   | { op: 'mark'; text: string; kind: 'highlight' | 'danger' | 'objective' }
   | { op: 'objective'; label: string; dueTime?: number; reason: string }
   | { op: 'objective-rules'; rules: ProductionState['objectiveRules'] }
-  | { op: 'settings'; analysisSeconds?: number; feedHold?: boolean; dynamicPreview?: boolean; layout?: 'single' | 'dual'; versions?: ProductionState['versions']; hotkeys?: ProductionState['hotkeys']; cameraHints?: string; keyboardTarget?: 'game' | 'workbench' }
+  | { op: 'settings'; analysisSeconds?: number; feedHold?: boolean; dynamicPreview?: boolean; autoSides?: boolean; layout?: 'single' | 'dual'; versions?: ProductionState['versions']; hotkeys?: ProductionState['hotkeys']; hotkeyAliases?: ProductionState['hotkeyAliases']; casterButtons?: ProductionState['casterButtons']; cameraHints?: string; keyboardTarget?: 'game' | 'workbench' }
   | { op: 'ack-alert'; id: string }
   | { op: 'immediate'; action: 'live' | 'analysis-off' | 'feeds-off' | 'ticker' | 'undo'; text?: string }
   | { op: 'confirm-picture' }

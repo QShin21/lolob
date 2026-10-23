@@ -116,6 +116,7 @@ export function GraphicControls({ state, send, notify }: StateContext) {
         >
           <option value="all">全部赛程</option>
           <option value="upcoming">进行中与接下来</option>
+          <option value="finished">仅已完成</option>
           <option value="day">指定比赛日（北京时间）</option>
         </select>
       </label>

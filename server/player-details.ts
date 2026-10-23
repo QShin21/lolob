@@ -1,4 +1,5 @@
 import type { Player, PlayerUltimate, SummonerSpell } from '../shared/types';
+import { normalizedSkinId } from '../shared/champion-skins';
 import type { TelemetryStamp } from '../shared/player-telemetry';
 import { normalizeCooldown, normalizeTelemetry } from './telemetry-normalize';
 
@@ -19,6 +20,7 @@ function spell(value: unknown, time = 0): SummonerSpell {
 /** Only explicit data from this player (or an identity-matched active player) enters the HUD. */
 export function normalizePlayerDetails(player: Json, active?: Json, time = 0, stamp?: TelemetryStamp): Partial<Player> {
   const result: Partial<Player> = {};
+  const skinId = normalizedSkinId(player.skinID); if (skinId !== undefined) result.skinId = skinId;
   const spells = [spell(player.summonerSpells?.summonerSpellOne,time), spell(player.summonerSpells?.summonerSpellTwo,time)];
   if (spells.some(s => s.name || s.id)) result.summonerSpells = spells;
   if (number(player.scores?.wardScore)) result.visionScore = player.scores.wardScore;

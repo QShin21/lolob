@@ -1,6 +1,6 @@
 # RiftCast 风格包格式 v1
 
-适用于 RiftCast 1.1.2，继续采用 v1 清单格式。风格包管理 11 个内置节目的背景、面板贴图、装饰框、配色与字体类别。赛事、队伍、英雄、选手、BP、比分、时间、经济和统计仍由原有数据接口与组件实时绘制。自定义场景继续使用自己的素材。
+适用于 RiftCast 1.4.0，继续采用 v1 清单格式。风格包管理 11 个内置节目的背景、面板贴图、装饰框、配色、字体、元素位置和文字模板。赛事、队伍、英雄、选手、BP、比分、时间、经济和统计由数据接口与组件实时绘制。自定义场景继续使用自己的素材。
 
 ## 使用
 
@@ -35,7 +35,7 @@ assets/
 
 替换 assets 中的图片，或在 assets 映射中加入新图片，再将固定槽位指向图片的标识。图片支持 PNG、JPEG、单帧 WebP。透明装饰推荐 PNG。清单只含固定格式的数据，不接受 CSS、HTML、JavaScript、SVG、外部图片地址和字体文件。
 
-全画布按 1920 × 1080 设计，图片贴图按对应槽位拉伸铺满。背景和装饰框建议直接制作成 1920 × 1080。五套内置风格含完整背景和按槽位制作的面板，渐变、细线和排版仍由贴图、内置组件及配色令牌共同组成。动态文字、队标、英雄头像与符文依旧位于固定版式上，美术应避开这些内容的安全区。v1 不支持移动数据元素或改变其绑定关系。
+全画布按 1920 × 1080 设计，图片贴图按对应槽位拉伸铺满。背景和装饰框建议直接制作成 1920 × 1080。六套内置风格含完整背景和按槽位制作的面板，渐变、细线和排版由贴图、内置组件及配色令牌共同组成。1.4.0 可通过可视化编辑器调整 47 类语义元素的位置、缩放和透明度；元素继续使用所属组件的数据。美术应避开视频区域，并在实际节目预监中核对调整后的内容。
 
 每个场景的 `background` 放在动态内容后面。`frame` 是叠在节目内容之上的透明装饰层，非透明像素会遮住其下方内容，必须在导入预览中逐项核对。设置为 null 表示保留内置处理。仅赛前倒计时、首发对位、赛程看板、赛后报告允许整幅背景；BP、局内、数据榜和采访必须保留视频采集区域。团战视图的游戏区域保持透明，底部十人状态栏使用风格包配色。
 
@@ -102,9 +102,9 @@ revision 是清单与规范化图片内容的 SHA-256 指纹，与美术作者�
 
 默认“冰川极光”作为安全回退保留。待播配置、当前节目和撤回快照正在引用的版本受到保护，界面会显示对应原因。请先准备其他风格到预监，并在需要时 TAKE 更新节目及撤回快照，再删除旧风格。服务端会在实际删除前重新检查引用及主导播权限。
 
-## 1.0.1 元素外观配置
+## 元素外观配置
 
-可选 `appearance` 按用途分别配置文字和底色；`scenes.<节目>.appearance` 覆盖该节目。原有 palette、fonts 与贴图继续生效。优先级为元素场景设置 > 元素全局设置 > 原有样式。场景只覆盖写出的属性；某个元素设为 null 会取消其全局元素设置，回到原有样式。省略 appearance 的旧包保留原内容指纹，导入、导出、重启和 TAKE 继续兼容。包含新字段的包需要 RiftCast 1.0.1 或更新版本。
+可选 `appearance` 按用途分别配置文字和底色；`scenes.<节目>.appearance` 覆盖该节目。原有 palette、fonts 与贴图继续生效。优先级为元素场景设置 > 元素全局设置 > 原有样式。场景只覆盖写出的属性；某个元素设为 null 会取消其全局元素设置，回到原有样式。省略 appearance 的旧包保留原内容指纹，导入、导出、重启和 TAKE 继续兼容。基础外观字段自 1.0.1 支持；位置、缩放、透明度、文字模板和新增分析元素需要 1.4.0。
 
 每个元素支持：
 
@@ -117,8 +117,13 @@ revision 是清单与规范化图片内容的 SHA-256 指纹，与美术作者�
 | fontSize | 0.5–8，单位 cqw，即画布容器宽度的百分之一；1.8 在 1920 宽画布约 34.56px |
 | fontWeight | 100–900，100 的整数倍 |
 | letterSpacing | -0.05–0.3，单位 em |
+| x | -1920–1920，相对原始位置的横向偏移，单位为 1920 × 1080 画布像素 |
+| y | -1080–1080，相对原始位置的纵向偏移，单位同上 |
+| scale | 0.25–4，元素缩放比例 |
+| opacity | 0–1，元素透明度 |
+| text | 最多 240 字符的纯文字模板，仅下方列出的 31 个文字目标支持 |
 
-配置不调整布局坐标、视频区域和数据绑定。长姓名继续按可用宽度缩放；放大字号后应检查实际预监。团战与自定义场景不应用元素覆盖。
+位置和缩放作用于对应语义元素；例如更改 `liveName` 会一起调整十个局内选手姓名。同类元素保持各自的比赛数据上下文。长姓名继续按可用宽度缩放；放大字号或移动元素后应检查实际预监。视频采集区域由节目布局管理。团战与自定义场景不应用元素覆盖。
 
 青花瓷首发浅底姓名的局部配置示例（合并进原完整清单）：
 
@@ -146,13 +151,13 @@ revision 是清单与规范化图片内容的 SHA-256 指纹，与美术作者�
 | `lineupGame` | `.rl-game` |
 | `lineupCaption` | `.rl-caption` |
 | `lineupFooter` | `.rune-lineup footer` |
-| `draftName` | `.cast-draft-player` |
+| `draftName` | `.cast-draft-player,.fhd-picks article > strong` |
 | `draftTeam` | `.arena-draft-center-team` |
 | `draftTimer` | `.cast-draft-timer` |
 | `liveName` | `.lb-player-name` |
 | `liveNameplate` | `.lb-nameplate` |
 | `liveScoreboard` | `.lb-scoreboard` |
-| `reportName` | `.pr-card > .fit-name` |
+| `reportName` | `.pr-card > .fit-name,.pr-gold-label > .fit-name,.ag-damage-name > strong` |
 | `reportKda` | `.pr-kda` |
 | `reportHeadingBlue` | `.pr-table-heading:not(.red)` |
 | `reportHeadingRed` | `.pr-table-heading.red` |
@@ -169,6 +174,63 @@ revision 是清单与规范化图片内容的 SHA-256 指纹，与美术作者�
 | `interviewName` | `.cast-interview-name` |
 | `ticker` | `.cast-ticker` |
 | `analysisHeading` | `.arena-analysis-heading` |
+| `analysisPanel` | `.broadcast-analysis` |
+| `analysisName` | `.ba-player-data strong` |
+| `analysisValue` | `.ba-player-data b` |
+| `globalScoreboard` | `.ba-global-scoreboard` |
+| `eventAnnouncement` | `.ba-announcement` |
+| `lFrameRoster` | `.llf-rosters` |
+| `lFrameFooter` | `.llf-footer` |
+| `reportChampion` | `.pr-champion-text,.ag-champion-text` |
+| `inhibitorLabel` | `.ba-inhibitors > div > span` |
+| `inhibitorTime` | `.ba-inhibitors > div > b` |
+| `championTabName` | `.ct-details > strong` |
+| `lFrameName` | `.llf-team article strong` |
+| `fearlessLane` | `.ag-fearless-lane` |
+| `fearlessChampion` | `.ag-fearless-champion` |
+| `patchText` | `.lb-patch > b` |
+
+## 1.4.0 可视化编辑与动态文字
+
+在「风格包」选择风格并打开「可视化编辑」，选择节目和元素后直接拖动，或输入属性数值。开启「吸附参考线」时，元素边缘和中心可对齐画布及其他语义元素；青色参考线显示当前吸附位置，按住 Alt 可暂时关闭吸附。一次连续拖动或一次输入框编辑作为一步历史，最多保留 100 步。可使用撤销／重做按钮，或在文字输入框外按 Ctrl+Z／Ctrl+Y。保存会创建新修订；准备到预监并 TAKE 后应用于节目。
+
+文字编辑支持 `lineupName`、`lineupTeam`、`lineupGame`、`lineupCaption`、`lineupFooter`、`draftName`、`liveName`、`countdownMessage`、`interviewName`、`ticker`、`reportName`、`reportKda`、`reportTeam`、`reportGame`、`reportCaption`、`reportGoldLabel`、`scheduleTeam`、`scheduleScore`、`scheduleTime`、`analysisHeading`、`analysisName`、`analysisValue`、`lFrameFooter`、`reportChampion`、`inhibitorLabel`、`inhibitorTime`、`championTabName`、`lFrameName`、`fearlessLane`、`fearlessChampion`、`patchText`。其他目标显示对应的外观属性。`text` 可混合任意普通文字与下表占位符，留空字符串会显示空文字，删除属性会恢复原内容。
+
+| 占位符 | 数据来源 |
+| --- | --- |
+| `{{matchTitle}}`、`{{matchSubtitle}}` | 比赛标题、副标题 |
+| `{{game}}`、`{{format}}` | 当前局号、赛制 |
+| `{{blueTeamName}}`、`{{redTeamName}}` | 当前蓝方、红方队名 |
+| `{{blueScore}}`、`{{redScore}}` | 当前蓝方、红方比分 |
+| `{{teamName}}`、`{{teamTag}}` | 当前元素所属队伍的名称、简称 |
+| `{{playerName}}`、`{{playerRole}}`、`{{championName}}` | 当前元素所属选手的姓名、位置、英雄名称 |
+| `{{lane}}` | 所在分路 |
+| `{{timer}}` | 当前位置计时 |
+| `{{value}}` | 当前位置数值 |
+| `{{label}}` | 当前位置标题 |
+| `{{scheduledAt}}` | 赛程时间（北京时间） |
+| `{{matchStatus}}` | 赛程状态 |
+| `{{patch}}` | 游戏版本 |
+| `{{kills}}` | 选手击杀 |
+| `{{deaths}}` | 选手死亡 |
+| `{{assists}}` | 选手助攻 |
+
+选手卡片使用该卡片的选手；队名使用所属队伍；全局文字使用当前选中的选手。没有对应上下文的字段显示空文字。赛程使用该行比赛的标题、双方、比分和北京时间；水晶使用实际受影响一侧和剩余计时；Fearless 分路与英雄使用所选归档的历史选用。风格编辑器选择“赛后报告”后可在“赛后预览内容”切换归档图形并编辑，使用最近的有效存档。模板随数据变化自动更新，只接受表内字段，禁止嵌套花括号。内容按纯文字渲染，例如 `<img>` 会直接显示为文字。系统不会执行模板中的 HTML 或脚本。
+
+下面的局部配置为十个局内姓名添加队伍简称，并设置首发标题；其他清单字段沿用导出的完整模板：
+
+```json
+{
+  "appearance": {
+    "liveName": { "x": 12, "y": -4, "scale": 1.1, "opacity": 0.95, "text": "{{teamTag}} · {{playerName}}" }
+  },
+  "scenes": {
+    "lineup": { "appearance": { "lineupCaption": { "text": "{{matchTitle}} · 第 {{game}} 局首发" } } }
+  }
+}
+```
+
+公开的 `style-pack-v1.schema.json` 同步包含 47 个语义目标、数值边界和文字字段白名单，支持 JSON Schema Draft 2020-12 校验器。
 
 ## 1.0.4 布局兼容
 

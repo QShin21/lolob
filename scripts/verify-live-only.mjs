@@ -36,7 +36,7 @@ try{
   page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await settings();const interval=page.getByRole('spinbutton',{name:'客户端 API 轮询间隔（毫秒）'});
   assert.equal(await interval.inputValue(),'500');assert.equal(await interval.getAttribute('min'),'100');assert.equal(await interval.getAttribute('max'),'1000');
-  assert.doesNotMatch(await page.locator('body').innerText(),/演示|DEMO|测试按钮/);
+  assert.equal(await page.locator('.director-demo-controls,.cast-demo').count(),0);
   await page.screenshot({path:path.join(dir,'client-settings.png')});
   for(const value of [100,1000]){
     await interval.fill(String(value));await page.getByRole('button',{name:'保存客户端设置',exact:true}).click();
@@ -47,10 +47,14 @@ try{
   for(const action of [{type:'set-mode',mode:'demo'},{type:'demo-pause',paused:false},{type:'demo-reset'},{type:'set-settings',patch:{pollInterval:99}},{type:'set-settings',patch:{pollInterval:1001}}]){
     const response=await fetch(base+'/api/action',{method:'POST',headers:{'content-type':'application/json','x-seat-token':token},body:JSON.stringify(action)});assert.equal(response.status,400,await response.text());
   }
+  const beforeDemo=await state();await page.getByRole('tab',{name:'图形演示',exact:true}).click();
+  await page.getByLabel('演示图形',{exact:true}).selectOption('combat:damage-flow');await page.locator('.demo-watermark').waitFor();
+  const afterDemo=await state();assert.equal(afterDemo.mode,'live');assert.deepEqual(afterDemo.players,[]);assert.deepEqual(afterDemo.events,[]);assert.equal(afterDemo.gameTime,0);assert.deepEqual(afterDemo.production.program,beforeDemo.production.program);assert.deepEqual(afterDemo.schedule,[]);
+  checks.push('isolated graphic demos render without injecting synthetic data into the real service, programme or archives');
   await page.goto(base+'/index.html#studio');await page.locator('.director-workspace').waitFor();
-  assert.equal(await page.locator('.director-demo-controls,.cast-demo').count(),0);assert.doesNotMatch(await page.locator('body').innerText(),/演示|DEMO/);
+  assert.equal(await page.locator('.director-demo-controls,.cast-demo').count(),0);
   await page.screenshot({path:path.join(dir,'live-only-studio.png')});
-  checks.push('built frontend has no demo UI; default and both interval boundaries save through actual settings; removed APIs and out-of-range values reject');
+  checks.push('production remains live-only; default and both interval boundaries save through actual settings; removed demo APIs and out-of-range values reject');
   await stop();await start();assert.equal((await state()).settings.pollInterval,1000);
   checks.push('saved polling interval survives service restart');
   await stop();const legacy=createFixture();legacy.mode='demo';legacy.match.seriesId='demo-seed-series';legacy.production.program.mode='demo';legacy.production.previousProgram={content:structuredClone(legacy.production.program),scene:'live'};legacy.settings.pollInterval=10000;

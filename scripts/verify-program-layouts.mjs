@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { createServer } from 'vite';
+import react from '@vitejs/plugin-react';
+import { tsImport } from 'tsx/esm/api';
+const { chromium } = await import(pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href);
+const { createFixture } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
+const { StylePackStore } = await tsImport('../server/style-packs.ts',import.meta.url);
+const store = new StylePackStore(path.resolve('verification-output/program-layouts/style-store'));await store.initialize();
+const fixture = createFixture(); fixture.production = undefined; fixture.draft.locked = true;
+fixture.gameClock = { source:'live',gameTime:fixture.gameTime,sampledAt:new Date().toISOString(),speed:1,paused:true,sessionId:'layouts',discontinuity:0,validForMs:600000 };
+fixture.players.forEach(p=>{p.telemetry={source:'api',gameTime:fixture.gameTime,sampledAt:new Date().toISOString(),validForMs:600000};p.health=800;p.maxHealth=1000;p.resource=300;p.maxResource=500;p.ultimate={state:'ready'};});
+const dir = path.resolve('verification-output/program-layouts'); await mkdir(dir,{recursive:true});
+await writeFile(path.join(dir,'index.html'),'<html><body style="margin:0;overflow:hidden"><div id="root"></div><script type="module" src="./entry.tsx"></script></body></html>');
+await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import{bundledChampions}from'/shared/champion-art';import'/src/styles.css';const initial=${JSON.stringify(fixture)};function App(){const[s,set]=useState({...initial,overlay:{...initial.overlay,draftLayout:'full-height',championTabs:true,lFrame:false,sponsor:'',players:false}}),[scene,setScene]=useState('draft');window.layout={scene:setScene,stale:()=>set(v=>({...v,connections:{...v.connections,live:{status:'disconnected'}}})),pick:()=>set(v=>({...v,draft:{...v.draft,locked:false,activeTeam:'blue',action:'pick',bluePicks:v.draft.bluePicks.map((p,i)=>i===4?'':p),bluePreselect:['Ahri']}}))};return <BroadcastCanvas state={s} champions={bundledChampions()} scene={scene} output/>}createRoot(document.getElementById('root')).render(<App/>);`);
+const vite = await createServer({configFile:false,cacheDir:path.join(dir,'vite-cache'),plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;const checks=[],errors=[];
+try {
+ browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/api/**',async route=>{const parts=new URL(route.request().url()).pathname.split('/'),ref={id:parts[3],revision:parts[4],name:'fixture'};if(parts[2]==='style-packs'){if(parts[5]==='assets')return route.fulfill({body:await store.asset(ref,parts[6]),contentType:'image/png'});return route.fulfill({json:store.get(ref)});}return route.fulfill({status:404,body:''});});
+ await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/program-layouts/index.html`);await page.locator('.full-height-draft').waitFor();await page.locator('[data-style-status=ready]').waitFor();
+ assert.equal(await page.locator('.fhd-picks article').count(),10);assert.equal(await page.locator('.fhd-bans .champion-image').count(),10);assert.equal(await page.locator('.fhd-timer').count(),0);
+ const bounded=async()=>assert.equal(await page.locator('.fhd-picks article,.ct-team article').evaluateAll(nodes=>nodes.some(n=>{const r=n.getBoundingClientRect();return r.left<0||r.top<0||r.right>innerWidth+1||r.bottom>innerHeight+1;})),false);
+ await bounded();await page.screenshot({path:path.join(dir,'draft-1920.png')});checks.push('Full-height draft renders ten assigned picks and ten bans within the actual output canvas');
+ await page.evaluate(()=>window.layout.pick());assert.equal(await page.locator('.fhd-picks article[data-state=preselect]').count(),1);assert.equal(await page.locator('.fhd-timer').count(),1);checks.push('Unlocked active pick renders hover state and timer without claiming a locked identity');
+ await page.evaluate(()=>window.layout.scene('live'));await page.locator('.champion-tabs').waitFor();assert.equal(await page.locator('.ct-team article').count(),10);assert.equal(await page.locator('.ct-spells .cd-ready').count(),10);await bounded();await page.screenshot({path:path.join(dir,'tabs-1920.png')});
+ await page.evaluate(()=>window.layout.stale());await page.waitForFunction(()=>document.querySelectorAll('.ct-spells .cd-ready').length===0);assert.equal(await page.locator('.ct-details .health i').evaluateAll(nodes=>nodes.every(n=>n.style.width==='0%')),true);assert.ok((await page.locator('.ct-details>small').allInnerTexts()).every(t=>t==='— · — CS'));assert.ok((await page.locator('.ct-portrait>b').allInnerTexts()).every(t=>t==='—'));assert.equal(await page.locator('.ct-items img').count(),0);checks.push('Champion tabs clear health, levels, equipment, score values and ready-state assertions after disconnection');
+ await page.setViewportSize({width:1280,height:720});await bounded();await page.screenshot({path:path.join(dir,'tabs-1280.png')});await page.evaluate(()=>window.layout.scene('draft'));await bounded();await page.screenshot({path:path.join(dir,'draft-1280.png')});checks.push('Both output layouts remain bounded at 1280 by 720');
+ assert.deepEqual(errors,[]);await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',checks,errors,scope:'Real output components with synthetic data; no live game or OBS mutation'},null,2));console.log(JSON.stringify({status:'passed',checks}));
+}finally{await browser?.close();await vite.close();}

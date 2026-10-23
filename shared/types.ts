@@ -1,4 +1,6 @@
 import type { StylePackRef } from './style-packs';
+/** Riot Live Client's champion-local skinID, preserved in player snapshots. */
+export interface Player { skinId?: number }
 import type { FightSegment, NeutralSample } from './combat-display';
 import type { Cooldown, TelemetryStamp, ItemCooldown, PlayerBuffs, DamageTotals } from './player-telemetry';
 import type { ProductionState, ProductionCommand } from './production-types';
@@ -7,8 +9,8 @@ export type Phase = 'pregame' | 'draft' | 'live' | 'postgame';
 export type BuiltinScene = 'standby' | 'draft' | 'lineup' | 'live' | 'economy' | 'ranking' | 'schedule' | 'postgame' | 'interview' | 'teamfight' | 'gold-ranking';
 export type Scene = BuiltinScene | `custom:${string}`;
 export interface CustomSceneSource {
-  id: string; name: string; kind: 'image' | 'window' | 'obs';
-  assetId?: string; window?: string; inputName?: string;
+  id: string; name: string; kind: 'image' | 'window' | 'obs' | 'browser';
+  assetId?: string; window?: string; inputName?: string; url?: string;
   x: number; y: number; width: number; height: number;
   fit: 'contain' | 'cover' | 'stretch'; visible: boolean;
 }
@@ -35,7 +37,7 @@ export interface Player { damageDealt?: number; damageTaken?: number; id: string
 export interface Team { id: string; name: string; tag: string; color: string; logo?: string; players: { id?: string; account?: string; name: string; role: string; portrait?: string }[] }
 export interface Match { id: string; title: string; blueTeamId: string; redTeamId: string; scheduledAt: string; format: string; status: 'scheduled' | 'live' | 'finished'; blueScore: number; redScore: number }
 export interface TeamStats { kills: number; gold: number | null; towers: number; dragons: number; barons: number; elders?: number; heralds?: number; voidgrubs?: number; objectivesAvailable?: boolean; objectivesSource?: 'memory'; objectivesSampledAt?: string; objectivesExpiresAt?: string }
-export interface GameEvent { id: string; time: number; type: string; text: string; team?: Side }
+export interface GameEvent { id: string; time: number; type: string; text: string; team?: Side; actor?: string; victim?: string; assistants?: string[]; objective?: string; streak?: number }
 export type EconomySource = 'none' | 'api' | 'manual' | 'ocr' | 'memory';
 export interface EconomyRoi { x: number; y: number; width: number; height: number }
 export type HudObjective = 'towers' | 'dragons' | 'barons' | 'voidgrubs';
@@ -62,8 +64,13 @@ export type BroadcastPreset = 'arena';
 export interface PlayerFeedSettings { mode: 'image' | 'camera' | 'off'; imageUrl: string; cameraDeviceId: string; label: string; focusX?: number; focusY?: number }
 export type PlayerFeedPair = Record<Side, PlayerFeedSettings>;
 export interface PlayerFeedControl { mode: 'manual' | 'auto'; activeIndex: number; nextSwitchAt?: number }
-export interface OverlaySettings { stylePack?: StylePackRef; postgamePage?: 1 | 2 | 3; preset: BroadcastPreset; scoreboard: boolean; players: boolean; objectives: boolean; ticker: boolean; goldDiff: boolean; sponsor: string; sponsorLogo?: string; tickerText: string; accent: string; scale: number; countdownEnd: number | null; nativeHud?: 'auto' | 'mask' | 'off'; patchVersion?: string; bottomTitle?: string; playerFeeds?: PlayerFeedPair; playerFeedPairs?: PlayerFeedPair[]; playerFeedControl?: PlayerFeedControl; scheduleView?: { page: number; filter: 'all' | 'upcoming' | 'day'; day: string }; interview?: { name: string; team: string; role: string; topic: string; dock: 'left' | 'right' } }
+export interface OverlaySettings { draftStatistics?: import('./draft-statistics').DraftStatisticsSettings }
+export interface OverlaySettings { combatReviewMode?: import('./combat-review').CombatReviewMode; combatMomentId?: string; lFrame?: boolean; championTabs?: boolean; draftLayout?: 'bottom' | 'full-height' }
+export interface OverlaySettings { analysisMode?: import('./broadcast-analysis').BroadcastAnalysisMode; killFeed?: boolean; announcer?: boolean; inhibitorTimers?: boolean; fullScoreboard?: boolean; stylePack?: StylePackRef; postgamePage?: 1 | 2 | 3; preset: BroadcastPreset; scoreboard: boolean; players: boolean; objectives: boolean; ticker: boolean; goldDiff: boolean; sponsor: string; sponsorLogo?: string; tickerText: string; accent: string; scale: number; countdownEnd: number | null; nativeHud?: 'auto' | 'mask' | 'off'; patchVersion?: string; bottomTitle?: string; playerFeeds?: PlayerFeedPair; playerFeedPairs?: PlayerFeedPair[]; playerFeedControl?: PlayerFeedControl; scheduleView?: { page: number; filter: 'all' | 'upcoming' | 'finished' | 'day'; day: string }; interview?: { name: string; team: string; role: string; topic: string; dock: 'left' | 'right' } }
 export interface BroadcastState {
+  powerPlay?: import('./power-play').PowerPlayState;
+  broadcastTransitions?: import('./broadcast-transitions').TransitionSettings;
+  transitionReceipt?: import('./broadcast-transitions').TransitionReceipt;
   tournaments?: Tournament[];
   replayReview?: {session:string;key:string};
   customScenes?: CustomScene[];
@@ -74,6 +81,7 @@ export interface BroadcastState {
   stats: { blue: TeamStats; red: TeamStats }; draft: DraftState; events: GameEvent[]; economy: EconomyPoint[]; economyFeed?: EconomyFeed; ocrMatch?: OcrMatchData;
   connections: { lcu: Connection; live: Connection; replay: Connection; obs: Connection };
   overlay: OverlaySettings; assets: Asset[]; recordings: Recording[]; selectedPlayerId: string | null;
+  combatReview?: import('./combat-review').CombatReview;
   fightSegment?: FightSegment; neutralObjectives?: NeutralSample;
   observerTelemetry?: {status:'connected'|'unavailable';detail:string;profile?:string;sampledAt?:string}; draftHistory?: DraftHistoryGame[]; draftHistoryPending?: DraftHistoryGame; nativeHudStatus?: NativeHudStatus;
   gameResults?: GameResult[]; finishedGameId?: string; reportGameId?: string; awaitingNextGame?: { sourceGameId?: string; rosterFingerprint: string; gameTime: number }; activeSourceGameId?: string;

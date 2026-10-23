@@ -7,6 +7,7 @@ import type { StylePackSummary } from '../../shared/style-packs';
 import { api, sceneInfo } from '../lib';
 import { BroadcastCanvas } from './BroadcastCanvas';
 import { loadStylePack } from './useStylePack';
+import { StyleEditor } from './StyleEditor';
 import './style-pack-manager.css';
 
 type Props = { state: BroadcastState; champions: Champion[]; onClose: () => void } & Pick<StateContext, 'send' | 'notify' | 'seat' | 'connected'>;
@@ -21,6 +22,7 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
   const selectedInfo = packs.find(p => sameStyle(p, selected));
   const deleteBlock = stylePackDeleteBlock(state, selected);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [editing, setEditing] = useState(false);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     dialog.current?.showModal();
@@ -70,6 +72,7 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
     finally { working.current = false; setBusy(false); }
   }
   const previewState = { ...state, overlay: { ...state.overlay, stylePack: selected } };
+  if (editing) return <dialog ref={dialog} className="style-pack-dialog" aria-label="可视化风格编辑器" onCancel={e => { e.preventDefault(); setEditing(false); }}><StyleEditor state={previewState} champions={champions} base={selected} initialScene={scene} disabled={!canEdit} onClose={() => setEditing(false)} onSaved={pack => { setPacks(current => [...current.filter(p => !sameStyle(p, pack)), pack]); setSelected(pack); setEditing(false); notify(`已保存 ${pack.name}，可准备到预监`); }}/></dialog>;
   return <dialog ref={dialog} className="style-pack-dialog" aria-labelledby="style-pack-title" onCancel={e => { e.preventDefault(); if (!busy) onClose(); }}>
     <header><div><h2 id="style-pack-title"><Palette size={20}/>风格包</h2><p>统一管理预设节目的美术，不修改赛事数据与自定义场景。</p></div><button className="button small" aria-label="关闭风格包" disabled={busy} onClick={onClose}><X size={18}/></button></header>
     <div className="style-pack-buses"><span>当前节目：<b>{onAir.name}</b></span><span>待播配置：<b>{active.name}</b></span>{!sameStyle(active, onAir) && <strong>新风格待 TAKE</strong>}</div>
@@ -81,7 +84,7 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
       <section className="style-pack-detail"><div className="style-pack-preview-heading"><div><h3>{selectedInfo?.name ?? selected.name}</h3><p>{selectedInfo?.description}</p></div><label>预览节目<select aria-label="风格包预览节目" value={scene} onChange={e => setScene(e.target.value as BuiltinScene)}>{STYLE_SCENES.map(s => <option key={s} value={s}>{sceneInfo[s].name}</option>)}</select></label></div>
         <div className="style-pack-preview"><BroadcastCanvas state={previewState} champions={champions} scene={scene}/></div>
         <p>此处仅查看效果。导入后选择“准备到预监”，再回导播台核对并 TAKE；正在播出的风格保持不变。</p>
-        <p>美术制作：导出任一内置风格包，解压后修改清单标识与图片，再将清单和 assets 文件夹压缩为 ZIP 导入。</p>
+        <p>可视化编辑器可调整图层颜色、字体、位置和缩放；整套贴图可通过导出、编辑与重新导入更新。</p>
         {scene === 'teamfight' && <p>团战节目叠加十人状态和中立资源计时，游戏区域保持透明。</p>}
         {!canEdit && <p>导入、删除和切换由当前主导播操作；此席位可查看与导出。</p>}
         <div className="style-pack-delete">
@@ -91,7 +94,7 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
         </div>
         {warnings.map((w, i) => <p className="style-pack-warning" key={i}>{w}</p>)}
         {error && <p className="style-pack-error" role="alert">{error}</p>}
-        <footer><a className="button" download href={`/api/style-packs/${selected.id}/${selected.revision}/export`}><Download size={15}/>导出风格包</a><button className="button primary" disabled={!canEdit || busy || !ready || sameStyle(active, selected)} onClick={() => void stage()}>{busy ? '处理中…' : !ready ? '贴图加载中…' : sameStyle(active, selected) ? '已是待播风格' : '准备到预监'}</button></footer>
+        <footer><a className="button" download href={`/api/style-packs/${selected.id}/${selected.revision}/export`}><Download size={15}/>导出风格包</a><button type="button" className="button" disabled={!canEdit || busy || !ready} onClick={() => setEditing(true)}>可视化编辑</button><button className="button primary" disabled={!canEdit || busy || !ready || sameStyle(active, selected)} onClick={() => void stage()}>{busy ? '处理中…' : !ready ? '贴图加载中…' : sameStyle(active, selected) ? '已是待播风格' : '准备到预监'}</button></footer>
       </section>
     </div>
   </dialog>;

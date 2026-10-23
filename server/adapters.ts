@@ -1,4 +1,7 @@
+import { applyAutomaticSides } from './player-identity';
+import { clientRiotId } from '../shared/player-identity';
 import type { PostgameCollector } from './postgame-archive';
+import { broadcastEventFields } from '../shared/broadcast-analysis';
 import { liveChampionId } from '../shared/champion-identity';
 import { neutralObjectives, ObjectiveEventContinuity } from './neutral-objectives';
 import {enrichPostgame} from './postgame-data';
@@ -7,6 +10,7 @@ import {coherentPlayback,ReplaySampleHistory,type PlaybackMark} from './replay-s
 import {focusReplayCamera} from './replay-camera';
 import type {ReplayMoment,ReplayCameraStatus} from '../shared/replay-director';
 import {selectedRuneIds} from '../shared/lineup-runes';
+import {selectedStatRuneIds} from '../shared/stat-runes';
 import { captureGameFrame } from './game-frame';
 import { ObsCustomScenes } from './obs-custom-scenes';
 import { bundledChampions, bundledChampionVersion, localChampionAssets } from '../shared/champion-art';
@@ -19,6 +23,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { ObsClient } from './obs-client';
 import { ObsBroadcast } from './obs-broadcast';
+import type { TransitionConfig } from '../shared/broadcast-transitions';
 import { ObsEngine, engineScene, enginePreviewScene, type ObsEngineOptions } from './obs-engine';
 import { LocalApiError, diagnoseReplay, validPlayback, type ReplayDiagnostics } from './replay';
 import { EconomyBridge } from './economy';
@@ -99,18 +104,15 @@ export function normalizeLive(data:Json,champions:Champion[]):{players:Player[];
     const vision=p._observerVision?p.visionScore:scores.wardScore;
     if(positive(vision))Object.assign(combat,{visionScore:vision,visionSource:p._observerVision?'memory':'api',visionSampledAt:p._observerVision?p._observerStamp.sampledAt:sampledAt,visionExpiresAt:new Date(Date.parse(p._observerVision?p._observerStamp.sampledAt:sampledAt)+3000).toISOString()});
     const fullRunes=p.fullRunes??(activeIdentity(p)?active.fullRunes:undefined);
-    const fullRuneIds=selectedRuneIds(fullRunes);if(fullRuneIds){
-      combat.fullRuneIds=fullRuneIds;
-      const shards=list(fullRunes?.statRunes).map(r=>r.id);
-      if(shards.length===3&&shards.every(id=>Number.isInteger(id)&&[5001,5005,5007,5008,5010,5011,5013].includes(id)))combat.statRuneIds=shards;
-    }
+    const fullRuneIds=selectedRuneIds(fullRunes);if(fullRuneIds)combat.fullRuneIds=fullRuneIds;
+    const shards=selectedStatRuneIds(fullRunes?.statRunes);if(shards)combat.statRuneIds=shards;
     const runeIds=[p.runes?.keystone?.id,p.runes?.primaryRuneTree?.id,p.runes?.secondaryRuneTree?.id].filter((id):id is number=>Number.isInteger(id)&&id>0);if(runeIds.length)combat.runeIds=runeIds;
-    return [{id:`live-${text(p.riotId)||text(p.summonerName)||i}`,name:text(p.riotIdGameName)||text(p.summonerName)||text(p.riotId)||`选手 ${i+1}`,role:roleNames[text(p.position).toUpperCase()]??'待分路',championId:c?.id??raw,championName:c?.name??text(p.championName,'未知英雄'),statsAvailable,...(statsAvailable?{statsSource:'api' as const,statsSampledAt:sampledAt,statsGameTime:gameTime}:{}),kills:n(scores.kills),deaths:n(scores.deaths),assists:n(scores.assists),cs:n(scores.creepScore),level:n(p.level,1),gold:total,items:liveItems.sort((a,b)=>n(a.slot)-n(b.slot)).map(i=>n(i.itemID)).filter(i=>i>0),...(itemSlots?{itemSlots}:{}),team:side,runes:[text(p.runes?.keystone?.displayName),text(p.runes?.primaryRuneTree?.displayName),text(p.runes?.secondaryRuneTree?.displayName)].filter(Boolean),...combat}];
+    return [{id:`live-${clientRiotId(p)?.display||(!text(p.riotId).includes('#')?text(p.riotId):'')||(!text(p.summonerName).includes('#')?text(p.summonerName):'')||i}`,name:text(p.riotIdGameName)||text(p.summonerName)||text(p.riotId)||`选手 ${i+1}`,role:roleNames[text(p.position).toUpperCase()]??'待分路',championId:c?.id??raw,championName:c?.name??text(p.championName,'未知英雄'),statsAvailable,...(statsAvailable?{statsSource:'api' as const,statsSampledAt:sampledAt,statsGameTime:gameTime}:{}),kills:n(scores.kills),deaths:n(scores.deaths),assists:n(scores.assists),cs:n(scores.creepScore),level:n(p.level,1),gold:total,items:liveItems.sort((a,b)=>n(a.slot)-n(b.slot)).map(i=>n(i.itemID)).filter(i=>i>0),...(itemSlots?{itemSlots}:{}),team:side,runes:[text(p.runes?.keystone?.displayName),text(p.runes?.primaryRuneTree?.displayName),text(p.runes?.secondaryRuneTree?.displayName)].filter(Boolean),...combat}];
   }).sort((a,b)=>a.team.localeCompare(b.team)||((roleOrder.indexOf(a.role)<0?5:roleOrder.indexOf(a.role))-(roleOrder.indexOf(b.role)<0?5:roleOrder.indexOf(b.role))));
   const playerNames=new Map<string,Side|undefined>();for(const p of list(data.allPlayers)){const side=sideValue(p.team);if(side)for(const value of [p.summonerName,p.riotId,p.riotIdGameName])if(typeof value==='string'&&value){if(!playerNames.has(value))playerNames.set(value,side);else if(playerNames.get(value)!==side)playerNames.set(value,undefined);}}
   const eventSide=(name:string):Side|undefined=>playerNames.get(name)??(name.match(/^Minion_T(100|200)(?:_|[A-Z])/)?.[1]==='100'?'blue':name.match(/^Minion_T(100|200)(?:_|[A-Z])/)?.[1]==='200'?'red':undefined);
   const empty=():TeamStats=>({kills:0,gold:null,towers:0,dragons:0,barons:0,elders:0,heralds:0,objectivesAvailable:Array.isArray(data.events?.Events)});const stats={blue:empty(),red:empty()};for(const side of ['blue','red']as const){const members=players.filter(p=>p.team===side);stats[side].kills=members.reduce((v,p)=>v+p.kills,0);stats[side].gold=members.length&&members.every(p=>p.gold!==null)?members.reduce((v,p)=>v+(p.gold??0),0):null;}
-  let ended=false;const events:GameEvent[]=list(data.events?.Events).filter(e=>typeof e.EventTime==='number'&&Number.isFinite(e.EventTime)&&e.EventTime>=0&&e.EventTime<=gameTime+.25).map((e,i)=>{const name=text(e.EventName);const killer=text(e.KillerName);let side=eventSide(killer);let message=name;if(name==='ChampionKill')message=`${killer} 击杀 ${text(e.VictimName)}`;if(name==='FirstBlood'){side=eventSide(text(e.Recipient));message=`${text(e.Recipient)} 拿下一血`;}if(name==='DragonKill'){message=`${killer} 击杀 ${text(e.DragonType,'亚龙')}`;if(side){if(text(e.DragonType).toLowerCase()==='elder')stats[side].elders!++;else stats[side].dragons++;}}if(name==='HeraldKill'&&side)stats[side].heralds!++;if(name==='BaronKill'){message=`${killer} 击杀纳什男爵`;if(side)stats[side].barons++;}if(name==='TurretKilled'){const turret=text(e.TurretKilled);const destroyed=turret.match(/Turret_T([12])_/);if(destroyed)side=destroyed[1]==='1'?'red':'blue';message=`${side==='blue'?'蓝方':side==='red'?'红方':killer} 摧毁防御塔`;if(side)stats[side].towers++;}if(name==='GameStart')message='对局开始';if(name==='GameEnd'){message='对局结束';ended=true;}return {id:`live-${e.EventID??i}`,time:n(e.EventTime),type:name,text:message,...(side?{team:side}:{})};});
+  let ended=false;const events:GameEvent[]=list(data.events?.Events).filter(e=>typeof e.EventTime==='number'&&Number.isFinite(e.EventTime)&&e.EventTime>=0&&e.EventTime<=gameTime+.25).map((e,i)=>{const name=text(e.EventName);const killer=text(e.KillerName);let side=eventSide(killer);let message=name;if(name==='ChampionKill')message=`${killer} 击杀 ${text(e.VictimName)}`;if(name==='FirstBlood'){side=eventSide(text(e.Recipient));message=`${text(e.Recipient)} 拿下一血`;}if(name==='DragonKill'){message=`${killer} 击杀 ${text(e.DragonType,'亚龙')}`;if(side){if(text(e.DragonType).toLowerCase()==='elder')stats[side].elders!++;else stats[side].dragons++;}}if(name==='HeraldKill'&&side)stats[side].heralds!++;if(name==='BaronKill'){message=`${killer} 击杀纳什男爵`;if(side)stats[side].barons++;}if(name==='TurretKilled'){const turret=text(e.TurretKilled);const destroyed=turret.match(/Turret_T([12])_/);if(destroyed)side=destroyed[1]==='1'?'red':'blue';message=`${side==='blue'?'蓝方':side==='red'?'红方':killer} 摧毁防御塔`;if(side)stats[side].towers++;}if(name==='GameStart')message='对局开始';if(name==='GameEnd'){message='对局结束';ended=true;}return {id:`live-${e.EventID??i}`,time:n(e.EventTime),type:name,text:message,...broadcastEventFields(e),...(side?{team:side}:{})};});
   const counts=data._observerCounts,keys=['towers','dragons','barons','voidgrubs','heralds','elders'] as const;
   if(data.gameData?.mapNumber===11&&counts&&Math.abs(counts.gameTime-gameTime)<=2&&Date.now()-Date.parse(counts.sampledAt)>=-1000&&Date.now()-Date.parse(counts.sampledAt)<=3000&&
     (['blue','red']as const).every(side=>keys.every(key=>Number.isInteger(counts.values?.[side]?.[key])&&counts.values[side][key]>=0&&counts.values[side][key]<=100))) {
@@ -160,6 +162,7 @@ export class Adapters {
   private playerFeedsRetry?:{signature:string;after:number;detail:string};
   private cameraPreviewPrepared=false;
   private broadcastOutput=new ObsBroadcast(()=>this.get().connections.obs.status==='connected',(request,data)=>this.obs.call(request,data));
+  private transitionDataDir='';
   constructor(private get:()=>BroadcastState,private commit:(work:(s:BroadcastState)=>void)=>void,private catalog:ChampionCatalog,private request:typeof localJson=localJson,private economy?:EconomyBridge,private archives?:PostgameCollector){this.obs.on('ConnectionClosed',()=>{this.playerFeedsSignature='';this.playerFeedsRetry=undefined;this.cameraPreviewPrepared=false;if(this.requested.has('obs'))this.status('obs','disconnected','OBS WebSocket 已断开');});this.obs.on('Identified',()=>{this.playerFeedsSignature='';this.playerFeedsRetry=undefined;this.cameraPreviewPrepared=false;});this.obs.on('ConnectionError',()=>this.status('obs','error','OBS WebSocket 连接失败'));}
   setPassword(password:string){this.obsPassword=password;}
   private ensureClockSession(state:BroadcastState){const identity=JSON.stringify([gameClockMatchKey(state),state.players.map(player=>[player.id,player.championId,player.team]).sort((a,b)=>String(a[0]).localeCompare(String(b[0])))]);if(identity===this.clockIdentity&&(state.gameClock||!this.lastLiveReading&&!this.replayClock))return;this.clockIdentity=identity;this.clockSessionId=randomUUID();this.clockDiscontinuity=0;this.replayClock=undefined;this.lastLiveReading=undefined;this.awaitingLiveAfterSeek=false;}
@@ -189,7 +192,7 @@ export class Adapters {
     try{const value=await this.request(2999,'/replay/playback');return validPlayback(value)?{value,at:performance.now()}:undefined;}catch{return;}
   }
   async spectatorFrame():Promise<Buffer>{return captureGameFrame(()=>this.requireEngine().spectatorFrame());}
-  async initializeObsEngine(options:Omit<ObsEngineOptions,'onConnection'>){this.customScenes=new ObsCustomScenes((request,data)=>this.obs.call(request,data),options.dataDir);this.obs.on('Identified',()=>{this.customScenes?.reset();this.customPreviewActive=false;});this.engine=new ObsEngine(this.obs,{...options,onConnection:(status,detail)=>{this.requested.add('obs');this.status('obs',status,detail);}});await this.engine.initialize();}
+  async initializeObsEngine(options:Omit<ObsEngineOptions,'onConnection'>){this.transitionDataDir=options.dataDir;this.customScenes=new ObsCustomScenes((request,data)=>this.obs.call(request,data),options.dataDir);this.obs.on('Identified',()=>{this.customScenes?.reset();this.customPreviewActive=false;});this.engine=new ObsEngine(this.obs,{...options,onConnection:(status,detail)=>{this.requested.add('obs');this.status('obs',status,detail);}});await this.engine.initialize();}
   private status(target:'lcu'|'live'|'replay'|'obs',status:BroadcastState['connections']['lcu']['status'],detail:string){this.commit(s=>{const updatedAt=status==='connected'?new Date().toISOString():s.connections[target].updatedAt;s.connections[target]={status,detail,...(updatedAt?{updatedAt}:{})};});}
   async connect(target:'lcu'|'live'|'replay'|'obs'){this.requested.add(target);this.status(target,'connecting','正在连接本地服务');try{if(target==='obs'){if(this.engine?.mode==='embedded'){await this.engine.start();this.playerFeedsRetry=undefined;await this.syncPlayerFeeds().catch(()=>{});await this.restoreCustomProgram();return;}await this.obs.disconnect().catch(()=>{});await this.obs.connect(this.get().settings.obsUrl,this.obsPassword,{rpcVersion:1,eventSubscriptions:131071});this.status('obs','connected','外部 OBS WebSocket 5.x 已连接');await this.syncPlayerFeeds().catch(()=>{});return;}
       if(target==='lcu'){this.credentials=await discoverLcu(this.get().settings.lockfilePath,this.get().settings.gamePath);await this.pollLcu();return;}if(target==='live'){await this.pollLive();return;}await this.pollReplay();
@@ -219,7 +222,7 @@ export class Adapters {
       this.markSeek();this.status('live','connected','正在同步回放位置与选手数据');return;
     }
     if(this.awaitingLiveAfterSeek&&!after){this.status('live','connected','等待回放位置确认');return;}
-    this.objectiveContinuity.observe(data);const sampledAt=Date.now();const normalized=normalizeLive(data,this.catalog.champions);normalized.players=applyIdentity(this.get(),normalized.players);if(!normalized.players.length)throw new Error('游戏客户端尚未返回选手数据');if(typeof data.gameData?.gameTime!=='number'||!Number.isFinite(data.gameData.gameTime)||data.gameData.gameTime<0)throw new LocalApiError('游戏客户端未提供有效游戏时间','invalid-json',2999,'/liveclientdata/allgamedata');const sampleId=sourceGameId(data.gameData?.gameId);const reviewing=this.reviewingReplay();if(!reviewing&&this.get().replayReview)this.commit(s=>{delete s.replayReview;});if(currentGameResult(this.get())&&!reviewing){this.commit(s=>{s.connections.live={status:"connected",detail:"本局已保存赛后结果",updatedAt:new Date().toISOString()};if(normalized.ended&&matchingTerminalGameSample(s,{...normalized,sourceGameId:sampleId})){absorbTerminalGameSample(s,{...normalized,sourceGameId:sampleId});finalizeGame(s,{source:"live",winner:normalized.winner,sourceGameId:sampleId,terminal:true});}});const terminal=currentGameResult(this.get());if(terminal&&normalized.ended&&matchingTerminalGameSample(this.get(),{...normalized,sourceGameId:sampleId}))void this.archives?.capture(terminal.id,"live",data);return;}if(!reviewing&&!acceptNextGameSample(structuredClone(this.get()),{...normalized,sourceGameId:sampleId})){this.status("live","connected","等待下一局客户端样本");return;}if(!reviewing)this.economy?.observePlayers(normalized.players,normalized.gameTime);const bridged=reviewing?undefined:this.economy?.resolve(normalized.gameTime,normalized.stats);if(bridged){normalized.stats=bridged.stats;normalized.players=this.economy!.resolvePlayers(normalized.players);bridged.feed.players=this.economy!.playerStatus(normalized.players);for(const side of ['blue','red']as const)normalized.stats[side].kills=normalized.players.filter(player=>player.team===side).reduce((sum,player)=>sum+player.kills,0);}this.commit(s=>{s.connections.live={status:'connected',detail:normalized.stats.blue.gold===null||normalized.stats.red.gold===null?'已连接 · 等待国服观战个人累计金币采样':bridged&&bridged.feed.source!=='api'?`Live Client 已连接 · ${bridged.feed.detail}`:'Live Client Data 已连接',updatedAt:new Date().toISOString()};if(s.mode!=='live')return;if(!reviewing&&!acceptNextGameSample(s,{...normalized,sourceGameId:sampleId}))return;if(sampleId)s.activeSourceGameId=sampleId;ensureProduction(s).entry='verify';Object.assign(s,{players:normalized.players,stats:normalized.stats,events:normalized.events,gameTime:normalized.gameTime,neutralObjectives:neutralObjectives(data)});captureLiveDraft(s,data.gameData?.gameId);this.ensureClockSession(s);s.observerTelemetry={...this.observer.status};if(after){this.awaitingLiveAfterSeek=false;this.replaySampleMonotonic=after.at;this.replayClock=this.clockSample(s,'replay',after.value.time,after.value.speed,after.value.paused,sampledAt);s.gameClock=this.replayClock;s.connections.replay={status:'connected',detail:'Replay API 已连接',updatedAt:new Date(sampledAt).toISOString()};}const stationary=!!this.lastLiveReading&&sampledAt-this.lastLiveReading.at>=300&&Math.abs(normalized.gameTime-this.lastLiveReading.time)<.01;const replayFresh=!!this.replayClock&&performance.now()-this.replaySampleMonotonic<this.replayClock.validForMs;const liveClock=this.clockSample(s,'live',normalized.gameTime,1,normalized.ended||stationary||!!this.replayClock&&!replayFresh,sampledAt);this.lastLiveReading={time:normalized.gameTime,at:sampledAt};s.gameClock=replayFresh?this.replayClock:liveClock;if(bridged)s.economyFeed=bridged.feed;if(s.selectedPlayerId&&!s.players.some(p=>p.id===s.selectedPlayerId))s.selectedPlayerId=null;if(s.settings.autoPhase)s.phase=normalized.ended?'postgame':'live';this.sampleHistory.record(this.observer.director.snapshot().session??this.clockSessionId,{gameTime:s.gameTime,players:s.players,stats:s.stats,neutralObjectives:s.neutralObjectives});s.economy=this.sampleHistory.economy(s.gameTime);this.observer.recoverFight(s);if(normalized.ended&&!reviewing)finalizeGame(s,{source:"live",winner:normalized.winner,sourceGameId:sampleId,terminal:true});});if(normalized.ended&&!reviewing){const result=currentGameResult(this.get());if(result)void this.archives?.capture(result.id,"live",data);}}
+    this.objectiveContinuity.observe(data);const sampledAt=Date.now();const normalized=normalizeLive(data,this.catalog.champions);normalized.players=applyIdentity(this.get(),normalized.players);if(!normalized.players.length)throw new Error('游戏客户端尚未返回选手数据');if(typeof data.gameData?.gameTime!=='number'||!Number.isFinite(data.gameData.gameTime)||data.gameData.gameTime<0)throw new LocalApiError('游戏客户端未提供有效游戏时间','invalid-json',2999,'/liveclientdata/allgamedata');const sampleId=sourceGameId(data.gameData?.gameId);const reviewing=this.reviewingReplay();if(!reviewing&&this.get().replayReview)this.commit(s=>{delete s.replayReview;});if(currentGameResult(this.get())&&!reviewing){this.commit(s=>{s.connections.live={status:"connected",detail:"本局已保存赛后结果",updatedAt:new Date().toISOString()};if(normalized.ended&&matchingTerminalGameSample(s,{...normalized,sourceGameId:sampleId})){absorbTerminalGameSample(s,{...normalized,sourceGameId:sampleId});finalizeGame(s,{source:"live",winner:normalized.winner,sourceGameId:sampleId,terminal:true});}});const terminal=currentGameResult(this.get());if(terminal&&normalized.ended&&matchingTerminalGameSample(this.get(),{...normalized,sourceGameId:sampleId}))void this.archives?.capture(terminal.id,"live",data);return;}if(!reviewing&&!acceptNextGameSample(structuredClone(this.get()),{...normalized,sourceGameId:sampleId})){this.status("live","connected","等待下一局客户端样本");return;}if(!reviewing)this.economy?.observePlayers(normalized.players,normalized.gameTime);const bridged=reviewing?undefined:this.economy?.resolve(normalized.gameTime,normalized.stats);if(bridged){normalized.stats=bridged.stats;normalized.players=this.economy!.resolvePlayers(normalized.players);bridged.feed.players=this.economy!.playerStatus(normalized.players);for(const side of ['blue','red']as const)normalized.stats[side].kills=normalized.players.filter(player=>player.team===side).reduce((sum,player)=>sum+player.kills,0);}this.commit(s=>{s.connections.live={status:'connected',detail:normalized.stats.blue.gold===null||normalized.stats.red.gold===null?'已连接 · 等待国服观战个人累计金币采样':bridged&&bridged.feed.source!=='api'?`Live Client 已连接 · ${bridged.feed.detail}`:'Live Client Data 已连接',updatedAt:new Date().toISOString()};if(s.mode!=='live')return;if(!reviewing&&!acceptNextGameSample(s,{...normalized,sourceGameId:sampleId}))return;if(sampleId)s.activeSourceGameId=sampleId;if(!reviewing)applyAutomaticSides(s,data.allPlayers);normalized.players=applyIdentity(s,normalized.players);ensureProduction(s).entry='verify';Object.assign(s,{players:normalized.players,stats:normalized.stats,events:normalized.events,gameTime:normalized.gameTime,neutralObjectives:neutralObjectives(data)});captureLiveDraft(s,data.gameData?.gameId);this.ensureClockSession(s);s.observerTelemetry={...this.observer.status};if(after){this.awaitingLiveAfterSeek=false;this.replaySampleMonotonic=after.at;this.replayClock=this.clockSample(s,'replay',after.value.time,after.value.speed,after.value.paused,sampledAt);s.gameClock=this.replayClock;s.connections.replay={status:'connected',detail:'Replay API 已连接',updatedAt:new Date(sampledAt).toISOString()};}const stationary=!!this.lastLiveReading&&sampledAt-this.lastLiveReading.at>=300&&Math.abs(normalized.gameTime-this.lastLiveReading.time)<.01;const replayFresh=!!this.replayClock&&performance.now()-this.replaySampleMonotonic<this.replayClock.validForMs;const liveClock=this.clockSample(s,'live',normalized.gameTime,1,normalized.ended||stationary||!!this.replayClock&&!replayFresh,sampledAt);this.lastLiveReading={time:normalized.gameTime,at:sampledAt};s.gameClock=replayFresh?this.replayClock:liveClock;if(bridged)s.economyFeed=bridged.feed;if(s.selectedPlayerId&&!s.players.some(p=>p.id===s.selectedPlayerId))s.selectedPlayerId=null;if(s.settings.autoPhase)s.phase=normalized.ended?'postgame':'live';this.sampleHistory.record(this.observer.director.snapshot().session??this.clockSessionId,{gameTime:s.gameTime,players:s.players,stats:s.stats,neutralObjectives:s.neutralObjectives});s.economy=this.sampleHistory.economy(s.gameTime);this.observer.recoverFight(s);s.combatReview=this.observer.director.combatReview(s.players,s.gameTime);if(normalized.ended&&!reviewing)finalizeGame(s,{source:"live",winner:normalized.winner,sourceGameId:sampleId,terminal:true});});if(normalized.ended&&!reviewing){const result=currentGameResult(this.get());if(result)void this.archives?.capture(result.id,"live",data);}}
   private reviewingReplay(){const s=this.get(),v=this.observer.director.snapshot();return !!s.replayReview&&s.replayReview.session===v.session&&s.replayReview.key===productionKey(s)&&v.connected;}
   private directorBusy=false;
   private directorCamera?:{session:string;status:ReplayCameraStatus};
@@ -272,29 +275,29 @@ export class Adapters {
   async obsCameraDevices(){const result=await(this.engine?this.engine.exclusive(()=>this.broadcastOutput.cameraDevices()):this.broadcastOutput.cameraDevices());this.playerFeedsRetry=undefined;return result;}
   /** Called after overlay settings or a take; unchanged state performs no OBS RPCs. */
   private applyingProduction=false;
-  async syncPlayerFeeds(force=false,target?:BroadcastState):Promise<{applied:boolean;scenes?:string[];detail?:string}>{
+  async syncPlayerFeeds(force=false,target?:BroadcastState,exclusive=true,previousScene?:string):Promise<{applied:boolean;scenes?:string[];detail?:string}>{
     if(this.applyingProduction&&!target)return {applied:false,detail:'整体切入正在准备来源'};
     if(force)this.playerFeedsRetry=undefined;
     if(this.get().connections.obs.status!=='connected')return {applied:false,detail:'摄像头配置已保存，连接 OBS 引擎后自动应用'};
     const state=target??this.get();
-    const program=programState(state);const programVisible=state.programScene==='live'&&!state.production?.playingClipId,previewVisible=state.previewScene==='live';
+    const program=programState(state);const programLFrame=state.programScene==='live'&&program.overlay.lFrame===true&&!state.production?.playingClipId,previewLFrame=state.previewScene==='live'&&state.overlay.lFrame===true;const programVisible=state.programScene==='live'&&!state.production?.playingClipId&&!programLFrame,previewVisible=state.previewScene==='live'&&!previewLFrame;
     const activeFeeds=activePlayerFeedPair(program.overlay),previewFeeds=activePlayerFeedPair(state.overlay);
-    const signature=JSON.stringify({feeds:(['blue','red']as const).map(side=>({side,mode:activeFeeds[side].mode,device:activeFeeds[side].cameraDeviceId})),previewFeeds,program:programVisible,preview:previewVisible});
+    const signature=JSON.stringify({feeds:(['blue','red']as const).map(side=>({side,mode:activeFeeds[side].mode,device:activeFeeds[side].cameraDeviceId})),previewFeeds,program:programVisible,preview:previewVisible,programLFrame,previewLFrame});
     if(signature===this.playerFeedsSignature)return {applied:true};
     if(this.playerFeedsRetry?.signature===signature&&Date.now()<this.playerFeedsRetry.after)return {applied:false,detail:this.playerFeedsRetry.detail};
-    if(this.playerFeedsSync){await this.playerFeedsSync.catch(()=>{});return this.syncPlayerFeeds(force,target);}
+    if(this.playerFeedsSync){await this.playerFeedsSync.catch(()=>{});return this.syncPlayerFeeds(force,target,exclusive,previousScene);}
     const feeds=structuredClone(activeFeeds);
     const apply=async()=>{
       if(target){const selected=[...(programVisible?Object.values(feeds):[]),...(previewVisible?Object.values(previewFeeds):[])].filter(f=>f.mode==='camera');if(selected.length){const available=await this.broadcastOutput.cameraDevices();if(selected.some(f=>!available.devices.some(d=>d.id===f.cameraDeviceId)))throw new ValidationError('预监或节目摄像头设备已不可用，请核对两路配置后 TAKE');}}
       const available=await this.obs.call('GetSceneList');
-      const programName=available.scenes.some(scene=>scene.sceneName===engineScene)?engineScene:available.currentProgramSceneName;
-      const scenes=[{sceneName:programName,hudName:'RiftCast HUD',visible:programVisible}];
-      if(available.scenes.some(scene=>scene.sceneName===enginePreviewScene))scenes.push({sceneName:enginePreviewScene,hudName:'RiftCast 预监 HUD',visible:previewVisible});
+      const programName=available.scenes.some(scene=>scene.sceneName===engineScene)?engineScene:previousScene??available.currentProgramSceneName;
+      const scenes=[{sceneName:programName,hudName:'RiftCast HUD',visible:programVisible,lFrame:programLFrame}];
+      if(available.scenes.some(scene=>scene.sceneName===enginePreviewScene))scenes.push({sceneName:enginePreviewScene,hudName:'RiftCast 预监 HUD',visible:previewVisible,lFrame:previewLFrame});
       let result=await this.broadcastOutput.applyPlayerFeeds(programVisible?feeds:undefined,[scenes[0]]);if(scenes.length>1){const preview=await this.broadcastOutput.applyPlayerFeeds(previewVisible?previewFeeds:undefined,[scenes[1]]);if(!preview.applied)result=preview;}
       if(result.applied)this.playerFeedsSignature=signature;
       return result;
     };
-    this.playerFeedsSync=this.engine?this.engine.exclusive(apply):apply();
+    this.playerFeedsSync=this.engine&&exclusive?this.engine.exclusive(apply):apply();
     try{const result=await this.playerFeedsSync;this.playerFeedsRetry=result.applied?undefined:{signature,after:Date.now()+30000,detail:result.detail??'等待 OBS HUD 场景'};return result;}catch(error){const detail=error instanceof Error?error.message:'摄像头配置应用失败';this.playerFeedsRetry={signature,after:Date.now()+(/正在处理|正在启动/.test(detail)?1000:30000),detail};throw error;}finally{this.playerFeedsSync=undefined;}
   }
   private requireEngine(){if(!this.engine)throw new Error('输出引擎尚未初始化');return this.engine;}
@@ -360,6 +363,41 @@ export class Adapters {
     return { ...status, music: await this.engine?.music.status(), companionAudio: this.engine?.mode === 'embedded' ? await this.engine.companionAudio.status(true) : undefined, audioManaged: this.engine?.companionAudio.managing ?? false };
   }
   async productionControl(input:unknown){return this.requireEngine().exclusive(()=>this.productionObs.control(input));}
+  /** The caller publishes the accepted programme at the actual transition point. */
+  async productionTransition(config:TransitionConfig,source:BroadcastState,publish:()=>void|Promise<void>){
+    const engine=this.requireEngine(),p=source.production;
+    if(!p||!this.transitionDataDir)throw new ValidationError('输出引擎尚未初始化');
+    if(this.applyingProduction)throw new ValidationError('上一次节目切入仍在处理中');
+    if(p.playingClipId)throw new ValidationError('请先结束回放片段，再切换节目图形');
+    this.applyingProduction=true;
+    try{
+      if(this.customPreviewSync)await this.customPreviewSync.catch(()=>{});
+      if(this.playerFeedsSync)await this.playerFeedsSync.catch(()=>{});
+      await engine.setPreviewCadence(p.dynamicPreview?30:1);
+      const receipt=await engine.exclusive(async()=>{
+        const previous=(await this.obs.call('GetCurrentProgramScene')).sceneName;
+        const result=await this.broadcastOutput.transition(config,this.transitionDataDir,{publish,prepare:async()=>{
+          const feeds=await this.syncPlayerFeeds(true,source,false,previous);if(!feeds.applied)throw new Error(feeds.detail??'摄像头来源尚未应用');
+          const view=programState(source),custom=view.customScenes?.find(s=>s.id===source.programScene);
+          if(source.programScene.startsWith('custom:')){
+            if(!custom||!this.customScenes)throw new ValidationError('自定义场景不可用');
+            const name=await this.customScenes.prepare(custom,view,'program');
+            if(!previous.startsWith('RiftCast 自定义 '))this.customPreviousProgram=previous;
+            return name;
+          }
+          const scenes=await this.obs.call('GetSceneList');
+          const target=engine.mode==='external'?this.customPreviousProgram??(scenes.scenes.some(s=>s.sceneName===engineScene)?engineScene:previous):engineScene;
+          if(!target||!scenes.scenes.some(s=>s.sceneName===target)||target.startsWith('RiftCast 转场 ')||['RiftCast 回放','RiftCast 应急'].includes(target))throw new ValidationError('比赛来源场景待确认');
+          return target;
+        }});
+        if(result.published&&result.targetScene)await this.productionObs.returnLive(result.targetScene).catch(()=>{});
+        await this.customScenes?.cleanup().catch(()=>{});
+        return result;
+      });
+      if(receipt.published)await this.productionObs.recordingSegment(source);
+      return receipt;
+    }finally{this.applyingProduction=false;}
+  }
   async productionApply(switchScene=true,source=this.get()){
     const engine=this.requireEngine(),p=source.production;if(!p)return;
     this.applyingProduction=true;

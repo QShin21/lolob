@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { createServer } from 'vite';
+import react from '@vitejs/plugin-react';
+import { tsImport } from 'tsx/esm/api';
+const { chromium } = await import(pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href);
+const { createFixture } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
+const { syncPowerPlay } = await tsImport('../shared/power-play.ts', import.meta.url);
+const state = createFixture(), now = Date.now(); state.phase = 'live'; state.gameTime = 99; state.events = [];
+state.connections.live = { status: 'connected', updatedAt: new Date(now).toISOString(), detail: '' };
+state.players.forEach(p => { p.gold = 5000; p.goldSource = 'api'; p.goldGameTime = 99; p.goldSampledAt = new Date(now).toISOString(); p.telemetry = { source: 'api', gameTime: 99, sampledAt: new Date(now).toISOString(), validForMs: 600000 }; p.isDead = false; p.buffs = { baron: false, elder: false }; });
+syncPowerPlay(state, now); state.gameTime = 100; state.events = [{ id: 'baron', type: 'BaronKill', team: 'blue', time: 100, text: '' }];
+state.players.forEach(p => { p.gold = p.team === 'blue' ? 5200 : 5050; p.goldGameTime = 100; p.telemetry.gameTime = 100; p.buffs.baron = p.team === 'blue'; p.buffs.baronExpiresAt = 280; }); syncPowerPlay(state, now);
+const dir = path.resolve('verification-output/transitions'); await mkdir(dir, { recursive: true });
+await writeFile(path.join(dir, 'index.html'), '<html><head><meta charset="utf-8"/></head><body><div id="root"></div><script type="module" src="./entry.tsx"></script></body></html>');
+await writeFile(path.join(dir, 'entry.tsx'), `import React,{useState}from'react';import{createRoot}from'react-dom/client';import{TransitionControls}from'/src/components/TransitionControls';import{GlobalScoreboard}from'/src/components/BroadcastAnalysis';import{defaultTransitionSettings}from'/shared/broadcast-transitions';import'/src/styles.css';const initial=${JSON.stringify(state)};function App(){const[value,setValue]=useState(defaultTransitionSettings()),[mode,setMode]=useState('settings'),[state,setState]=useState(initial);window.fixture={show:()=>{setState(s=>({...s,connections:{...s.connections,live:{...s.connections.live,updatedAt:new Date().toISOString()}},players:s.players.map(p=>({...p,goldSampledAt:new Date().toISOString()}))}));setMode('graphic');},missing:()=>setState(s=>({...s,powerPlay:{...s.powerPlay,intervals:s.powerPlay.intervals.map(i=>({...i,complete:false,reason:'采样缺失'}))}})),stale:()=>setState(s=>({...s,connections:{...s.connections,live:{...s.connections.live,status:'disconnected'}}}))};return mode==='settings'?<div style={{padding:24}}><TransitionControls value={value} scenes={[{id:'live',name:'局内'},{id:'postgame',name:'赛后'},{id:'economy',name:'经济曲线'}]} onSave={v=>{window.saved=v;setValue(v)}} receipt={{id:'receipt',kind:'fade',status:'applied',published:true,startedAt:new Date().toISOString(),endedAt:new Date().toISOString(),detail:'OBS 转场已完成，节目场景已确认'}}/></div>:<main style={{position:'relative',containerType:'inline-size',width:'100vw',height:'56.25vw',background:'#22374a'}}><GlobalScoreboard state={state}/></main>}document.body.style.margin='0';createRoot(document.getElementById('root')).render(<App/>);`);
+const server = await createServer({ configFile: false, cacheDir: path.join(dir, 'vite-cache'), plugins: [react()], server: { host: '127.0.0.1', port: 0 } }); await server.listen();
+let browser; const checks = [], errors = [];
+try {
+  browser = await chromium.launch({ headless: true }); const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } }); page.on('pageerror', e => errors.push(e.message));
+  await page.goto(`http://127.0.0.1:${server.httpServer.address().port}/verification-output/transitions/index.html`);
+  await page.getByLabel('默认转场方式').selectOption('fade'); await page.getByLabel('默认转场时长').fill('600'); await page.getByRole('button', { name: '保存转场设置' }).click(); await page.getByText('转场设置已保存').waitFor();
+  assert.equal(await page.evaluate(() => window.saved.default.durationMs), 600); checks.push('fade settings save the configured duration');
+  await page.getByLabel('默认转场方式').selectOption('stinger'); await page.getByLabel('默认转场时长').fill('2500'); await page.getByLabel('默认转场视频路径').fill('D:\\素材\\比赛转场.webm'); await page.getByLabel('默认转场切换点').fill('1200');
+  await page.getByRole('button', { name: '添加事件规则' }).click(); await page.getByLabel('启用事件自动切入').check(); await page.getByLabel('规则 1 事件').selectOption('BaronKill'); await page.getByLabel('规则 1 场景').selectOption('economy');
+  await page.getByRole('button', { name: '保存转场设置' }).click(); await page.waitForFunction(() => window.saved.automatic);
+  const saved = await page.evaluate(() => window.saved); assert.equal(saved.default.pointMs, 1200); assert.equal(saved.rules[0].event, 'BaronKill'); assert.equal(saved.rules[0].targetScene, 'economy'); checks.push('stinger path and point plus enabled event-to-scene rule persist');
+  await page.screenshot({ path: path.join(dir, 'transition-settings.png') }); await page.setViewportSize({ width: 760, height: 1100 }); assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 2), false); checks.push('transition controls remain within a 760px viewport');
+  await page.getByRole('button', { name: '删除', exact: true }).click(); assert.equal(await page.locator('.transition-rules article').count(), 0); checks.push('event rules can be removed');
+  await page.setViewportSize({ width: 1920, height: 1080 }); await page.evaluate(() => window.fixture.show()); await page.locator('.ba-power-plays b').waitFor(); assert.equal(await page.locator('.ba-power-plays b').innerText(), '+750'); await page.screenshot({ path: path.join(dir, 'power-play-1920.png') }); checks.push('complete pre-event and current samples show net gold gain');
+  await page.setViewportSize({ width: 1280, height: 720 }); const bounds = await page.locator('.ba-power-plays').boundingBox(); assert(bounds.x >= 0 && bounds.x + bounds.width <= 1280); await page.evaluate(() => window.fixture.missing()); assert.equal(await page.locator('.ba-power-plays b').innerText(), '—'); checks.push('missing power-play samples show unavailable gain');
+  await page.evaluate(() => window.fixture.stale()); assert.equal(await page.locator('.ba-power-plays').count(), 0); checks.push('disconnected live source clears the power-play graphic'); assert.deepEqual(errors, []);
+  await writeFile(path.join(dir, 'report.json'), JSON.stringify({ status: 'passed', scope: 'Isolated UI settings and synthetic Power Play samples; OBS protocol covered by unit tests', checks, errors }, null, 2)); console.log(JSON.stringify({ status: 'passed', checks, output: dir }));
+} finally { await browser?.close(); await server.close(); }

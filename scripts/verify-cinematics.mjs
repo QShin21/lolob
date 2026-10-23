@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import { pathToFileURL } from 'node:url';
+import { createServer } from 'vite';
+import react from '@vitejs/plugin-react';
+import { tsImport } from 'tsx/esm/api';
+const { chromium }=await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE?pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href:'playwright');
+const { createFixture }=await tsImport('../server/test-support/fixture.ts',import.meta.url);
+const { CinematicEngine }=await tsImport('../server/cinematics.ts',import.meta.url);
+const version=JSON.parse(await readFile('package.json','utf8')).version,dir=path.resolve(`verification-output/release-${version}/cinematics`);
+await mkdir(dir,{recursive:true});const dataDir=await mkdtemp(path.join(os.tmpdir(),'riftcast-camera-ui-'));
+const fixture=createFixture();fixture.connections.obs.status='disconnected';
+const fake={connected:true,sequence:{},render:{cameraMode:'fps',cameraAttached:false,cameraPosition:{x:7000,y:2000,z:7000},cameraRotation:{x:45,y:10,z:0},fieldOfView:55,selectionName:''},playback:{time:10,paused:true,speed:1,seeking:false,length:1000}};
+const writes=[],errors=[],checks=[];
+const request=async(_port,route,options)=>{
+  if(!fake.connected)throw new Error('验收场景：游戏连接已关闭');
+  if(options?.method==='POST'){writes.push({route,body:options.body});if(route==='/replay/render')Object.assign(fake.render,options.body);if(route==='/replay/playback')Object.assign(fake.playback,options.body);if(route==='/replay/sequence')fake.sequence=options.body;}
+  if(route==='/replay/game')return {processID:123};
+  if(route==='/replay/render')return structuredClone(fake.render);
+  if(route==='/replay/playback')return structuredClone(fake.playback);
+  if(route==='/replay/sequence')return structuredClone(fake.sequence);
+  if(route==='/liveclientdata/allgamedata')return {gameData:{gameTime:fake.playback.time},allPlayers:fixture.players.map(p=>({summonerName:p.name,championName:p.championName})),events:{Events:[]}};
+  throw new Error(route);
+};
+const engine=new CinematicEngine({dataDir,request,authorize:()=>{}});
+await writeFile(path.join(dir,'index.html'),'<html><body style="margin:0"><div id="root"></div><script type="module" src="./entry.tsx"></script></body></html>');
+await writeFile(path.join(dir,'entry.tsx'),`import React,{useState} from 'react';import{createRoot}from'react-dom/client';import{CinematicWorkspace}from'/src/components/CinematicWorkspace';import'/src/styles.css';function App(){const[state,setState]=useState(null);const[disabled,setDisabled]=useState(false);window.setCameraFixture=setState;window.setCameraDisabled=setDisabled;return <div style={{padding:24,maxWidth:1540,margin:'auto'}}>{state&&<CinematicWorkspace state={state} disabled={disabled}/>}</div>}createRoot(document.getElementById('root')).render(<App/>);`);
+const vite=await createServer({configFile:false,cacheDir:path.join(dir,'vite-cache'),plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;
+try {
+  browser=await chromium.launch({headless:true,channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'});const page=await browser.newPage({viewport:{width:1600,height:1100}});page.on('pageerror',e=>errors.push(e.message));
+  await page.route('**/api/cinematics',async route=>{try{const result=route.request().method()==='POST'?await engine.command(route.request().postDataJSON()):await engine.view();await route.fulfill({contentType:'application/json',body:JSON.stringify(result)});}catch(e){await route.fulfill({status:400,contentType:'application/json',body:JSON.stringify({error:e.message})});}});
+  await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-${version}/cinematics/index.html`);await page.waitForFunction(()=>!!window.setCameraFixture);await page.evaluate(value=>window.setCameraFixture(value),fixture);
+  const capture=page.getByRole('button',{name:'抓取当前镜头',exact:true});await capture.waitFor();await capture.click();await page.locator('.cinematic-frame').waitFor();
+  fake.playback.time=15;fake.render.cameraPosition={x:8000,y:2400,z:9000};fake.render.cameraRotation.y=40;
+  await capture.click();await page.waitForFunction(()=>document.querySelectorAll('.cinematic-frame').length===2);
+  await page.getByLabel('轨迹名称',{exact:true}).fill('开场 · 河道推进');await page.getByRole('button',{name:'保存修改',exact:true}).click();
+  await page.getByRole('button',{name:'游戏内播放',exact:true}).click();await page.getByText('正在游戏内播放 开场 · 河道推进',{exact:true}).waitFor();
+  assert.ok(fake.sequence.cameraPosition.length>2);checks.push('UI captures two real adapter poses, saves revisioned trajectory and plays a native sequence');
+  await page.screenshot({path:path.join(dir,'cinematics-desktop-1600.png'),fullPage:true});
+  await page.getByRole('button',{name:'停止轨迹',exact:true}).click();assert.deepEqual(fake.sequence,{});assert.equal(fake.playback.paused,false);checks.push('Stop clears camera sequence while preserving playback');
+  await page.getByText('手柄绑定与速度',{exact:true}).click();await page.getByLabel('摇杆死区',{exact:true}).fill('0.25');
+  const controllerSaved=page.waitForResponse(response=>response.url().endsWith('/api/cinematics')&&response.request().method()==='POST'&&response.request().postDataJSON()?.action==='controller');
+  await page.getByRole('button',{name:'保存手柄绑定',exact:true}).click();assert.equal((await controllerSaved).status(),200);
+  assert.equal((await engine.view()).library.controller.deadzone,.25);checks.push('Controller binding editor persists its deadzone');
+  await page.evaluate(()=>window.setCameraDisabled(true));assert.equal(await capture.isDisabled(),true);assert.equal(await page.getByRole('button',{name:'启用手柄',exact:true}).isDisabled(),true);checks.push('Read-only operator cannot arm controller or mutate camera');
+  await page.evaluate(()=>window.setCameraDisabled(false));fake.connected=false;await page.getByRole('button',{name:'刷新连接',exact:true}).click();await page.getByText('等待回放',{exact:true}).waitFor();assert.equal(await capture.isDisabled(),true);
+  await page.setViewportSize({width:800,height:1100});await page.screenshot({path:path.join(dir,'cinematics-disconnected-800.png'),fullPage:true});
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1);assert.equal(overflow,false);checks.push('Disconnected state preserves library and disables live controls; narrow layout has no page overflow');
+  assert.deepEqual(errors,[]);await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors,nativeGame:'Mock Replay API used for mutation tests; physical game and controller were not operated',writes:writes.map(w=>({route:w.route,keys:Object.keys(w.body)}))},null,2));console.log(JSON.stringify({status:'passed',checks,evidence:dir}));
+}finally{await browser?.close();await engine.close();await vite.close();await rm(dataDir,{recursive:true,force:true});}

@@ -1,4 +1,5 @@
 import { validateSceneId } from './custom-scenes';
+import { validateCasterConfiguration } from '../shared/caster-controls';
 import { randomUUID } from 'node:crypto';
 import type { BroadcastState, Side } from '../shared/types';
 import type { ProductionCommand } from '../shared/production-types';
@@ -115,11 +116,14 @@ export function applyProduction(s: BroadcastState, raw: unknown, actor = '主机
       if (!Array.isArray(c.rules) || c.rules.length > 20) throw new ValidationError('资源规则格式无效');
       p.objectiveRules = c.rules.map(r => ({ label: reason(r.label), respawnSeconds: numeric(r.respawnSeconds, 1, 86400) })); break;
     case 'settings': {
+      const caster = c.hotkeys !== undefined || c.hotkeyAliases !== undefined || c.casterButtons !== undefined
+        ? validateCasterConfiguration(c.hotkeys ?? p.hotkeys, c.hotkeyAliases ?? p.hotkeyAliases, c.casterButtons ?? p.casterButtons) : undefined;
       if (c.analysisSeconds !== undefined) p.analysisSeconds = numeric(c.analysisSeconds, 3, 120);
-      for (const key of ['feedHold', 'dynamicPreview'] as const) if (c[key] !== undefined) { if (typeof c[key] !== 'boolean') throw new ValidationError('制作开关须为布尔值'); p[key] = c[key]!; }
+      for (const key of ['feedHold', 'dynamicPreview', 'autoSides'] as const) if (c[key] !== undefined) { if (typeof c[key] !== 'boolean') throw new ValidationError('制作开关须为布尔值'); p[key] = c[key]!; }
       if (c.layout !== undefined) { if (!['single', 'dual'].includes(c.layout)) throw new ValidationError('屏幕布局无效'); p.layout = c.layout; }
       if (c.versions) { const v = record(c.versions); p.versions = { game: str(v.game, 30), resources: str(v.resources, 30), ocr: str(v.ocr, 60) }; }
       if (c.hotkeys) { const hotkeys = record(c.hotkeys), values = Object.values(hotkeys); if (values.length !== 6 || new Set(values).size !== 6 || values.some(v => typeof v !== 'string' || !/^(Control\+Shift\+[A-Z]|Control\+Enter|Alt\+Shift\+[A-Z])$/.test(v))) throw new ValidationError('快捷键须为互不重复的明确组合键'); p.hotkeys = { take: str(hotkeys.take, 40), live: str(hotkeys.live, 40), analysis: str(hotkeys.analysis, 40), feeds: str(hotkeys.feeds, 40), emergency: str(hotkeys.emergency, 40), undo: str(hotkeys.undo, 40) }; }
+      if (caster) { p.hotkeyAliases = caster.aliases; p.casterButtons = caster.buttons; }
       if (c.cameraHints !== undefined) p.cameraHints = str(c.cameraHints, 500);
       if (c.keyboardTarget !== undefined) { if (!['game','workbench'].includes(c.keyboardTarget)) throw new ValidationError('键盘控制对象无效'); p.keyboardTarget = c.keyboardTarget; }
       break;

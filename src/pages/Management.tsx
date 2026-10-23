@@ -1,3 +1,6 @@
+import { AutoSidesControls } from '../components/AutoSidesControls';
+import { ArchiveGraphicsLinks } from '../components/ArchiveGraphics';
+import { SeasonStatistics } from '../components/SeasonStatistics';
 import { TournamentWorkspace } from "./TournamentWorkspace";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -18,7 +21,7 @@ import { ManagementRecords, HeroLibrary } from "./ManagementRecords";
 import "../components/domain-workspace.css";
 import "./management-workspace.css";
 
-export type ManagementTab = "schedule" | "matches" | "teams" | "assets" | "recordings";
+export type ManagementTab = "schedule" | "matches" | "teams" | "assets" | "recordings" | "season" | "archive-graphics";
 type Draft<T> = { value: T; version?: number };
 const roles = ["上单", "打野", "中单", "下路", "辅助"];
 const id = () =>
@@ -251,6 +254,8 @@ export function Management(
           { id: "matches", label: `独立对阵 · ${state.schedule.filter(m => !m.tournament).length}` },
           { id: "teams", label: `战队与选手 · ${state.teams.length}` },
           { id: "assets", label: `图片素材 · ${state.assets.length}` },
+          { id: "season", label: "赛季统计" },
+          { id: "archive-graphics", label: "赛后图形" },
           { id: "recordings", label: `比赛记录 · ${state.recordings.length}` },
         ]}
         value={tab}
@@ -271,6 +276,9 @@ export function Management(
         </div>
       )}
       {tab === "schedule" && <TournamentWorkspace {...ctx} />}
+      {tab === "season" && <SeasonStatistics state={state}/>}
+      {tab === "archive-graphics" && <ArchiveGraphicsLinks state={state}/>}
+      {(tab === "matches" || tab === "teams") && <AutoSidesControls {...ctx}/>}
       {(tab === "matches" || tab === "teams") && (
         <div className="manage-split">
           <aside className="manage-directory">

@@ -319,3 +319,4 @@
   .custom-discard-confirm strong { display: block; }
   .custom-discard-confirm>.button:first-of-type { margin-left: auto; }
 }
+.custom-browser-form{display:grid;gap:18px;padding:24px}.custom-browser-form label{display:grid;gap:8px}.custom-browser-form input{width:100%}.custom-browser-form p{font-size:13px;color:var(--text-muted)}

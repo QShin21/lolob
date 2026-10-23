@@ -1,4 +1,4 @@
-import { APPEARANCE_TARGETS, APPEARANCE_PROPERTIES, type StyleAppearance } from '../shared/style-appearance';
+import { APPEARANCE_TARGETS, APPEARANCE_PROPERTIES, TEXT_APPEARANCE_TARGETS, validateStyleText, type StyleAppearance } from '../shared/style-appearance';
 import path from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -18,16 +18,19 @@ const digest = (v: Buffer | string) => createHash('sha256').update(v).digest('he
 
 function validateAppearance(value: unknown): StyleAppearance {
   const input = object(value); keys(input, Object.keys(APPEARANCE_TARGETS));
-  for (const entry of Object.values(input)) {
+  for (const [target, entry] of Object.entries(input)) {
     if (entry === null) continue;
     const props = object(entry); keys(props, APPEARANCE_PROPERTIES);
     for (const [key, value] of Object.entries(props)) {
       if (['color', 'backgroundColor', 'borderColor'].includes(key)) {
         if (typeof value !== 'string' || !/^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i.test(value)) throw new Error('元素颜色需使用十六进制颜色');
+      } else if (key === 'text') {
+        if (!(TEXT_APPEARANCE_TARGETS as readonly string[]).includes(target)) throw new Error('该元素支持外观编辑，文字由比赛数据生成');
+        validateStyleText(value);
       } else if (key === 'font') {
         if (typeof value !== 'string' || !['default', 'modern', 'serif'].includes(value)) throw new Error('元素字体类别无效');
       } else {
-        const range = key === 'fontSize' ? [.5, 8] : key === 'fontWeight' ? [100, 900] : [-.05, .3];
+        const range = key === 'fontSize' ? [.5, 8] : key === 'fontWeight' ? [100, 900] : key === 'x' ? [-1920, 1920] : key === 'y' ? [-1080, 1080] : key === 'scale' ? [.25, 4] : key === 'opacity' ? [0, 1] : [-.05, .3];
         if (typeof value !== 'number' || !Number.isFinite(value) || value < range[0] || value > range[1] || key === 'fontWeight' && value % 100 !== 0) throw new Error('元素字号、字重或字距超出范围');
       }
     }
@@ -166,6 +169,17 @@ export class StylePackStore {
     if (this.importing) throw new Error('已有风格包正在处理，请完成后重试');
     this.importing = true;
     try { return await this.importArchive(input); } finally { this.importing = false; }
+  }
+  /** Save edited declarative properties as a new content-addressed version. */
+  async derive(ref: StylePackRef, patch: unknown): Promise<StylePackSummary> {
+    const source = this.get(ref), changes = object(patch);
+    keys(changes, ['name', 'palette', 'fonts', 'appearance', 'scenes']);
+    const entries = await readStyleZip(await this.export(ref));
+    const original = JSON.parse(entries.get('manifest.json')!.toString('utf8')) as StylePack;
+    const manifest = validateStyleManifest({ ...original, ...changes, id: source.builtin ? `custom-${randomUUID().slice(0, 12)}` : original.id });
+    const files = Object.fromEntries(entries);
+    files['manifest.json'] = Buffer.from(JSON.stringify(manifest, null, 2));
+    return this.import(await writeStyleZip(files));
   }
   async remove(ref: StylePackRef): Promise<void> {
     if (this.importing) throw new Error('已有风格包正在处理，请完成后重试');

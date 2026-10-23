@@ -1,4 +1,5 @@
 import {FitName} from '../FitName';
+import {StyleText} from '../StyleText';
 import {DraftLockReveal} from './DraftLockReveal';
 import type { BroadcastState, Champion, Side } from '../../../shared/types';
 import { championFor, getTeam, time } from '../../lib';
@@ -10,7 +11,7 @@ export function Standby({ state, now }: { state: BroadcastState; now: number }) 
   return <section className="arena-full cast-standby">
     <ArenaHeader state={state} title="赛前对阵" />
     <div className="arena-opener">
-      <aside className="arena-start"><span>{counting ? '距离开场' : end ? '倒计时结束' : '开场时间待定'}</span><strong className={counting ? 'arena-countdown-number' : 'arena-countdown-message'}>{counting ? time(Math.ceil((end - now) / 1000)) : end ? '等待比赛开始' : '比赛即将开始'}</strong><p>{state.match.subtitle}</p><div><span>{state.match.format}</span><b>第 {state.match.game} 局</b></div></aside>
+      <aside className="arena-start"><span>{counting ? '距离开场' : end ? '倒计时结束' : '开场时间待定'}</span><strong className={counting ? 'arena-countdown-number' : 'arena-countdown-message'}>{counting ? time(Math.ceil((end - now) / 1000)) : <StyleText target="countdownMessage">{end ? '等待比赛开始' : '比赛即将开始'}</StyleText>}</strong><p>{state.match.subtitle}</p><div><span>{state.match.format}</span><b>第 {state.match.game} 局</b></div></aside>
       <div className="arena-opponents">{(['blue', 'red'] as Side[]).map(side => <div key={side} className={`arena-opponent ${side}`}><small>{sideName(side)}</small><TeamMark team={getTeam(state, side)} /><TeamName team={getTeam(state, side)} side={side} /><b className="arena-opponent-score">{state.match[`${side}Score`]}<small>系列赛</small></b></div>)}</div>
     </div>
     <footer className="arena-footnote"><span>{state.match.title}</span><span>{'赛事对阵'}</span></footer>
@@ -43,7 +44,7 @@ function DraftTeam({ state, champions, side }: { state: BroadcastState; champion
       const active = i === activeIndex, hover = active ? preselect[0] : undefined, player = assigned(picks[i]);
       return <article className={`cast-draft-card ${picks[i] ? 'locked' : 'waiting'} ${active ? 'active-slot' : ''}`} data-state={picks[i] ? 'locked' : hover ? 'preselect' : active ? 'choosing' : 'waiting'} key={i}>
         <ChampionImage champions={champions} id={picks[i] || hover || ''} kind="splash" art={active?'draftExpanded':'draftCompact'} />
-        <div className="arena-pick-identity"><FitName className="cast-draft-player">{player?.name || ''}</FitName></div>
+        <div className="arena-pick-identity"><FitName className="cast-draft-player" textTarget="draftName" textContext={{player,team:getTeam(state,side),championName:championFor(champions,picks[i]||hover||'')?.name??player?.championName??''}}>{player?.name || ''}</FitName></div>
       </article>;
     })}</div>
     <DraftLockReveal state={state} side={side} champions={champions} activeIndex={activeIndex}/>

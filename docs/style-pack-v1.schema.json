@@ -2430,6 +2430,28 @@
               "type": "number",
               "minimum": -0.05,
               "maximum": 0.3
+            },
+            "x": {
+              "type": "number",
+              "minimum": -1920,
+              "maximum": 1920,
+              "description": "Horizontal offset in the 1920 x 1080 canvas."
+            },
+            "y": {
+              "type": "number",
+              "minimum": -1080,
+              "maximum": 1080,
+              "description": "Vertical offset in the 1920 x 1080 canvas."
+            },
+            "scale": {
+              "type": "number",
+              "minimum": 0.25,
+              "maximum": 4
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             }
           }
         }
@@ -2440,7 +2462,7 @@
       "additionalProperties": false,
       "properties": {
         "lineupName": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "lineupCardBlue": {
           "$ref": "#/$defs/elementAppearance"
@@ -2449,7 +2471,7 @@
           "$ref": "#/$defs/elementAppearance"
         },
         "lineupTeam": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "lineupScoreBlue": {
           "$ref": "#/$defs/elementAppearance"
@@ -2458,16 +2480,16 @@
           "$ref": "#/$defs/elementAppearance"
         },
         "lineupGame": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "lineupCaption": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "lineupFooter": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "draftName": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "draftTeam": {
           "$ref": "#/$defs/elementAppearance"
@@ -2476,7 +2498,7 @@
           "$ref": "#/$defs/elementAppearance"
         },
         "liveName": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "liveNameplate": {
           "$ref": "#/$defs/elementAppearance"
@@ -2485,10 +2507,10 @@
           "$ref": "#/$defs/elementAppearance"
         },
         "reportName": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "reportKda": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "reportHeadingBlue": {
           "$ref": "#/$defs/elementAppearance"
@@ -2497,45 +2519,169 @@
           "$ref": "#/$defs/elementAppearance"
         },
         "reportTeam": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "reportGame": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "reportCaption": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "reportMetric": {
           "$ref": "#/$defs/elementAppearance"
         },
         "reportGoldLabel": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "scheduleTeam": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "scheduleScore": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "scheduleTime": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "countdownNumber": {
           "$ref": "#/$defs/elementAppearance"
         },
         "countdownMessage": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "interviewName": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "ticker": {
-          "$ref": "#/$defs/elementAppearance"
+          "$ref": "#/$defs/textElementAppearance"
         },
         "analysisHeading": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "analysisPanel": {
           "$ref": "#/$defs/elementAppearance"
+        },
+        "analysisName": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "analysisValue": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "globalScoreboard": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "eventAnnouncement": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lFrameRoster": {
+          "$ref": "#/$defs/elementAppearance"
+        },
+        "lFrameFooter": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "reportChampion": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "inhibitorLabel": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "inhibitorTime": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "championTabName": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "lFrameName": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "fearlessLane": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "fearlessChampion": {
+          "$ref": "#/$defs/textElementAppearance"
+        },
+        "patchText": {
+          "$ref": "#/$defs/textElementAppearance"
         }
       }
+    },
+    "textElementAppearance": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "color": {
+              "type": "string",
+              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+            },
+            "backgroundColor": {
+              "type": "string",
+              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+            },
+            "borderColor": {
+              "type": "string",
+              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+            },
+            "font": {
+              "enum": [
+                "default",
+                "modern",
+                "serif"
+              ]
+            },
+            "fontSize": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 8
+            },
+            "fontWeight": {
+              "type": "number",
+              "minimum": 100,
+              "maximum": 900,
+              "multipleOf": 100
+            },
+            "letterSpacing": {
+              "type": "number",
+              "minimum": -0.05,
+              "maximum": 0.3
+            },
+            "x": {
+              "type": "number",
+              "minimum": -1920,
+              "maximum": 1920,
+              "description": "Horizontal offset in the 1920 x 1080 canvas."
+            },
+            "y": {
+              "type": "number",
+              "minimum": -1080,
+              "maximum": 1080,
+              "description": "Vertical offset in the 1920 x 1080 canvas."
+            },
+            "scale": {
+              "type": "number",
+              "minimum": 0.25,
+              "maximum": 4
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 240,
+              "pattern": "^(?:[^{}]|\\{(?!\\{)|\\}(?!\\})|\\{\\{\\s*(?:matchTitle|matchSubtitle|game|format|blueTeamName|redTeamName|blueScore|redScore|teamName|teamTag|playerName|playerRole|championName|lane|timer|value|label|scheduledAt|matchStatus|patch|kills|deaths|assists)\\s*\\}\\})*$",
+              "not": {
+                "pattern": "[\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f]"
+              },
+              "description": "Plain text with optional {{fieldName}} placeholders from the explicit match/team/player whitelist; rendered as text, with no HTML or code execution."
+            }
+          }
+        }
+      ]
     }
   }
 }

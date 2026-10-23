@@ -4,6 +4,7 @@ import { access } from 'node:fs/promises';
 import type { OBSRequestTypes, OBSResponseTypes } from 'obs-websocket-js';
 import type { BroadcastState, CustomScene, CustomSourceChoices } from '../shared/types';
 import { ValidationError } from './state';
+import { validateBrowserSourceUrl } from './custom-scenes';
 
 type ObsCall = <T extends keyof OBSRequestTypes>(request: T, data?: OBSRequestTypes[T]) => Promise<OBSResponseTypes[T]>;
 const prefix = 'RiftCast 自定义 ';
@@ -68,6 +69,10 @@ export class ObsCustomScenes {
         if (!source.visible) continue;
         let sceneItemId: number;
         if (source.kind === 'obs') sceneItemId = (await this.call('CreateSceneItem', { sceneName: name, sourceName: source.inputName!, sceneItemEnabled: true })).sceneItemId;
+        else if (source.kind === 'browser') { sceneItemId = await create('browser_source', {
+          url: validateBrowserSourceUrl(source.url), width: Math.round(source.width), height: Math.round(source.height), fps: 30,
+          shutdown: true, restart_when_active: false, reroute_audio: true, css: 'body { background-color: rgba(0,0,0,0); margin: 0; overflow: hidden; }',
+        }, String(index)); await this.call('SetInputMute', { inputName: name + ' ' + String(index), inputMuted: true }); }
         else sceneItemId = await create(source.kind === 'image' ? 'image_source' : 'window_capture', source.kind === 'image'
           ? { file: this.assetPath(state, source.assetId!), unload: false }
           : { window: source.window!, priority: 0, cursor: false, client_area: true, method: 0, capture_audio: false }, String(index));
@@ -95,6 +100,7 @@ export class ObsCustomScenes {
   }
   private async validateSources(scene: CustomScene, state: BroadcastState) {
     const active = scene.sources.filter(s => s.visible);
+    for (const source of active.filter(s => s.kind === 'browser')) validateBrowserSourceUrl(source.url);
     for (const source of active.filter(s => s.kind === 'image')) await access(this.assetPath(state, source.assetId!)).catch(() => { throw new ValidationError(`图片文件不可用：${source.name}`); });
     if (active.some(s => s.kind === 'window')) {
       const choices = await this.choices();

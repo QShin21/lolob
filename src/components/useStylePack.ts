@@ -1,11 +1,15 @@
 import { mergeAppearance } from '../../shared/style-appearance';
-import { useEffect, useState, type CSSProperties } from 'react';
+import { createContext, useContext, useEffect, useState, type CSSProperties } from 'react';
 import type { Scene } from '../../shared/types';
 import { BUILTIN_RUNTIME_STYLE, builtinStyle, sameStyle, styleRef, STYLE_SURFACES } from '../../shared/style-packs';
 import type { RuntimeStylePack, StylePackRef } from '../../shared/style-packs';
+import './style-pack-position.css';
+import './style-pack-semantic.css';
 
 const ready = new Map<string, RuntimeStylePack>();
 const pending = new Map<string, Promise<RuntimeStylePack>>();
+const StylePackPreview = createContext<RuntimeStylePack | null>(null);
+export const StylePackPreviewProvider = StylePackPreview.Provider;
 const keyFor = (ref: StylePackRef) => `${ref.id}/${ref.revision}`;
 const imageReady = async (url: string) => {
   const image = new Image(); image.src = url;
@@ -33,6 +37,7 @@ export async function loadStylePack(value?: StylePackRef): Promise<RuntimeStyleP
   try { return await request; } finally { pending.delete(key); }
 }
 export function useStylePack(value?: StylePackRef) {
+  const preview = useContext(StylePackPreview);
   const ref = styleRef(value), key = keyFor(ref);
   const [loaded, setLoaded] = useState<RuntimeStylePack>(() => ready.get(key) ?? builtinStyle(ref) ?? BUILTIN_RUNTIME_STYLE);
   const [error, setError] = useState('');
@@ -44,7 +49,7 @@ export function useStylePack(value?: StylePackRef) {
   }, [key]);
   // Keep the complete previous style while all new images load; never display half a package.
   const pack = ready.get(key) ?? loaded;
-  return { pack, error, loading: !error && ((!ready.has(key) && loadedKey !== key) || !sameStyle(pack, ref)) };
+  return preview ? { pack: preview, error: '', loading: false } : { pack, error, loading: !error && ((!ready.has(key) && loadedKey !== key) || !sameStyle(pack, ref)) };
 }
 const bodyFonts = { default: "'Bahnschrift', 'Segoe UI', 'Microsoft YaHei', sans-serif", modern: "'Segoe UI', 'Microsoft YaHei', sans-serif", serif: "Georgia, 'SimSun', serif" };
 const displayFonts = { ...bodyFonts, default: "'Bahnschrift', 'Arial Narrow', 'Microsoft YaHei', sans-serif" };
@@ -58,8 +63,9 @@ export function stylePackAppearance(pack: RuntimeStylePack, scene: Scene, accent
   const tokens: string[] = [];
   if (!scene.startsWith('custom:') && scene !== 'teamfight') for (const [target, props] of Object.entries(appearance)) {
     for (const [key, value] of Object.entries(props ?? {})) {
+      if (key === 'text') continue;
       tokens.push(`${target}-${key}`);
-      style[`--element-${target}-${key}`] = key === 'font' ? bodyFonts[value as keyof typeof bodyFonts] : `${value}${key === 'fontSize' ? 'cqw' : key === 'letterSpacing' ? 'em' : ''}`;
+      style[`--element-${target}-${key}`] = key === 'font' ? bodyFonts[value as keyof typeof bodyFonts] : key === 'x' || key === 'y' ? `${Number(value) / 19.2}cqw` : `${value}${key === 'fontSize' ? 'cqw' : key === 'letterSpacing' ? 'em' : ''}`;
     }
   }
   const image = (id: string | null | undefined) => id ? `url("${pack.assets[id]}")` : undefined;

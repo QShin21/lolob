@@ -1,3 +1,14 @@
+import { ResourceMaintenanceWorkspace } from '../components/ResourceMaintenanceWorkspace';
+import { DraftStatisticsControls } from '../components/DraftStatistics';
+import { TransitionControls } from '../components/TransitionControls';
+import { sceneInfo } from '../lib';
+import { VdoNinjaWorkspace } from '../components/VdoNinjaWorkspace';
+import { DemoWorkspace } from '../components/DemoWorkspace';
+import { GlobalShortcutControls } from '../components/GlobalShortcutControls';
+import { TwitchAudienceWorkspace } from '../components/TwitchAudienceWorkspace';
+import { IntegrationWorkspace } from '../components/IntegrationWorkspace';
+import { CinematicWorkspace } from '../components/CinematicWorkspace';
+import { BroadcastAnalysisControls } from '../components/BroadcastAnalysis';
 import { CLIENT_POLL_MIN, CLIENT_POLL_MAX, normalizeClientPollInterval } from '../../shared/client-poll';
 import {ProductionDesk} from '../components/ProductionDesk';
 import {GraphicControls} from '../components/GraphicControls';
@@ -29,7 +40,7 @@ async function request<T = Record<string, unknown>>(url: string, body?: Record<s
   return api<T>(url, body ? { method: 'POST', body: JSON.stringify(body) } : undefined);
 }
 
-export type SettingsSection = 'data' | 'video' | 'audio' | 'output' | 'graphics' | 'appearance' | 'diagnostics' | 'collaboration';
+export type SettingsSection = 'data' | 'video' | 'audio' | 'output' | 'graphics' | 'appearance' | 'diagnostics' | 'collaboration' | 'cinematics' | 'integrations' | 'audience' | 'vdo' | 'demo' | 'transitions' | 'resources';
 const settingsTasks: { id: SettingsSection; label: string; description: string; icon: typeof Plug }[] = [
   { id: 'data', label: '数据连接', description: '客户端、局内数据与本地回放', icon: Plug },
   { id: 'video', label: '画面', description: '引擎、游戏捕获与合成画面', icon: Monitor },
@@ -38,6 +49,13 @@ const settingsTasks: { id: SettingsSection; label: string; description: string; 
   { id: 'graphics', label: '节目包装', description: '比赛身份、HUD 与节目图层', icon: Layers },
   { id: 'diagnostics', label: '诊断', description: '采集来源、经济校准与回放控制', icon: Activity },
   { id: 'collaboration', label: '协作', description: '画面链接、移动接入与操作席位', icon: Users },
+  { id: 'cinematics', label: '镜头制作', description: '样条轨迹、游戏内预览与手柄', icon: Monitor },
+  { id: 'resources', label: '资源维护', description: '版本匹配、下载进度及缓存清理', icon: Layers },
+  { id: 'transitions', label: '转场与事件', description: '硬切、淡化、视频转场及自动规则', icon: Layers },
+  { id: 'vdo', label: '远程选手画面', description: 'VDO.Ninja 邀请与名单绑定', icon: Users },
+  { id: 'demo', label: '图形演示', description: '独立样本预览', icon: Play },
+  { id: 'audience', label: '观众互动', description: 'Twitch 投票、预测和聊天投票', icon: Users },
+  { id: 'integrations', label: '数据集成', description: '只读数据接口与制作 Webhook', icon: Wifi },
   { id: 'appearance', label: '工作台外观', description: '操作界面主题与本机偏好', icon: Palette },
 ];
 
@@ -224,7 +242,16 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
           <ProductionDesk {...{ state, send, notify, champions, seat, connected }} initialTask="audio" allowedTasks={['audio']} />
         </div>
 
+        {section === 'cinematics' && <div className="settings-task-pane"><GlobalShortcutControls {...{state,seat,connected,send,notify,champions}}/><CinematicWorkspace state={state} disabled={seat?.role!=='director'||state.production?.control?.owner!==seat.id}/></div>}
+        {section === 'resources' && <div className="settings-task-pane"><ResourceMaintenanceWorkspace/></div>}
+        {section === 'transitions' && <div className="settings-task-pane"><TransitionControls disabled={connected===false||seat?.role!=='director'||state.production?.control?.owner!==seat.id} value={state.broadcastTransitions} receipt={state.transitionReceipt} scenes={[...Object.entries(sceneInfo).map(([id,v])=>({id:id as import('../../shared/types').Scene,name:v.name})),...(state.customScenes??[]).map(s=>({id:s.id,name:s.name}))]} onSave={async value=>{await api('/api/transitions',{method:'POST',body:JSON.stringify(value)});notify('转场配置已保存');}}/></div>}
+        {section === 'vdo' && <div className="settings-task-pane"><VdoNinjaWorkspace/></div>}
+        {section === 'demo' && <div className="settings-task-pane"><DemoWorkspace state={state}/></div>}
+        {section === 'audience' && <div className="settings-task-pane"><TwitchAudienceWorkspace/></div>}
+        {section === 'integrations' && <div className="settings-task-pane"><IntegrationWorkspace disabled={seat?.role!=='director'||state.production?.control?.owner!==seat.id}/></div>}
         <div className="settings-task-pane" hidden={section !== 'graphics'}>
+          <section className="settings-block"><header><h2>BP 与选手布局</h2></header><label className="field">BP 构图<select aria-label="BP 构图" value={overlay.draftLayout??'bottom'} onChange={e=>setOverlay({...overlay,draftLayout:e.target.value as 'bottom'|'full-height'})}><option value="bottom">底部横排</option><option value="full-height">全高双队</option></select></label><label className="settings-toggle"><span>双侧英雄状态栏<small>英雄、等级、生命资源、技能冷却、计分与复活倒计时</small></span><input type="checkbox" checked={!!overlay.championTabs} onChange={e=>setOverlay({...overlay,championTabs:e.target.checked})}/></label></section>
+          <section className="settings-block settings-analysis-block"><header><h2>局内分析与事件图层</h2><p>保存到待播后，在导播台预监局内计分板并 TAKE。</p></header><BroadcastAnalysisControls mode={overlay.analysisMode??'off'} onModeChange={analysisMode=>setOverlay({...overlay,analysisMode})} killFeed={!!overlay.killFeed} onKillFeedChange={killFeed=>setOverlay({...overlay,killFeed})} announcer={!!overlay.announcer} onAnnouncerChange={announcer=>setOverlay({...overlay,announcer})} inhibitors={!!overlay.inhibitorTimers} onInhibitorsChange={inhibitorTimers=>setOverlay({...overlay,inhibitorTimers})}/><label className="settings-toggle"><span>L 形品牌框<small>内置 OBS 游戏画面等比缩放，左侧选手与底部品牌</small></span><input type="checkbox" checked={!!overlay.lFrame} onChange={e=>setOverlay({...overlay,lFrame:e.target.checked})}/></label><label className="settings-toggle"><span>完整顶部计分板<small>显示击杀、双方经济、资源与比赛时钟</small></span><input type="checkbox" checked={!!overlay.fullScoreboard} onChange={e=>setOverlay({...overlay,fullScoreboard:e.target.checked})}/></label></section>
           <section className="settings-block">
             <header><h2>ARENA 节目身份</h2><p>包装编辑保存后进入待播；在预监核对，再由主导播切入正式节目。</p></header>
             <div className="settings-look"><BroadcastLook {...{ state, champions, send, notify }} /></div>
@@ -252,6 +279,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
           </section>
           <LiveBottomControls {...{ state, champions, send, notify }} />
           <NativeHudControls {...{ state, champions, send, notify }} />
+          <DraftStatisticsControls {...{ state, send, notify, seat, connected }} />
           <GraphicControls {...{ state, send, notify, champions }} />
         </div>
 

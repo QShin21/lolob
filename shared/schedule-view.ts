@@ -16,6 +16,8 @@ export function schedulePage(state: BroadcastState) {
     .filter((m) =>
       view.filter === "upcoming"
         ? m.status !== "finished"
+        : view.filter === "finished"
+          ? m.status === "finished"
         : view.filter === "day"
           ? Number.isFinite(Date.parse(m.scheduledAt)) &&
             day(m.scheduledAt) === view.day

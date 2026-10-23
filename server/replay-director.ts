@@ -1,3 +1,5 @@
+import { buildCombatReview } from './combat-review';
+import type { Player } from '../shared/types';
 import {randomUUID} from 'node:crypto';
 import type {ReplayMoment,ReplayDirectorView} from '../shared/replay-director';
 import type {DamageEvent,ReplayDamageIndex} from './replay-damage';
@@ -43,7 +45,7 @@ export function detectTeamfights(index:ReplayDamageIndex,until=index.duration):R
  }
  finished.push(...active);
  return finished.filter(f=>{const blue=[...f.ids].filter(id=>heroes.get(id)!.team==='blue').length;return blue>=2&&f.ids.size-blue>=2&&f.ids.size>=5;}).map(f=>({
-  id:f.id,kind:'teamfight',title:`团战 · ${f.ids.size} 人参战`,time:f.start,start:Math.max(0,f.start-5),end:f.end,basis:'damage',participants:[...f.ids].map(id=>heroes.get(id)!.champion),focus:{champion:heroes.get(f.firstSource)!.champion,name:heroes.get(f.firstSource)!.champion,reason:'participant'}
+  id:f.id,kind:'teamfight',title:`团战 · ${f.ids.size} 人参战`,time:f.start,start:Math.max(0,f.start-5),end:f.end,basis:'damage',participantIds:[...f.ids],participants:[...f.ids].map(id=>heroes.get(id)!.champion),focus:{champion:heroes.get(f.firstSource)!.champion,name:heroes.get(f.firstSource)!.champion,reason:'participant'}
  }));
 }
 
@@ -98,7 +100,7 @@ export class ReplayDirector {
     const victim=aliases.get(e.VictimName),killer=aliases.get(e.KillerName);
     const damage=heroDamage&&victim?damageStart(heroDamage,victim.id,e.EventTime,deaths.get(victim.id)):undefined;
     if(victim)deaths.set(victim.id,e.EventTime);
-    events.push({id:`kill:${JSON.stringify([e.KillerName,e.VictimName,e.EventTime])}`,kind:'kill',title:`${e.KillerName||'野怪/防御塔'} → ${e.VictimName||'英雄'}`,time:e.EventTime,start:Math.max(0,(damage??e.EventTime)-3),end:e.EventTime,basis:damage===undefined?'event':'damage',participants:[killer?.champion,victim?.champion].filter((s):s is string=>!!s)});
+    events.push({id:`kill:${JSON.stringify([e.KillerName,e.VictimName,e.EventTime])}`,kind:'kill',title:`${e.KillerName||'野怪/防御塔'} → ${e.VictimName||'英雄'}`,time:e.EventTime,start:Math.max(0,(damage??e.EventTime)-3),end:e.EventTime,basis:damage===undefined?'event':'damage',victim:victim?.champion,victimId:victim?.id,participants:[killer?.champion,victim?.champion].filter((s):s is string=>!!s)});
     const target=killer??victim;if(target)events.at(-1)!.focus={champion:target.champion,name:names.get(target.champion)??target.champion,reason:killer?'killer':'victim'};
    }else if(objectiveNames[e.EventName]){
     events.push({id:`api:${e.EventID}:${e.EventTime}`,kind:'objective',objective:e.DragonType==='Elder'?'elders':objectiveKinds[e.EventName],title:`${e.KillerName||''} 击杀${e.DragonType==='Elder'?'远古龙':objectiveNames[e.EventName]}`,time:e.EventTime,start:Math.max(0,e.EventTime-3),end:e.EventTime,basis:'event',participants:[]});
@@ -120,5 +122,6 @@ export class ReplayDirector {
   const connected=!!this.session&&now-this.at<6000;
   return {session:this.session,connected,source:this.source,coverageFrom:this.from,coverageUntil:this.until,moments:connected?this.moments:[],detail:!connected?'等待国服观战或回放连接':this.cachedIndex?(this.source==='replay'?'整场击杀与伤害已索引；资源事件由游戏事件及连续播放采样补充':'已采集观战片段；可回看时间以游戏缓冲为准'):'正在解析伤害，暂按事件前 3 秒定位'};
  }
+ combatReview(players:Player[],time:number,now=Date.now()){if(!this.cachedIndex||!this.snapshot(now).connected||Math.abs(time-this.time)>2)return;return buildCombatReview(this.cachedIndex,{session:this.session,time,from:this.from,until:this.until,players,moments:this.moments,units:this.units,now});}
  processId(){return this.pid;}
 }

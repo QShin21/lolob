@@ -165,3 +165,5 @@
   .settings-task-heading p { margin: 0; }
   .settings-directory-footer { padding-top: 10px; }
 }
+
+.settings-analysis-block .broadcast-analysis-controls{border:0;border-radius:0;margin:0}.settings-analysis-block .broadcast-analysis-controls>.panel-head{display:none}.settings-analysis-block>.settings-toggle{margin:12px 18px;padding:10px 0;border-bottom:1px solid var(--line)}

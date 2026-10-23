@@ -2,19 +2,6 @@ name: Release 1.3.0
 
 on:
   workflow_dispatch:
-  push:
-    branches: [new]
-    paths:
-      - 'server/**'
-      - 'shared/**'
-      - 'src/**'
-      - 'scripts/verify-tournaments-130.mjs'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/release-130.yml'
-      - 'scripts/verify-builtin-styles.mjs'
-      - 'scripts/verify-packaged-report-130.mjs'
-      - 'scripts/publish-release-130.mjs'
 
 permissions:
   contents: write

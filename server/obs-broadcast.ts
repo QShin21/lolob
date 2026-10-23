@@ -2,6 +2,9 @@ import type { OBSRequestTypes, OBSResponseTypes } from 'obs-websocket-js';
 import { randomUUID, createHash } from 'node:crypto';
 import type { PlayerFeedSettings, Side } from '../shared/types';
 import { record, str, ValidationError } from './state';
+import { ObsLFrame } from './obs-l-frame';
+import { ObsTransitions, type TransitionWork } from './obs-transitions';
+import type { TransitionConfig } from '../shared/broadcast-transitions';
 
 type ObsCall = <T extends keyof OBSRequestTypes>(request:T,data?:OBSRequestTypes[T])=>Promise<OBSResponseTypes[T]>;
 const hudName='RiftCast HUD';
@@ -10,7 +13,7 @@ const finite=(value:unknown):number=>typeof value==='number'&&Number.isFinite(va
 const cameraNames={blue:'RiftCast 蓝方选手摄像头',red:'RiftCast 红方选手摄像头'} as const;
 export const playerCameraName=(device:string)=>'RiftCast 选手摄像头 '+createHash('sha256').update(device).digest('hex').slice(0,16);
 const cameraPanels={blue:{x:306,y:779.28,width:190,height:300.72},red:{x:1424,y:779.28,width:190,height:300.72}} as const;
-export interface CameraScene { sceneName:string; hudName:string; visible:boolean }
+export interface CameraScene { sceneName:string; hudName:string; visible:boolean; lFrame?:boolean }
 type CameraDevice={name:string;id:string};
 
 function streamDestination(input:unknown):{server:string;key:string}{
@@ -27,7 +30,13 @@ function streamDestination(input:unknown):{server:string;key:string}{
 /** Keeps RTMP credentials outside BroadcastState, persistence and WebSocket events. */
 export class ObsBroadcast {
   private mutating=false;
+  private transitions?: ObsTransitions;
   constructor(private connected:()=>boolean,private request:ObsCall){}
+  async transition(config:TransitionConfig,dataDir:string,work:TransitionWork){
+    this.ensureConnected();
+    this.transitions??=new ObsTransitions((request,data)=>this.call(request,data),dataDir);
+    return this.transitions.run(config,work);
+  }
   private ensureConnected(){if(!this.connected())throw new Error('请先连接 OBS WebSocket 5.x');}
   private async call<T extends keyof OBSRequestTypes>(request:T,data?:OBSRequestTypes[T]):Promise<OBSResponseTypes[T]>{
     // OBS/plugin errors may contain request data. Return only our fixed message.
@@ -134,6 +143,10 @@ export class ObsBroadcast {
     if(this.mutating)throw new ValidationError('OBS 配置正在处理中，请稍后再试');
     this.mutating=true;
     try{
+      for(const scene of scenes)if(scene.lFrame!==undefined){
+        const frame=await new ObsLFrame((request,data)=>this.call(request,data)).apply(scene.sceneName,scene.lFrame);
+        if(scene.lFrame&&!frame.applied)return {applied:false,detail:frame.detail};
+      }
       const {inputs}=await this.call('GetInputList');
       const selected=(['blue','red'] as const).filter(side=>feeds?.[side]?.mode==='camera');
       if(!selected.length&&!inputs.some(input=>owned(input.inputName)))return {applied:true,scenes:[]};

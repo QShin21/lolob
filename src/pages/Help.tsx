@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { openAppOperation } from "../components/AppOperations";
 import { ArrowRight, BookOpen, Search } from "lucide-react";
 import type { BroadcastState } from "../../shared/types";
 import type { WorkflowPage } from "../components/DirectorWorkflow";
@@ -222,6 +223,7 @@ export function Help({
           {"本地实况"}
         </span>
       </header>
+      <div className="help-operation-links"><button className="button" onClick={()=>openAppOperation('guide')}>重新打开首次引导</button><button className="button" onClick={()=>openAppOperation('update')}>应用版本与下载</button><button className="button" onClick={()=>openAppOperation('report')}>本机故障报告</button></div>
       <div className="guide-stage">
         <aside className="guide-directory">
           <label className="domain-search">

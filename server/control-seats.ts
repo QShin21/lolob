@@ -33,7 +33,8 @@ export class ControlSeats {
     if (!this.seats.size && token === undefined) return { id: 'local', role: 'director' as const, name: '主机导播' };
     if (!seat) throw new ValidationError('请重新连接操作席位');
     const main = ['set-tournament-result','set-style-pack', 'save-custom-scene', 'delete-custom-scene', 'take', 'next-game', 'load-match', 'finalize-game', 'correct-result', 'set-mode', 'set-settings', 'output', 'engine', 'set-phase', 'obs-scene'].includes(type) || type === 'production' && ['immediate', 'pause', 'resume', 'remake', 'accept-final'].includes(String(command?.op));
-    if (main && (seat.role !== 'director' || seat.id !== this.owner)) throw new ValidationError('节目切入与局号推进由当前主导播控制席执行');
+    const casterConfig = type === 'production' && command?.op === 'settings' && ['hotkeys','hotkeyAliases','casterButtons','autoSides'].some(key => Object.hasOwn(command,key));
+    if ((main || casterConfig) && (seat.role !== 'director' || seat.id !== this.owner)) throw new ValidationError('节目切入与局号推进由当前主导播控制席执行');
     if (seat.role === 'readonly') throw new ValidationError('当前席位为只读');
     if (seat.role === 'data' && !['create-tournament','update-tournament','reschedule-tournament-match','retry-game-archive','set-teams','set-schedule','set-match','select-player','preview-scene','set-draft','set-overlay','set-player-feed-control','save-recording','delete-recording','production'].includes(type)) throw new ValidationError('资料席仅可准备赛事、素材与待播内容');
     if (seat.role === 'subtitle' && type !== 'set-overlay') throw new ValidationError('字幕席仅可编辑待播字幕');

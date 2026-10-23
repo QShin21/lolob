@@ -1,3 +1,4 @@
+import { parseRiotId } from '../../shared/player-identity';
 import { Save, Trash2 } from "lucide-react";
 import type { BroadcastState, Match, Team } from "../../shared/types";
 
@@ -270,6 +271,7 @@ export function TeamForm({
                 maxLength={150}
                 value={p.account ?? ""}
                 onChange={(e) => update(i, { account: e.target.value })}
+                onBlur={(e)=>{const parsed=parseRiotId(e.target.value);if(parsed&&parsed.display!==e.target.value)update(i,{account:parsed.display});}}
                 placeholder="API 名称或唯一 ID"
               />
               <div className="manage-roster-photo">

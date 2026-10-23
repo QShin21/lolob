@@ -7,6 +7,8 @@ export interface FightSegment {
   id: string; key: string; active: boolean; startedAt: number; endedAt?: number;
   clockSession?: string; discontinuity?: number; lastTime: number;
   players: Record<string, FightPlayer>;
+  /** Team cumulative damage sampled on game time; null marks unavailable telemetry. */
+  samples?: { time: number; blue: number | null; red: number | null }[];
 }
 export type NeutralKind = 'grubs' | 'herald' | 'baron' | 'dragon' | 'elder';
 export interface NeutralObjective { kind: NeutralKind; element?: string; state: 'alive' | 'countdown' | 'unknown'; dueAt?: number }
@@ -48,4 +50,13 @@ export function syncFightSegment(state: BroadcastState, now=Date.now()): void {
     row.previous=value;row.total=Math.floor(value-row.baseline);row.sampledAt=player.telemetry!.sampledAt;
   }
   segment.lastTime=state.gameTime;
+  const samples=segment.samples??(segment.samples=[]),last=samples.at(-1);
+  if(!last||state.gameTime-last.time>=1){
+    const total=(side:'blue'|'red')=>{
+      const roster=state.players.filter(p=>p.team===side),values=roster.map(p=>segment!.players[p.id]?.total);
+      return roster.length===5&&values.every(v=>v!==undefined&&Number.isFinite(v))?values.reduce<number>((sum,v)=>sum+v!,0):null;
+    };
+    samples.push({time:state.gameTime,blue:total('blue'),red:total('red')});
+    if(samples.length>7200)samples.splice(0,samples.length-7200);
+  }
 }

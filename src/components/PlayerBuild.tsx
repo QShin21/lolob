@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Package, ShieldCheck, UserRound } from 'lucide-react';
-import type { BroadcastState, Champion } from '../../shared/types';
+import type { BroadcastState, Champion, Player } from '../../shared/types';
+import { lineupRunes } from '../../shared/lineup-runes';
+import { lineupStatRunes, STAT_RUNES } from '../../shared/stat-runes';
+import { runeImage } from '../../shared/player-assets';
 import { currentGameResult, frozenGameState, gameResultAwaitingTerminalSample } from '../../shared/game-results';
 import { championFor, getTeam, gold, playerCs, playerKda } from '../lib';
 import { dataDragonItemImage, useItemCatalog } from './useItemCatalog';
@@ -17,6 +20,14 @@ function BuildImage({ src, alt, className = '', kind = 'item' }: { src?: string;
 }
 
 const numberText = (value: number | null | undefined) => value == null || !Number.isFinite(value) ? '—' : String(value);
+
+function BuildRunes({ player }: { player: Player }) {
+  const runes = lineupRunes(player), shards = lineupStatRunes(player);
+  return <div className="pb-rune-icons" aria-label="六项符文与三项属性碎片">{Array.from({ length: 9 }, (_, i) => {
+    const id = i < 6 ? runes[i] : shards[i - 6], label = id ? i < 6 ? `符文 ${id}` : `属性碎片 · ${STAT_RUNES[id].name}` : i < 6 ? '符文未采集' : '属性碎片未采集';
+    return <span key={i} className={`${i === 4 ? 'pb-rune-secondary' : ''} ${i >= 6 ? 'pb-rune-shard' : ''} ${i === 6 ? 'pb-shard-first' : ''}`} title={label} data-rune-id={id} data-rune-kind={i < 6 ? 'choice' : 'shard'}>{id ? <BuildImage src={runeImage(id)} alt={label}/> : <span className="pb-rune-unknown" aria-label={label}>—</span>}</span>;
+  })}</div>;
+}
 
 function EquipmentStrip({ ids, version, catalog }: { ids: number[]; version: string; catalog: ItemAssets }) {
   return <div className="pb-items">{Array.from({ length: 7 }, (_, index) => {
@@ -52,7 +63,7 @@ export function PlayerBuild({ state: sourceState, champions, output = false, bus
     <header className="pb-focus-header"><strong>焦点选手</strong><span>{result ? `第 ${result.game} 局${gameResultAwaitingTerminalSample(result) ? '已保存观测' : '冻结数据'}` : '本局选手数据'}</span><time><GameTime state={state}/></time></header>
     <div className="pb-focus-layout">
       <aside className="pb-focus-person"><div className={`pb-focus-portrait ${portrait ? 'has-portrait' : ''}`}><BuildImage src={portrait || champion?.image} alt={portrait ? `${player.name}选手照片` : `${player.championName || '英雄'}头像`} kind="portrait" />{portrait && <BuildImage src={champion?.image} alt={player.championName || '英雄头像'} className="pb-focus-champion" />}</div><div className="pb-focus-name"><small>{team?.tag || (player.team === 'blue' ? '蓝方' : '红方')} · {player.role || '分路待确认'}</small><strong>{player.name}</strong><span>{player.championName || champion?.name || '英雄待定'}</span></div></aside>
-      <div className="pb-focus-detail"><div className="pb-focus-stats">{stats.map(([label,value]) => <div key={label}><small>{label}</small><strong>{value}</strong></div>)}</div><div className="pb-focus-equipment"><div className="pb-focus-caption"><strong>装备</strong><span>六装备 / 饰品</span></div><EquipmentStrip ids={slots} version={catalog.version} catalog={catalog.items}/></div><div className="pb-focus-footer"><span>符文</span><strong>{runes.join(' / ') || '客户端未提供'}</strong></div></div>
+      <div className="pb-focus-detail"><div className="pb-focus-stats">{stats.map(([label,value]) => <div key={label}><small>{label}</small><strong>{value}</strong></div>)}</div><div className="pb-focus-equipment"><div className="pb-focus-caption"><strong>装备</strong><span>六装备 / 饰品</span></div><EquipmentStrip ids={slots} version={catalog.version} catalog={catalog.items}/></div><div className="pb-focus-footer"><span>符文</span><BuildRunes player={player}/></div></div>
     </div>
   </section>;
   return <section className={`player-build panel pb-panel pb-${player.team}`} aria-label={`${player.name}选手装备与符文`}>
@@ -68,7 +79,7 @@ export function PlayerBuild({ state: sourceState, champions, output = false, bus
         <div className="pb-section-title"><Package /><h3>装备</h3><span>{items.length ? `${items.length} 件 · 六装备与饰品栏` : '暂无装备数据'}</span></div>
         <EquipmentStrip ids={slots} version={catalog.version} catalog={catalog.items} />
         <div className="pb-section-title pb-rune-title"><ShieldCheck /><h3>符文</h3><span>客户端已提供字段</span></div>
-        {runes.length ? <div className="pb-runes">{runes.map((rune, index) => <span key={`${index}-${rune}`}>{rune}</span>)}</div> : <p className="pb-empty-runes">API 未提供符文</p>}
+        <BuildRunes player={player}/>{runes.length > 0 && <div className="pb-runes">{runes.map((rune, index) => <span key={`${index}-${rune}`}>{rune}</span>)}</div>}
         <p className="pb-data-note">{result?`第 ${result.game} 局${gameResultAwaitingTerminalSample(result)?'已保存观测数据':'冻结数据'}`:'本机客户端数据'}{catalog.version ? ` · 静态素材版本 ${catalog.version}` : ' · 静态素材版本不可用'}{items.length > 0 && catalog.status !== 'ready' ? ' · 装备名称暂不可用，保留 ID' : ''}</p>
       </div>
     </div>

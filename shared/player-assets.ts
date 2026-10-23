@@ -1,6 +1,7 @@
 import runeCatalog from './rune-catalog.json';
 import { cachedResource } from './resource-url';
 import type { SummonerSpell } from './types';
+import { STAT_RUNES } from './stat-runes';
 
 const spellIds: Record<number, string> = {1:'SummonerBoost',3:'SummonerExhaust',4:'SummonerFlash',6:'SummonerHaste',7:'SummonerHeal',11:'SummonerSmite',12:'SummonerTeleport',13:'SummonerMana',14:'SummonerDot',21:'SummonerBarrier',30:'SummonerPoroRecall',31:'SummonerPoroThrow',32:'SummonerSnowball',39:'SummonerSnowURFSnowball_Mark',54:'Summoner_UltBookPlaceholder',55:'Summoner_UltBookSmitePlaceholder',2201:'SummonerCherryHold',2202:'SummonerCherryFlash'};
 const spellNames: Record<string, string> = {
@@ -44,6 +45,7 @@ const runePaths: Record<number, string> = {
   8351:'Styles/Inspiration/GlacialAugment/GlacialAugment.png',8360:'Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png',8369:'Styles/Inspiration/FirstStrike/FirstStrike.png',
 };
 export function runeImage(id?: number): string | undefined {
+  if (id && Object.hasOwn(STAT_RUNES, id)) return `/runes/${id}.png`;
   if(id&&runeCatalog.runes.some(r=>r.id===id))return `/runes/${id}.png`;
   return id && runePaths[id] ? cachedResource(`https://ddragon.leagueoflegends.com/cdn/img/perk-images/${runePaths[id]}`) : undefined;
 }

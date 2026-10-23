@@ -1,3 +1,9 @@
+import { VdoNinjaOutput } from './components/VdoNinjaWorkspace';
+import { AppOperations, openAppOperation } from './components/AppOperations';
+import { ArchiveGraphicsOutput } from './components/ArchiveGraphics';
+import { TwitchAudienceOverlay } from './components/TwitchAudienceWorkspace';
+import { SeasonStatisticsOverlay } from './components/SeasonStatistics';
+import type { SeasonMetric } from '../shared/season-statistics';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { Activity, Archive, CircleHelp, LayoutDashboard, Moon, Settings2, Sun, Swords, Trophy, Wifi } from 'lucide-react';
 import { useBroadcast } from './useBroadcast';
@@ -69,6 +75,10 @@ export default function App() {
   if (!state && output) return null;
   if (!state) return <div className="loading-screen"><Brand/><h2>{error ? '本地服务尚未连接' : '正在连接导播工作站'}</h2><p>{error || '载入赛事、素材与节目状态'}</p>{error && <button className="button primary" onClick={() => location.reload()}>重新连接</button>}</div>;
   const ctx = { state, champions, connected, send, notify, seat }, onAir = programState(state);
+  if (output && location.pathname === '/overlay/vdo') return <VdoNinjaOutput/>;
+  if (output && location.pathname === '/overlay/archive') return <ArchiveGraphicsOutput state={state} champions={champions}/>;
+  if (output && location.pathname === '/overlay/twitch') return <TwitchAudienceOverlay/>;
+  if (output && location.pathname === '/overlay/season') { const query = new URLSearchParams(location.search); return <SeasonStatisticsOverlay state={state} tournamentId={query.get('tournament')||undefined} metric={(query.get('metric')||'kda') as SeasonMetric} spotlightPlayerId={query.get('player')||undefined} minimumGames={Number(query.get('minimum')||1)}/>; }
   if (output) {
     const preview = new URLSearchParams(location.search).get('preview') === '1';
     return <GameClockConnectionProvider value={connected}><BroadcastCanvas bus={preview ? 'preview' : 'program'} state={preview ? state : onAir} champions={champions} scene={preview ? state.previewScene : state.programScene} output/>{!connected && (preview ? state.previewScene : state.programScene) !== 'teamfight' && <div className="output-offline">导播服务中断 · 保留最后画面</div>}</GameClockConnectionProvider>;
@@ -90,7 +100,9 @@ export default function App() {
           <span className="control-mode">{'本地实况'}</span>
           <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? (seatStatus === 'invalid' ? '席位失效' : '验证席位中')}</span>
           <span className={`control-sync ${connected && seat ? '' : 'disconnected'}`}><Wifi size={14}/>{connected ? seat ? '已同步' : '数据已同步 · 待验证席位' : '同步中断'}</span>
+          <button className="button app-operation-link" onClick={()=>openAppOperation('report')}>故障报告</button>
         </header>
+        <AppOperations state={state}/>
         {!connected && <div className="control-disconnect" role="alert">{error || '同步中断，保留最后画面与本地草稿，正在重连。'}</div>}
         <SeatRecovery {...seatRecovery}/>
         <main className="control-main" inert={!seat}>
