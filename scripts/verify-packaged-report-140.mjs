@@ -4,6 +4,7 @@ import { cp, mkdir, mkdtemp, readFile, writeFile, rm, access } from 'node:fs/pro
 import path from 'node:path';
 import os from 'node:os';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { createServer } from 'node:net';
 import { pathToFileURL } from 'node:url';
 import { isolatedNativeEnvironment, nativeRequestGuard } from './verify-native-safety.mjs';
@@ -18,7 +19,19 @@ const appRoot=path.join(sandbox,'app'),userData=path.join(sandbox,'user'),data=p
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const server=createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const port=server.address().port;await new Promise(resolve=>server.close(resolve));
 const errors=[],blocked=[],checks=[];let application,page;
+const recordCheck=checks.push.bind(checks);checks.push=(...values)=>{console.log(...values);return recordCheck(...values);};
 const base=`http://127.0.0.1:${port}`;
+async function closePackagedApplication(app){
+  const child=app.process();if(child.exitCode!==null)return;
+  let timeout;
+  try{await Promise.race([app.close(),new Promise((_,reject)=>{timeout=setTimeout(()=>reject(new Error('打包程序未在 60 秒内完成退出')),60000);})]);}
+  catch(error){
+    // This executable and its child service belong to the isolated acceptance sandbox.
+    assert.equal(path.resolve(child.spawnfile).toLowerCase(),path.join(appRoot,'RiftCast.exe').toLowerCase());
+    if(child.exitCode===null)try{execFileSync('taskkill',['/PID',String(child.pid),'/T','/F'],{windowsHide:true,stdio:'ignore'});}catch{}
+    throw error;
+  }finally{clearTimeout(timeout);}
+}
 async function readyControlWindow(app){
   const window=await app.firstWindow({timeout:90000});
   window.on('pageerror',error=>errors.push(error.message));
@@ -45,7 +58,7 @@ try {
   const fresh=await(await fetch(base+'/api/state')).json();assert.equal(fresh.mode,'live');assert.equal(fresh.overlay.stylePack.id,'qinghua-celestial');assert.equal(fresh.settings.pollInterval,500);assert.equal(fresh.gameTime,0);assert.deepEqual(fresh.players,[]);assert.deepEqual(fresh.events,[]);assert.deepEqual(fresh.schedule,[]);
   assert.equal(await page.locator('.director-demo-controls,.cast-demo').count(),0);
   await page.screenshot({path:path.join(dir,'packaged-live-only-start.png')});
-  await application.close();application=undefined;
+  await closePackagedApplication(application);application=undefined;
   checks.push('fresh packaged EXE starts live-only at 500 ms with empty telemetry and no demonstration controls; test fixtures absent from package');
   await writeFile(path.join(data,'state.json'),JSON.stringify(fixture));
   application=await _electron.launch({executablePath:path.join(appRoot,'RiftCast.exe'),args:[],env,timeout:90000});
@@ -111,7 +124,7 @@ try {
   await page.goto(base+'/overlay?preview=1');await page.locator('[data-style-pack=verification-cup][data-style-status=ready]').waitFor();
   assert.equal(await page.locator('.pr-gold-player').count(),10);await page.screenshot({path:path.join(dir,'packaged-style-preview.png')});
   checks.push('bundled unzipper and native sharp import and export ZIP through the packaged UI; preview is styled, program and archived data remain unchanged');
-  await application.close();application=undefined;
+  await closePackagedApplication(application);application=undefined;
   application=await _electron.launch({executablePath:path.join(appRoot,'RiftCast.exe'),args:[],env,timeout:90000});
   await nativeRequestGuard(blocked).attach(application.context());page=await readyControlWindow(application);
   await page.goto(base+'/overlay?preview=1');await page.locator('[data-style-pack=verification-cup][data-style-status=ready]').waitFor({timeout:30000});
@@ -120,7 +133,7 @@ try {
   assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,7);
   checks.push('packaged EXE restart restores imported local assets and independent preview/program style references');
   const removed=await checkStyleDeletion({page,base,dir,checks});
-  await application.close();application=undefined;
+  await closePackagedApplication(application);application=undefined;
   application=await _electron.launch({executablePath:path.join(appRoot,'RiftCast.exe'),args:[],env,timeout:90000});
   await nativeRequestGuard(blocked).attach(application.context());page=await readyControlWindow(application);
   await checkDeletedAfterRestart(base,removed,checks,page);
@@ -150,4 +163,4 @@ try {
 } catch(error) {
   await page?.screenshot({path:path.join(dir,'packaged-report-failure.png')}).catch(()=>{});
   await writeFile(path.join(dir,'packaged-report.json'),JSON.stringify({status:'failed',version,checks,errors:[...errors,String(error)],blocked},null,2));throw error;
-} finally {await application?.close();await rm(sandbox,{recursive:true,force:true,maxRetries:5,retryDelay:1000});}
+} finally {if(application)await closePackagedApplication(application);await rm(sandbox,{recursive:true,force:true,maxRetries:5,retryDelay:1000});}

@@ -27,11 +27,12 @@ const closingProjectors = new Map();
 let previewOperations = Promise.resolve();
 let projectorHelperPromise;
 const programWindow = require('./program-window.cjs').createProgramWindow({ monitor: monitorRequest, command: projectorCommand });
+const sendToRenderer = require('./renderer-messages.cjs').createRendererMessenger({ getWindow: () => mainWindow, trusted: contents => trustedRenderer(contents) });
 const backgroundKeys = require('./global-shortcuts.cjs').createGlobalShortcuts({
   registry: globalShortcut,
   authorize: verifyShortcutSeat,
-  dispatch: event => { if (mainWindow && trustedRenderer(mainWindow.webContents)) mainWindow.webContents.send('riftcast:global-shortcut', event); },
-  changed: status => { if (mainWindow && trustedRenderer(mainWindow.webContents)) mainWindow.webContents.send('riftcast:global-shortcut-status', status); },
+  dispatch: event => { sendToRenderer('riftcast:global-shortcut', event); },
+  changed: status => { sendToRenderer('riftcast:global-shortcut-status', status); },
 });
 
 function verifyShortcutSeat(token) {
@@ -525,12 +526,12 @@ function createWindow() {
     });
   });
   mainWindow.on('closed', () => {
+    mainWindow = undefined;
     backgroundKeys.disable();
     void previewOperation(() => programWindow.close()).catch(error => log(error.message));
     const projectors = [...nativePreviewSources.values()];
     nativePositionRequests.clear();
     nativePreviewSources.clear();
-    mainWindow = undefined;
     void previewOperation(async () => { for (const projector of projectors) await closeProjector(projector); });
   });
   const menu = Menu.buildFromTemplate([
