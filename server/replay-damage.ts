@@ -10,6 +10,8 @@ const damageProtocols = new Map([
     decode:decodeCnDamageParameters, target:1, source:8, amount:9, type:2}],
   ['16.21.829.9102', {build:'16.21.829.9102', packet:978, avatar:929, stats:267,
     decode:decodeCn1621DamageParameters, target:0, source:5, amount:4, type:3}],
+  ['16.21.832.5350', {build:'16.21.832.5350', packet:978, avatar:929, stats:267,
+    decode:decodeCn1621DamageParameters, target:0, source:5, amount:4, type:3}],
 ]);
 export const damageProtocolForProfile = (profile:unknown) =>
   typeof profile==='string'&&profile.startsWith('cn-')?damageProtocols.get(profile.slice(3)):undefined;
@@ -56,22 +58,34 @@ type Point={time:number;total:number;physical:number;magic:number;trueDamage:num
 export class ReplayDamageIndex {
   readonly damageEvents:DamageEvent[];
   readonly tracks=new Map<number,Point[]>();
+  readonly enemyTracks=new Map<number,Point[]>();
   readonly received=new Map<number,{time:number;total:number}[]>();
   constructor(readonly heroes:DamageHero[],readonly duration:number,events:DamageEvent[],readonly build=DAMAGE_BUILD){
     this.damageEvents=events.slice().sort((a,b)=>a.time-b.time);
     const roster=new Map(heroes.map(h=>[h.networkId,h]));
-    for(const h of heroes){this.tracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);this.received.set(h.networkId,[{time:0,total:0}]);}
+    for(const h of heroes){this.tracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);this.enemyTracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);this.received.set(h.networkId,[{time:0,total:0}]);}
     for(const e of this.damageEvents){
       const source=roster.get(e.source),target=roster.get(e.target);
       if(target&&e.amount>10000000)throw Error('英雄承伤数值异常');
       if(target){const received=this.received.get(e.target)!;received.push({time:e.time,total:received.at(-1)!.total+e.amount});}
-      if(!source||!target||source.team===target.team)continue;
+      if(!source||!target)continue;
       if(e.amount>10000000)throw Error('英雄伤害数值异常');
-      const points=this.tracks.get(e.source)!,previous=points.at(-1)!;
+      const enemy=source.team!==target.team;
+      // Preserve enemy-only totals for combat, and the observed official counter separately.
+      const destinations=enemy?[this.tracks,this.enemyTracks]:build==='16.21.832.5350'?[this.tracks]:[];
+      for(const destination of destinations){
+      const points=destination.get(e.source)!,previous=points.at(-1)!;
       points.push({time:e.time,total:previous.total+e.amount,
         physical:previous.physical+(e.type===0?e.amount:0),magic:previous.magic+(e.type===1?e.amount:0),
         trueDamage:previous.trueDamage+(e.type===2?e.amount:0)});
+      }
     }
+  }
+  enemyAt(networkId:number,time:number):number|undefined {
+    if(!Number.isFinite(time)||time<0||time>this.duration+2)return;
+    const points=this.enemyTracks.get(networkId);if(!points)return;
+    let lo=0,hi=points.length;while(lo<hi){const mid=(lo+hi)>>>1;if(points[mid].time<=time)lo=mid+1;else hi=mid;}
+    return points[Math.max(0,lo-1)].total;
   }
   at(networkId:number,time:number):DamageTotals|undefined{
     if(!Number.isFinite(time)||time<0||time>this.duration+2)return;
@@ -80,7 +94,7 @@ export class ReplayDamageIndex {
     while(low<high){const mid=(low+high)>>>1;if(points[mid].time<=time)low=mid+1;else high=mid;}
     const p=points[Math.max(0,low-1)];
     const received=this.received.get(networkId)!;let left=0,right=received.length;while(left<right){const mid=(left+right)>>>1;if(received[mid].time<=time)left=mid+1;else right=mid;}
-    return {taken:received[Math.max(0,left-1)].total,toChampions:p.total,physicalToChampions:p.physical,magicToChampions:p.magic,trueToChampions:p.trueDamage};
+    return {taken:received[Math.max(0,left-1)].total,toChampions:p.total,enemyToChampions:this.enemyAt(networkId,time),physicalToChampions:p.physical,magicToChampions:p.magic,trueToChampions:p.trueDamage};
   }
 }
 
@@ -102,6 +116,7 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
     if(++chunks>20000||offset+17>end)throw Error('回放分片范围异常');
     const id=b.readUInt32LE(offset),kind=b[offset+8],decodedLength=b.readUInt32LE(offset+9),compressed=b.readUInt32LE(offset+13);
     const size=compressed||decodedLength;offset+=17;
+    if(protocol.build==='16.21.832.5350'){if(offset>=end||b[offset]!==4)throw Error('回放分片标记无效');offset++;}
     if(decodedLength>16*1024*1024||size>16*1024*1024||offset+size>end||![1,2,3,4].includes(kind))throw Error('回放分片长度异常');
     if(kind===1||kind===2&&!firstKeyframe){
       const stored=b.subarray(offset,offset+size);

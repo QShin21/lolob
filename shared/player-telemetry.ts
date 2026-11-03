@@ -8,7 +8,7 @@ export interface Cooldown {
 export interface TelemetryStamp { gameTime: number; sampledAt: string; validForMs: number; source: 'api' | 'memory' | 'league-broadcast' }
 export interface ItemCooldown { slot: number; itemId: number; cooldown: Cooldown }
 export interface PlayerBuffs { baron?: boolean; elder?: boolean; baronExpiresAt?: number; elderExpiresAt?: number }
-export interface DamageTotals { toChampions?: number; taken?: number; physicalToChampions?: number; magicToChampions?: number; trueToChampions?: number }
+export interface DamageTotals { toChampions?: number; enemyToChampions?: number; taken?: number; physicalToChampions?: number; magicToChampions?: number; trueToChampions?: number }
 
 export function telemetryFresh(stamp: TelemetryStamp | undefined, gameTime: number, now = Date.now()): boolean {
   if (!stamp) return false;

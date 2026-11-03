@@ -1,4 +1,4 @@
-// Generated protocol decoder for CN 16.21.829.9102.
+// Generated for CN 16.21.829.9102; selected for 16.21.832.5350 after full replay validation.
 // Extracted with shyunku-libraries/rofl-parser (ISC), with a CN factory adapter.
 // Research input EXE SHA256: 6CA9446AC4E65A311CB0796B72A459097CDF912A337619D1D1FD207E01AEDD6F.
 // Packet registration: 978; factory 0xC984F0; deserializer 0xCD81B0; handler 0x2B55A0.

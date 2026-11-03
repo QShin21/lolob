@@ -7,6 +7,12 @@ import {applyAction} from './state';
 import {programState} from '../shared/production';
 const now=Date.parse('2026-10-20T04:00:00Z');
 function fight(){const s=createFixture();s.phase='live';s.programScene='teamfight';s.gameTime=1200;s.connections.live.status='connected';delete s.production?.program;s.players.forEach((p,i)=>{p.telemetry={source:'api',sampledAt:new Date(now).toISOString(),gameTime:1200,validForMs:5000};p.telemetryDamageSource='api';p.telemetryDamage={toChampions:1000+i*100};});return s;}
+
+test('fight intervals use enemy-only damage when the official total also includes same-team packets',()=>{
+ const s=fight(),p=s.players[0];p.telemetryDamage={toChampions:1000,enemyToChampions:800};syncFightSegment(s,now);
+ s.gameTime++;p.telemetryDamage={toChampions:1400,enemyToChampions:950};syncFightSegment(s,now+1000);
+ assert.equal(s.fightSegment!.players[p.id].total,150);
+});
 test('fight entry establishes one baseline; poll and browser reconnect retain it; reentry resets',()=>{
  const s=fight();syncFightSegment(s,now);const id=s.fightSegment!.id;assert.equal(s.fightSegment!.players[s.players[0].id].total,0);
  s.players[0].telemetryDamage!.toChampions!+=350;s.gameTime+=1;syncFightSegment(s,now+1000);assert.equal(s.fightSegment!.players[s.players[0].id].total,350);assert.equal(s.fightSegment!.id,id);

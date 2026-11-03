@@ -48,6 +48,15 @@ test('16.21 encrypted stream selects its protocol and invalidates cached damage 
   assert.equal(stream.enrich(sample(),2),false,'an older build must start a new capture');
   assert.equal(stream.timeline(),undefined);stream.reset();
 });
+test('16.21.832 encrypted stream uses the matched build and returns enemy damage',async()=>{
+  const build='16.21.832.5350',decoded=decodeObserverChunk(chunk(1,current),key,build);
+  assert.equal(decoded.events[0].amount,current.samples[0].amount);
+  const {stream}=backend(current),s=sample();s.profile=`cn-${build}`;
+  stream.enrich(s,0);await stream.settled();assert.equal(stream.enrich(s,1),true);
+  const source=s.players.find((p:any)=>p.networkId===current.samples[0].source);
+  assert.equal(source.damageStats.enemyToChampions,current.samples[0].amount*2);
+  stream.reset();
+});
 test('retention race trims only expired leading history and preserves explicit capture origin',async()=>{
   const {state,stream}=backend();state.expired=1;stream.enrich(sample(),0);await stream.settled();
   const s=sample();assert.equal(stream.enrich(s,1),true);assert.equal(s.players[5].damageStatsSince,30);

@@ -15,7 +15,7 @@ export interface NeutralObjective { kind: NeutralKind; element?: string; state: 
 export interface NeutralSample { gameTime: number; sampledAt: string; validForMs: number; profile: string; objectives: NeutralObjective[] }
 
 export function liveDamage(player: Player, state: BroadcastState, now = Date.now()): number | undefined {
-  const value=player.telemetryDamage?.toChampions;
+  const value=player.telemetryDamage?.enemyToChampions??player.telemetryDamage?.toChampions;
   return state.connections.live.status==='connected'&&!state.gameClock?.awaitingLiveSample&&
     player.telemetryDamageSource!=='postgame'&&telemetryFresh(player.telemetry,state.gameTime,now)&&
     typeof value==='number'&&Number.isFinite(value)&&value>=0?value:undefined;

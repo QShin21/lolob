@@ -8,21 +8,22 @@ import { decodeCn1621DamageParameters } from './protocol/cn-16.21-damage';
 
 const fixture=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.20.json',import.meta.url),'utf8'));
 const current=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.21.json',import.meta.url),'utf8'));
+const patch832=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.21.832.json',import.meta.url),'utf8'));
 const heroes:DamageHero[]=Array.from({length:10},(_,i)=>({networkId:1073741998+i,champion:`Hero${i}`,team:i<5?'blue':'red',officialTotal:0}));
 const events=fixture.samples.map((s:any)=>({time:s.time,source:s.source,target:s.target,amount:s.amount,type:s.type}));
 function block(id:number,param:number,time:number,payload:number[]=[]){
   const b=Buffer.alloc(15+payload.length);b[0]=0;b.writeFloatLE(time,1);b.writeUInt32LE(payload.length,5);
   b.writeUInt16LE(id,9);b.writeUInt32LE(param,11);Buffer.from(payload).copy(b,15);return b;
 }
-function chunk(id:number,type:number,blocks:Buffer[]){
+function chunk(id:number,type:number,blocks:Buffer[],marker=false){
   const body=Buffer.concat(blocks),head=Buffer.alloc(17);head.writeUInt32LE(id);head.writeUInt32LE(id+1,4);
-  head[8]=type;head.writeUInt32LE(body.length,9);return Buffer.concat([head,body]);
+  head[8]=type;head.writeUInt32LE(body.length,9);return Buffer.concat([head,...marker?[Buffer.from([4])]:[],body]);
 }
 function replay(extraGameChunk?:Buffer,input=fixture){
   const version=Buffer.from(input.build),header=Buffer.alloc(15);header.write('RIOT');header.writeUInt16LE(2,4);header[14]=version.length;
-  const modern=input===current,avatar=modern?929:1093,statsId=modern?267:853,damage=modern?978:359;
-  const keyframe=chunk(1,2,heroes.flatMap(h=>[block(avatar,h.networkId,0),block(statsId,h.networkId,0)]));
-  const game=chunk(1,1,input.samples.map((s:any)=>block(damage,s.param,s.time,s.payload)));
+  const modern=input.build.startsWith('16.21.'),marker=input.build==='16.21.832.5350',avatar=modern?929:1093,statsId=modern?267:853,damage=modern?978:359;
+  const keyframe=chunk(1,2,heroes.flatMap(h=>[block(avatar,h.networkId,0),block(statsId,h.networkId,0)]),marker);
+  const game=chunk(1,1,input.samples.map((s:any)=>block(damage,s.param,s.time,s.payload)),marker);
   const events=input.samples;
   const stats=heroes.map(h=>({SKIN:h.champion,TEAM:h.team==='blue'?100:200,
     TOTAL_DAMAGE_TAKEN:Math.floor(events.filter((e:any)=>e.target===h.networkId).reduce((sum:number,e:any)=>sum+e.amount,0)),
@@ -36,6 +37,32 @@ test('captured CN packets decode physical, magic and true damage with exact sour
       {time:sample.time,source:sample.source,target:sample.target,amount:sample.amount,type:sample.type});
     assert.throws(()=>decodeCnDamageParameters(Uint8Array.from(sample.payload.slice(0,-1))));
     assert.throws(()=>decodeCnDamageParameters(Uint8Array.from([...sample.payload,0])));
+  }
+});
+test('16.21.832 replay validates its extra chunk marker and preserves separate official and enemy damage',async()=>{
+  const patch={...current,build:'16.21.832.5350'};
+  const data=replay(undefined,patch),index=await parseReplayDamage(data);
+  assert.equal(index.build,patch.build);
+  for(const h of index.heroes)assert(Math.abs(index.at(h.networkId,600)!.toChampions!-h.officialTotal)<1.1);
+  const malformed=Buffer.from(data);malformed[15+Buffer.byteLength(patch.build)+17]=0;
+  await assert.rejects(parseReplayDamage(malformed),/标记/);
+  const subject=heroes[0],friendly=heroes[1],opponent=heroes[5];
+  const isolated=new ReplayDamageIndex(heroes,200,[
+    {time:10,source:subject.networkId,target:opponent.networkId,amount:100,type:0},
+    {time:20,source:subject.networkId,target:friendly.networkId,amount:30,type:1},
+    {time:30,source:subject.networkId,target:subject.networkId,amount:20,type:2},
+  ],patch.build);
+  assert.equal(isolated.at(subject.networkId,30)?.toChampions,150);
+  assert.equal(isolated.at(subject.networkId,30)?.enemyToChampions,100);
+  assert.equal(isolated.enemyAt(subject.networkId,15),100);
+  assert.equal(isolated.at(subject.networkId,15)?.toChampions,100);
+});
+test('16.21.832 captured enemy, self and same-team packets retain their decoded values',()=>{
+  assert.deepEqual(patch832.samples.map((s:any)=>s.category).sort(),['enemy0','enemy1','enemy2','friendly','self']);
+  for(const s of patch832.samples){
+    const packet={id:978,param:s.param,time:s.time,payload:Uint8Array.from(s.payload)};
+    assert.deepEqual(decodeDamageBlock(packet,patch832.build),{time:s.time,source:s.source,target:s.target,amount:s.amount,type:s.type});
+    assert.throws(()=>decodeDamageBlock({...packet,payload:packet.payload.subarray(0,-1)},patch832.build));
   }
 });
 

@@ -22,7 +22,7 @@ export function normalizeCooldown(value: unknown, time: number): Cooldown | unde
 export function normalizeDamage(value: unknown): DamageTotals | undefined {
   if (!object(value)) return;
   const out: DamageTotals = {};
-  for (const key of ['toChampions', 'taken', 'physicalToChampions', 'magicToChampions', 'trueToChampions'] as const) {
+  for (const key of ['toChampions', 'enemyToChampions', 'taken', 'physicalToChampions', 'magicToChampions', 'trueToChampions'] as const) {
     if (nonnegative(value[key])) out[key] = value[key];
   }
   return Object.keys(out).length ? out : undefined;

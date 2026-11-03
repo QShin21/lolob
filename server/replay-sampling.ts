@@ -50,7 +50,7 @@ export function recoverFightBaseline(state:BroadcastState,index:ReplayDamageInde
     const row=segment.players[p.id];
     if(!row||row.baseline!==undefined||row.championId!==p.championId||p.telemetryDamageSource!=='packets'||!p.telemetryDamageSession)continue;
     const hero=index.heroes.find(h=>h.champion===p.championId&&h.team===p.team);
-    const baseline=hero?index.at(hero.networkId,segment.startedAt)?.toChampions:undefined;
+    const baseline=hero?index.enemyAt(hero.networkId,segment.startedAt):undefined;
     if(baseline===undefined)continue;
     Object.assign(row,{baseline,previous:baseline,damageSession:p.telemetryDamageSession,invalid:false});
   }
