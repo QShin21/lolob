@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { SpectatorOcrWorker } from './spectator-ocr-worker';
 import { nonnegative, object } from './telemetry-normalize';
 import { ReplayDamageTelemetry } from './replay-damage-telemetry';
+import { damageProtocolForProfile } from './replay-damage';
 import { LiveDamageStream } from './live-damage-stream';
 import { liveChampionId } from '../shared/champion-identity';
 import { selectedRuneIds } from '../shared/lineup-runes';
@@ -128,7 +129,7 @@ export class ObserverTelemetry {
       const streamMatches=stream&&sample.players.every((p:Json)=>stream.index.heroes.some(h=>h.networkId===p.networkId&&h.champion===p.champion&&h.team===p.team));
       this.director.observe(data,sample,replayDamage?this.damage.timeline():streamMatches?stream.index:undefined,replayDamage?undefined:streamMatches?stream:undefined);
       this.status={status:'connected',detail:'国服只读遥测已连接 · 冷却、生命、资源、经验、增益'+
-        (replayDamage?' · 回放逐次伤害':streamDamage?' · 实时观战伤害':sample.replayPath?` · ${this.damage.detail}`:sample.observerSession?` · ${this.liveDamage.detail}`:''),profile:sample.profile,sampledAt:sample.sampledAt};
+        (replayDamage?' · 回放逐次伤害':streamDamage?' · 实时观战伤害':(sample.replayPath||sample.observerSession)&&!damageProtocolForProfile(sample.profile)?' · 当前版本伤害数据待适配':sample.replayPath?` · ${this.damage.detail}`:sample.observerSession?` · ${this.liveDamage.detail}`:''),profile:sample.profile,sampledAt:sample.sampledAt};
     } catch(error) {
       const transient=error instanceof Error&&error.message.startsWith('等待');
       this.status={status:'unavailable',detail:transient?error.message:'观战遥测暂不可用'};this.retryAt=transient?0:Date.now()+3000;

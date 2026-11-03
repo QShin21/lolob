@@ -44,14 +44,16 @@ public sealed class RiftCastObserverReader : IDisposable {
     }
     static Layout SelectLayout(string hash) {
         if(hash=="EE3C887B4579AEAB12CA77B2A43CC1CC3411A8AA30BC43D2DFEA856F6CE497C8")return new Layout();
-        if(hash=="6CA9446AC4E65A311CB0796B72A459097CDF912A337619D1D1FD207E01AEDD6F")return new Layout {
-            Profile="cn-16.21.829.9102", EncodedBuffExpiry=true, SpellReadyAt=0x38, SpellDuration=0x80,
-            GameTime=0x1c88618,
-            Heroes=0x1c7bfb0,
-            Minions=0x1c7bff0,
-            Scores=0x1c7c058,
-            Objectives=0x1c7bed8,
-            Turrets=0x1c84ac8,
+        if(hash=="6CA9446AC4E65A311CB0796B72A459097CDF912A337619D1D1FD207E01AEDD6F" || hash=="8DD49307106F45F65288425CE5291B9DE4D0AD50E721D9255C0F63B888BAF0EE") {
+            bool patch832=hash=="8DD49307106F45F65288425CE5291B9DE4D0AD50E721D9255C0F63B888BAF0EE";
+            return new Layout {
+            Profile=patch832?"cn-16.21.832.5350":"cn-16.21.829.9102", EncodedBuffExpiry=true, SpellReadyAt=0x38, SpellDuration=0x80,
+            GameTime=patch832?0x1c87618:0x1c88618,
+            Heroes=patch832?0x1c7afb0:0x1c7bfb0,
+            Minions=patch832?0x1c7aff0:0x1c7bff0,
+            Scores=patch832?0x1c7b058:0x1c7c058,
+            Objectives=patch832?0x1c7aed8:0x1c7bed8,
+            Turrets=patch832?0x1c83ac8:0x1c84ac8,
             Champion=0x3890,
             Team=0x158,
             NetworkId=0x78,
@@ -70,7 +72,8 @@ public sealed class RiftCastObserverReader : IDisposable {
             Runes=0x4380,
             PositionX=0xf0,
             PositionZ=0xf8,
-        };
+            };
+        }
         return null;
     }
     Layout layout;
