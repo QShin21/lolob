@@ -1,6 +1,6 @@
 # RiftCast · 英雄联盟赛事导播工作台
 
-当前源码版本为 **1.5.0**。本版更新导播工作台的视觉系统与操作布局，提供深浅主题和跨页面快捷定位。更新内容与安装步骤见 [1.5.0 说明](docs/Windows-Release-1.5.0.md)。
+当前源码版本为 **1.7.0**。团队协作支持局域网与可达公网 IP 接入、连续主控预览、协作者多视角回传和节目切换审批。主控端统一负责最终推流。详见 [1.7.0 说明](docs/Windows-Release-1.7.0.md) 与 [用户手册](docs/user-manual-1.7.0/README.md)。
 
 从 [最新 Release](https://github.com/QShin21/lolob/releases/latest) 的 **Assets** 下载 Windows x64 安装包。当前 Release 提供一个 `.exe` 安装文件。
 

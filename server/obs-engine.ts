@@ -507,6 +507,18 @@ export class ObsEngine {
     await this.ensureInput(desktopInput, 'wasapi_output_capture', { device_id: this.selection.desktopDevice, use_device_timing: false }, inputs);
     await this.ensureInput(micInput, 'wasapi_input_capture', { device_id: this.selection.micDevice, use_device_timing: false }, inputs);
     await this.ensureInput(hudInput, 'browser_source', { url: this.options.overlayUrl, width: 1920, height: 1080, fps, fps_custom: true, css: 'body { background: rgba(0,0,0,0); margin: 0; overflow: hidden; }', reroute_audio: false, shutdown: false, restart_when_active: false }, inputs);
+    // A team connection belongs to one running service; recover after an interrupted session.
+    const teamInput='RiftCast 团队协作画面';
+    if(inputs.some(input=>input.inputName===teamInput)){
+      const previous=await this.call('GetInputSettings',{inputName:teamInput});
+      if(previous.inputKind==='browser_source'){
+        if(previous.inputSettings.riftcast_team_active===true&&typeof previous.inputSettings.riftcast_team_restore_desktop==='boolean')await this.call('SetInputMute',{inputName:desktopInput,inputMuted:previous.inputSettings.riftcast_team_restore_desktop});
+        await this.call('SetInputMute',{inputName:teamInput,inputMuted:true});
+        await this.call('SetInputSettings',{inputName:teamInput,inputSettings:{url:'about:blank',riftcast_team_active:false,riftcast_team_restore_desktop:null},overlay:true});
+        const teamItems=await this.call('GetSceneItemList',{sceneName:engineScene});
+        for(const item of teamItems.sceneItems)if(item.sourceName===teamInput)await this.call('SetSceneItemEnabled',{sceneName:engineScene,sceneItemId:Number(item.sceneItemId),sceneItemEnabled:false});
+      }
+    }
     this.capabilities = { gameWindows: await this.choices(gameInput, 'window'), audioOutputs: await this.choices(desktopInput, 'device_id'), audioInputs: await this.choices(micInput, 'device_id') };
     const next = { ...this.selection };
     for (const [key, choices] of [['gameWindow', this.capabilities.gameWindows], ['desktopDevice', this.capabilities.audioOutputs], ['micDevice', this.capabilities.audioInputs]] as const) {

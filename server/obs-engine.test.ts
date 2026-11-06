@@ -119,6 +119,16 @@ test('portable configuration is isolated, authenticated and preserves existing p
   assert.ok(!JSON.stringify(status).includes('server_password'));
 });
 
+test('startup withdraws an interrupted team browser source and restores the saved desktop mute state',async t=>{
+  const {obs,engine,internal}=await fixture(t);internal.connected=true;
+  const team='RiftCast 团队协作画面';obs.inputs.push({inputName:team,inputKind:'browser_source'});obs.sceneItems.push({sourceName:team,sceneItemId:99,sceneItemEnabled:true});
+  const original=obs.call.bind(obs);obs.call=async(type,data)=>type==='GetInputSettings'&&data.inputName===team?{inputKind:'browser_source',inputSettings:{riftcast_team_active:true,riftcast_team_restore_desktop:false}}:original(type,data);
+  await engine.setup({});
+  assert.ok(obs.requests.some(r=>r.type==='SetSceneItemEnabled'&&r.data.sceneItemId===99&&r.data.sceneItemEnabled===false));
+  assert.ok(obs.requests.some(r=>r.type==='SetInputMute'&&r.data.inputName==='RiftCast 桌面音频'&&r.data.inputMuted===false));
+  assert.ok(obs.requests.some(r=>r.type==='SetInputSettings'&&r.data.inputName===team&&r.data.inputSettings.url==='about:blank'&&r.data.inputSettings.riftcast_team_active===false));
+});
+
 test('spectator OCR captures only the verified original LoL source at native resolution',async t=>{
   const {obs,engine,internal}=await fixture(t);internal.connected=true;internal.selection.gameWindow=leagueWindow;
   const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/K1sAAAAASUVORK5CYII=','base64');

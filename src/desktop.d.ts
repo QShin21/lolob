@@ -4,6 +4,8 @@ export {};
 declare global {
   interface Window {
     riftcastDesktop?: {
+      captureSources:()=>Promise<{id:string;name:string}[]>;
+      captureSelect:(id:string,audio:boolean)=>Promise<void>;
       programWindow:(action:'open'|'close'|'status')=>Promise<{open:boolean;minimized?:boolean;title?:string}>;
       choosePath:(kind:'game'|'lockfile')=>Promise<string|null>;
       openLogs:()=>Promise<string>;

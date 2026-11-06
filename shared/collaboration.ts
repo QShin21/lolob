@@ -1,0 +1,4 @@
+export const TEAM_SCENES: Record<string, string> = { standby:'赛前倒计时', draft:'BP 选人', lineup:'首发对位', live:'局内计分板', teamfight:'团战视图', 'gold-ranking':'十人经济排行', economy:'经济曲线', ranking:'选手数据榜', schedule:'赛程看板', postgame:'赛后报告', interview:'赛后采访' };
+export type TeamSource = { id: string; name: string; online: boolean; sharing: boolean; kind: 'game' | 'program'; mime?: string; lastFrame?: number };
+export type TeamRequest = { id: string; actor: string; actorId: string; scene?: string; source?: string; status: 'pending' | 'applied' | 'rejected' | 'failed'; detail?: string; at: number };
+export type TeamSnapshot = { mode: 'idle' | 'host' | 'client'; connected: boolean; self: string; name: string; port?: number; addresses: string[]; code?: string; localToken: string; error?: string; sources: TeamSource[]; requests: TeamRequest[]; scenes: { id: string; name: string }[]; activeSource: string; autoApprove: boolean };

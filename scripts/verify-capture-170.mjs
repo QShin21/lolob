@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {mkdtemp,mkdir,writeFile,cp} from 'node:fs/promises';
+import path from 'node:path';
+import {tmpdir} from 'node:os';
+import {createServer} from 'node:net';
+import {pathToFileURL} from 'node:url';
+import {isolatedNativeEnvironment} from './verify-native-safety.mjs';
+const {_electron}=await import(pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href);
+const out=path.resolve('verification-output/capture-170');await mkdir(out,{recursive:true});
+const data=await mkdtemp(path.join(tmpdir(),'riftcast-capture-'));
+async function port(){const s=createServer();await new Promise(r=>s.listen(0,'127.0.0.1',r));const p=s.address().port;await new Promise(r=>s.close(r));return p;}
+const servicePort=await port(),teamPort=await port();let application,page;const errors=[];
+try{
+ await cp(path.resolve('runtime/obs-studio'),path.join(data,'runtime'),{recursive:true,filter:file=>!/[\\/]config(?:[\\/]|$)/.test(file)&&!file.endsWith('.riftcast-engine.lock')});
+ const env={...await isolatedNativeEnvironment(data),PORT:String(servicePort),RIFTCAST_USER_DATA_DIR:path.join(data,'user'),RIFTCAST_DATA_DIR:data,RIFTCAST_OBS_RUNTIME_DIR:path.join(data,'runtime'),RIFTCAST_OBS_AUTOSTART:'0'};
+ application=await _electron.launch({executablePath:path.resolve('node_modules/electron/dist/electron.exe'),args:[path.resolve('.')],env,timeout:45000});page=await application.firstWindow();page.on('pageerror',e=>errors.push(e.message));await page.getByRole('button',{name:'连接与输出',exact:true}).click();await page.getByRole('tab',{name:'协作',exact:true}).click();await page.getByLabel('监听端口',{exact:true}).fill(String(teamPort));await page.getByRole('button',{name:'建立协作',exact:true}).click();await page.getByRole('button',{name:'读取共享窗口',exact:true}).waitFor();
+ await application.evaluate(async({BrowserWindow})=>{const fixture=new BrowserWindow({width:640,height:480,x:100,y:100,title:'RiftCast Capture Fixture',show:true,webPreferences:{contextIsolation:true,nodeIntegration:false,backgroundThrottling:false}});globalThis.__teamCaptureFixture=fixture;await fixture.loadURL('data:text/html,'+encodeURIComponent('<title>RiftCast Capture Fixture</title><body style="margin:0;background:#173752;color:white;font:32px sans-serif"><canvas width="640" height="480"></canvas><script>const c=document.querySelector("canvas"),x=c.getContext("2d");let n=0;setInterval(()=>{x.fillStyle="#173752";x.fillRect(0,0,640,480);x.fillStyle="white";x.font="32px sans-serif";x.fillText("CAPTURE "+(++n),40,100);x.fillStyle="#f2b644";x.fillRect(n%500,250,80,80)},33)</script>'));});
+ await page.getByRole('button',{name:'读取共享窗口',exact:true}).click();const fixture=await page.getByLabel('共享窗口',{exact:true}).locator('option').evaluateAll(options=>options.find(o=>o.textContent.includes('RiftCast Capture Fixture'))?.value);assert.ok(fixture,'native source picker includes owned fixture');await page.getByLabel('共享窗口',{exact:true}).selectOption(fixture);await page.getByRole('button',{name:'开始共享',exact:true}).click();await page.getByRole('button',{name:'停止共享',exact:true}).waitFor({timeout:20000});
+ const frame=page.frameLocator('iframe[title="主控端实时画面"]');await frame.locator('video').waitFor();await frame.locator('video').evaluate(v=>new Promise((resolve,reject)=>{if(v.readyState>=2)return resolve();v.addEventListener('loadeddata',resolve,{once:true});setTimeout(()=>reject(new Error('capture decode timeout')),15000)}));const first=await frame.locator('video').evaluate(v=>v.getVideoPlaybackQuality().totalVideoFrames);await new Promise(r=>setTimeout(r,1500));const second=await frame.locator('video').evaluate(v=>v.getVideoPlaybackQuality().totalVideoFrames);assert.ok(second-first>15);await page.screenshot({path:path.join(out,'native-capture.png')});await page.getByRole('button',{name:'停止共享',exact:true}).click();
+ // A fresh, explicit selection grants audio only for this capture operation.
+ const audio=await page.evaluate(async(id)=>{await window.riftcastDesktop.captureSelect(id,true);const stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});const tracks={video:stream.getVideoTracks().length,audio:stream.getAudioTracks().length};stream.getTracks().forEach(t=>t.stop());return tracks},fixture);assert.equal(audio.video,1);assert.equal(audio.audio,1);
+ assert.deepEqual(errors,[]);const report={status:'passed',nativeFrames:second-first,audioTracks:audio,errors};await writeFile(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+}catch(e){await page?.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});throw e}finally{if(application){await application.evaluate(()=>globalThis.__teamCaptureFixture?.destroy()).catch(()=>{});await application.close();}}

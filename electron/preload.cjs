@@ -7,6 +7,8 @@ contextBridge.exposeInMainWorld('riftcastPreview', Object.freeze({
 }));
 
 contextBridge.exposeInMainWorld('riftcastDesktop', Object.freeze({
+  captureSources: () => ipcRenderer.invoke('riftcast:capture-sources'),
+  captureSelect: (id, audio) => ipcRenderer.invoke('riftcast:capture-select', id, audio),
   programWindow: action => ipcRenderer.invoke('riftcast:program-window', action),
   choosePath: kind => ipcRenderer.invoke('riftcast:choose-path', kind),
   openLogs: () => ipcRenderer.invoke('riftcast:open-logs'),

@@ -1,4 +1,5 @@
 import { ResourceMaintenanceWorkspace } from '../components/ResourceMaintenanceWorkspace';
+import { TeamWorkspace } from '../components/TeamWorkspace';
 import { DraftStatisticsControls } from '../components/DraftStatistics';
 import { TransitionControls } from '../components/TransitionControls';
 import { sceneInfo } from '../lib';
@@ -325,6 +326,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
         </div>
 
         <div className="settings-task-pane" hidden={section !== 'collaboration'}>
+          <TeamWorkspace />
           <section className="settings-block">
             <header><h2>画面链接与移动接入</h2><p>内置引擎自动加载 HUD；外部 OBS 可使用画面链接，协作席位从遥控页面进入。</p></header>
             <div className="settings-access-links">

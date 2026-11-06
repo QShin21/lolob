@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, dialog, shell, ipcMain, screen, globalShortcut } = require('electron');
+const { app, BrowserWindow, Menu, dialog, shell, ipcMain, screen, globalShortcut, desktopCapturer } = require('electron');
 const { spawn } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -22,6 +22,8 @@ let logPath;
 let exitApproved = false;
 let desktopUpdater;
 let updateCoordinator;
+let capturePermissionUntil=0;
+const capturePermissionAllowed=permission=>permission==='display-capture'||permission==='media'&&Date.now()<capturePermissionUntil;
 const nativePreviewSources = new Map();
 const nativePositionRequests = new Map();
 const closingProjectors = new Map();
@@ -175,6 +177,23 @@ async function closeProjector(prepared) {
 }
 
 function installPreviewBridge() {
+  let captureSelection;
+  const captureSources = () => desktopCapturer.getSources({types:['window','screen'],thumbnailSize:{width:0,height:0}});
+  ipcMain.handle('riftcast:capture-sources', async event => {
+    if(!trustedRenderer(event.sender,event.senderFrame))throw new Error('窗口采集请求来源无效');
+    return (await captureSources()).map(source=>({id:source.id,name:source.name}));
+  });
+  ipcMain.handle('riftcast:capture-select', async (event,id,audio) => {
+    if(!trustedRenderer(event.sender,event.senderFrame)||typeof id!=='string'||typeof audio!=='boolean')throw new Error('窗口采集请求无效');
+    if(!(await captureSources()).some(source=>source.id===id))throw new Error('共享窗口已关闭，请重新读取');
+    captureSelection={id,audio,at:Date.now()};
+    capturePermissionUntil=Date.now()+15000;
+  });
+  mainWindow.webContents.session.setDisplayMediaRequestHandler(async (request,callback)=>{
+    const selection=captureSelection;captureSelection=undefined;
+    if(!selection||Date.now()-selection.at>15000||request.frame!==mainWindow.webContents.mainFrame||!rendererOriginMatches(request.securityOrigin)){capturePermissionUntil=0;callback(null);return;}
+    try{const source=(await captureSources()).find(item=>item.id===selection.id);if(!source){callback(null);return;}callback({video:source,...(selection.audio?{audio:'loopback'}:{})});}catch{callback(null);}finally{capturePermissionUntil=0;}
+  });
   ipcMain.handle('riftcast:update', (event, action) => {
     if (!trustedRenderer(event.sender, event.senderFrame) || !['status','check','download','cancel','show-file','update'].includes(action)) throw new Error('应用更新请求来源或操作无效');
     desktopUpdater ??= require('./update-service.cjs').createUpdateService({currentVersion:app.getVersion(),downloadsDir:app.getPath('downloads')});
@@ -491,18 +510,18 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1600, height: 1000, minWidth: 1080, minHeight: 720,
     title: 'RiftCast · 英雄联盟赛事导播', backgroundColor: '#080c12', show: false,
-    webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, preload: path.join(__dirname, 'preload.cjs') },
+    webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false, preload: path.join(__dirname, 'preload.cjs') },
   });
   installPreviewBridge();
   mainWindow.webContents.session.setPermissionCheckHandler((contents, permission, requestingOrigin, details) => {
     if (!trustedRenderer(contents) || !details.isMainFrame) return false;
-    return permission === 'clipboard-sanitized-write' && rendererOriginMatches(requestingOrigin);
+    return (permission==='clipboard-sanitized-write'||capturePermissionAllowed(permission)) && rendererOriginMatches(requestingOrigin);
   });
   mainWindow.webContents.session.setPermissionRequestHandler((contents, permission, callback, details) => {
     callback(trustedRenderer(contents) && details.isMainFrame !== false &&
       (!details.securityOrigin || rendererOriginMatches(details.securityOrigin)) &&
       (!details.requestingUrl || rendererOriginMatches(details.requestingUrl)) &&
-      permission === 'clipboard-sanitized-write');
+      (permission==='clipboard-sanitized-write'||capturePermissionAllowed(permission)));
   });
   mainWindow.webContents.once('did-finish-load', () => log(`导播界面已载入：${rendererOrigin}`));
   mainWindow.webContents.setWindowOpenHandler(({ url }) => { openExternal(url); return { action: 'deny' }; });

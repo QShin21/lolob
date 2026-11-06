@@ -37,6 +37,7 @@ import { gameClockMatchKey } from '../shared/game-clock';
 import { clearLiveData, fallbackChampions, ValidationError, record, str } from './state';
 import { applyIdentity, ensureProduction, programState, productionKey } from '../shared/production';
 import { ObsProduction } from './obs-production';
+import { ObsCollaboration } from './obs-collaboration';
 
 const runFile=promisify(execFile);
 type Json=Record<string,any>;
@@ -362,6 +363,8 @@ export class Adapters {
     if(JSON.stringify(this.get().production?.alerts?.filter(a=>a.category==='sources'&&!a.resolvedAt).map(a=>a.text).sort()??[])!==JSON.stringify([...new Set(issues)].sort()))this.commit(s=>{updateAlerts(s,'sources',issues);});
     return { ...status, music: await this.engine?.music.status(), companionAudio: this.engine?.mode === 'embedded' ? await this.engine.companionAudio.status(true) : undefined, audioManaged: this.engine?.companionAudio.managing ?? false };
   }
+  private teamObs = new ObsCollaboration((name, data) => this.obs.call(name, data));
+  async collaborationSource(url?:string,kind:'game'|'program'='game',ready?:()=>Promise<void>,audio=false){return this.requireEngine().exclusive(()=>this.teamObs.select(url,kind,ready,audio));}
   async productionControl(input:unknown){return this.requireEngine().exclusive(()=>this.productionObs.control(input));}
   /** The caller publishes the accepted programme at the actual transition point. */
   async productionTransition(config:TransitionConfig,source:BroadcastState,publish:()=>void|Promise<void>){

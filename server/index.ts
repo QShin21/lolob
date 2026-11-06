@@ -39,6 +39,8 @@ import { ResourceCache } from './resource-cache';
 import { audit } from './production';
 import { resourceInventory } from './resource-inventory';
 import { version as appVersion } from '../package.json';
+import { TeamCollaboration } from './collaboration';
+import { TEAM_SCENES } from '../shared/collaboration';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dataDir=process.env.RIFTCAST_DATA_DIR?path.resolve(process.env.RIFTCAST_DATA_DIR):path.join(root,'data');
@@ -125,6 +127,43 @@ async function applyProgramme(candidate:BroadcastState,transition?:TransitionCon
   state.revision++;broadcast();
 }
 const eventTransitions=new EventTransitionRules();let automaticTransitionBusy=false;
+const collaboration=new TeamCollaboration(
+  ()=>[...scenes.map(id=>({id,name:TEAM_SCENES[id]??id})),...(state.customScenes??[]).map(s=>({id:s.id,name:s.name}))],
+  (request,source)=>{
+    const work=actionQueue.catch(()=>{}).then(async()=>{
+      if(state.connections.obs.status!=='connected')throw new ValidationError('请先连接主控端 OBS 引擎');
+      if(request.source){
+        const url=request.source==='host'?undefined:`http://127.0.0.1:${port}/team-player.html?id=${encodeURIComponent(request.source)}&token=${encodeURIComponent(collaboration.snapshot().localToken)}&output=1`;
+        await adapters.collaborationSource(url,source?.kind,url?()=>collaboration.waitReady(request.source!):undefined,source?.mime?.includes('opus'));
+        audit(state,'team-source',request.actor,source?.name??'主控端游戏画面');state.revision++;broadcast();
+      }
+      if(request.scene){
+        const next=applyAction(state,{type:'take',scene:request.scene});
+        await applyProgramme(next);
+        if(state.production?.application?.status!=='applied')throw new ValidationError(state.production?.application?.detail??'OBS 节目应用失败');
+        audit(state,'team-take',request.actor,request.scene);
+      }
+      await persist();
+    });
+    actionQueue=work;return work;
+  }
+);
+app.use('/api/collaboration',(req,res,next)=>{res.setHeader('Cache-Control','no-store');if(!isLoopback(req.socket.remoteAddress)){res.status(403).json({error:'请在本机 RiftCast 的协作页加入主控端'});return;}next();});
+app.get('/api/collaboration',(_req,res)=>res.json(collaboration.snapshot()));
+app.post('/api/collaboration/:operation',async(req,res)=>{
+  seats.authorize(req.headers['x-seat-token'],'output');
+  const body=record(req.body),operation=req.params.operation;
+  if(operation==='host')await collaboration.host(body);
+  else if(operation==='join')await collaboration.join(body);
+  else if(operation==='stop'){
+    if(collaboration.snapshot().mode==='host'&&collaboration.snapshot().activeSource!=='host')await adapters.collaborationSource();
+    await collaboration.stop();
+  }
+  else if(operation==='request')collaboration.request(body);
+  else if(operation==='decide')await collaboration.decide(String(body.id),body.approve===true);
+  else throw new ValidationError('协作操作无效');
+  res.json(collaboration.snapshot());
+});
 function tickAutomaticTransitions(){
   const settings=state.broadcastTransitions??defaultTransitionSettings(),trigger=eventTransitions.observe(state,settings);
   if(!trigger||automaticTransitionBusy||state.connections.obs.status!=='connected')return;
@@ -287,6 +326,7 @@ app.use((error:unknown,_req:express.Request,res:express.Response,_next:express.N
 server.on('upgrade',(req,socket,head)=>{
   const url=new URL(req.url??'/','http://127.0.0.1');
   if(shuttingDown||!validHost(req.headers.host,port,lan)||!validOrigin(req.headers.origin,port,lan)){socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');socket.destroy();return;}
+  if(url.pathname==='/ws/collaboration'){collaboration.upgrade(req,socket,head);return;}
   if(url.pathname==='/ws/obs-preview'){
     const kind=url.searchParams.get('kind');
     if(!isLoopback(req.socket.remoteAddress)||(kind!=='preview'&&kind!=='program')){socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');socket.destroy();return;}
@@ -303,6 +343,6 @@ const pollClients=clientPollScheduler(()=>{void adapters.poll();});
 const poll=setInterval(()=>pollClients(Date.now(),state.settings.pollInterval),25);
 server.listen(port,lan?'0.0.0.0':'127.0.0.1',()=>{console.log(`RiftCast 本地服务：http://127.0.0.1:${port}${lan?' · 局域网控制已启用':''}`);if(state.mode==='live')connectGameSources();if(process.env.RIFTCAST_OBS_AUTOSTART==='1')void adapters.obsEngineStatus().then(status=>status.mode==='embedded'?adapters.obsEngineStart():undefined).catch(()=>{/* Failure is displayed in the engine panel without blocking the director. */});});
 server.on('error',error=>{console.error('本地服务启动失败：',error.message);process.exitCode=1;clearInterval(heartbeat);clearInterval(feedRotation);clearInterval(poll);clearInterval(ocrPoll);economy.close();void closeSpectatorOcrWorker();});
-async function shutdown(){if(shuttingDown)return;shuttingDown=true;integrations.close();twitchAudience.disconnect();await cinematicEngine.close();clearInterval(heartbeat);clearInterval(feedRotation);clearInterval(poll);clearInterval(ocrPoll);economy.close();if(writeTimer)clearTimeout(writeTimer);monitorStream.close();monitorWss.close();let exitCode=0;await closeSpectatorOcrWorker();await nativeHud.close();try{await adapters.close();}catch{console.error('内置输出引擎未能正常关闭，请在引擎窗口确认输出已停止。');exitCode=1;}wss.close();server.close();try{await persist();}catch{console.error('退出保存失败，请保留数据目录并检查磁盘。');exitCode=1;}process.exit(exitCode);}
+async function shutdown(){if(shuttingDown)return;shuttingDown=true;await collaboration.close();integrations.close();twitchAudience.disconnect();await cinematicEngine.close();clearInterval(heartbeat);clearInterval(feedRotation);clearInterval(poll);clearInterval(ocrPoll);economy.close();if(writeTimer)clearTimeout(writeTimer);monitorStream.close();monitorWss.close();let exitCode=0;await closeSpectatorOcrWorker();await nativeHud.close();try{await adapters.close();}catch{console.error('内置输出引擎未能正常关闭，请在引擎窗口确认输出已停止。');exitCode=1;}wss.close();server.close();try{await persist();}catch{console.error('退出保存失败，请保留数据目录并检查磁盘。');exitCode=1;}process.exit(exitCode);}
 process.on('SIGINT',()=>{void shutdown();});process.on('SIGTERM',()=>{void shutdown();});
 process.on('message',(message:unknown)=>{if(message==='riftcast-shutdown'||(message!==null&&typeof message==='object'&&!Array.isArray(message)&&(message as {type?:unknown}).type==='riftcast-shutdown'))void shutdown();});
