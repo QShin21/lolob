@@ -1,6 +1,6 @@
 {
   "name": "riftcast-director",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "private": true,
   "type": "module",
   "description": "英雄联盟本地赛事导播工作台",
@@ -12,6 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "release:win": "node scripts/build-release.mjs",
     "verify:release": "node scripts/verify-release.mjs",
+    "verify:update": "node scripts/verify-update-launcher.mjs",
     "start": "tsx server/index.ts",
     "predesktop": "node scripts/ensure-electron.cjs && node scripts/ensure-obs.cjs && node scripts/build-audio-bridge.cjs && node scripts/ensure-vbcable.cjs",
     "setup:obs": "node scripts/ensure-obs.cjs",

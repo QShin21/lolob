@@ -3,6 +3,7 @@ import { setImmediate } from 'node:timers/promises';
 import type { DamageTotals } from '../shared/player-telemetry';
 import { decodeCnDamageParameters } from './protocol/cn-16.20-damage';
 import { decodeCn1621DamageParameters } from './protocol/cn-16.21-damage';
+import { decodeCn1622DamageParameters } from './protocol/cn-16.22-damage';
 
 export const DAMAGE_BUILD = '16.20.824.8524';
 const damageProtocols = new Map([
@@ -12,9 +13,18 @@ const damageProtocols = new Map([
     decode:decodeCn1621DamageParameters, target:0, source:5, amount:4, type:3}],
   ['16.21.832.5350', {build:'16.21.832.5350', packet:978, avatar:929, stats:267,
     decode:decodeCn1621DamageParameters, target:0, source:5, amount:4, type:3}],
+  ['16.22.834.9083', {build:'16.22.834.9083', packet:12, avatar:1205, stats:1036,
+    decode:decodeCn1622DamageParameters, target:7, source:1, amount:0, type:2}],
+  ['16.22.836.1077', {build:'16.22.836.1077', packet:12, avatar:1205, stats:1036,
+    decode:decodeCn1622DamageParameters, target:7, source:1, amount:0, type:2}],
 ]);
 export const damageProtocolForProfile = (profile:unknown) =>
   typeof profile==='string'&&profile.startsWith('cn-')?damageProtocols.get(profile.slice(3)):undefined;
+export function damageBuildCompatible(profile:unknown,replayBuild:string):boolean {
+  const protocol=damageProtocolForProfile(profile);
+  if(!protocol||!damageProtocols.has(replayBuild))return false;
+  return protocol.build===replayBuild || protocol.build==='16.22.836.1077'&&replayBuild==='16.22.834.9083';
+}
 export interface DamageEvent { time: number; source: number; target: number; amount: number; type: 0 | 1 | 2 }
 export interface DamageHero { networkId: number; champion: string; team: 'blue' | 'red'; officialTotal: number; officialTaken?: number }
 interface Block { time: number; id: number; param: number; payload: Uint8Array }
@@ -72,7 +82,7 @@ export class ReplayDamageIndex {
       if(e.amount>10000000)throw Error('英雄伤害数值异常');
       const enemy=source.team!==target.team;
       // Preserve enemy-only totals for combat, and the observed official counter separately.
-      const destinations=enemy?[this.tracks,this.enemyTracks]:build==='16.21.832.5350'?[this.tracks]:[];
+      const destinations=enemy?[this.tracks,this.enemyTracks]:['16.21.832.5350','16.22.834.9083','16.22.836.1077'].includes(build)?[this.tracks]:[];
       for(const destination of destinations){
       const points=destination.get(e.source)!,previous=points.at(-1)!;
       points.push({time:e.time,total:previous.total+e.amount,
@@ -116,7 +126,7 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
     if(++chunks>20000||offset+17>end)throw Error('回放分片范围异常');
     const id=b.readUInt32LE(offset),kind=b[offset+8],decodedLength=b.readUInt32LE(offset+9),compressed=b.readUInt32LE(offset+13);
     const size=compressed||decodedLength;offset+=17;
-    if(protocol.build==='16.21.832.5350'){if(offset>=end||b[offset]!==4)throw Error('回放分片标记无效');offset++;}
+    if(['16.21.832.5350','16.22.834.9083','16.22.836.1077'].includes(protocol.build)){if(offset>=end||b[offset]!==4)throw Error('回放分片标记无效');offset++;}
     if(decodedLength>16*1024*1024||size>16*1024*1024||offset+size>end||![1,2,3,4].includes(kind))throw Error('回放分片长度异常');
     if(kind===1||kind===2&&!firstKeyframe){
       const stored=b.subarray(offset,offset+size);

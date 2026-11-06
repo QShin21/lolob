@@ -98,12 +98,18 @@ function createUpdateService({ currentVersion, downloadsDir, fetch: fetcher = gl
         signal.throwIfAborted();
         // Hard-link publication fails on an existing name; it never replaces an older user file.
         try { await fs.link(temporary, target); } catch (error) { if (error.code !== 'EEXIST' || !await matches()) throw error; }
-        change({ phase: 'ready', path: target, detail: '下载完成，大小与 SHA-256 已核验；可在停播后自行运行安装器' });
+        change({ phase: 'ready', path: target, detail: '下载完成，大小与 SHA-256 已核验' });
       } finally {
         clearTimeout(timeout); await reader?.cancel().catch(() => {}); await handle?.close().catch(() => {}); await fs.unlink(temporary).catch(() => {});
       }
     });
   };
-  return { status: snapshot, check, download, cancel() { controller?.abort(); return snapshot(); }, async settled() { await active; return snapshot(); }, readyPath() { return status.phase === 'ready' ? status.path : undefined; } };
+  async function verifiedReady() {
+    if (status.phase !== 'ready' || !status.path || !status.release) throw new Error('请先下载并校验安装包');
+    const digest = await fileDigest(status.path);
+    if (digest.size !== status.release.size || digest.sha256 !== status.release.sha256) throw new Error('安装包已发生变化，请重新下载');
+    return { path: status.path, sha256: status.release.sha256 };
+  }
+  return { status: snapshot, check, download, cancel() { controller?.abort(); return snapshot(); }, async settled() { await active; return snapshot(); }, readyPath() { return status.phase === 'ready' ? status.path : undefined; }, verifiedReady, reportError(detail) { change({phase:'error', detail}); return snapshot(); } };
 }
 module.exports = { createUpdateService, releaseInfo, newer, releaseApi };

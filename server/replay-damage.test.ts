@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { damageBlocks, decodeDamageBlock, parseReplayDamage, ReplayDamageIndex, type DamageHero } from './replay-damage';
+import { damageBlocks, damageBuildCompatible, decodeDamageBlock, parseReplayDamage, ReplayDamageIndex, type DamageHero } from './replay-damage';
 import { ReplayDamageTelemetry } from './replay-damage-telemetry';
 import { decodeCnDamageParameters } from './protocol/cn-16.20-damage';
 import { decodeCn1621DamageParameters } from './protocol/cn-16.21-damage';
@@ -9,6 +9,7 @@ import { decodeCn1621DamageParameters } from './protocol/cn-16.21-damage';
 const fixture=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.20.json',import.meta.url),'utf8'));
 const current=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.21.json',import.meta.url),'utf8'));
 const patch832=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.21.832.json',import.meta.url),'utf8'));
+const patch1622=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.22.json',import.meta.url),'utf8'));
 const heroes:DamageHero[]=Array.from({length:10},(_,i)=>({networkId:1073741998+i,champion:`Hero${i}`,team:i<5?'blue':'red',officialTotal:0}));
 const events=fixture.samples.map((s:any)=>({time:s.time,source:s.source,target:s.target,amount:s.amount,type:s.type}));
 function block(id:number,param:number,time:number,payload:number[]=[]){
@@ -21,14 +22,14 @@ function chunk(id:number,type:number,blocks:Buffer[],marker=false){
 }
 function replay(extraGameChunk?:Buffer,input=fixture){
   const version=Buffer.from(input.build),header=Buffer.alloc(15);header.write('RIOT');header.writeUInt16LE(2,4);header[14]=version.length;
-  const modern=input.build.startsWith('16.21.'),marker=input.build==='16.21.832.5350',avatar=modern?929:1093,statsId=modern?267:853,damage=modern?978:359;
+  const newer=input.build.startsWith('16.22.'),modern=input.build.startsWith('16.21.')||newer,marker=input.build==='16.21.832.5350'||newer,avatar=newer?1205:modern?929:1093,statsId=newer?1036:modern?267:853,damage=newer?12:modern?978:359;
   const keyframe=chunk(1,2,heroes.flatMap(h=>[block(avatar,h.networkId,0),block(statsId,h.networkId,0)]),marker);
   const game=chunk(1,1,input.samples.map((s:any)=>block(damage,s.param,s.time,s.payload)),marker);
   const events=input.samples;
   const stats=heroes.map(h=>({SKIN:h.champion,TEAM:h.team==='blue'?100:200,
     TOTAL_DAMAGE_TAKEN:Math.floor(events.filter((e:any)=>e.target===h.networkId).reduce((sum:number,e:any)=>sum+e.amount,0)),
     TOTAL_DAMAGE_DEALT_TO_CHAMPIONS:Math.floor(events.filter((e:any)=>e.source===h.networkId).reduce((sum:number,e:any)=>sum+e.amount,0))}));
-  const footer=Buffer.from(JSON.stringify({gameLength:modern?600000:200000,statsJson:JSON.stringify(stats)})),size=Buffer.alloc(4);size.writeUInt32LE(footer.length);
+  const footer=Buffer.from(JSON.stringify({gameLength:newer?3000000:modern?600000:200000,statsJson:JSON.stringify(stats)})),size=Buffer.alloc(4);size.writeUInt32LE(footer.length);
   return Buffer.concat([header,version,keyframe,game,...extraGameChunk?[extraGameChunk]:[],Buffer.alloc(256),footer,size]);
 }
 test('captured CN packets decode physical, magic and true damage with exact source and target',()=>{
@@ -64,6 +65,20 @@ test('16.21.832 captured enemy, self and same-team packets retain their decoded 
     assert.deepEqual(decodeDamageBlock(packet,patch832.build),{time:s.time,source:s.source,target:s.target,amount:s.amount,type:s.type});
     assert.throws(()=>decodeDamageBlock({...packet,payload:packet.payload.subarray(0,-1)},patch832.build));
   }
+});
+test('16.22 captured damage validates real packet types and exact-build replay compatibility',async()=>{
+  assert.deepEqual([...new Set(patch1622.samples.map((s:any)=>s.type))].sort(),[0,1,2]);
+  for(const s of patch1622.samples){
+    const packet={id:12,param:s.param,time:s.time,payload:Uint8Array.from(s.payload)};
+    assert.deepEqual(decodeDamageBlock(packet,patch1622.build),{time:s.time,source:s.source,target:s.target,amount:s.amount,type:s.type});
+    assert.throws(()=>decodeDamageBlock({...packet,payload:packet.payload.subarray(0,-1)},patch1622.build));
+    assert.throws(()=>decodeDamageBlock({...packet,payload:Uint8Array.from([...packet.payload,0])},patch1622.build));
+  }
+  const index=await parseReplayDamage(replay(undefined,patch1622));
+  assert.equal(index.build,patch1622.build);
+  assert.equal(damageBuildCompatible('cn-16.22.836.1077',index.build),true);
+  assert.equal(damageBuildCompatible('cn-16.21.832.5350',index.build),false);
+  assert.equal(damageBuildCompatible('cn-16.22.834.9083','16.22.836.1077'),false);
 });
 
 test('16.21 captured damage matches native deserialization for all three damage types and proxy targets',()=>{

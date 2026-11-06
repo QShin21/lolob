@@ -5,7 +5,7 @@ export interface DesktopUpdateStatus {
   currentVersion: string; received: number; total: number; detail: string; path?: string;
   release?: {version:string;name:string;size:number;sha256:string;publishedAt:string};
 }
-export type DesktopUpdateAction = 'status'|'check'|'download'|'cancel'|'show-file';
+export type DesktopUpdateAction = 'status'|'check'|'download'|'cancel'|'show-file'|'update';
 /** Deliberate allowlist: no names, account IDs, paths, connection details, logs, tokens or configuration values. */
 export function localDiagnosticReport(state:BroadcastState,version:string,now=Date.now()):string {
   const statuses=['connected','connecting','disconnected','error'];

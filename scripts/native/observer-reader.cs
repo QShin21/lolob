@@ -16,6 +16,7 @@ public sealed class RiftCastObserverReader : IDisposable {
     sealed class Layout {
         public string Profile = "cn-16.20.824.8524";
         public bool EncodedBuffExpiry;
+        public bool NewBuffStructure;
         public int SpellReadyAt = 0x30, SpellDuration = 0x74;
         public int GameTime = 0x1efa788;
         public int Heroes = 0x1ee9370;
@@ -44,6 +45,17 @@ public sealed class RiftCastObserverReader : IDisposable {
     }
     static Layout SelectLayout(string hash) {
         if(hash=="EE3C887B4579AEAB12CA77B2A43CC1CC3411A8AA30BC43D2DFEA856F6CE497C8")return new Layout();
+        if(hash=="0A3DB62E27BB20E88B9FA1111EDC5BD9F80F6D1969B70D7FA3739B9CE3C0691D")return new Layout {
+            Profile="cn-16.22.836.1077", NewBuffStructure=true,
+            SpellReadyAt=0x38, SpellDuration=0x7c,
+            GameTime=0x1cc9e78, Heroes=0x1cbc590, Minions=0x1cbc5d0,
+            Scores=0x1cbc638, Objectives=0x1cbc4b8, Turrets=0x1cc61d8,
+            Champion=0x3878, Team=0x15c, NetworkId=0x80,
+            Health=0x930, MaxHealth=0x958, Resource=0x240, MaxResource=0x268,
+            Level=0x4048, Experience=0x4020, CurrentGold=0x2030, TotalGold=0x2058,
+            Vision=0x47f8, Spells=0x3380, BuffStart=0x25f8, BuffEnd=0x2600,
+            Runes=0x4388, PositionX=0xf8, PositionZ=0x100,
+        };
         if(hash=="6CA9446AC4E65A311CB0796B72A459097CDF912A337619D1D1FD207E01AEDD6F" || hash=="8DD49307106F45F65288425CE5291B9DE4D0AD50E721D9255C0F63B888BAF0EE") {
             bool patch832=hash=="8DD49307106F45F65288425CE5291B9DE4D0AD50E721D9255C0F63B888BAF0EE";
             return new Layout {
@@ -79,6 +91,10 @@ public sealed class RiftCastObserverReader : IDisposable {
     Layout layout;
     static uint RotateLeft(uint value,int count) {return (value<<count)|(value>>(32-count));}
     float BuffExpiry(long buff) {
+        if(layout.NewBuffStructure) {
+            float from=Range(buff+0x18,0,200000), duration=Range(buff+0x24,0,1000000);
+            return from+duration;
+        }
         if(!layout.EncodedBuffExpiry)return Float(buff+0x1c);
         return DecodeBuffExpiry(BitConverter.ToUInt32(Read(buff+0x1c,4),0));
     }
@@ -139,9 +155,10 @@ public sealed class RiftCastObserverReader : IDisposable {
         var result=Obj("baron",false,"elder",false);
         for(int i=0;i<count;i++) {
             long buff=Ptr(start+i*16);if(buff==0)continue;
+            if(layout.NewBuffStructure && Int(buff+0x40)<=0)continue;
             float from=Float(buff+0x18),until=BuffExpiry(buff);
-            if(from>time||until<=time||Int(buff+0x38)<=0)continue;
-            string name=CString(Ptr(Ptr(buff+0x10)+8)).ToLowerInvariant();
+            if(from>time||until<=time||Int(buff+(layout.NewBuffStructure?0x40:0x38))<=0)continue;
+            string name=CString(Ptr(Ptr(buff+0x10)+(layout.NewBuffStructure?0x60:8))).ToLowerInvariant();
             if(name=="exaltedwithbaronnashor") {result["baron"]=true;result["baronExpiresAt"]=until;}
             if(name=="aspectofthedragon") {result["elder"]=true;result["elderExpiresAt"]=until;}
         }
@@ -152,9 +169,10 @@ public sealed class RiftCastObserverReader : IDisposable {
         if(start<65536||end<start||(end-start)%16!=0||(end-start)/16>256)yield break;
         for(long entry=start;entry<end;entry+=16) {
             long buff=Ptr(entry);if(buff==0)continue;
+            if(layout.NewBuffStructure && Int(buff+0x40)<=0)continue;
             float from=Float(buff+0x18),until=BuffExpiry(buff);
-            if(from>time||until<=time||Int(buff+0x38)<=0)continue;
-            yield return Obj("name",CString(Ptr(Ptr(buff+0x10)+8)).ToLowerInvariant(),"until",until);
+            if(from>time||until<=time||Int(buff+(layout.NewBuffStructure?0x40:0x38))<=0)continue;
+            yield return Obj("name",CString(Ptr(Ptr(buff+0x10)+(layout.NewBuffStructure?0x60:8))).ToLowerInvariant(),"until",until);
         }
     }
     static string DragonElement(string name) {

@@ -1,5 +1,5 @@
 import { open } from 'node:fs/promises';
-import { damageProtocolForProfile, parseReplayDamage, type ReplayDamageIndex } from './replay-damage';
+import { damageBuildCompatible, damageProtocolForProfile, parseReplayDamage, type ReplayDamageIndex } from './replay-damage';
 
 type Json=Record<string,any>;
 async function loadReplay(file:string,cancelled:()=>boolean):Promise<ReplayDamageIndex>{
@@ -41,7 +41,7 @@ export class ReplayDamageTelemetry {
         if(generation===this.generation)this.detail='当前回放伤害校验未通过';
       });
     }
-    if(!this.index||this.index.build!==protocol.build||!Array.isArray(sample.players)||sample.players.length!==10)return false;
+    if(!this.index||!damageBuildCompatible(sample.profile,this.index.build)||!Array.isArray(sample.players)||sample.players.length!==10)return false;
     const roster=new Map(this.index.heroes.map(h=>[h.networkId,h]));
     const pairs=sample.players.map((p:Json)=>({p,h:roster.get(p.networkId),damage:this.index!.at(p.networkId,sample.gameTime)}));
     if(new Set(sample.players.map((p:Json)=>p.networkId)).size!==10||

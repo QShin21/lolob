@@ -7,10 +7,11 @@ import {decodeObserverChunk,LiveDamageStream} from './live-damage-stream';
 
 const fixture=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.20.json',import.meta.url),'utf8'));
 const current=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.21.json',import.meta.url),'utf8'));
+const patch1622=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.22.json',import.meta.url),'utf8'));
 const key=Buffer.from('test-key-16bytes!');
 function block(time:number,damage=false,input=fixture){
   const s=input.samples[0],payload=damage?Buffer.from(s.payload):Buffer.alloc(0),b=Buffer.alloc(15+payload.length);
-  b.writeFloatLE(time,1);b.writeUInt32LE(payload.length,5);b.writeUInt16LE(damage?(input===current?978:359):1,9);b.writeUInt32LE(damage?s.param:0,11);payload.copy(b,15);return b;
+  b.writeFloatLE(time,1);b.writeUInt32LE(payload.length,5);b.writeUInt16LE(damage?(input.build.startsWith('16.22.')?12:input===current?978:359):1,9);b.writeUInt32LE(damage?s.param:0,11);payload.copy(b,15);return b;
 }
 function chunk(id:number,input=fixture){
   return Buffer.from(new Blowfish(key,Blowfish.MODE.ECB,Blowfish.PADDING.PKCS5).encode(gzipSync(Buffer.concat([
@@ -56,6 +57,15 @@ test('16.21.832 encrypted stream uses the matched build and returns enemy damage
   const source=s.players.find((p:any)=>p.networkId===current.samples[0].source);
   assert.equal(source.damageStats.enemyToChampions,current.samples[0].amount*2);
   stream.reset();
+});
+test('16.22 encrypted observer data uses the new decoder and is isolated by build',async()=>{
+  const decoded=decodeObserverChunk(chunk(1,patch1622),key,'16.22.836.1077');
+  assert.equal(decoded.events[0].amount,patch1622.samples[0].amount);
+  const {stream}=backend(patch1622),s=sample();s.profile='cn-16.22.836.1077';
+  stream.enrich(s,0);await stream.settled();assert.equal(stream.enrich(s,1),true);
+  const source=s.players.find((p:any)=>p.networkId===patch1622.samples[0].source);
+  assert.equal(source.damageStats.toChampions,patch1622.samples[0].amount*2);
+  assert.equal(stream.enrich(sample(),2),false);stream.reset();
 });
 test('retention race trims only expired leading history and preserves explicit capture origin',async()=>{
   const {state,stream}=backend();state.expired=1;stream.enrich(sample(),0);await stream.settled();

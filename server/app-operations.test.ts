@@ -6,6 +6,7 @@ import path from 'node:path';import os from 'node:os';import {createHash} from '
 import {localDiagnosticReport} from '../shared/app-operations';
 import {createFixture} from './test-support/fixture';
 const {createUpdateService,releaseInfo,newer,releaseApi}=createRequire(import.meta.url)('../electron/update-service.cjs');
+const {createUpdateCoordinator,assertUpdateCanInstall}=createRequire(import.meta.url)('../electron/update-coordinator.cjs');
 const bytes=Buffer.from('MZ-RiftCast-isolated-installer-sample');
 const sha=(b:Buffer)=>createHash('sha256').update(b).digest('hex');
 const release=()=>({tag_name:'v1.5.0',draft:false,prerelease:false,published_at:'2026-10-22',assets:[{name:'RiftCast-Setup-1.5.0.exe',size:bytes.length,digest:`sha256:${sha(bytes)}`,browser_download_url:'https://github.com/QShin21/lolob/releases/download/v1.5.0/RiftCast-Setup-1.5.0.exe'}]});
@@ -33,6 +34,19 @@ test('download cancellation removes its partial file and permits a clean retry',
 });
 test('updater accepts GitHub asset redirect only and rejects external redirect and concurrent requests',async()=>{
  for(const allowed of [false,true]){const dir=await temporary();let finish!:()=>void;const waiting=new Promise<void>(r=>finish=r);const service=createUpdateService({currentVersion:'1.4.0',downloadsDir:dir,fetch:async(url:string)=>{if(url===releaseApi){await waiting;return new Response(JSON.stringify(release()));}if(url.startsWith('https://github.com/'))return new Response(null,{status:302,headers:{location:allowed?'https://release-assets.githubusercontent.com/asset':'https://example.com/file'}});return new Response(bytes);}});try{service.check();assert.throws(()=>service.check(),/正在进行/);finish();await service.settled();service.download();assert.equal((await service.settled()).phase,allowed?'ready':'error');if(!allowed)assert.deepEqual(await readdir(dir),[]);}finally{finish();await rm(dir,{recursive:true,force:true});}}
+});
+test('one update action checks, downloads, verifies and hands off the installer once',async()=>{
+ const dir=await temporary(),service=createUpdateService({currentVersion:'1.4.0',downloadsDir:dir,fetch:fetcher()}),calls:any[]=[];
+ const coordinator=createUpdateCoordinator(service,async(artifact:any)=>{calls.push(artifact)});
+ try{coordinator.start();assert.throws(()=>coordinator.start(),/正在进行/);assert.equal((await coordinator.settled()).phase,'ready');assert.equal(calls.length,1);assert.equal(calls[0].sha256,sha(bytes));assert.deepEqual(await readFile(calls[0].path),bytes);
+  await writeFile(calls[0].path,'changed');coordinator.start();assert.equal((await coordinator.settled()).phase,'error');assert.equal(calls.length,1);
+ }finally{await rm(dir,{recursive:true,force:true});}
+});
+test('install handoff waits for a known idle owned output engine',()=>{
+ const idle={mode:'embedded',running:true,connected:true,streamActive:false,recordActive:false,virtualCamActive:false};
+ assert.doesNotThrow(()=>assertUpdateCanInstall(idle,true,false));
+ for(const changed of [{streamActive:true},{recordActive:true},{virtualCamActive:true},{connected:false},{companionAudio:{active:true}}])assert.throws(()=>assertUpdateCanInstall({...idle,...changed},true,false));
+ assert.throws(()=>assertUpdateCanInstall(null,true,false));assert.throws(()=>assertUpdateCanInstall(idle,false,false));assert.throws(()=>assertUpdateCanInstall(idle,true,true));
 });
 test('diagnostic report selects status fields while removing identity, secrets, paths and raw details',()=>{
  const state=createFixture();state.settings.obsPassword='SECRET_PASSWORD';state.settings.lockfilePath='C:\\private\\lockfile';state.connections.obs.detail='PRIVATE_STREAM_URL';state.players[0].name='PRIVATE_NAME';state.teams[0].name='PRIVATE_TEAM';state.teams[0].players[0].account='PRIVATE_ACCOUNT';

@@ -100,6 +100,7 @@ export default function App() {
           <span className="control-mode">{'本地实况'}</span>
           <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? (seatStatus === 'invalid' ? '席位失效' : '验证席位中')}</span>
           <span className={`control-sync ${connected && seat ? '' : 'disconnected'}`}><Wifi size={14}/>{connected ? seat ? '已同步' : '数据已同步 · 待验证席位' : '同步中断'}</span>
+          <button className="button app-operation-link" onClick={()=>openAppOperation('update')}>检查更新</button>
           <button className="button app-operation-link" onClick={()=>openAppOperation('report')}>故障报告</button>
         </header>
         <AppOperations state={state}/>

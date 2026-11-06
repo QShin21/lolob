@@ -52,7 +52,7 @@ test('soul changes drake to elder; repeated event reconstruction is stable; rewi
  assert.deepEqual(neutralObjectives(s,now),neutralObjectives(s,now));
 });
 test('partial event history stays unknown; direct observer timers survive missing kill events; wrong map and stale samples rejected',()=>{
- for(const profile of ['cn-16.20.824.8524','cn-16.21.829.9102']){
+ for(const profile of ['cn-16.20.824.8524','cn-16.21.829.9102','cn-16.21.832.5350','cn-16.22.836.1077']){
  const s:any=data(1800);s._eventHistoryComplete=false;assert.equal(neutralObjectives(s,now)?.objectives[0].state,'unknown');
  s._observerObjectives={profile,gameTime:1800,sampledAt:new Date(now).toISOString(),validForMs:3000,objectives:[{kind:'baron',state:'alive'},{kind:'dragon',element:'water',state:'countdown',dueAt:1900}]};
  assert.equal(neutralObjectives(s,now)?.objectives[0].state,'alive');assert.equal(neutralObjectives(s,now)?.objectives[1].dueAt,1900);

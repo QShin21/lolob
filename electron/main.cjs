@@ -21,6 +21,7 @@ let stoppingService = false;
 let logPath;
 let exitApproved = false;
 let desktopUpdater;
+let updateCoordinator;
 const nativePreviewSources = new Map();
 const nativePositionRequests = new Map();
 const closingProjectors = new Map();
@@ -175,8 +176,24 @@ async function closeProjector(prepared) {
 
 function installPreviewBridge() {
   ipcMain.handle('riftcast:update', (event, action) => {
-    if (!trustedRenderer(event.sender, event.senderFrame) || !['status','check','download','cancel','show-file'].includes(action)) throw new Error('应用更新请求来源或操作无效');
+    if (!trustedRenderer(event.sender, event.senderFrame) || !['status','check','download','cancel','show-file','update'].includes(action)) throw new Error('应用更新请求来源或操作无效');
     desktopUpdater ??= require('./update-service.cjs').createUpdateService({currentVersion:app.getVersion(),downloadsDir:app.getPath('downloads')});
+    updateCoordinator ??= require('./update-coordinator.cjs').createUpdateCoordinator(desktopUpdater, async artifact => {
+      if (!app.isPackaged || process.platform !== 'win32') throw new Error('请在已安装的 Windows 桌面版中执行更新');
+      const {assertUpdateCanInstall}=require('./update-coordinator.cjs');
+      assertUpdateCanInstall(await engineStatus(), ownsService, programWindow.owned);
+      const started=Math.round(Date.now()-process.uptime()*1000);
+      const installDir=path.dirname(process.execPath),installed=fs.existsSync(path.join(installDir,'Uninstall RiftCast.exe'));
+      const handshakeDir=fs.mkdtempSync(path.join(app.getPath('temp'),'riftcast-update-')),readyFile=path.join(handshakeDir,'ready');
+      const env={...process.env,RIFTCAST_UPDATE_HELPER:path.join(__dirname,'update-launcher.ps1'),RIFTCAST_UPDATE_INSTALLER:artifact.path,RIFTCAST_UPDATE_PARENT_ID:String(process.pid),RIFTCAST_UPDATE_PARENT_STARTED:String(started),RIFTCAST_UPDATE_SHA256:artifact.sha256,RIFTCAST_UPDATE_INSTALL_DIR:installed?installDir:'',RIFTCAST_UPDATE_RESTART:installed?process.execPath:'',RIFTCAST_UPDATE_READY_FILE:readyFile};
+      try {
+        const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'update-bootstrap.ps1')],{windowsHide:true,stdio:'ignore',env});
+        await new Promise((resolve,reject)=>{child.once('error',reject);child.once('exit',code=>code===0?resolve():reject(new Error('无法启动更新助手，请重试')));});
+      } finally { try{fs.unlinkSync(readyFile);}catch{} try{fs.rmdirSync(handshakeDir);}catch{} }
+      exitApproved=true;app.quit();
+    });
+    if(action==='update') return updateCoordinator.start();
+    if(updateCoordinator.busy() && ['check','download'].includes(action)) throw new Error('已有更新操作正在进行');
     if(action==='show-file') { const file=desktopUpdater.readyPath();if(!file)throw new Error('请先下载并校验安装包');shell.showItemInFolder(file);return desktopUpdater.status(); }
     return desktopUpdater[action]();
   });
