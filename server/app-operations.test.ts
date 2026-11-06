@@ -45,8 +45,9 @@ test('one update action checks, downloads, verifies and hands off the installer 
 test('install handoff waits for a known idle owned output engine',()=>{
  const idle={mode:'embedded',running:true,connected:true,streamActive:false,recordActive:false,virtualCamActive:false};
  assert.doesNotThrow(()=>assertUpdateCanInstall(idle,true,false));
- for(const changed of [{streamActive:true},{recordActive:true},{virtualCamActive:true},{connected:false},{companionAudio:{active:true}}])assert.throws(()=>assertUpdateCanInstall({...idle,...changed},true,false));
+ for(const changed of [{streamActive:true},{recordActive:true},{virtualCamActive:true},{virtualCamActive:null},{virtualCamActive:undefined},{connected:false},{companionAudio:{active:true}}])assert.throws(()=>assertUpdateCanInstall({...idle,...changed},true,false));
  assert.throws(()=>assertUpdateCanInstall(null,true,false));assert.throws(()=>assertUpdateCanInstall(idle,false,false));assert.throws(()=>assertUpdateCanInstall(idle,true,true));
+ assert.throws(()=>assertUpdateCanInstall({error:'unavailable'},true,false));
 });
 test('diagnostic report selects status fields while removing identity, secrets, paths and raw details',()=>{
  const state=createFixture();state.settings.obsPassword='SECRET_PASSWORD';state.settings.lockfilePath='C:\\private\\lockfile';state.connections.obs.detail='PRIVATE_STREAM_URL';state.players[0].name='PRIVATE_NAME';state.teams[0].name='PRIVATE_TEAM';state.teams[0].players[0].account='PRIVATE_ACCOUNT';

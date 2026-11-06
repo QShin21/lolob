@@ -17,9 +17,9 @@ function createUpdateCoordinator(service, install) {
 }
 
 function assertUpdateCanInstall(status, ownsService, programOpen) {
-  if (!ownsService || !status) throw new Error('无法确认导播服务状态，请重新打开桌面客户端后重试');
+  if (!ownsService || !status || !['embedded', 'external'].includes(status.mode) || typeof status.running !== 'boolean' || typeof status.connected !== 'boolean' || typeof status.streamActive !== 'boolean' || typeof status.recordActive !== 'boolean') throw new Error('无法确认导播服务状态，请重新打开桌面客户端后重试');
   if (programOpen || status.streamActive || status.recordActive || status.virtualCamActive === true || status.companionAudio?.active || status.companionAudio?.managing)
     throw new Error('请先停止推流、录制和节目输出，再点击更新');
-  if (status.running && !status.connected) throw new Error('输出引擎状态暂时无法确认，请检查连接后重试');
+  if (status.running && (!status.connected || (status.mode === 'embedded' && status.virtualCamActive !== false))) throw new Error('输出引擎状态暂时无法确认，请检查连接后重试');
 }
 module.exports = { createUpdateCoordinator, assertUpdateCanInstall };
