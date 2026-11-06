@@ -10,3 +10,7 @@
 ## 安装
 
 结束导播输出并退出当前 RiftCast，再运行 Windows x64 安装包。安装版后续可通过客户端顶部的“检查更新”获取正式发布。
+
+## 用户手册
+
+[下载 RiftCast 1.6.0 PDF 用户手册](https://github.com/QShin21/lolob/releases/download/v1.6.0/RiftCast-1.6.0-User-Manual.pdf)。手册介绍安装、比赛准备、BP、数据采集、节目输出、赛后归档及应用更新。

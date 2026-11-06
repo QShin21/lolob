@@ -13,6 +13,7 @@ const release=()=>({tag_name:'v1.5.0',draft:false,prerelease:false,published_at:
 const temporary=()=>mkdtemp(path.join(os.tmpdir(),'rift-update-'));
 const fetcher=(body=bytes)=>(async(url:string)=>url===releaseApi?new Response(JSON.stringify(release())):new Response(body)) as typeof fetch;
 test('release selection requires a formal version, one repository installer, size and SHA-256',()=>{
+ assert.equal(releaseInfo({...release(),assets:[...release().assets,{name:'RiftCast-1.5.0-User-Manual.pdf'}]}).name,release().assets[0].name);
  assert.equal(releaseInfo(release()).sha256,sha(bytes));assert.equal(newer('1.10.0','1.9.9'),true);assert.equal(newer('1.4.0','1.4.0'),false);
  for(const bad of [{...release(),draft:true},{...release(),prerelease:true},{...release(),tag_name:'v1.5.0-beta'},{...release(),assets:[...release().assets,...release().assets]}])assert.throws(()=>releaseInfo(bad));
  for(const patch of [{digest:null},{size:-1},{name:'../../evil.exe'},{browser_download_url:'https://evil.example/install.exe'},{browser_download_url:'https://github.com/Other/repo/releases/download/v1.5.0/RiftCast-Setup-1.5.0.exe'}])assert.throws(()=>releaseInfo({...release(),assets:[{...release().assets[0],...patch}]}));
