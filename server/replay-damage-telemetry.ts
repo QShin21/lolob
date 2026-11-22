@@ -27,7 +27,7 @@ export class ReplayDamageTelemetry {
   }
   enrich(sample:Json):boolean{
     const protocol=damageProtocolForProfile(sample.profile);
-    if(!protocol||!sample.ok||!Number.isInteger(sample.pid)||
+    if(!protocol?.replay||!sample.ok||!Number.isInteger(sample.pid)||
       typeof sample.processSession!=='string'||typeof sample.replayPath!=='string'||!sample.replayPath.toLowerCase().endsWith('.rofl')){
       if(this.session)this.reset();return false;
     }

@@ -4,25 +4,36 @@ import type { DamageTotals } from '../shared/player-telemetry';
 import { decodeCnDamageParameters } from './protocol/cn-16.20-damage';
 import { decodeCn1621DamageParameters } from './protocol/cn-16.21-damage';
 import { decodeCn1622DamageParameters } from './protocol/cn-16.22-damage';
+import { decodeCn1623DamageParameters } from './protocol/cn-16.23-damage';
 
 export const DAMAGE_BUILD = '16.20.824.8524';
-const damageProtocols = new Map([
-  [DAMAGE_BUILD, {build:DAMAGE_BUILD, packet:359, avatar:1093, stats:853,
+type DamageProtocol = {
+  build: string; packet: number; decode: (payload:Uint8Array)=>number[];
+  target: number; source: number; amount: number; type: number;
+  secondaryTime?: boolean;
+  includeFriendlyDamage?: boolean;
+  replay?: {avatar:number; stats:number; chunkMarker?:number};
+};
+const damageProtocols = new Map<string,DamageProtocol>([
+  [DAMAGE_BUILD, {build:DAMAGE_BUILD, packet:359, replay:{avatar:1093,stats:853},
     decode:decodeCnDamageParameters, target:1, source:8, amount:9, type:2}],
-  ['16.21.829.9102', {build:'16.21.829.9102', packet:978, avatar:929, stats:267,
+  ['16.21.829.9102', {build:'16.21.829.9102', packet:978, replay:{avatar:929,stats:267},
     decode:decodeCn1621DamageParameters, target:0, source:5, amount:4, type:3}],
-  ['16.21.832.5350', {build:'16.21.832.5350', packet:978, avatar:929, stats:267,
+  ['16.21.832.5350', {build:'16.21.832.5350', packet:978, includeFriendlyDamage:true, replay:{avatar:929,stats:267,chunkMarker:4},
     decode:decodeCn1621DamageParameters, target:0, source:5, amount:4, type:3}],
-  ['16.22.834.9083', {build:'16.22.834.9083', packet:12, avatar:1205, stats:1036,
+  ['16.22.834.9083', {build:'16.22.834.9083', packet:12, includeFriendlyDamage:true, replay:{avatar:1205,stats:1036,chunkMarker:4},
     decode:decodeCn1622DamageParameters, target:7, source:1, amount:0, type:2}],
-  ['16.22.836.1077', {build:'16.22.836.1077', packet:12, avatar:1205, stats:1036,
+  ['16.22.836.1077', {build:'16.22.836.1077', packet:12, includeFriendlyDamage:true, replay:{avatar:1205,stats:1036,chunkMarker:4},
     decode:decodeCn1622DamageParameters, target:7, source:1, amount:0, type:2}],
+  ['16.23.840.6595', {build:'16.23.840.6595', packet:840, secondaryTime:true, includeFriendlyDamage:true,
+    replay:{avatar:282,stats:726,chunkMarker:4},
+    decode:decodeCn1623DamageParameters, target:4, source:3, amount:9, type:2}],
 ]);
 export const damageProtocolForProfile = (profile:unknown) =>
   typeof profile==='string'&&profile.startsWith('cn-')?damageProtocols.get(profile.slice(3)):undefined;
 export function damageBuildCompatible(profile:unknown,replayBuild:string):boolean {
   const protocol=damageProtocolForProfile(profile);
-  if(!protocol||!damageProtocols.has(replayBuild))return false;
+  if(!protocol?.replay||!damageProtocols.get(replayBuild)?.replay)return false;
   return protocol.build===replayBuild || protocol.build==='16.22.836.1077'&&replayBuild==='16.22.834.9083';
 }
 export interface DamageEvent { time: number; source: number; target: number; amount: number; type: 0 | 1 | 2 }
@@ -30,7 +41,7 @@ export interface DamageHero { networkId: number; champion: string; team: 'blue' 
 interface Block { time: number; id: number; param: number; payload: Uint8Array }
 
 /** ROFL2 blocks carry relative timestamps, packet IDs and object IDs across a chunk. */
-export function* damageBlocks(data: Uint8Array): Generator<Block> {
+export function* damageBlocks(data: Uint8Array, secondaryTime = false): Generator<Block> {
   const b=Buffer.from(data.buffer,data.byteOffset,data.byteLength);
   let cursor=0,time=0,id=0,param=0,count=0;
   const need=(n:number)=>{if(cursor+n>b.length)throw Error('截断的观战数据块');};
@@ -40,6 +51,11 @@ export function* damageBlocks(data: Uint8Array): Generator<Block> {
     need(marker&128?1:4);
     if(marker&128)time+=b[cursor++]/1000;else{time=b.readFloatLE(cursor);cursor+=4;}
     if(!Number.isFinite(time)||time<0||time>200000)throw Error('观战时间无效');
+    // CN 16.23 chunks add an independent time field when either low flag is set.
+    if(secondaryTime&&marker&3){
+      need(4);const secondary=b.readFloatLE(cursor);cursor+=4;
+      if(!Number.isFinite(secondary)||secondary<0||secondary>200000)throw Error('观战分片辅助时间无效');
+    }
     need(marker&16?1:4);
     const size=marker&16?b[cursor++]:b.readUInt32LE(cursor);
     if(!(marker&16))cursor+=4;
@@ -73,6 +89,7 @@ export class ReplayDamageIndex {
   constructor(readonly heroes:DamageHero[],readonly duration:number,events:DamageEvent[],readonly build=DAMAGE_BUILD){
     this.damageEvents=events.slice().sort((a,b)=>a.time-b.time);
     const roster=new Map(heroes.map(h=>[h.networkId,h]));
+    const includeFriendlyDamage=damageProtocols.get(build)?.includeFriendlyDamage;
     for(const h of heroes){this.tracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);this.enemyTracks.set(h.networkId,[{time:0,total:0,physical:0,magic:0,trueDamage:0}]);this.received.set(h.networkId,[{time:0,total:0}]);}
     for(const e of this.damageEvents){
       const source=roster.get(e.source),target=roster.get(e.target);
@@ -82,7 +99,7 @@ export class ReplayDamageIndex {
       if(e.amount>10000000)throw Error('英雄伤害数值异常');
       const enemy=source.team!==target.team;
       // Preserve enemy-only totals for combat, and the observed official counter separately.
-      const destinations=enemy?[this.tracks,this.enemyTracks]:['16.21.832.5350','16.22.834.9083','16.22.836.1077'].includes(build)?[this.tracks]:[];
+      const destinations=enemy?[this.tracks,this.enemyTracks]:includeFriendlyDamage?[this.tracks]:[];
       for(const destination of destinations){
       const points=destination.get(e.source)!,previous=points.at(-1)!;
       points.push({time:e.time,total:previous.total+e.amount,
@@ -113,7 +130,8 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
   if(b.length<300||b.length>128*1024*1024||b.toString('ascii',0,4)!=='RIOT'||b.readUInt16LE(4)!==2)throw Error('不支持的回放格式');
   const headerEnd=15+b[14];
   const protocol=damageProtocols.get(b.toString('utf8',15,headerEnd));
-  if(!protocol)throw Error('回放版本尚无伤害解析配置');
+  const replay=protocol?.replay;
+  if(!protocol||!replay)throw Error('回放版本尚无伤害解析配置');
   const footerLength=b.readUInt32LE(b.length-4),footerStart=b.length-4-footerLength,end=footerStart-256;
   if(footerLength<1||footerLength>2*1024*1024||end<headerEnd)throw Error('回放元数据范围异常');
   const footer=JSON.parse(b.toString('utf8',footerStart,b.length-4));
@@ -126,7 +144,7 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
     if(++chunks>20000||offset+17>end)throw Error('回放分片范围异常');
     const id=b.readUInt32LE(offset),kind=b[offset+8],decodedLength=b.readUInt32LE(offset+9),compressed=b.readUInt32LE(offset+13);
     const size=compressed||decodedLength;offset+=17;
-    if(['16.21.832.5350','16.22.834.9083','16.22.836.1077'].includes(protocol.build)){if(offset>=end||b[offset]!==4)throw Error('回放分片标记无效');offset++;}
+    if(replay.chunkMarker!==undefined){if(offset>=end||b[offset]!==replay.chunkMarker)throw Error('回放分片标记无效');offset++;}
     if(decodedLength>16*1024*1024||size>16*1024*1024||offset+size>end||![1,2,3,4].includes(kind))throw Error('回放分片长度异常');
     if(kind===1||kind===2&&!firstKeyframe){
       const stored=b.subarray(offset,offset+size);
@@ -135,10 +153,10 @@ export async function parseReplayDamage(b:Buffer, cancelled=()=>false):Promise<R
       if(data.length!==decodedLength)throw Error('回放解压长度异常');
       if(kind===1&&chunkIds.has(id))throw Error('重复的回放分片');
       if(kind===1)chunkIds.add(id);
-      for(const block of damageBlocks(data)){
+      for(const block of damageBlocks(data,protocol.secondaryTime)){
         if(kind===2){
-          if(block.id===protocol.avatar)avatar.push(block.param);
-          if(block.id===protocol.stats)heroStats.push(block.param);
+          if(block.id===replay.avatar)avatar.push(block.param);
+          if(block.id===replay.stats)heroStats.push(block.param);
         }else{
           const event=decodeDamageBlock(block,protocol.build);
           if(event){events.push(event);if(events.length>1000000)throw Error('伤害数据量异常');}

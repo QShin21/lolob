@@ -26,14 +26,15 @@ export const fetchObserverBytes:Fetch=(url,headers,signal)=>new Promise((resolve
 });
 
 export function decodeObserverChunk(encrypted:Buffer,key:Uint8Array,build=DAMAGE_BUILD):Chunk{
-  if(!damageProtocolForProfile(`cn-${build}`))throw Error('观战版本尚无伤害解析配置');
+  const protocol=damageProtocolForProfile(`cn-${build}`);
+  if(!protocol)throw Error('观战版本尚无伤害解析配置');
   if(encrypted.length===0||encrypted.length>16*1024*1024||encrypted.length%8!==0||key.length<4||key.length>56)throw Error('观战分片格式无效');
   const cipher=new Blowfish(key,Blowfish.MODE.ECB,Blowfish.PADDING.PKCS5);
   const compressed=cipher.decode(encrypted,Blowfish.TYPE.UINT8_ARRAY);
   const data=gunzipSync(compressed,{maxOutputLength:16*1024*1024});
   let from:number|undefined,until=0;
   const events:DamageEvent[]=[];
-  for(const block of damageBlocks(data)){
+  for(const block of damageBlocks(data,protocol.secondaryTime)){
     from??=block.time;
     if(block.time<until-.01)throw Error('观战分片时间倒退');
     until=block.time;

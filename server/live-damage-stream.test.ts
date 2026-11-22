@@ -8,6 +8,7 @@ import {decodeObserverChunk,LiveDamageStream} from './live-damage-stream';
 const fixture=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.20.json',import.meta.url),'utf8'));
 const current=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.21.json',import.meta.url),'utf8'));
 const patch1622=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.22.json',import.meta.url),'utf8'));
+const patch1623=JSON.parse(await readFile(new URL('./fixtures/cn-damage-16.23.json',import.meta.url),'utf8'));
 const key=Buffer.from('test-key-16bytes!');
 function block(time:number,damage=false,input=fixture){
   const s=input.samples[0],payload=damage?Buffer.from(s.payload):Buffer.alloc(0),b=Buffer.alloc(15+payload.length);
@@ -66,6 +67,33 @@ test('16.22 encrypted observer data uses the new decoder and is isolated by buil
   const source=s.players.find((p:any)=>p.networkId===patch1622.samples[0].source);
   assert.equal(source.damageStats.toChampions,patch1622.samples[0].amount*2);
   assert.equal(stream.enrich(sample(),2),false);stream.reset();
+});
+test('16.23 encrypted spectator frames use the playback timestamp and the decoded source and target',()=>{
+  const encrypt=(data:Buffer)=>Buffer.from(new Blowfish(key,Blowfish.MODE.ECB,Blowfish.PADDING.PKCS5).encode(gzipSync(data)));
+  assert.deepEqual([...new Set(patch1623.samples.map((s:{type:number})=>s.type))].sort(),[0,1,2]);
+  assert(patch1623.samples.some((s:{param:number;target:number})=>s.param!==s.target));
+  for(const [i,s] of patch1623.samples.entries()){
+    assert(s.amount>=1&&s.amount<10000);
+    const payload=Buffer.from(s.payload),frame=Buffer.alloc(19+payload.length);
+    frame[0]=i%2===0?1:2;
+    frame.writeFloatLE(60,1);
+    frame.writeFloatLE(150,5);
+    frame.writeUInt32LE(payload.length,9);
+    frame.writeUInt16LE(840,13);
+    frame.writeUInt32LE(s.param,15);
+    payload.copy(frame,19);
+    // Inherit the packet ID and param, using the relative time and short size forms.
+    const next=Buffer.alloc(8+payload.length);
+    next[0]=0xf1;next[1]=100;next.writeFloatLE(150,2);next[6]=payload.length;payload.copy(next,8);
+    const decoded=decodeObserverChunk(encrypt(Buffer.concat([frame,next])),key,patch1623.build);
+    const expected={time:60,source:s.source,target:s.target,amount:s.amount,type:s.type};
+    assert.deepEqual(decoded,{from:60,until:60.1,events:[expected,{...expected,time:60.1}]});
+    assert.throws(()=>decodeObserverChunk(encrypt(frame.subarray(0,-1)),key,patch1623.build));
+    const extra=Buffer.concat([frame,Buffer.from([0])]);extra.writeUInt32LE(payload.length+1,9);
+    assert.throws(()=>decodeObserverChunk(encrypt(extra),key,patch1623.build),/tail/);
+    frame.writeFloatLE(NaN,5);
+    assert.throws(()=>decodeObserverChunk(encrypt(frame),key,patch1623.build),/辅助时间/);
+  }
 });
 test('retention race trims only expired leading history and preserves explicit capture origin',async()=>{
   const {state,stream}=backend();state.expired=1;stream.enrich(sample(),0);await stream.settled();
