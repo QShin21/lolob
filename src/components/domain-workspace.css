@@ -1,169 +1,33 @@
-/* Task workspaces share structure and operator tokens, never programme styling. */
-.domain-workspace {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  height: 100%;
-  min-height: 0;
-  min-width: 0;
-  color: var(--ui-text);
-}
-.domain-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex: none;
-  min-height: 38px;
-}
-.domain-heading h1 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 650;
-}
-.domain-heading p {
-  margin: 3px 0 0;
-  color: var(--ui-muted);
-  font-size: 12px;
-}
-.domain-heading > div {
-  min-width: 0;
-}
-.domain-heading > span {
-  color: var(--ui-muted);
-  font-size: 12px;
-  text-align: right;
-}
-.domain-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-.domain-note {
-  padding: 10px 12px;
-  border-left: 3px solid var(--ui-info);
-  background: var(--ui-info-bg);
-  font-size: 13px;
-  line-height: 1.6;
-  flex: none;
-  overflow-wrap: anywhere;
-}
-.domain-note.warning {
-  border-color: var(--ui-warning);
-  background: var(--ui-warning-bg);
-  color: var(--ui-warning);
-}
-.domain-note.error {
-  border-color: var(--ui-error);
-  background: var(--ui-danger-bg);
-  color: var(--ui-error);
-}
-.domain-scroll {
-  min-height: 0;
-  min-width: 0;
-  overflow: auto;
-  scrollbar-gutter: stable;
-  overscroll-behavior: contain;
-  scroll-padding-block: 16px;
-}
-.domain-facts {
-  margin: 0;
-  display: grid;
-  gap: 0;
-  font-size: 13px;
-}
-.domain-facts > div {
-  display: grid;
-  grid-template-columns: minmax(76px, 0.7fr) minmax(0, 1fr);
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--ui-border);
-}
-.domain-facts dt {
-  color: var(--ui-muted);
-}
-.domain-facts dd {
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-.domain-empty {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  padding: 32px 20px;
-  text-align: center;
-  color: var(--ui-muted);
-  min-height: 180px;
-}
-.domain-empty strong {
-  font-size: 16px;
-  color: var(--ui-text);
-}
-.domain-empty p {
-  max-width: 45ch;
-  line-height: 1.7;
-  font-size: 13px;
-}
-.domain-search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--ui-muted);
-  padding: 8px 12px;
-  background: var(--ui-surface);
-  border: 1px solid var(--ui-border);
-  border-radius: 4px;
-}
-.domain-search input {
-  width: 100%;
-  min-width: 0;
-  border: 0;
-  background: transparent;
-  color: var(--ui-text);
-  padding: 0;
-  font-size: 14px;
-  min-height: 24px;
-}
-.domain-search:focus-within {
-  outline: 2px solid var(--ui-focus);
-  outline-offset: 2px;
-}
-.domain-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid var(--ui-border);
-  padding: 10px 0 0;
-  flex: none;
-  font-size: 12px;
-  color: var(--ui-muted);
-}
-.domain-footer > span {
-  min-width: 0;
-}
-.domain-workspace small {
-  font-size: 12px;
-}
-.domain-workspace fieldset {
-  min-width: 0;
-}
-@media (max-width: 900px) {
-  .domain-workspace {
-    height: auto;
-    min-height: calc(100dvh - 200px);
-  }
-  .domain-heading,
-  .domain-footer {
-    flex-wrap: wrap;
-  }
-  .domain-scroll {
-    overflow: visible;
-  }
-  .domain-workspace .button {
-    min-height: 40px;
-  }
+/* Shared page scaffold for task workspaces (data, management, wrap-up, help).
+   The top bar already names the page, so the heading row carries context and tools only. */
+.domain-workspace { display: flex; flex-direction: column; gap: var(--gl-gap); height: 100%; min-width: 0; min-height: 0; }
+.domain-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex: none; min-height: 36px; padding-left: 6px; }
+.domain-heading > div { min-width: 0; }
+.domain-heading h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.domain-heading p { overflow: hidden; color: var(--gl-text-2); font-size: var(--gl-fs-sm); white-space: nowrap; text-overflow: ellipsis; }
+.domain-heading > span { color: var(--gl-text-3); font-size: var(--gl-fs-xs); text-align: right; white-space: nowrap; }
+.domain-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.domain-note { flex: none; padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-control); color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.55; overflow-wrap: anywhere; }
+.domain-note.warning { background: var(--gl-warn-wash); color: var(--gl-warn); }
+.domain-note.error { background: var(--gl-error-wash); color: var(--gl-error); }
+.domain-scroll { min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; scroll-padding-block: 16px; }
+.domain-facts { display: grid; margin: 0; font-size: var(--gl-fs-sm); }
+.domain-facts > div { display: grid; grid-template-columns: minmax(84px, .7fr) minmax(0, 1fr); gap: 12px; padding: 9px 0; border-top: 1px solid var(--gl-line); }
+.domain-facts > div:first-child { border-top: 0; }
+.domain-facts dt { color: var(--gl-text-3); }
+.domain-facts dd { margin: 0; overflow-wrap: anywhere; }
+.domain-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 200px; padding: 32px 20px; color: var(--gl-text-2); text-align: center; }
+.domain-empty > svg { margin-bottom: 4px; color: var(--gl-text-off); stroke-width: 1.4; }
+.domain-empty strong { color: var(--gl-text); font-size: var(--gl-fs-lg); font-weight: 600; }
+.domain-empty p { max-width: 46ch; font-size: var(--gl-fs-sm); line-height: 1.6; text-wrap: pretty; }
+.domain-empty .button { margin-top: 8px; }
+.domain-search { display: flex; align-items: center; gap: 8px; min-height: var(--gl-h-control); padding: 0 10px; border-radius: var(--gl-r-control); background: var(--gl-control); color: var(--gl-text-3); }
+.domain-search input { width: 100%; min-width: 0; min-height: 0; height: 32px; padding: 0; border: 0; background: transparent; font-size: var(--gl-fs-sm); outline: none; }
+.domain-search:focus-within { outline: 2px solid var(--gl-focus); outline-offset: 1px; }
+.domain-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: none; min-height: 28px; padding: 0 6px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.domain-footer > span { min-width: 0; }
+@container body (max-width: 900px) {
+  .domain-workspace { height: auto; min-height: 100%; }
+  .domain-heading, .domain-footer { flex-wrap: wrap; }
+  .domain-scroll { overflow: visible; }
 }

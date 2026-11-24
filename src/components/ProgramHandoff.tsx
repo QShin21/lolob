@@ -1,29 +1,25 @@
 import { useId } from 'react';
-import { ArrowRight, ListChecks } from 'lucide-react';
+import { ListChecks } from 'lucide-react';
 import type { StateContext } from '../../shared/types';
-import { applicationLabel, pendingContent } from '../../shared/presentation';
+import { pendingContent, sceneLabel } from '../../shared/presentation';
 import { sceneDetails } from '../lib';
 import { TakeControl } from './ConsoleUI';
 
-/** This is a handoff between saved preview content and the committed program, never a save action. */
+/** The handoff from saved preview content to the committed programme. It lives in the fixed deck,
+ *  so the next TAKE and what it will change read the same on every page. It is never a save action. */
 export function ProgramHandoff(ctx: StateContext) {
   const { state } = ctx;
   const pending = pendingContent(state);
   const id = useId();
-  const application = state.production?.application;
-  const saving = state.production?.persistence?.status;
+  const p = state.production, saving = p?.persistence?.status, name = sceneDetails(state, state.previewScene).name;
   return <section className="program-handoff" aria-label="本次切入">
-    <div className="handoff-receipt" data-state={application?.status ?? 'none'}>
-      <span>节目回执</span>
-      <strong>{applicationLabel(state)}</strong>
-      <small>节目版本 {state.production?.program?.version ?? '—'}</small>
+    <div className="handoff-preview broadcast-pending">
+      <span className="bus-tag pvw">PVW</span>
+      <div>
+        <strong title={name}>{sceneLabel(state, state.previewScene, name)}</strong>
+        <button popoverTarget={id} className="handoff-diff" title={pending.join('、') || '查看本次待播内容'}><ListChecks size={13}/>{saving === 'failed' ? '磁盘保存失败' : saving === 'saving' ? '正在保存到磁盘' : pending.length ? `${pending.length} 类待播变化` : '配置一致，可再次切入'}<i> · v{p?.configVersion}</i></button>
+      </div>
     </div>
-    <div className="handoff-preview">
-      <span>下一次切入</span>
-      <strong title={sceneDetails(state, state.previewScene).name}>{sceneDetails(state, state.previewScene).name}</strong>
-      <button popoverTarget={id} className="handoff-diff"><ListChecks size={13}/>{saving === 'failed' ? '磁盘保存失败' : saving === 'saving' ? '正在保存到磁盘' : pending.length ? `${pending.length} 类待播变化` : '配置一致，可再次切入'}</button>
-    </div>
-    <ArrowRight className="handoff-arrow" size={18}/>
     <TakeControl {...ctx}/>
     <div id={id} popover="auto" className="broadcast-popover">
       <h3>本次待播内容</h3>

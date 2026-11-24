@@ -1,0 +1,123 @@
+/* 观澜 2.1 · element defaults for the operator console.
+   Everything is scoped to the operator roots and kept at zero specificity with :where(), so page
+   styles override without fights. Broadcast canvases keep their own palette: element rules skip
+   anything inside .broadcast-container. */
+
+html[data-ui-theme]:not(.overlay-document) { background: var(--gl-canvas); }
+
+:where(.app-shell, .remote-workbench, .loading-screen) {
+  --gl-field: #0f1012;
+  font-family: var(--gl-font);
+  font-size: var(--gl-fs-md);
+  line-height: 1.5;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  font-synthesis: none;
+  letter-spacing: 0;
+  color: var(--gl-text);
+  background: var(--gl-canvas);
+  accent-color: var(--gl-solid);
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scrollbar-color: var(--gl-line-strong) transparent;
+}
+:root[data-ui-theme="light"] :where(.app-shell, .remote-workbench, .loading-screen) {
+  --gl-field: #ffffff;
+  color-scheme: light;
+}
+
+:where(.app-shell, .remote-workbench, .loading-screen),
+:where(.app-shell, .remote-workbench, .loading-screen) :where(*):not(:where(.broadcast-container, .broadcast-container *)),
+:where(.app-shell, .remote-workbench, .loading-screen) :where(*):not(:where(.broadcast-container, .broadcast-container *))::before,
+:where(.app-shell, .remote-workbench, .loading-screen) :where(*):not(:where(.broadcast-container, .broadcast-container *))::after { box-sizing: border-box; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(img, video, canvas):not(:where(.broadcast-container *)) { display: block; max-width: 100%; }
+
+:where(.app-shell, .remote-workbench, .loading-screen) ::selection { background: color-mix(in srgb, var(--gl-text) 24%, transparent); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(*):not(:where(.broadcast-container, .broadcast-container *)) { scrollbar-width: thin; }
+
+:where(.app-shell, .remote-workbench, .loading-screen) :where(h1, h2, h3, h4, h5, p, figure, blockquote, dl, dd):not(:where(.broadcast-container *)) { margin: 0; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(h1, h2, h3, h4, h5):not(:where(.broadcast-container *)) { font-weight: 600; line-height: 1.3; text-wrap: balance; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(h1):not(:where(.broadcast-container *)) { font-size: var(--gl-fs-xl); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(h2):not(:where(.broadcast-container *)) { font-size: var(--gl-fs-lg); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(h3, h4, h5):not(:where(.broadcast-container *)) { font-size: var(--gl-fs-md); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(small):not(:where(.broadcast-container *)) { font-size: var(--gl-fs-xs); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(strong, b):not(:where(.broadcast-container *)) { font-weight: 600; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(i, em):not(:where(.broadcast-container *)) { font-style: normal; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(ul, ol):not(:where(.broadcast-container *)) { margin: 0; padding: 0; list-style: none; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(a):not(:where(.broadcast-container *)) { color: inherit; text-decoration: none; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(p a, li a, small a):not(:where(.broadcast-container *)) { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--gl-text-3); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(svg):not(:where(.broadcast-container *)) { flex: none; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(hr):not(:where(.broadcast-container *)) { height: 1px; margin: 0; border: 0; background: var(--gl-line); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where([hidden]) { display: none !important; }
+
+/* Focus is achromatic and always visible. */
+:where(.app-shell, .remote-workbench, .loading-screen) :where(*):focus-visible { outline: 2px solid var(--gl-focus); outline-offset: 2px; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(*):focus:not(:focus-visible) { outline: none; }
+
+/* Buttons start bare; .button and friends dress them. */
+:where(.app-shell, .remote-workbench, .loading-screen) :where(button):not(:where(.broadcast-container *)) {
+  font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0;
+  border-radius: var(--gl-r-control); cursor: pointer; text-align: inherit;
+}
+:where(.app-shell, .remote-workbench, .loading-screen) :where(button:disabled):not(:where(.broadcast-container *)) { cursor: not-allowed; }
+
+/* Text fields. A 3:1 border identifies the control; fills stay quiet. */
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input, select, textarea):not(:where(.broadcast-container *)) {
+  font: inherit; letter-spacing: inherit; color: var(--gl-text); max-width: 100%;
+}
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input:not([type]), input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="password"], input[type="email"], input[type="tel"], input[type="date"], input[type="time"], input[type="datetime-local"], select, textarea):not(:where(.broadcast-container *)) {
+  min-height: var(--gl-h-control); padding: 6px 10px; border: 1px solid var(--gl-field-border); border-radius: var(--gl-r-control);
+  background: var(--gl-field); font-size: var(--gl-fs-sm); line-height: 1.4;
+  transition: border-color var(--gl-fast) var(--gl-ease), background var(--gl-fast) var(--gl-ease);
+}
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input, select, textarea):not(:where(.broadcast-container *)):hover:not(:disabled, :focus) { border-color: var(--gl-text-3); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"]), select, textarea):not(:where(.broadcast-container *)):focus-visible { border-color: var(--gl-focus); outline-offset: 0; outline-width: 1px; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input, select, textarea):not(:where(.broadcast-container *)):disabled { color: var(--gl-text-off); border-color: var(--gl-line-strong); background: var(--gl-panel-2); cursor: not-allowed; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input, textarea)::placeholder { color: var(--gl-text-3); opacity: 1; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(textarea):not(:where(.broadcast-container *)) { min-height: 76px; resize: vertical; line-height: 1.5; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(select):not(:where(.broadcast-container *)) { padding-right: 28px; cursor: pointer; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input[type="checkbox"], input[type="radio"]):not(:where(.broadcast-container *)) { width: 16px; height: 16px; margin: 0; flex: none; cursor: pointer; accent-color: var(--gl-solid); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input[type="range"]):not(:where(.broadcast-container *)) { padding: 0; min-height: 0; cursor: pointer; accent-color: var(--gl-solid); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input[type="color"]):not(:where(.broadcast-container *)) { width: 44px; height: var(--gl-h-control); padding: 3px; border: 1px solid var(--gl-field-border); border-radius: var(--gl-r-control); background: var(--gl-field); cursor: pointer; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(input[type="file"]):not(:where(.broadcast-container *)) { font-size: var(--gl-fs-sm); color: var(--gl-text-2); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(label):not(:where(.broadcast-container *)) { cursor: default; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(fieldset):not(:where(.broadcast-container *)) { min-width: 0; margin: 0; padding: 0; border: 0; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(legend):not(:where(.broadcast-container *)) { padding: 0; }
+
+/* Keys, code and figures share the instrument face. */
+:where(.app-shell, .remote-workbench, .loading-screen) :where(kbd, code, samp, pre):not(:where(.broadcast-container *)) { font-family: var(--gl-font-mono); font-size: .92em; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(kbd):not(:where(.broadcast-container *)) {
+  display: inline-grid; place-items: center; min-width: 20px; padding: 0 5px; border-radius: 4px;
+  background: var(--gl-control); color: var(--gl-text-2); font-size: 11.5px; font-weight: 500; line-height: 18px; box-shadow: inset 0 -1px 0 var(--gl-line-strong);
+}
+
+:where(.app-shell, .remote-workbench, .loading-screen) :where(table):not(:where(.broadcast-container *)) { width: 100%; border-collapse: collapse; font-size: var(--gl-fs-sm); text-align: left; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(th, td):not(:where(.broadcast-container *)) { padding: 9px 12px; border-top: 1px solid var(--gl-line); white-space: nowrap; vertical-align: middle; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(th):not(:where(.broadcast-container *)) { border-top: 0; color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 500; }
+
+:where(.app-shell, .remote-workbench, .loading-screen) :where(summary):not(:where(.broadcast-container *)) { cursor: pointer; border-radius: 6px; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(summary)::marker { color: var(--gl-text-3); }
+
+:where(.app-shell, .remote-workbench, .loading-screen) :where(progress, meter):not(:where(.broadcast-container *)) { appearance: none; width: 100%; height: 6px; border: 0; border-radius: 3px; background: var(--gl-control); overflow: hidden; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(progress)::-webkit-progress-bar { background: var(--gl-control); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(progress)::-webkit-progress-value { background: var(--gl-text); border-radius: 3px; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(meter)::-webkit-meter-bar { background: var(--gl-control); border: 0; height: 6px; }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(meter)::-webkit-meter-optimum-value { background: var(--gl-pvw); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(meter)::-webkit-meter-suboptimum-value { background: var(--gl-warn); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where(meter)::-webkit-meter-even-less-good-value { background: var(--gl-pgm); }
+
+/* Dialogs and popovers live in the top layer. They are the only surfaces that cast a shadow. */
+:where(.app-shell, .remote-workbench, .loading-screen) :where(dialog) {
+  padding: 0; border: 1px solid var(--gl-line-strong); border-radius: 14px; background: var(--gl-panel); color: var(--gl-text);
+  box-shadow: var(--gl-shadow-pop); max-width: min(100vw - 32px, 1280px); max-height: calc(100vh - 32px);
+}
+:where(.app-shell, .remote-workbench, .loading-screen) :where(dialog)::backdrop { background: var(--gl-scrim); }
+:where(.app-shell, .remote-workbench, .loading-screen) :where([popover]) {
+  margin: auto; padding: 14px; border: 1px solid var(--gl-line-strong); border-radius: 12px; background: var(--gl-panel); color: var(--gl-text);
+  box-shadow: var(--gl-shadow-pop); max-width: min(100vw - 32px, 420px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.app-shell, .remote-workbench, .loading-screen) *, :where(.app-shell, .remote-workbench, .loading-screen) *::before, :where(.app-shell, .remote-workbench, .loading-screen) *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

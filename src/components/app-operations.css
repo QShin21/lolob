@@ -1,1 +1,15 @@
-.first-device-guide{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 20px;background:var(--ui-raised);border-bottom:1px solid var(--ui-border);font-size:12px}.first-device-guide span{flex:1;min-width:180px}.app-operation-dialog{max-width:min(740px,calc(100vw - 32px));width:740px;max-height:calc(100vh - 48px);overflow:auto;padding:24px;border:1px solid var(--ui-border);border-radius:12px;background:var(--ui-surface);color:var(--ui-text);box-shadow:0 20px 80px #0008}.app-operation-dialog::backdrop{background:#0009}.app-operation-dialog header{display:flex;justify-content:space-between;align-items:center;gap:20px}.app-operation-dialog h2{font-size:20px;margin:0}.app-operation-dialog p{line-height:1.7}.app-operation-dialog textarea{width:100%;height:270px;resize:vertical;padding:12px;box-sizing:border-box;font:12px/1.5 monospace;background:var(--ui-bg);color:var(--ui-text);border:1px solid var(--ui-control-border);border-radius:6px}.app-operation-actions{display:flex;gap:10px;flex-wrap:wrap}.app-update-status{display:grid;gap:12px;margin:20px 0;padding:16px;background:var(--ui-raised);color:var(--ui-text);border-radius:8px}.app-update-status progress{width:100%;accent-color:var(--ui-accent)}.app-update-status code{overflow-wrap:anywhere;font-size:12px}.control-header .app-operation-link{font-size:11px;white-space:nowrap;padding:5px 7px}.help-operation-links{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}@media(max-width:700px){.first-device-guide{padding:8px 12px}.app-operation-dialog{padding:18px}.control-header .app-operation-link{padding:3px 5px}}
+/* Update, diagnostic report and first-use guide dialogs. The guide prompt itself lives in the top bar (ui/shell.css). */
+.app-operation-dialog { width: 720px; max-width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 24px; overflow: auto; }
+.app-operation-dialog header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 14px; }
+.app-operation-dialog h2 { display: flex; align-items: center; gap: 10px; font-family: var(--gl-font-title); font-size: 22px; font-weight: 800; }
+.app-operation-dialog h2 svg { color: var(--gl-text-3); }
+.app-operation-dialog h3 { margin: 4px 0 6px; font-size: var(--gl-fs-lg); }
+.app-operation-dialog p { margin: 0 0 14px; max-width: 68ch; color: var(--gl-text-2); line-height: 1.65; }
+.app-operation-dialog p[role="status"] { margin: 14px 0 0; color: var(--gl-text); font-weight: 500; }
+.app-guide-step { margin-bottom: 4px !important; color: var(--gl-text-3) !important; font-size: var(--gl-fs-xs); font-weight: 500; }
+.app-operation-dialog textarea { display: block; width: 100%; height: 270px; margin-bottom: 14px; padding: 12px; font-family: var(--gl-font-mono); font-size: 12px; line-height: 1.55; resize: vertical; }
+.app-operation-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.app-update-status { display: grid; gap: 10px; margin: 16px 0; padding: 14px 16px; border-radius: var(--gl-r-control); background: var(--gl-control); font-size: var(--gl-fs-sm); }
+.app-update-status span { color: var(--gl-text-2); }
+.app-update-status code { overflow-wrap: anywhere; color: var(--gl-text-2); font-size: 12px; }
+.help-operation-links { display: flex; flex-wrap: wrap; gap: 8px; }

@@ -1,6 +1,7 @@
 import { sceneDetails } from '../lib';
 import { useMemoryState } from "../useMemoryState";
 import { TaskTabs, TakeControl, EmptyState } from "./ConsoleUI";
+import { ProgramHandoff } from "./ProgramHandoff";
 import {
   pendingContent,
   applicationLabel,
@@ -84,7 +85,7 @@ const checks: [CheckId, string][] = [
   ["platform", "平台接收端人工回看"],
 ];
 
-export function ProductionBar(ctx: StateContext & { showTake?: boolean }) {
+export function ProductionBar(ctx: StateContext) {
   const {state,send,notify}=ctx, p=state.production, pgm=programState(state), pending=pendingContent(state);
   const [output,setOutput]=useState<ObsEngineStatus|null>(null);
   const [busy,setBusy]=useState(false), operation=useRef(false), moreId=useId();
@@ -99,15 +100,14 @@ export function ProductionBar(ctx: StateContext & { showTake?: boolean }) {
   const engine=(action:string)=>void act(async()=>{await api('/api/obs/production',{method:'POST',body:JSON.stringify({action})});notify('OBS 已确认操作','success');});
   const run=(command:ProductionCommand)=>void act(()=>send({type:'production',command}));
   return <section className="broadcast-status" aria-label="固定播出与应急控制">
-    <div className="broadcast-identity"><span className="bus-tag pgm">PGM</span><div><strong title={sceneDetails(pgm,state.programScene).name}>{p?.playingClipId?'独立回放':sceneLabel(pgm,state.programScene,sceneDetails(pgm,state.programScene).name)}</strong><small className={'broadcast-receipt '+(p?.application?.status??'')}>{applicationLabel(state)}</small></div></div>
-    <div className="broadcast-pending"><span className="bus-tag pvw">PVW</span><div><strong title={sceneDetails(state,state.previewScene).name}>{sceneLabel(state,state.previewScene,sceneDetails(state,state.previewScene).name)}</strong><small title={pending.join('、')}>{p?.persistence?.status==='failed'?'磁盘保存失败':p?.persistence?.status==='saving'?'正在保存':`${pending.length} 类已保存待播`} · v{p?.configVersion}</small></div></div>
+    <div className="broadcast-identity" data-state={p?.application?.status??'none'}><span className="bus-tag pgm">PGM</span><div><strong title={sceneDetails(pgm,state.programScene).name}>{p?.playingClipId?'独立回放':sceneLabel(pgm,state.programScene,sceneDetails(pgm,state.programScene).name)}</strong><small className={'broadcast-receipt '+(p?.application?.status??'')}>{applicationLabel(state)} · 节目版本 {p?.program?.version??'—'}</small></div></div>
     <OutputSignals status={output}/>
     <div className="broadcast-actions">
-      {ctx.showTake&&<TakeControl {...ctx} compact/>}
       <button className="button small" disabled={!allowed||!host||busy} onClick={()=>engine('return-live')}>回到比赛</button>
       <button className="button small danger" disabled={!allowed||!host||busy} onClick={()=>engine('emergency')}>技术暂停</button>
       <button className="button small" popoverTarget={moreId}>核对 / 应急</button>
     </div>
+    <ProgramHandoff {...ctx}/>
     <div id={moreId} popover="auto" className="broadcast-popover">
       <h3>节目核对与控制</h3><p>当前控制者：{p?.control?.name??'等待席位'} · 节目 v{p?.program?.version??'—'}</p>
       <p>{pending.join('、')||'与节目内容一致；同局实时采样持续同步'}</p>

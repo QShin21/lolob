@@ -23,28 +23,23 @@ export function MonitorPane({
   );
   const live = previewStatus?.phase === "live";
   const [layoutOnly, setLayoutOnly] = useState(false);
+  const source = kind === "program" ? programState(state) : state;
   return (
-    <section className={`monitor-pane ${kind}`}>
+    <section className={`monitor-pane ${kind}`} data-live={live}>
       <div className="monitor-label">
-        <span>
-          <i />
-          {kind === "preview" ? "PVW" : "PGM"}{" "}
-          <b>{kind === "preview" ? "预监画面" : "节目播出"}</b>
+        <span className={`bus-tag ${kind === "preview" ? "pvw" : "pgm"}`}>
+          {kind === "preview" ? "PVW" : "PGM"}
         </span>
-        <span>
-          {sceneLabel(
-            kind === "program" ? programState(state) : state,
-            scene,
-            sceneDetails(kind === "program" ? programState(state) : state,scene).name,
-          )}
-        </span>
+        <strong>{sceneLabel(source, scene, sceneDetails(source, scene).name)}</strong>
+        <small>{kind === "preview" ? "预监画面" : "节目播出"}</small>
         <a
           href={outputUrl(kind === "preview")}
           target="_blank"
           rel="noreferrer"
           title="打开 HUD 浏览器源"
+          aria-label={`打开${kind === "preview" ? "预监" : "节目"} HUD 浏览器源`}
         >
-          <Maximize2 size={13} />
+          <Maximize2 size={14} />
         </a>
       </div>
       <div className="monitor-surface">
@@ -52,7 +47,7 @@ export function MonitorPane({
           <>
             <BroadcastCanvas
               bus={kind}
-              state={kind === "program" ? programState(state) : state}
+              state={source}
               champions={champions}
               scene={scene}
             />
@@ -70,13 +65,7 @@ export function MonitorPane({
         )}
       </div>
       <div className="monitor-footer">
-        <button
-          className="text-button"
-          onClick={() => setLayoutOnly(!layoutOnly)}
-        >
-          {layoutOnly ? "返回实时监视" : "查看场景排版"}
-        </button>
-        <span>
+        <span className="monitor-state">
           <span
             className={`status-dot ${live ? (kind === "program" ? "red" : "green") : "gray"}`}
           />{" "}
@@ -88,7 +77,7 @@ export function MonitorPane({
               ? "预览已暂停"
               : "等待实时画面"}
         </span>
-        <span>
+        <span className="monitor-meta">
           {!layoutOnly && live && previewStatus.fps > 0
             ? `${previewStatus.fps.toFixed(1)} fps · `
             : ""}
@@ -97,6 +86,12 @@ export function MonitorPane({
             ? ` · 采样 ${new Date(previewStatus.updatedAt).toLocaleTimeString("zh-CN")}`
             : ""}
         </span>
+        <button
+          className="text-button"
+          onClick={() => setLayoutOnly(!layoutOnly)}
+        >
+          {layoutOnly ? "返回实时监视" : "查看场景排版"}
+        </button>
       </div>
     </section>
   );

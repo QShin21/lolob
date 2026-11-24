@@ -74,7 +74,12 @@ export default function App() {
   // Before any snapshot exists, the browser source stays empty. Never expose
   // workstation branding or connection controls to the audience.
   if (!state && output) return null;
-  if (!state) return <div className="loading-screen"><Brand/><h2>{error ? '本地服务尚未连接' : '正在连接导播工作站'}</h2><p>{error || '载入赛事、素材与节目状态'}</p>{error && <button className="button primary" onClick={() => location.reload()}>重新连接</button>}</div>;
+  if (!state) return <div className="loading-screen" data-state={error ? 'error' : 'connecting'}>
+    <Brand/>
+    <svg className="loading-wave" viewBox="0 0 320 24" aria-hidden="true"><path d="M2 12 C 28 -2, 54 -2, 80 12 S 132 26, 158 12 S 210 -2, 236 12 S 288 26, 318 12"/></svg>
+    <h2>{error ? '本地服务尚未连接' : '正在连接导播工作站'}</h2><p>{error || '载入赛事、素材与节目状态'}</p>
+    {error && <button className="button primary" onClick={() => location.reload()}>重新连接</button>}
+  </div>;
   const ctx = { state, champions, connected, send, notify, seat }, onAir = programState(state);
   if (output && location.pathname === '/overlay/vdo') return <VdoNinjaOutput/>;
   if (output && location.pathname === '/overlay/archive') return <ArchiveGraphicsOutput state={state} champions={champions}/>;
@@ -86,25 +91,34 @@ export default function App() {
   }
   const seatRecovery = { status: seatStatus, detail: seatError, recover: recoverSeat };
   if (remote) return <GameClockConnectionProvider value={connected}><Remote {...ctx} displaySeat={lastSeat} seatRecovery={seatRecovery} toast={toast} dismissNotice={dismissNotice}/></GameClockConnectionProvider>;
+  const pageName = navigation.find(item => item.id === page)?.name;
   return <GameClockConnectionProvider value={connected}>
     <div className={`app-shell control-room page-${page}`} data-layout={state.production?.layout ?? 'single'}>
       <aside className="control-rail">
-        <a className="control-monogram" href="#studio" aria-label="观澜导播台"><BrandMark size={40}/></a>
-        <nav aria-label="主导航">{navigation.map(item => <button key={item.id} title={item.name} aria-label={item.name} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}><item.icon size={21}/><span>{item.label}</span></button>)}</nav>
-        <button className="control-theme" title={theme === 'dark' ? '切换浅色主题' : '切换深色主题'} aria-label={theme === 'dark' ? '切换浅色主题' : '切换深色主题'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={19}/> : <Moon size={19}/>}</button>
-        <span className="control-version" title={`观澜 ${version}`}>{version}</span>
+        <a className="control-monogram" href="#studio" aria-label="观澜导播台"><BrandMark size={34} tile={false}/></a>
+        <nav aria-label="主导航">{navigation.map(item => <button key={item.id} title={item.name} aria-label={item.name} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}><item.icon size={20} strokeWidth={1.75}/><span>{item.label}</span></button>)}</nav>
+        <div className="control-rail-foot">
+          <button className="control-theme" title={theme === 'dark' ? '切换浅色主题' : '切换深色主题'} aria-label={theme === 'dark' ? '切换浅色主题' : '切换深色主题'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18} strokeWidth={1.75}/> : <Moon size={18} strokeWidth={1.75}/>}</button>
+          <span className="control-version" title={`观澜 ${version}`}>{version}</span>
+        </div>
       </aside>
       <div className="control-body">
         <header className="control-header">
-          <div className="control-title"><strong><b>观澜</b><i>GUANLAN</i></strong><span>{navigation.find(item => item.id === page)?.name}</span></div>
-          <button className="control-match" title="正在节目中的比赛 · 打开赛事资料" onClick={() => navigate('manage')}><span>{onAir.match.title}</span><b><i className="side-blue">{getTeam(onAir, 'blue')?.tag}</i> <em>{onAir.match.blueScore} : {onAir.match.redScore}</em> <i className="side-red">{getTeam(onAir, 'red')?.tag}</i></b><small>第 {onAir.match.game} 局</small></button>
-          <span className="control-mode">{'本地实况'}</span>
-          <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? (seatStatus === 'invalid' ? '席位失效' : '验证席位中')}</span>
-          <span className={`control-sync ${connected && seat ? '' : 'disconnected'}`}><Wifi size={14}/>{connected ? seat ? '已同步' : '数据已同步 · 待验证席位' : '同步中断'}</span>
-          <button className="button app-operation-link" onClick={()=>openAppOperation('update')}>检查更新</button>
-          <button className="button app-operation-link" onClick={()=>openAppOperation('report')}>故障报告</button>
+          <div className="control-title"><strong className="gl-title">{pageName}</strong></div>
+          <button className="control-match" title="正在节目中的比赛 · 打开赛事资料" onClick={() => navigate('manage')}>
+            <b><i className="side-blue">{getTeam(onAir, 'blue')?.tag}</i> <em>{onAir.match.blueScore} : {onAir.match.redScore}</em> <i className="side-red">{getTeam(onAir, 'red')?.tag}</i></b>
+            <small>第 {onAir.match.game} 局</small>
+            <span>{onAir.match.title}</span>
+          </button>
+          <div className="control-status">
+            <span className="control-mode">{'本地实况'}</span>
+            <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? (seatStatus === 'invalid' ? '席位失效' : '验证席位中')}</span>
+            <span className={`control-sync ${connected && seat ? '' : 'disconnected'}`}><Wifi size={14}/>{connected ? seat ? '已同步' : '数据已同步 · 待验证席位' : '同步中断'}</span>
+            <button className="button small ghost app-operation-link" onClick={()=>openAppOperation('update')}>检查更新</button>
+            <button className="button small ghost app-operation-link" onClick={()=>openAppOperation('report')}>故障报告</button>
+            <AppOperations state={state}/>
+          </div>
         </header>
-        <AppOperations state={state}/>
         {!connected && <div className="control-disconnect" role="alert">{error || '同步中断，保留最后画面与本地草稿，正在重连。'}</div>}
         <SeatRecovery {...seatRecovery}/>
         <main className="control-main" inert={!seat}>
@@ -120,7 +134,7 @@ export default function App() {
         </main>
         <div className="control-safety">
           <div className="control-notices"><Notification notice={toast} dismiss={dismissNotice}/></div>
-          <ProductionBar {...ctx} showTake={page !== 'studio'}/>
+          <ProductionBar {...ctx}/>
         </div>
       </div>
     </div>

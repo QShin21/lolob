@@ -1,0 +1,139 @@
+/* 观澜 2.1 · design tokens.
+   Chrome is achromatic: ink and paper carry structure, selection and primary actions.
+   Hue is reserved for signals — PGM on air, PVW next, caution, error, and the two team sides. */
+:root {
+  --gl-font: "IBM Plex Sans", "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
+  --gl-font-title: "Noto Serif SC Variable", "Songti SC", "STSong", "SimSun", serif;
+  --gl-font-mono: "IBM Plex Mono", "Noto Sans SC Variable", "Cascadia Mono", Consolas, monospace;
+  --gl-font-cond: "IBM Plex Sans Condensed", "IBM Plex Sans", "Noto Sans SC Variable", "Microsoft YaHei UI", sans-serif;
+
+  --gl-fs-xs: 12px;
+  --gl-fs-sm: 13px;
+  --gl-fs-md: 14px;
+  --gl-fs-lg: 16px;
+  --gl-fs-xl: 20px;
+  --gl-fs-title: 24px;
+  --gl-fs-display: 34px;
+
+  --gl-r-panel: 12px;
+  --gl-r-control: 8px;
+  --gl-r-chip: 5px;
+
+  --gl-gap: 8px;
+  --gl-pad: 16px;
+  --gl-h-control: 34px;
+  --gl-h-small: 32px;
+  --gl-h-large: 42px;
+  --gl-rail: 68px;
+  --gl-topbar: 52px;
+  --gl-deck: 64px;
+
+  --gl-ease: cubic-bezier(.2, .7, .2, 1);
+  --gl-fast: 120ms;
+  --gl-med: 180ms;
+}
+
+/* 墨 · dark */
+:root,
+:root[data-ui-theme="dark"] {
+  --gl-canvas: #0e0f11;
+  --gl-panel: #17181b;
+  --gl-panel-2: #1c1d21;
+  --gl-control: #24262a;
+  --gl-control-hover: #2e3035;
+  --gl-control-active: #383b41;
+  --gl-well: #0a0b0c;
+  --gl-line: #26282c;
+  --gl-line-strong: #363940;
+  --gl-field-border: #62666e;
+
+  --gl-text: #eeeff1;
+  --gl-text-2: #b6b9bf;
+  --gl-text-3: #969aa4;
+  --gl-text-off: #62666e;
+
+  --gl-solid: #eeeff1;
+  --gl-solid-hover: #ffffff;
+  --gl-on-solid: #0e0f11;
+  --gl-focus: #ffffff;
+  --gl-selected: #2a2c31;
+  --gl-scrim: rgb(4 5 6 / .66);
+
+  --gl-pgm: #ff6450;
+  --gl-pgm-solid: #d4301a;
+  --gl-pgm-wash: #2a1512;
+  --gl-pgm-line: #7a2a1d;
+  --gl-pvw: #3ecf8a;
+  --gl-pvw-solid: #12844a;
+  --gl-pvw-wash: #0f2219;
+  --gl-pvw-line: #1f6442;
+  --gl-warn: #f0b23e;
+  --gl-warn-wash: #2a2110;
+  --gl-warn-line: #6e5522;
+  --gl-error: #ff8090;
+  --gl-error-solid: #c8334a;
+  --gl-error-wash: #2b1418;
+  --gl-error-line: #74303b;
+  --gl-blue: #72aaff;
+  --gl-blue-solid: #2f6fdb;
+  --gl-blue-wash: #121d30;
+  --gl-red: #ff8494;
+  --gl-red-solid: #c93f54;
+  --gl-red-wash: #2c161b;
+  --gl-on-signal: #ffffff;
+
+  --gl-shadow-pop: 0 18px 48px rgb(0 0 0 / .5), 0 3px 10px rgb(0 0 0 / .36);
+  --gl-shadow-float: 0 8px 24px rgb(0 0 0 / .4), 0 1px 4px rgb(0 0 0 / .3);
+}
+
+/* 素 · light */
+:root[data-ui-theme="light"] {
+  --gl-canvas: #eef0f2;
+  --gl-panel: #ffffff;
+  --gl-panel-2: #f6f7f8;
+  --gl-control: #eceef0;
+  --gl-control-hover: #e1e4e7;
+  --gl-control-active: #d5d8dd;
+  --gl-well: #e7e9ec;
+  --gl-line: #e3e5e8;
+  --gl-line-strong: #d1d4d9;
+  --gl-field-border: #858991;
+
+  --gl-text: #15171a;
+  --gl-text-2: #43474e;
+  --gl-text-3: #60656e;
+  --gl-text-off: #9a9ea6;
+
+  --gl-solid: #15171a;
+  --gl-solid-hover: #2b2e33;
+  --gl-on-solid: #ffffff;
+  --gl-focus: #15171a;
+  --gl-selected: #e6e8eb;
+  --gl-scrim: rgb(21 23 26 / .42);
+
+  --gl-pgm: #c02e18;
+  --gl-pgm-solid: #d4301a;
+  --gl-pgm-wash: #fdece8;
+  --gl-pgm-line: #f0b6aa;
+  --gl-pvw: #0d7239;
+  --gl-pvw-solid: #12844a;
+  --gl-pvw-wash: #e6f5ec;
+  --gl-pvw-line: #a5d9bb;
+  --gl-warn: #855400;
+  --gl-warn-wash: #fbf1dc;
+  --gl-warn-line: #e5c98a;
+  --gl-error: #b8273f;
+  --gl-error-solid: #c8334a;
+  --gl-error-wash: #fce9ec;
+  --gl-error-line: #efb1bb;
+  --gl-blue: #1d5abb;
+  --gl-blue-solid: #2f6fdb;
+  --gl-blue-wash: #e8f0fc;
+  --gl-red: #bb344a;
+  --gl-red-solid: #c93f54;
+  --gl-red-wash: #fce9ec;
+  --gl-on-signal: #ffffff;
+
+  --gl-shadow-pop: 0 18px 48px rgb(21 23 26 / .16), 0 3px 10px rgb(21 23 26 / .1);
+  --gl-shadow-float: 0 8px 24px rgb(21 23 26 / .12), 0 1px 4px rgb(21 23 26 / .08);
+}
