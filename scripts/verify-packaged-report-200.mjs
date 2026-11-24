@@ -127,6 +127,7 @@ export async function verifyRendererFlows({ base, dir, start, stop, check }) {
     }
   }
   await page.getByRole('button', { name: '故障报告', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('textarea[aria-label="脱敏故障报告内容"]')?.value.length > 0);
   const report = JSON.parse(await page.getByLabel('脱敏故障报告内容').inputValue());
   assert.equal(report.version, version);
   assert.equal(report.schema, 'riftcast-local-diagnostic-v1');
