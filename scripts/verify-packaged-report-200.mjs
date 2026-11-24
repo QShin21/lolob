@@ -285,6 +285,7 @@ async function main() {
   async function start(seed) {
     if (seed) await writeFile(path.join(data, 'state.json'), JSON.stringify(seed));
     application = await _electron.launch({ executablePath: executable, args: [], env, timeout: 90_000 });
+    stopped = false;
     await nativeRequestGuard(blocked).attach(application.context());
     page = await application.firstWindow({ timeout: 90_000 });
     page.on('pageerror', error => errors.push(error.message));
