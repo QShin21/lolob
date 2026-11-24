@@ -1,25 +1,12 @@
 /* Operator tokens do not enter /overlay. Dark is the existing unsaved preference. */
 .app-shell,.remote-page,.remote-workbench,.loading-screen:not(.output-loading){
-  --ui-bg:#0b1018;--ui-surface:#131b27;--ui-raised:#1b2635;--ui-border:#334257;--ui-control-border:#60718a;
-  --ui-text:#f3f6fb;--ui-muted:#a7b6c9;--ui-accent:#8ab8ff;--ui-on-accent:#0b1018;--ui-hover:#243248;
-  --ui-selected:#213758;--ui-selection-border:#78aef5;--ui-focus:#a4caff;
-  --ui-pgm:#ff909b;--ui-pvw:#61d6ac;--ui-error:#ff909b;--ui-warning:#f6c66d;
-  --ui-take-bg:#be2d43;--ui-on-take:#fff;
-  --ui-warning-bg:#33291a;--ui-danger-bg:#351e29;--ui-info:#8ab8ff;--ui-info-bg:#182c47;--ui-success-bg:#15362c;
-  --ui-radius:10px;--ui-shadow:0 12px 36px #0002;
   --input-bg:var(--ui-bg);--surface-muted:var(--ui-raised);--danger:var(--ui-error);--border-color:var(--ui-border);
   --bg:var(--ui-bg);--panel:var(--ui-surface);--panel-soft:var(--ui-raised);--surface:var(--ui-bg);--border:var(--ui-border);--line:var(--ui-border);
-  --text:var(--ui-text);--muted:var(--ui-muted);--text-muted:var(--ui-muted);--accent:var(--ui-accent);--blue:#84c9f3;--red:#f69aa9;--program:var(--ui-pgm);--preview:var(--ui-pvw);
+  --text:var(--ui-text);--muted:var(--ui-muted);--text-muted:var(--ui-muted);--accent:var(--ui-accent);--blue:var(--rc-side-blue);--red:var(--rc-side-red);--program:var(--ui-pgm);--preview:var(--ui-pvw);
   font-family:'Segoe UI Variable Text','Segoe UI','Microsoft YaHei','PingFang SC',sans-serif;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums;color:var(--ui-text);color-scheme:dark;
 }
-:root[data-ui-theme=light] :is(.app-shell,.remote-page,.remote-workbench,.loading-screen:not(.output-loading)){
-  --ui-bg:#f2f5fa;--ui-surface:#fff;--ui-raised:#edf2f8;--ui-border:#b6c3d3;--ui-control-border:#8595aa;
-  --ui-text:#152438;--ui-muted:#526379;--ui-accent:#245fc8;--ui-on-accent:#fff;--ui-hover:#e6edf7;
-  --ui-selected:#e1edff;--ui-selection-border:#376fc9;--ui-focus:#175cd3;
-  --ui-pgm:#b42338;--ui-pvw:#116b4d;--ui-error:#b42338;--ui-warning:#986400;
-  --ui-warning-bg:#fff3db;--ui-danger-bg:#fff0f2;--ui-info:#245fc8;--ui-info-bg:#eaf1ff;--ui-success-bg:#e4f5ed;
-  --blue:#126a9c;--red:#b83d43;color-scheme:light;
-}
+/* Fixed browser-source defaults outside operator roots. */
+:root{--bg:#0b1119;--panel:#121b25;--panel-soft:#17222e;--surface:#0d151e;--border:#273442;--line:#273442;--text:#f0f3ef;--muted:#8e9dac;--accent:#96efd4;--blue:#71d5ee;--red:#ff8f83;--program:#ff8f83;--preview:#96efd4}
 /* The media palette is fixed for both UI themes. Never filter/recolor broadcast images. */
 :is(.app-shell,.remote-page,.remote-workbench) :is(.broadcast-container,.broadcast-canvas,.obs-live-preview,.embedded-obs-preview,.interview-safe-preview,.ocr-frame,.live-bottom-feed-preview,.economy-roi-map){
   --bg:#0b1119;--panel:#121b25;--panel-soft:#17222e;--surface:#0d151e;--border:#273442;--line:#273442;--text:#f0f3ef;--muted:#8e9dac;--text-muted:#8e9dac;--accent:#96efd4;--blue:#71d5ee;--red:#ff8f83;--program:#ff8f83;--preview:#96efd4;color-scheme:dark;

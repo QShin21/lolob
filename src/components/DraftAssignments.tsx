@@ -113,7 +113,7 @@ export function DraftAssignments(ctx: StateContext) {
     <div className="bp-assignments">
       <div className="bp-section-heading">
         <div>
-          <h3>把英雄交给正确的选手</h3>
+          <h3><ArrowLeftRight size={17} aria-hidden="true" />把英雄交给正确的选手</h3>
           <p>
             BP 按 B1 / R1
             选择顺序显示。最终交换后核对英雄和分路，再勾选确认归属。

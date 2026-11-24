@@ -38,7 +38,7 @@
 .control-room .button.primary,.remote-workbench .button.primary { color:var(--ui-on-accent); background:var(--ui-accent); border-color:var(--ui-accent); }
 .control-room .button.primary:hover,.remote-workbench .button.primary:hover { color:var(--ui-on-accent); background:var(--ui-accent); border-color:var(--ui-accent); filter:brightness(1.08); }
 .control-room .button.danger,.remote-workbench .button.danger { color:var(--ui-error); background:var(--ui-danger-bg); border-color:var(--ui-error); }
-.control-room .take-button,.remote-workbench .take-button { min-height:44px; border:1px solid #dc5265; border-radius:7px; background:var(--ui-take-bg); color:var(--ui-on-take); font-size:15px; font-weight:650; padding:9px 16px; }
+.control-room .take-button,.remote-workbench .take-button { min-height:44px; border:1px solid var(--ui-pgm); border-radius:7px; background:var(--ui-take-bg); color:var(--ui-on-take); font-size:15px; font-weight:650; padding:9px 16px; }
 .take-button kbd { font-size:12px; line-height:18px; padding:1px 5px; }
 .take-control>small { font-size:12px; line-height:18px; }
 .control-room :is(input,select,textarea):not(:is(.broadcast-container *, .demo-preview *, .twitch-audience-graphic *, .archive-graphic *, .season-statistics-output *)) { font-size:14px; border-radius:6px; border-color:var(--ui-control-border); background:var(--ui-bg); color:var(--ui-text); min-height:36px; padding:7px 10px; }
@@ -79,7 +79,7 @@
 .director-phases [aria-pressed=true] { color:var(--ui-accent); }
 .director-vision { grid-template-rows:auto 76px minmax(202px,1fr); gap:10px; }
 .director-monitors { gap:12px; }
-.monitor-pane { border-radius:9px; background:#05090e; }
+.monitor-pane { border-radius:9px; background:var(--rc-ink); }
 .monitor-label { min-height:36px; padding:5px 10px; gap:8px; }
 .monitor-label>span:first-child { letter-spacing:.4px; font-size:13px; }
 .monitor-label>span:first-child>i { display:block; width:6px; height:6px; border-radius:50%; background:currentColor; }
@@ -213,7 +213,7 @@
 .control-room .diagnostic-outcome p { color:var(--ui-text); font-size:13px; line-height:1.6; }
 .control-room .diagnostic-config { font-size:13px; }
 .control-room .diagnostic-config>span,.control-room .diagnostic-config code { color:var(--ui-muted); font-size:12px; }
-.control-room .diagnostic-config b { color:var(--ui-pvw); }
+.control-room .diagnostic-config b { color:var(--ui-text); }
 .control-room .diagnostic-endpoints { border-color:var(--ui-border); background:var(--ui-border); }
 .control-room .diagnostic-endpoints>div { background:var(--ui-bg); color:var(--ui-text); font-size:12px; padding:12px; }
 .control-room .economy-calibration h3 { font-size:16px; }
@@ -275,7 +275,7 @@
 .manage-roster-player>div { display:flex; flex-direction:column; gap:2px; min-width:0; flex:1; }
 .manage-roster-player strong { font-size:14px; overflow-wrap:anywhere; }
 .manage-roster-player small { overflow-wrap:anywhere; }
-.roster-complete,.roster-incomplete { font-size:12px; flex:none; color:var(--ui-pvw); }
+.roster-complete,.roster-incomplete { font-size:12px; flex:none; color:var(--ui-info); }
 .roster-incomplete { color:var(--ui-warning); }
 .manage-team-summary .manage-team-note { margin-top:12px; flex:none; }
 .control-room .tournament-workspace { gap:16px; }
@@ -346,12 +346,6 @@
 .remote-workbench .button,.remote-workbench .button.small { min-height:44px; }
 .remote-workbench details>summary { box-sizing:border-box; min-height:44px; padding:12px 8px; line-height:20px; }
 .remote-workbench .remote-scene-list { max-height:none; }
-
-/* Matched specificity retires the old green operator button overrides. */
-:root[data-ui-theme=light] :is(.app-shell,.remote-workbench) .button { border-color:var(--ui-control-border); background:var(--ui-surface); color:var(--ui-text); }
-:root[data-ui-theme=light] :is(.app-shell,.remote-workbench) .button.primary:hover { background:var(--ui-accent); border-color:var(--ui-accent); }
-:root[data-ui-theme=light] :is(.app-shell,.remote-workbench) :is(input,select,textarea):not(:is(.broadcast-container *, .demo-preview *, .twitch-audience-graphic *, .archive-graphic *, .season-statistics-output *)) { border-color:var(--ui-control-border); background:var(--ui-bg); color:var(--ui-text); }
-:root[data-ui-theme=light] .control-room .diagnostic-outcome p { color:var(--ui-text); }
 
 @media(min-width:1700px) {
  .app-shell.control-room { grid-template-columns:88px minmax(0,1fr); }

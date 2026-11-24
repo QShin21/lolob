@@ -1,6 +1,6 @@
 import {PostgamePageControl} from '../components/PostgamePageControl';
 import { useEffect, useRef, useState } from "react";
-import { Archive, ArrowRight, Check, Circle, Film, Trophy } from "lucide-react";
+import { Archive, ArrowRight, Check, Circle, ClipboardCheck, Film, Trophy } from "lucide-react";
 import type { BroadcastAction, StateContext } from "../../shared/types";
 import type { OutputAction } from "../../shared/obs-output";
 import {
@@ -188,7 +188,7 @@ export function WrapUp({
           <span>红方</span>
           <strong>{getTeam(view, "red")?.name ?? "未提供战队"}</strong>
         </div>
-        <span className="wrap-result-label">
+        <span className="wrap-result-label" data-ready={!!winner}>
           {winner
             ? `${winner.tag} 获胜`
             : result
@@ -222,7 +222,7 @@ export function WrapUp({
           <div className="wrap-task-body domain-scroll">
             {tab === "result" && (
               <>
-                <h2>{result ? "核对本局结果" : "保存本局末次观测"}</h2>
+                <h2><ClipboardCheck size={17} aria-hidden="true" />{result ? "核对本局结果" : "保存本局末次观测"}</h2>
                 <p>
                   {result
                     ? result.source === "manual"
@@ -401,14 +401,16 @@ export function WrapUp({
                   </>
                 ) : (
                   <div className="domain-empty">
-                    先确认本局结束，再核对对应局的冻结报告。
+                    <Archive aria-hidden="true" />
+                    <strong>等待冻结报告</strong>
+                    <p>先确认本局结束，再核对对应局的冻结报告。</p>
                   </div>
                 )}
               </>
             )}
             {tab === "video" && (
               <>
-                <h2>本局录像与数据归档</h2>
+                <h2><Archive size={17} aria-hidden="true" />本局录像与数据归档</h2>
                 <p>按系列赛、局号和尝试匹配。数据快照与视频文件分别保存。</p>
                 {videos.length ? (
                   videos.map((v) => (
@@ -615,7 +617,7 @@ export function WrapUp({
           </div>
         </div>
         <aside className="wrap-checklist domain-scroll">
-          <h2>本局核对</h2>
+          <h2><ClipboardCheck size={17} aria-hidden="true" />本局核对</h2>
           {checks.map((c) => (
             <button
               key={c.title}

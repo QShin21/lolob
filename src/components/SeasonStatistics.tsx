@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { BarChart3 } from 'lucide-react';
 import type { BroadcastState } from '../../shared/types';
 import { seasonLeaderboard, seasonMetricLabels, seasonMetricValue, seasonStatistics, type SeasonMetric, type SeasonPlayer } from '../../shared/season-statistics';
 import './season-statistics.css';
@@ -28,7 +29,7 @@ export function SeasonStatistics({ state, tournamentId }: { state: BroadcastStat
     catch { setCopied('复制未完成，可打开右侧浏览器源链接后复制地址'); }
   }
   return <section className="season-statistics" aria-label="赛季统计">
-    <header className="season-statistics-header"><div><h2>赛季统计与交手记录</h2><p>{data.title} · {data.games} 局归档 · {data.resolvedGames} 局胜方已确认</p></div><div className="season-statistics-actions"><button className="button" onClick={() => void copyUrl()}>复制图形地址</button><a className="button" href={url} target="_blank" rel="noreferrer">打开浏览器源</a></div></header>
+    <header className="season-statistics-header"><div><h2><BarChart3 size={17} aria-hidden="true"/>赛季统计与交手记录</h2><p>{data.title} · {data.games} 局归档 · {data.resolvedGames} 局胜方已确认</p></div><div className="season-statistics-actions"><button className="button" onClick={() => void copyUrl()}>复制图形地址</button><a className="button" href={url} target="_blank" rel="noreferrer">打开浏览器源</a></div></header>
     {copied && <p role="status">{copied}</p>}
     <div className="season-statistics-controls">
       {tournamentId === undefined && <label>统计范围<select value={scope} onChange={e => { setScope(e.target.value); setSpotlight(''); }}><option value="">全部已归档比赛</option>{state.tournaments?.map(t => <option key={t.id} value={t.id}>{t.config.name}</option>)}</select></label>}
@@ -43,7 +44,7 @@ export function SeasonStatistics({ state, tournamentId }: { state: BroadcastStat
       {view === 'champions' && <table><thead><tr><th>英雄</th><th>选用</th><th>禁用</th><th>选用率</th><th>禁用率</th><th>选禁覆盖率</th><th>胜率</th><th>已确认胜负的选用局数</th></tr></thead><tbody>{data.champions.map(c => <tr key={c.id}><td>{c.name}</td><td>{c.picks}</td><td>{c.bans}</td><td>{rate(c.pickRate)}</td><td>{rate(c.banRate)}</td><td>{rate(c.presenceRate)}</td><td>{rate(c.winRate)}</td><td>{c.resolvedPicks}</td></tr>)}</tbody></table>}
       {view === 'head-to-head' && <table><thead><tr><th>战队 A</th><th>战队 B</th><th>已归档局数</th><th>单局胜负 A : B</th><th>待确认</th><th>已完成大场</th><th>大场胜负 A : B</th></tr></thead><tbody>{data.headToHead.map(h => <tr key={JSON.stringify([h.teamA, h.teamB])}><td>{h.nameA}</td><td>{h.nameB}</td><td>{h.games}</td><td>{h.winsA} : {h.winsB}</td><td>{h.unresolved}</td><td>{h.matches}</td><td>{h.matchWinsA} : {h.matchWinsB}</td></tr>)}</tbody></table>}
     </div>
-    {(!data.games || view === 'players' && !rows.length) && <div className="season-statistics-empty">{data.games ? '当前出场门槛和指标下没有可用选手数据。' : '完成比赛并归档后，选手排行、英雄选禁和单局交手数据会在这里生成。'}</div>}
+    {(!data.games || view === 'players' && !rows.length) && <div className="season-statistics-empty domain-empty"><BarChart3 aria-hidden="true"/><strong>{data.games ? '没有匹配的选手数据' : '等待比赛归档'}</strong><p>{data.games ? '当前出场门槛和指标下没有可用选手数据。' : '完成比赛并归档后，选手排行、英雄选禁和单局交手数据会在这里生成。'}</p></div>}
     <p className="season-statistics-note">胜率按胜方已确认的对局计算；缺失数据按各指标的有效局数计算。KDA =（击杀 + 助攻）÷ max(1, 死亡)；参团率按有效五人计分累计；伤害占比为完整五人伤害局的平均占比。大场交手取已完成赛程，人工补录赛果保留在大场统计中。</p>
     {selectedPlayer && <div className="season-statistics-spotlight"><PlayerSpotlight player={selectedPlayer} /></div>}
   </section>;

@@ -1,0 +1,345 @@
+/* Production tasks share this chrome with their Settings and remote entry points. */
+:is(.control-room, .remote-workbench) .production-task-heading {
+  background: var(--rc-panel);
+  box-shadow: inset 0 -1px var(--ui-border);
+}
+:is(.control-room, .remote-workbench) .production-task-heading h2 {
+  font-weight: 660;
+}
+:is(.control-room, .remote-workbench) .production-task :is(h3, h4) {
+  color: var(--ui-text);
+  font-weight: 640;
+}
+:is(.control-room, .remote-workbench) .production-task label {
+  color: var(--ui-muted);
+}
+:is(.control-room, .remote-workbench) .production-task :is(.incident-card, .production-checks > div, .production-clip) {
+  border-color: var(--ui-border);
+}
+:is(.control-room, .remote-workbench) .production-task :is(.incident-card, .production-clip) {
+  background: var(--ui-raised);
+  border-radius: var(--rc-radius-control);
+  padding-inline: 12px;
+}
+:is(.control-room, .remote-workbench) .production-task :is(.production-error, .request-error) {
+  border-radius: var(--rc-radius-control);
+}
+:is(.control-room, .remote-workbench) .production-desk details > summary:hover {
+  color: var(--ui-accent);
+}
+:is(.control-room, .remote-workbench) .production-desk .empty-state > strong {
+  display: block;
+  margin-block: 8px 4px;
+}
+:is(.control-room, .remote-workbench) :is(.subtitle-onair, .feed-onair-summary) {
+  border-inline-start: 3px solid var(--rc-pgm-solid);
+  border-radius: var(--rc-radius-chip);
+  background: color-mix(in srgb, var(--ui-danger-bg) 55%, var(--ui-surface));
+}
+:is(.control-room, .remote-workbench) :is(.subtitle-onair, .feed-onair-summary) > b {
+  color: var(--ui-pgm);
+}
+
+.control-room .audio-channel-bank {
+  border: 1px solid var(--ui-border);
+  border-radius: var(--rc-radius-control);
+  overflow: hidden;
+}
+.control-room .audio-channel-bank[data-expanded=true] { overflow-x: auto; }
+.control-room .audio-channel {
+  background: var(--rc-panel);
+  background-color: var(--ui-surface);
+  box-shadow: var(--rc-inset);
+}
+.control-room .audio-channel header strong { font-size: 14px; font-weight: 640; }
+.control-room .audio-channel output {
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  border-radius: var(--rc-radius-chip);
+  box-shadow: inset 0 0 0 1px var(--ui-border);
+}
+.control-room :is(.audio-fader-scale, .audio-meter-value) {
+  font-family: var(--rc-font-display);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.control-room .audio-signal-column { border-radius: var(--rc-radius-chip); }
+.control-room .audio-signal-column > span:not(.audio-no-meter, [data-clipping=true]) {
+  background: linear-gradient(0deg, var(--ui-selection-border), var(--ui-accent));
+}
+.control-room .audio-mute:not([aria-pressed=true]) { border-color: var(--ui-control-border); }
+.control-room .audio-mute:not([aria-pressed=true]):hover {
+  background: var(--ui-hover);
+  border-color: var(--ui-selection-border);
+}
+.control-room .audio-channel[data-muted=true] output { color: var(--ui-warning); }
+.control-room .music-transport header > svg { color: var(--rc-gold); }
+.control-room .music-file button:hover:not(:disabled) {
+  background: var(--ui-hover);
+  border-color: var(--ui-selection-border);
+}
+
+:is(.control-room, .remote-workbench) .replay-director-heading h3 { font-weight: 660; }
+:is(.control-room, .remote-workbench) .replay-seek > span,
+:is(.control-room, .remote-workbench) .replay-event-time {
+  font-family: var(--rc-font-display);
+  font-size: 15px;
+  color: var(--ui-info);
+  font-variant-numeric: tabular-nums;
+}
+:is(.control-room, .remote-workbench) .replay-event-list {
+  background: var(--ui-surface);
+  border-radius: var(--rc-radius-control);
+}
+:is(.control-room, .remote-workbench) .replay-event:nth-child(even):not([aria-pressed=true], :hover) {
+  background: var(--ui-raised);
+}
+:is(.control-room, .remote-workbench) .replay-event[aria-pressed=true] {
+  background: var(--ui-selected);
+}
+.control-room .player-feed-pair-buttons > button {
+  border-radius: var(--rc-radius-control);
+  box-shadow: var(--rc-inset);
+}
+.control-room .player-feed-pair-buttons > button:not(.selected):hover { background: var(--ui-hover); }
+.control-room .player-feed-pair-buttons > button.selected {
+  border-color: var(--ui-selection-border);
+  box-shadow: inset 0 -2px var(--ui-accent);
+}
+.control-room .feed-pair-thumbnail img { border-radius: var(--rc-radius-chip); }
+.control-room .player-feed-pair-buttons strong {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.control-room .player-feed-pair-buttons span { font-size: 12px; }
+.control-room .feed-pair-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ui-muted);
+}
+.control-room .feed-pair-placeholder > svg { flex: none; }
+.control-room .player-feed-switcher .feed-onair-summary {
+  display: grid;
+  gap: 4px;
+  background: var(--ui-raised);
+  border-inline-start-color: var(--ui-border);
+}
+.control-room .director-tasks .player-feed-switcher .panel-head { padding: 12px 16px; }
+.control-room .director-tasks .player-feed-switcher > .toggle-setting { padding: 8px; }
+.control-room .director-tasks .player-feed-pair-buttons { padding: 0 8px 12px; gap: 4px; }
+.control-room .director-tasks .player-feed-pair-buttons > button { padding: 6px 3px; gap: 4px; }
+.control-room .director-tasks .player-feed-pair-buttons strong { justify-content: center; }
+.control-room .director-tasks .player-feed-pair-buttons > button > span { text-align: center; }
+.control-room .director-tasks .feed-pair-thumbnail {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 2px;
+}
+.control-room .director-tasks .feed-pair-thumbnail img,
+.control-room .director-tasks .feed-pair-placeholder {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--rc-radius-chip);
+}
+.control-room .director-tasks .feed-pair-placeholder {
+  justify-content: center;
+  background: var(--ui-bg);
+}
+.control-room .director-tasks .feed-pair-placeholder > span { display: none; }
+
+/* Shared modal surface and individual dialog headers */
+.app-shell.control-room :is(
+  .style-pack-dialog, .custom-scene-dialog, .studio-detail-dialog, .app-operation-dialog, .broadcast-popover
+) {
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  border-radius: var(--rc-radius-panel);
+  box-shadow: var(--rc-shadow-2), 0 0 0 1px var(--rc-gold-line);
+}
+.control-room :is(
+  .style-pack-dialog > header, .custom-editor-heading,
+  .studio-detail-dialog > header, .app-operation-dialog > header, .se-toolbar
+) {
+  background: var(--rc-panel);
+  border-bottom-color: var(--ui-border);
+  box-shadow: var(--rc-inset);
+}
+.control-room :is(
+  .style-pack-dialog > header h2, .custom-editor-heading h2,
+  .studio-detail-dialog > header h2, .app-operation-dialog > header h2, .broadcast-popover h2
+) {
+  color: var(--ui-text);
+  font-size: 19px;
+  font-weight: 670;
+}
+.control-room :is(
+  .style-pack-dialog > header h2, .app-operation-dialog > header h2, .studio-detail-dialog > header h2
+) > svg {
+  color: var(--rc-gold);
+}
+.control-room .app-operation-dialog > header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.control-room .app-operation-dialog > header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.control-room .app-operation-dialog > textarea {
+  background: var(--ui-bg);
+  border-radius: var(--rc-radius-control);
+  font-family: ui-monospace, monospace;
+}
+.control-room .app-operation-dialog > p[role=status] { color: var(--ui-info); }
+.control-room .app-operation-dialog .app-guide-step {
+  color: var(--rc-gold);
+  font-weight: 620;
+}
+.control-room .app-operation-dialog h3 { font-size: 17px; font-weight: 660; }
+.control-room .app-update-status {
+  border: 1px solid var(--ui-border);
+  border-radius: var(--rc-radius-control);
+  box-shadow: var(--rc-inset);
+}
+.control-room .broadcast-popover > header {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.control-room .broadcast-popover > h3 {
+  font-size: 16px;
+  font-weight: 660;
+}
+.control-room .broadcast-popover > h3::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 2px;
+  margin-top: 6px;
+  background: linear-gradient(90deg, var(--rc-gold), transparent);
+}
+.control-room .broadcast-popover :is(p, small, label) { color: var(--ui-muted); }
+
+:is(.control-room, .remote-workbench) .seat-recovery {
+  border-radius: var(--rc-radius-panel);
+  background: var(--ui-warning-bg);
+  border-color: color-mix(in srgb, var(--ui-warning) 56%, var(--ui-border));
+  box-shadow: var(--rc-inset);
+}
+:is(.control-room, .remote-workbench) .seat-recovery [role=alert] > strong { color: var(--ui-error); }
+:is(.control-room, .remote-workbench) .seat-recovery:has([role=alert]) {
+  background: var(--ui-danger-bg);
+  border-color: color-mix(in srgb, var(--ui-error) 56%, var(--ui-border));
+}
+
+/* Scene tools and editors. The composition artwork owns the preview pixels. */
+.control-room .scene-bank-search input {
+  border-radius: var(--rc-radius-control);
+}
+.control-room .scene-bank-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 16px 12px;
+  color: var(--ui-muted);
+  font-size: 12px;
+  text-align: center;
+}
+.control-room .scene-bank-empty > svg { color: var(--rc-gold); flex: none; }
+.control-room .custom-delete-prompt {
+  border-color: var(--ui-warning);
+  border-radius: var(--rc-radius-control);
+}
+.control-room :is(.custom-editor-layers, .custom-editor-properties, .style-pack-layout > aside, .se-tree, .se-properties) {
+  background: color-mix(in srgb, var(--ui-raised) 60%, var(--ui-surface));
+  border-color: var(--ui-border);
+}
+.control-room :is(.custom-pane-heading h3, .custom-property-section h4, .style-pack-preview-heading h3) {
+  color: var(--ui-text);
+  font-weight: 660;
+}
+.control-room :is(.custom-pane-heading h3, .style-pack-preview-heading h3)::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  margin-inline-end: 8px;
+  vertical-align: .24em;
+  background: var(--rc-gold);
+}
+.control-room :is(.custom-layer-row, .custom-scene-settings, .custom-source-result, .style-pack-choice) {
+  border-radius: var(--rc-radius-control);
+}
+.control-room :is(.custom-layer-row[data-selected=true], .custom-scene-settings[aria-pressed=true], .style-pack-choice[aria-pressed=true]) {
+  background: var(--ui-selected);
+  box-shadow: inset 3px 0 var(--ui-selection-border);
+}
+.control-room .custom-canvas-toolbar {
+  background: var(--rc-panel);
+  box-shadow: var(--rc-inset);
+}
+.control-room .custom-canvas-viewport {
+  background-color: var(--rc-ink);
+}
+.control-room :is(.custom-canvas-dimensions, .custom-transform-field b) {
+  font-family: var(--rc-font-display);
+  font-size: 14px;
+  letter-spacing: .04em;
+}
+.control-room .custom-scene-dialog .custom-transform-field input {
+  padding-inline-start: 28px;
+  font-family: var(--rc-font-display);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.control-room :is(.custom-scene-settings small, .custom-canvas-caption > small, .custom-transform-field small) {
+  font-size: 12px;
+}
+.control-room .custom-canvas-empty {
+  background: var(--rc-panel);
+  border-radius: var(--rc-radius-panel);
+  box-shadow: var(--rc-shadow-1);
+}
+.control-room .custom-canvas-empty > svg { color: var(--rc-gold); }
+.control-room :is(.custom-source-panel, .custom-composite-guide) {
+  border-radius: var(--rc-radius-panel);
+  box-shadow: var(--rc-shadow-2);
+}
+.control-room .custom-editor-footer { background: var(--ui-raised); }
+.control-room .style-pack-buses { border-bottom: 1px solid var(--ui-border); }
+.control-room .style-pack-choice:hover:not(:disabled, [aria-pressed=true]) {
+  background: var(--ui-hover);
+  border-color: var(--ui-control-border);
+}
+.control-room .style-pack-choice :is(span, small, b) { font-size: 12px; }
+.control-room .style-editor :is(.se-tree, .se-properties, .se-global) {
+  border-radius: var(--rc-radius-control);
+}
+.control-room .se-tree button[aria-pressed=true] { box-shadow: inset 3px 0 var(--ui-selection-border); }
+.control-room .se-tree button:hover:not([aria-pressed=true]) { background: var(--ui-hover); }
+
+/* Studio detail tables and connection information */
+.control-room .studio-detail-scroll { background: var(--ui-bg); }
+.control-room .studio-detail-dialog :is(.roster-team-head > strong, .metric-score > strong, .event-count) {
+  font-variant-numeric: tabular-nums;
+}
+.control-room .studio-detail-dialog :is(.roster-table-head, .roster-row, .roster-row strong, .roster-row small, .source-row strong, .source-row small, .event-row small, .event-row p, .tip-card p) {
+  font-size: 12px;
+}
+.control-room .studio-detail-dialog .roster-table-head {
+  background: var(--ui-raised);
+  letter-spacing: .04em;
+}
+.control-room .studio-detail-dialog .roster-row.selected { background: var(--ui-selected); }
+.control-room .studio-detail-dialog .roster-row:hover { background: var(--ui-hover); }
+.control-room .studio-detail-dialog .roster-team-head > strong { font-size: 13px; }
+.control-room .studio-detail-dialog .event-tabs button { font-size: 12px; min-height: 32px; }
+.control-room .studio-detail-dialog .event-count { font-size: 13px; }
+.control-room .studio-detail-dialog .event-row p { color: var(--ui-text); }
+.control-room .studio-detail-dialog .tip-card { background: var(--rc-panel); }

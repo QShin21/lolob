@@ -103,7 +103,7 @@
   font-size: 12px;
 }
 .remote-sync.is-connected {
-  color: var(--ui-pvw);
+  color: var(--ui-info);
 }
 .remote-seat-heading {
   display: flex;
@@ -134,7 +134,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--ui-pvw);
+  color: var(--ui-info);
   font-size: 12px;
   flex: 0 0 auto;
 }
@@ -344,7 +344,7 @@
 }
 .remote-receipt.applied,
 .remote-receipt.confirmed {
-  color: var(--ui-pvw);
+  color: var(--ui-info);
 }
 .remote-receipt.failed {
   color: var(--ui-error);

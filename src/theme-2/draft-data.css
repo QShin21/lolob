@@ -1,0 +1,307 @@
+/* Draft workbench */
+.control-room .bp-round {
+  background: linear-gradient(105deg, var(--rc-gold-line), transparent 180px), var(--rc-panel);
+  background-color: var(--ui-surface);
+}
+.control-room .bp-round-clock.is-complete { color: var(--ui-info); }
+.control-room :is(.bp-round-clock b, .bp-team-heading > strong, .bp-pick-order, .bp-game) {
+  font-family: var(--rc-font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .04em;
+}
+.control-room .bp-round-clock b { font-size: 34px; }
+.control-room .bp-game { font-size: 14px; }
+.control-room .bp-source > svg { color: var(--ui-info); }
+
+.control-room :is(.bp-button, .bp-icon-button) {
+  border-radius: var(--rc-radius-control);
+  border-color: var(--ui-control-border);
+  background: linear-gradient(180deg, var(--ui-raised), color-mix(in srgb, var(--ui-raised) 82%, var(--ui-bg)));
+  box-shadow: var(--rc-inset);
+  font-weight: 560;
+  transition: background-color .16s var(--rc-ease), border-color .16s var(--rc-ease), box-shadow .16s var(--rc-ease);
+}
+.control-room :is(.bp-button, .bp-icon-button):hover:not(:disabled) {
+  background: var(--ui-hover);
+  border-color: var(--ui-selection-border);
+}
+.control-room .bp-button.bp-primary {
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+  border-color: var(--ui-accent);
+  font-weight: 640;
+}
+.control-room .bp-button.bp-primary:hover:not(:disabled) { box-shadow: 0 0 0 3px var(--rc-cyan-glow); }
+.control-room .bp-button.bp-danger {
+  background: var(--ui-danger-bg);
+  color: var(--ui-error);
+  border-color: color-mix(in srgb, var(--ui-error) 62%, transparent);
+}
+.control-room .bp-button.bp-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ui-danger-bg) 84%, var(--ui-error));
+  border-color: var(--ui-error);
+}
+
+.control-room .bp-team-heading {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--bp-side) 8%, var(--ui-raised)), var(--ui-surface) 68%);
+  border-inline-start-width: 3px;
+}
+.control-room .bp-team-heading h2 { font-size: 18px; }
+.control-room .bp-team-heading > strong { font-size: 32px; line-height: 1; }
+.control-room :is(.bp-pick-head, .bp-assignment-head, .bp-comparison-labels, .bp-history-heading) {
+  background: var(--ui-raised);
+  color: var(--ui-muted);
+  font-size: 12px;
+  font-weight: 560;
+  letter-spacing: .045em;
+}
+.control-room :is(.bp-pick-row, .bp-assignment-row, .bp-comparison-row, .bp-history-game):nth-child(even) {
+  background-color: color-mix(in srgb, var(--ui-raised) 40%, var(--ui-surface));
+}
+.control-room .bp-pick-row {
+  transition: background-color .16s var(--rc-ease);
+}
+.control-room .bp-pick-row:hover:not(:disabled) { background: var(--ui-hover); }
+.control-room .bp-pick-row.is-current { background: var(--ui-selected); }
+.app-shell.control-room .bp-pick-row:focus-visible {
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 5px var(--rc-cyan-glow);
+}
+.control-room .bp-pick-order { font-size: 15px; }
+.control-room .bp-pick-champion strong { font-size: 14px; font-weight: 640; }
+.control-room .bp-pick-owner strong { font-weight: 560; }
+.control-room :is(.bp-pick-champion small, .bp-pick-owner small) { font-size: 12px; }
+
+.control-room .bp-ban-heading {
+  background: var(--ui-raised);
+  border-bottom: 1px solid var(--ui-border);
+}
+.control-room .bp-ban-list { background: var(--ui-raised); }
+.control-room .bp-ban {
+  background: var(--ui-surface);
+  border-color: var(--ui-border);
+  border-radius: var(--rc-radius-control);
+}
+.control-room .bp-ban:is(:hover:not(:disabled), .is-current) { border-color: var(--ui-selection-border); }
+.control-room .bp-ban.is-current { background: var(--ui-selected); }
+.control-room .bp-ban > strong { font-weight: 560; }
+.control-room :is(.bp-ban > span, .bp-history-picks small) { font-size: 12px; }
+
+.control-room .bp-section-heading h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 660;
+}
+.control-room .bp-section-heading h3 > svg { flex: none; color: var(--rc-gold); }
+.control-room .bp-assignment-team h4 {
+  --bp-side: var(--rc-side-blue);
+  box-shadow: inset 3px 0 var(--bp-side);
+  padding-inline-start: 12px;
+  background: var(--ui-raised);
+  color: var(--bp-side);
+}
+.control-room .bp-assignment-team.red h4 { --bp-side: var(--rc-side-red); }
+.control-room .bp-comparison-row.has-difference { background: var(--ui-warning-bg); }
+.control-room .bp-client-stamp {
+  background: var(--ui-raised);
+  border-radius: var(--rc-radius-chip);
+}
+.control-room .bp-rules { background: var(--rc-panel); }
+.control-room .bp-history {
+  background: var(--ui-surface);
+  border-color: var(--ui-border);
+}
+.control-room .bp-history-game > b { font-family: var(--rc-font-display); letter-spacing: .04em; }
+.control-room .bp-empty > svg { margin-bottom: 8px; }
+.control-room .bp-empty > strong { display: block; margin-bottom: 4px; }
+
+.app-shell.control-room .bp-champion-dialog {
+  border-radius: var(--rc-radius-panel) 0 0 var(--rc-radius-panel);
+  box-shadow: var(--rc-shadow-2);
+}
+.control-room .bp-picker-heading { background: var(--rc-panel); }
+.control-room .bp-picker-heading h2 { font-weight: 670; }
+.control-room .bp-picker-heading small { color: var(--rc-gold); }
+.control-room .bp-picker-count { letter-spacing: .04em; }
+.control-room .bp-picker-results { background: color-mix(in srgb, var(--ui-bg) 52%, var(--ui-surface)); }
+.control-room .bp-candidate {
+  background: var(--rc-panel);
+  border-radius: var(--rc-radius-control);
+  box-shadow: var(--rc-inset);
+  transition: background-color .16s var(--rc-ease), border-color .16s var(--rc-ease);
+}
+.control-room .bp-candidate:hover:not([aria-disabled=true], .is-selected) { background: var(--ui-hover); }
+.control-room .bp-candidate.is-selected {
+  background: var(--ui-selected);
+  box-shadow: inset 0 -2px var(--ui-accent), var(--rc-shadow-1);
+}
+.control-room .bp-candidate.is-unavailable:not(.is-selected) { background: var(--ui-raised); }
+.control-room .bp-candidate small { font-size: 12px; }
+.control-room .bp-picker-footer { background: var(--rc-panel); }
+
+/* Live data */
+.control-room .data-top .data-clock {
+  font-family: var(--rc-font-display);
+  color: var(--ui-text);
+  font-size: 29px;
+  line-height: 1;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+.control-room .data-clock small {
+  font-family: var(--rc-font-ui);
+  color: var(--ui-muted);
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+.control-room .data-tools {
+  background: var(--rc-panel);
+  padding-inline: 12px;
+}
+.control-room .data-toolbar h2 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-weight: 650;
+}
+.control-room :is(.data-toolbar h2, .data-chart-heading h2, .data-events h2) svg {
+  color: var(--rc-gold);
+  flex: none;
+  vertical-align: -.15em;
+}
+.control-room .data-toolbar h2 small {
+  color: var(--ui-muted);
+  font-weight: 560;
+}
+.control-room .data-filters label { color: var(--ui-muted); }
+.control-room .data-grid-scroll {
+  border: 0;
+  border-radius: 0 0 var(--rc-radius-panel) var(--rc-radius-panel);
+}
+
+.control-room .data-grid th {
+  color: var(--ui-muted);
+  background: var(--ui-raised);
+  font-size: 12px;
+  font-weight: 570;
+  letter-spacing: .055em;
+}
+.control-room .data-grid :is(th, td) { border-color: var(--ui-border); }
+.control-room .data-grid td:first-child {
+  --data-side: var(--rc-side-blue);
+  border-inline-start-color: var(--data-side);
+}
+.control-room .data-grid [data-side=red] td:first-child { --data-side: var(--rc-side-red); }
+.control-room .data-grid td:first-child small { color: var(--data-side); }
+.control-room .data-grid td small,
+.control-room .data-source-tag { font-size: 12px; }
+.control-room .data-grid :is(.data-number, .data-source-tag) { font-variant-numeric: tabular-nums; }
+.control-room .data-grid .data-number {
+  font-family: var(--rc-font-display);
+  font-size: 16px;
+  font-weight: 560;
+  letter-spacing: .02em;
+}
+.control-room .data-grid tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--ui-raised) 45%, var(--ui-surface));
+}
+.control-room .data-grid tbody tr:hover td { background: var(--ui-hover); }
+.control-room .data-grid tbody tr[data-selected=true] td { background: var(--ui-selected); }
+.control-room .data-grid .button[aria-pressed=true] {
+  color: var(--ui-accent);
+  border-color: var(--ui-selection-border);
+  background: var(--ui-surface);
+}
+.control-room .data-grid .button { min-height: 32px; }
+.control-room .data-inspector { padding: 12px 12px 12px 16px; }
+.control-room .data-player-heading {
+  --data-side: var(--rc-side-blue);
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.control-room .data-player-heading[data-side=red] { --data-side: var(--rc-side-red); }
+.control-room .data-player-heading small { color: var(--data-side); }
+.control-room .data-player-heading h2 { font-weight: 670; }
+.control-room .data-inspector-items > div {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--ui-raised);
+  border-radius: var(--rc-radius-chip);
+  box-shadow: inset 0 0 0 1px var(--ui-border);
+}
+.control-room .data-inspector-items img {
+  position: absolute;
+  inset: 0;
+}
+.control-room .data-inspector > p { color: var(--ui-muted); }
+
+.control-room .data-team-comparison section {
+  --data-side: var(--rc-side-blue);
+  border: 1px solid var(--ui-border);
+  border-inline-start: 3px solid var(--data-side);
+  padding-inline: 16px;
+  border-radius: var(--rc-radius-panel);
+  background: var(--rc-panel);
+  box-shadow: var(--rc-inset), var(--rc-shadow-1);
+}
+.control-room .data-team-comparison section[data-side=red] {
+  --data-side: var(--rc-side-red);
+  border-color: var(--ui-border);
+  border-inline-start-color: var(--data-side);
+}
+.control-room .data-team-comparison h2 small { color: var(--data-side); }
+.control-room .data-team-comparison dd {
+  font-family: var(--rc-font-display);
+  font-size: 27px;
+  font-weight: 620;
+  line-height: 1;
+  letter-spacing: .03em;
+}
+.control-room .data-chart-heading { border: 0; padding-inline: 4px; }
+.control-room .data-analysis .economy-chart {
+  --cast-blue: var(--rc-side-blue);
+  --cast-red: var(--rc-side-red);
+  background: var(--rc-panel);
+  background-color: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--rc-radius-panel);
+  padding: 12px;
+  color: var(--ui-muted);
+}
+.control-room .data-analysis .economy-chart svg text {
+  font-family: var(--rc-font-display);
+  opacity: 1;
+}
+.control-room .data-analysis .chart-tooltip {
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  border-radius: var(--rc-radius-chip);
+  box-shadow: var(--rc-shadow-1);
+}
+.control-room .data-analysis .chart-point,
+.control-room .data-analysis .chart-event-point { fill: var(--ui-info); }
+.control-room .data-analysis .chart-event-point[data-side=blue] { fill: var(--rc-side-blue); }
+.control-room .data-analysis .chart-event-point[data-side=red] { fill: var(--rc-side-red); }
+.control-room .data-analysis .chart-cursor { stroke: var(--ui-text); }
+.control-room .data-analysis .chart-unavailable { color: var(--ui-muted); }
+
+.control-room .data-events > header {
+  background: var(--rc-panel);
+  border-radius: var(--rc-radius-panel) var(--rc-radius-panel) 0 0;
+  padding-inline: 16px;
+}
+.control-room .data-event { background: var(--ui-surface); padding-inline: 16px; }
+.control-room .data-event:nth-child(odd) { background: var(--ui-raised); }
+.control-room .data-event time { font-family: var(--rc-font-display); font-size: 16px; }
+.control-room .data-event [data-side] { font-weight: 570; }
+.control-room .data-events > .domain-empty { background: var(--ui-surface); }
+.control-room .data-connection-list { padding-inline: 16px; }
+.control-room .data-connection-list > div > span[data-status=connecting] { color: var(--ui-warning); }
+
+@media (max-width: 920px) {
+  .control-room .bp-round-copy h1 { font-size: 20px; line-height: 1.35; }
+}

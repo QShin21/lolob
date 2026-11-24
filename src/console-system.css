@@ -36,19 +36,19 @@
 }
 .application-status {
   font-size: 12px;
-  color: #ffd38a;
+  color: var(--ui-warning);
 }
 .application-status.failed {
   color: var(--ui-error);
 }
 .application-status.applied,
 .application-status.confirmed {
-  color: #8ae2bb;
+  color: var(--ui-info);
 }
 .text-button {
   background: none;
   border: 0;
-  color: #b7ed83;
+  color: var(--ui-accent);
   cursor: pointer;
   font-size: 12px;
 }
@@ -174,7 +174,7 @@
 }
 .subtitle-onair {
   border-left: 3px solid var(--ui-pgm);
-  background: #30262c;
+  background: var(--ui-danger-bg);
   padding: 10px;
 }
 .production-error {
@@ -196,7 +196,7 @@
   gap: 8px;
   align-items: center;
   flex-wrap: wrap;
-  background: #203338f5;
+  background: color-mix(in srgb, var(--ui-raised) 95%, transparent);
   border: 1px solid var(--ui-border);
   padding: 12px;
   z-index: 10;
@@ -215,7 +215,7 @@
   inset: 0;
   transform: scaleX(0);
   transform-origin: left;
-  background: #e3937840;
+  background: color-mix(in srgb, var(--ui-error) 25%, transparent);
   pointer-events: none;
 }
 .holding .hold-progress {
@@ -264,25 +264,25 @@
   cursor: pointer;
 }
 .notice-error {
-  background: #42282b !important;
-  border-color: #d98585 !important;
-  color: #ffe1df !important;
+  background: var(--ui-danger-bg) !important;
+  border-color: color-mix(in srgb, var(--ui-error) 55%, transparent) !important;
+  color: var(--ui-error) !important;
 }
 .notice-warning {
-  background: #41371f !important;
-  border-color: #bda262 !important;
-  color: #ffe2a7 !important;
+  background: var(--ui-warning-bg) !important;
+  border-color: color-mix(in srgb, var(--ui-warning) 55%, transparent) !important;
+  color: var(--ui-warning) !important;
 }
 .notice-info,
 .notice-loading {
-  background: #203840 !important;
-  color: #e2f3ff !important;
-  border-color: #638a9c !important;
+  background: var(--ui-info-bg) !important;
+  color: var(--ui-info) !important;
+  border-color: color-mix(in srgb, var(--ui-info) 50%, transparent) !important;
 }
 .notice-success {
-  background: #203b30 !important;
-  color: #d4ffdc !important;
-  border-color: #67a780 !important;
+  background: var(--ui-success-bg) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-border) !important;
 }
 .settings-form .field {
   font-size: 14px;
@@ -297,8 +297,8 @@
   position: absolute;
   top: 8px;
   left: 60px;
-  background: #14272cf2;
-  border: 1px solid #698b81;
+  background: color-mix(in srgb, var(--ui-surface) 96%, transparent);
+  border: 1px solid var(--ui-border);
   padding: 8px 12px;
   font-size: 13px;
   pointer-events: none;
@@ -329,8 +329,8 @@
 }
 .feed-onair-summary {
   padding: 10px;
-  background: #30262c;
-  border-left: 3px solid #ff7e86;
+  background: var(--ui-danger-bg);
+  border-left: 3px solid var(--ui-pgm);
   font-size: 13px;
 }
 .interview-safe-preview {
@@ -429,7 +429,7 @@
 .page-loading {
   padding: 30px;
   text-align: center;
-  color: #bad0c8;
+  color: var(--ui-muted);
 }
 @media (prefers-reduced-motion: reduce) {
   *,

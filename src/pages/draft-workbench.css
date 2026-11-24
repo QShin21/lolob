@@ -45,7 +45,7 @@
 }
 .bp-button.bp-primary {
   background: var(--ui-accent);
-  color: var(--ui-bg);
+  color: var(--ui-on-accent);
   border-color: var(--ui-accent);
   font-weight: 650;
 }
@@ -516,7 +516,7 @@
   color: var(--ui-muted);
 }
 .bp-assignment-row.is-locked .bp-assignee > small {
-  color: var(--ui-pvw);
+  color: var(--ui-info);
 }
 .bp-assignment-fields {
   display: flex;

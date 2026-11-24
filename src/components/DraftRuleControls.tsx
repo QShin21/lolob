@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Check } from "lucide-react";
+import { Check, ClipboardList } from "lucide-react";
 import type { StateContext } from "../../shared/types";
 import type { ProductionState } from "../../shared/production-types";
 import { useConfigDraft } from "../useConfigDraft";
@@ -75,7 +75,7 @@ export function DraftRuleControls(ctx: StateContext) {
     <section className="bp-rules" data-ack={ack}>
       <div className="bp-section-heading">
         <div>
-          <h3>本场 BP 规则</h3>
+          <h3><ClipboardList size={17} aria-hidden="true" />本场 BP 规则</h3>
           <p>第五局是否开放重复英雄由例外局配置决定，不自动放开。</p>
         </div>
       </div>

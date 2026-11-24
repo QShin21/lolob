@@ -70,7 +70,7 @@
 .director-toolbar-actions { display:flex; gap:8px; margin-left:auto }
 .director-vision { display:grid; grid-template-rows:auto auto minmax(112px,1fr); min-width:0; min-height:0; gap:8px }
 .director-monitors { display:grid; grid-template-columns:1fr 1fr; gap:12px; min-width:0; align-items:start }
-.monitor-pane { overflow:hidden; background:#05090e; min-width:0; border:1px solid var(--ui-border); border-radius:3px }
+.monitor-pane { overflow:hidden; background:var(--rc-ink); min-width:0; border:1px solid var(--ui-border); border-radius:3px }
 .monitor-label { display:flex; align-items:center; gap:10px; background:var(--ui-surface); padding:7px 10px; min-height:34px; font-size:12px; border-top:2px solid var(--ui-pvw); color:var(--ui-pvw) }
 .program .monitor-label { border-top-color:var(--ui-pgm); color:var(--ui-pgm) }
 .monitor-label>span:first-child { flex:none; display:flex; gap:6px; align-items:center; font-weight:700 }
@@ -112,7 +112,7 @@
 .director-tasks .production-desk { margin:0; min-width:0; width:100%; min-height:0 }
 .director-tasks .task-content { flex:1; min-height:0; max-height:none; overflow:auto; scroll-padding:12px }
 .studio-detail-dialog { width:min(1360px,calc(100vw - 40px)); height:calc(100dvh - 48px); max-height:none; margin:auto; padding:0; border:1px solid var(--ui-border); border-radius:6px; background:var(--ui-surface); color:var(--ui-text); overflow:hidden }
-.studio-detail-dialog[open] { display:flex; flex-direction:column }.studio-detail-dialog::backdrop { background:#050910cc }
+.studio-detail-dialog[open] { display:flex; flex-direction:column }.studio-detail-dialog::backdrop { background:#000c }
 .studio-detail-dialog>header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--ui-border); flex:none }
 .studio-detail-scroll { overflow:auto; padding:20px; min-height:0 }.studio-detail-scroll .studio-grid { display:grid; grid-template-columns:minmax(0,2fr) minmax(280px,1fr); gap:16px; margin-top:16px }
 @media(min-width:1700px) { .director-workspace { grid-template-columns:minmax(0,1fr) 400px; gap:12px 20px }.scene-bank-grid { grid-template-columns:repeat(4,minmax(0,1fr)) }.control-room[data-layout=dual] .director-workspace { grid-template-columns:minmax(0,1fr) 460px } }
