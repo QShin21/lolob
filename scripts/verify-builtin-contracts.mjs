@@ -47,7 +47,7 @@ try{
   for(const overlay of [initial.overlay,initial.production.program.overlay,initial.production.previousProgram.content.overlay])assert.deepEqual(overlay.stylePack,BUILTIN_STYLE_REF);
   assert.deepEqual(initial.gameResults,legacy.gameResults);
   assert.equal((await fetch(base+'/api/style-packs/jianlou/builtin-v1')).status,404);
-  assert.equal((await getList()).packs.length,7);
+  assert.equal((await getList()).packs.length,6);
   checks.push('actual service: legacy preview, program and undo migrate to Qinghua; archived data unchanged; retired API absent');
   const seat=await(await post('/api/control/seat',{role:'director'})).json();assert.ok(seat.token);
   const action=async pack=>{
@@ -63,31 +63,27 @@ try{
     }
     const exported=await fetch(`${base}/api/style-packs/${pack.id}/${pack.revision}/export`);assert.equal(exported.status,200);
     const archive = Buffer.from(await exported.arrayBuffer());
-    if (pack.id === 'rift-signature') {
-      assert.equal(record.archiveName, `RiftCast-${pack.version}-${pack.id}.riftstyle.zip`);
-      assert.equal(hash(archive), record.archiveSha256);
-    }
     const form=new FormData();form.append('file',new Blob([archive]),record.archiveName);
     const imported=await fetch(base+'/api/style-packs/import',{method:'POST',headers:{'x-seat-token':seat.token},body:form});assert.equal(imported.status,201);
     const duplicate=await imported.json();assert.equal(duplicate.builtin,true);assert.equal(duplicate.revision,pack.revision);
     await action(pack);const staged=await getState();assert.equal(staged.overlay.stylePack.id,pack.id);assert.deepEqual(staged.production.program.overlay.stylePack,BUILTIN_STYLE_REF);
-    assert.deepEqual(staged.gameResults,legacy.gameResults);assert.equal((await getList()).packs.length,7);
+    assert.deepEqual(staged.gameResults,legacy.gameResults);assert.equal((await getList()).packs.length,6);
     checks.push(`${pack.id}: 23 exact asset hashes, ZIP export/reimport deduplication and preview staging preserve program`);
   }
   const beforeRestart=await getState();await stop();await start();const afterRestart=await getState();
   assert.deepEqual(afterRestart.overlay.stylePack,beforeRestart.overlay.stylePack);assert.deepEqual(afterRestart.production.program.overlay.stylePack,BUILTIN_STYLE_REF);
-  assert.equal((await getList()).packs.length,7);
+  assert.equal((await getList()).packs.length,6);
   checks.push('actual restart restores independently selected builtin preview and Qinghua program');
   const second=await(await post('/api/control/seat',{role:'director'})).json();assert.ok(second.token);
   const customForm=new FormData();customForm.append('file',new Blob([await stylePackFixture()]),'test.riftstyle.zip');
   const importedCustom=await fetch(base+'/api/style-packs/import',{method:'POST',headers:{'x-seat-token':second.token},body:customForm});assert.equal(importedCustom.status,201);
-  const custom=await importedCustom.json();assert.equal(custom.builtin,false);assert.equal((await getList()).packs.length,8);
+  const custom=await importedCustom.json();assert.equal(custom.builtin,false);assert.equal((await getList()).packs.length,7);
   const customStage=await post('/api/action',{type:'set-style-pack',id:custom.id,revision:custom.revision,expectedConfigVersion:(await getState()).production.configVersion,requestId:randomUUID()},second.token);assert.equal(customStage.status,200);
-  await stop();await start();const customRestored=await getState();assert.equal(customRestored.overlay.stylePack.revision,custom.revision);assert.deepEqual(customRestored.production.program.overlay.stylePack,BUILTIN_STYLE_REF);assert.equal((await getList()).packs.length,8);
-  checks.push('custom ZIP import, stage and restart remain compatible beside the seven builtins');
+  await stop();await start();const customRestored=await getState();assert.equal(customRestored.overlay.stylePack.revision,custom.revision);assert.deepEqual(customRestored.production.program.overlay.stylePack,BUILTIN_STYLE_REF);assert.equal((await getList()).packs.length,7);
+  checks.push('custom ZIP import, stage and restart remain compatible beside the six builtins');
   await stop();await rm(data,{recursive:true});await mkdir(data,{recursive:true});await start();const fresh=await getState();
-  assert.deepEqual(fresh.overlay.stylePack,BUILTIN_STYLE_REF);assert.deepEqual(fresh.production.program.overlay.stylePack,BUILTIN_STYLE_REF);assert.equal((await getList()).packs.length,7);await stop();
-  checks.push('empty installation starts with seven builtins and Qinghua on both buses');
+  assert.deepEqual(fresh.overlay.stylePack,BUILTIN_STYLE_REF);assert.deepEqual(fresh.production.program.overlay.stylePack,BUILTIN_STYLE_REF);assert.equal((await getList()).packs.length,6);await stop();
+  checks.push('empty installation starts with six builtins and Qinghua on both buses');
   // Server rendering checks the component contract only. It does not execute a browser,
   // measure computed CSS, decode images in the browser or assert visual acceptance.
   const compiled=path.join(dir,'renderer.mjs');
@@ -108,7 +104,7 @@ try{
     ssrCases++;
     checks.push(`${pack.id}/${variant.scene}${variant.page2?'-page2':variant.focus?'-focus':''}: SSR component contract, selected artwork references and transparency classes`);
   }
-  assert.equal(assetsVerified,161);assert.equal(ssrCases,91);
+  assert.equal(assetsVerified,138);assert.equal(ssrCases,78);
   const report={status:'passed',version,checks,assetsVerified,ssrCases,limitations:['SSR is not browser screenshot or computed layout acceptance','Windows packaged EXE and live OBS not executed here'],fixture:'synthetic only'};
   await writeFile(path.join(dir,'report.json'),JSON.stringify(report,null,2));console.log(`Passed actual HTTP migration/import/restart and ${report.ssrCases} server-rendered component contracts.`);
 }catch(error){await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'failed',version,checks,error:String(error),serviceLog},null,2));throw error;}

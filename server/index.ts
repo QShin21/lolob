@@ -55,7 +55,7 @@ await stylePacks.initialize();
 for(const overlay of [state.overlay,state.production?.program?.overlay,state.production?.previousProgram?.content.overlay]){
   if(!overlay)continue;
   try{const pack=stylePacks.get(styleRef(overlay.stylePack));overlay.stylePack={id:pack.id,revision:pack.revision,name:pack.name};}
-  catch{stylePacks.warnings.push('已保存的风格包暂不可用，已回退到冰川极光');overlay.stylePack={...BUILTIN_STYLE_REF};}
+  catch{stylePacks.warnings.push(`已保存的风格包暂不可用，已回退到${BUILTIN_STYLE_REF.name}`);overlay.stylePack={...BUILTIN_STYLE_REF};}
 }
 resetRuntimeState(state);
 delete ensureProduction(state).control;

@@ -4,7 +4,7 @@
 
 **GUANLAN** · 原名 RiftCast。观澜取自《孟子》“观水有术，必观其澜”。观赛时，从每一波攻守读懂局势变化。
 
-当前源码版本为 **观澜 2.0.0**「演播室暗场」。本版更新导播工作台的深浅主题、应用图标、安装程序与启动画面，并新增第七套内置节目风格「裂隙曜金」。功能、操作流程和数据格式沿用 1.7.1。详见 [2.0.0 说明](docs/Windows-Release-2.0.0.md)、[设计系统](docs/Design-System-2.0.md) 与 [用户手册](docs/user-manual-2.0.0/README.md)。
+当前源码版本为 **观澜 2.0.0**「演播室暗场」。本版更新导播工作台的深浅主题、应用图标、安装程序与启动画面。功能、操作流程和数据格式沿用 1.7.1。详见 [2.0.0 说明](docs/Windows-Release-2.0.0.md)、[设计系统](docs/Design-System-2.0.md) 与 [用户手册](docs/user-manual-2.0.0/README.md)。
 
 从 [最新 Release](https://github.com/QShin21/lolob/releases/latest) 的 **Assets** 下载 Windows x64 安装包。当前 Release 提供一个 `.exe` 安装文件。
 

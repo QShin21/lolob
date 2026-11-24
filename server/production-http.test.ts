@@ -1,16 +1,20 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { mkdtemp, writeFile, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createServer, type AddressInfo } from 'node:net';
+import { BUILTIN_STYLE_REF } from '../shared/style-packs';
+import { ensureProduction, previousProgram } from '../shared/production';
+import { createSeed } from './state';
 
-async function service(failSave=false,delayed?:'success'|'failure'){
+async function service(failSave=false,delayed?:'success'|'failure',prepare?:(dir:string)=>Promise<void>){
   const socket=createServer();await new Promise<void>(resolve=>socket.listen(0,'127.0.0.1',resolve));
   const port=(socket.address() as AddressInfo).port;await new Promise<void>(resolve=>socket.close(()=>resolve()));
   const dir=await mkdtemp(path.join(tmpdir(),'riftcast-production-http-')),base=`http://127.0.0.1:${port}`;
+  await prepare?.(dir);
   const preload=path.join(dir,'failure.cjs');
   if(failSave)await writeFile(preload,"const fs=require('node:fs/promises'),old=fs.rename;fs.rename=async function(a,b){if(String(b).endsWith('state.json'))throw new Error('fixture ENOSPC');return old(a,b);};require('node:module').syncBuiltinESMExports();");
   const obsHook=path.join(dir,'obs-hook.mjs');
@@ -23,6 +27,41 @@ async function service(failSave=false,delayed?:'success'|'failure'){
   const post=(route:string,body:unknown,token?:string)=>fetch(base+route,{method:'POST',headers:{'Content-Type':'application/json',...(token?{'x-seat-token':token}:{})},body:JSON.stringify(body)});
   return {dir,base,close,get,post,child};
 }
+
+test('HTTP startup restores unavailable style revisions on preview, program and undo', {timeout:30000}, async()=>{
+  const saved=createSeed(), production=ensureProduction(saved);
+  production.previousProgram=previousProgram(saved);
+  saved.match.title='Saved match';
+  const overlays=[saved.overlay,production.program!.overlay,production.previousProgram.content.overlay];
+  const retired={id:'rift-signature',revision:'9c932f6be718423d7423b1e67409cff7a818e03ecde30218604a3818b31b2897'};
+  async function boot(style:typeof retired){
+    const data=JSON.stringify(saved,(_key,value)=>overlays.includes(value)?{...value,stylePack:style}:value);
+    const removed=JSON.stringify([`${retired.id}--${retired.revision}`]);
+    const api=await service(false,undefined,async dir=>{
+      await writeFile(path.join(dir,'state.json'),data);
+      await mkdir(path.join(dir,'style-packs'));
+      await writeFile(path.join(dir,'style-packs','removed-builtins.json'),removed);
+    });
+    try{
+      const state=await api.get();
+      const response=await fetch(api.base+'/api/style-packs');
+      assert.equal(response.status,200);
+      const styles=await response.json();
+      assert.equal(await readFile(path.join(api.dir,'style-packs','removed-builtins.json'),'utf8'),removed);
+      return {state,styles};
+    }finally{await api.close();}
+  }
+  overlays.forEach((overlay,i)=>{overlay.tickerText=`Saved bus ${i}`;});
+  const baseline=await boot(BUILTIN_STYLE_REF), restored=await boot(retired);
+  for(const overlay of [restored.state.overlay,restored.state.production.program.overlay,restored.state.production.previousProgram.content.overlay]){
+    assert.deepEqual(overlay.stylePack,BUILTIN_STYLE_REF);
+  }
+  assert.deepEqual(restored.state,baseline.state);
+  assert.equal(restored.state.match.title,saved.match.title);
+  assert.deepEqual(restored.styles.packs,baseline.styles.packs);
+  assert.deepEqual(baseline.styles.warnings,[]);
+  assert.deepEqual(restored.styles.warnings,Array(3).fill(`已保存的风格包暂不可用，已回退到${BUILTIN_STYLE_REF.name}`));
+});
 
 test('HTTP seats enforce stale forms, idempotent submissions and explicit ownership transfer',{timeout:20000},async()=>{
   const api=await service();try{

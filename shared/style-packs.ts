@@ -41,6 +41,8 @@ export function validStyleRef(value: unknown): value is StylePackRef {
 }
 /** Retired/default/malformed references migrate; valid custom revisions remain untouched. */
 export const styleRef = (value?: StylePackRef): StylePackRef => {
+  // Resolve a saved revision even when its display name was omitted.
+  if (value && value.name === undefined) value = { ...value, name: value.id };
   if (!validStyleRef(value)) return { ...BUILTIN_STYLE_REF };
   const builtin = builtinStyle(value);
   return { id: value.id, revision: value.revision, name: builtin?.name ?? value.name };

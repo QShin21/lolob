@@ -115,7 +115,7 @@ try {
   }
   await browser.close();browser=undefined;await vite.close();vite=undefined;
   await stop();await start();const restored=await state();assert.deepEqual(restored.overlay.stylePack,ref);assert.equal(restored.production.program.overlay.stylePack.id,BUILTIN_STYLE_REF.id);
-  assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,8);
+  assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,7);
   checks.push('real service restart restores both immutable style versions and separate preview/program selection');
   assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);
   await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors,blocked},null,2));console.log(checks.join('\n'));

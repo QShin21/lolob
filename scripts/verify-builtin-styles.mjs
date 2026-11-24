@@ -1,7 +1,7 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
-import { copyFile, mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import os from 'node:os';
@@ -19,7 +19,6 @@ const { BUILTIN_STYLE_REF, BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_RECORDS, STYLE_
 const { bundledChampions } = await tsImport('../shared/champion-art.ts', import.meta.url);
 const version = JSON.parse(await readFile('package.json', 'utf8')).version;
 const dir = path.resolve('verification-output', `release-${version}`, 'builtins'); await mkdir(dir, { recursive: true });
-const reviewDir = path.resolve('verification-output', 'rift-signature-review'); await mkdir(reviewDir, { recursive: true });
 const sandbox = await mkdtemp(path.join(os.tmpdir(), 'riftcast-builtin-styles-'));
 const data = path.join(sandbox, 'data'); await mkdir(data, { recursive: true });
 const listener = netServer(); await new Promise(r => listener.listen(0, '127.0.0.1', r)); const port = listener.address().port; await new Promise(r => listener.close(r));
@@ -42,7 +41,7 @@ try {
   assert.deepEqual(initial.gameResults, legacy.gameResults);
   assert.equal((await fetch(base + '/api/style-packs/jianlou/builtin-v1')).status, 404);
   const list = await (await fetch(base + '/api/style-packs')).json();
-  assert.equal(list.packs.length, 7); assert.ok(list.packs.every(p => p.builtin)); assert.deepEqual(list.warnings, []);
+  assert.equal(list.packs.length, 6); assert.ok(list.packs.every(p => p.builtin)); assert.deepEqual(list.warnings, []);
   checks.push('legacy retired references migrate on both buses and undo; archived game data unchanged; retired API returns 404');
   for (const record of BUILTIN_STYLE_RECORDS) {
     const pack = await (await fetch(`${base}/api/style-packs/${record.manifest.id}/${record.revision}`)).json();
@@ -58,8 +57,8 @@ try {
   const context = await browser.newContext({ viewport: { width: 1600, height: 1000 } }); await nativeRequestGuard(blocked).attach(context);
   page = await context.newPage(); page.on('pageerror', e => errors.push(e.message)); await page.goto(base);
   await page.getByRole('button', { name: '风格包', exact: true }).click({ timeout: 30000 });
-  const dialog = page.getByRole('dialog'); await dialog.locator('.style-pack-choice').nth(6).waitFor();
-  assert.equal(await dialog.locator('.style-pack-choice').count(), 7); assert.doesNotMatch(await dialog.innerText(), /简陋包/);
+  const dialog = page.getByRole('dialog'); await dialog.locator('.style-pack-choice').nth(5).waitFor();
+  assert.equal(await dialog.locator('.style-pack-choice').count(), 6); assert.doesNotMatch(await dialog.innerText(), /简陋包/);
   assert.match(await dialog.locator('.style-pack-choice').filter({ hasText: '青花瓷 · 云山雅韵' }).innerText(), /默认/);
   for (const pack of BUILTIN_RUNTIME_STYLES.filter(pack => pack.id !== BUILTIN_STYLE_REF.id)) {
     await dialog.locator('.style-pack-choice').filter({ hasText: pack.name }).click();
@@ -70,10 +69,9 @@ try {
   }
   await page.screenshot({ path: path.join(dir, 'builtin-manager.png') });
   const staged = (await state()).overlay.stylePack;
-  checks.push('seven builtins visible without import; Qinghua marked default; all other builtin choices stage independently of program');
+  checks.push('six builtins visible without import; Qinghua marked default; all other builtin choices stage independently of program');
   const fixture = createSeed(); fixture.paused = true; fixture.overlay.ticker = true;
   await writeFile(path.join(dir, 'index.html'), '<div id="root"></div><script type="module" src="./entry.tsx"></script>');
-  const runePages = JSON.parse(await readFile('server/test-support/rune-pages.json', 'utf8'));
   await writeFile(path.join(dir, 'entry.tsx'), `
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -88,37 +86,6 @@ const state = scene === 'postgame' ? ${JSON.stringify(reportFixture())} : ${JSON
 state.overlay.stylePack = packs.find(p => p.id === q.get('pack'));
 if (q.has('page2')) state.overlay.postgamePage = 2;
 if (q.has('focus')) state.selectedPlayerId = state.players[0].id;
-if (q.get('pack') === 'rift-signature') {
-  const sampledAt = new Date().toISOString();
-  state.connections.lcu = { status: 'connected', detail: 'Synthetic fixture' };
-  if (scene !== 'postgame') {
-    for (const player of state.players) player.goldSampledAt = sampledAt;
-  }
-  if (scene === 'standby') state.overlay.countdownEnd = Date.now() + 222000;
-  if (scene === 'interview') state.selectedPlayerId = state.players[0].id;
-  if (scene === 'economy') {
-    const count = Math.ceil(state.gameTime / 15);
-    state.economy = Array.from({ length: count + 1 }, (_, i) => {
-      const progress = i / count;
-      const red = 2500 + Math.round(38200 * progress);
-      const lead = Math.round(3900 * progress - 2550 * Math.sin(2 * Math.PI * progress) * (1 - progress));
-      return { time: state.gameTime * progress, blue: red + lead, red };
-    });
-    state.economyFeed = { source: 'api', status: 'fresh', detail: 'Synthetic fixture', sampledAt, ...state.economy.at(-1) };
-  }
-  if (scene === 'teamfight') {
-    for (const player of state.players) {
-      player.telemetry = { source: 'memory', sampledAt, gameTime: state.gameTime, validForMs: 600000 };
-    }
-  }
-  if (scene === 'lineup') {
-    const pages = ${JSON.stringify(runePages)};
-    state.players.forEach((player, i) => {
-      player.fullRuneIds = pages[i].runes;
-      player.statRuneIds = pages[i].shards;
-    });
-  }
-}
 document.body.classList.add('overlay-body');
 document.documentElement.classList.add('overlay-document');
 document.body.style.margin = '0';
@@ -142,24 +109,21 @@ createRoot(document.getElementById('root')).render(<BroadcastCanvas state={state
     }
     if (variant.scene === 'teamfight') assert.equal(await page.locator('.tf-player').count(), 10);
     if (variant.scene === 'postgame' && !variant.suffix) assert.equal(await page.locator('.pr-gold-player').count(), 10);
-    if (pack.id === 'rift-signature' && variant.scene === 'gold-ranking') assert.equal(await page.locator('.cast-gold-ranking li[data-gold]:not([data-gold=""])').count(), 10);
     assert.equal(await page.locator('.style-pack-frame').evaluateAll(elements => elements.every(el => el.complete && el.naturalWidth === 1920)), true);
-    const screenshot = path.join(dir, `${pack.id}-${variant.scene}${variant.suffix}.png`);
-    await page.screenshot({ path: screenshot, omitBackground: true });
-    if (pack.id === 'rift-signature') await copyFile(screenshot, path.join(reviewDir, `${variant.scene}${variant.suffix}.png`));
+    await page.screenshot({ path: path.join(dir, `${pack.id}-${variant.scene}${variant.suffix}.png`), omitBackground: true });
     renders++;
     checks.push(`${pack.id}/${variant.scene}${variant.suffix}: ready, original scene rendered and transparency preserved`);
     console.log(checks.at(-1));
   }
   await browser.close(); browser = undefined; await vite.close(); vite = undefined; await stop(); await start();
   const restored = await state(); assert.deepEqual(restored.overlay.stylePack, staged); assert.deepEqual(restored.production.program.overlay.stylePack, BUILTIN_STYLE_REF);
-  assert.equal((await (await fetch(base + '/api/style-packs')).json()).packs.length, 7);
+  assert.equal((await (await fetch(base + '/api/style-packs')).json()).packs.length, 6);
   checks.push('service restart retains staged builtin independently from Qinghua program, with no imported copies');
   await stop(); await rm(path.join(data, 'state.json')); await start();
   const fresh = await state(); assert.deepEqual(fresh.overlay.stylePack, BUILTIN_STYLE_REF); assert.deepEqual(fresh.production.program.overlay.stylePack, BUILTIN_STYLE_REF);
   checks.push('fresh installation uses Qinghua Celestial on both buses');
   assert.deepEqual(errors, []); assert.deepEqual(blocked, []);
-  assert.equal(renders, 91);
+  assert.equal(renders, 78);
   await writeFile(path.join(dir, 'report.json'), JSON.stringify({ status: 'passed', version, renders, checks, errors, blocked, fixtures: 'synthetic; no live game, OBS outputs or platform streaming' }, null, 2));
 } catch(error) { await page?.screenshot({path:path.join(dir,'failure.png')}).catch(()=>{}); await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'failed',version,checks,errors:[...errors,String(error)],blocked,log},null,2));throw error; }
 finally { await browser?.close(); await vite?.close(); await stop(); await rm(sandbox,{recursive:true,force:true,maxRetries:5,retryDelay:500}); }

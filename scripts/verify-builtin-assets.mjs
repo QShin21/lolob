@@ -8,11 +8,10 @@ const { BUILTIN_STYLE_RECORDS, BUILTIN_STYLE_REF, STYLE_SCENES } = await tsImpor
 const { validateStyleManifest } = await tsImport('../server/style-packs.ts', import.meta.url);
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 assert.deepEqual(BUILTIN_STYLE_RECORDS.map(({ manifest }) => manifest.id), [
-  'glacier-aurora', 'regalia', 'neon-pulse', 'vermilion-ink', 'porcelain-racing', 'qinghua-celestial', 'rift-signature',
+  'glacier-aurora', 'regalia', 'neon-pulse', 'vermilion-ink', 'porcelain-racing', 'qinghua-celestial',
 ]);
 assert.equal(BUILTIN_STYLE_REF.id, 'qinghua-celestial');
 const checks=[];
-const slotMetadata = new Map();
 for (const record of BUILTIN_STYLE_RECORDS) {
   const manifest = validateStyleManifest(record.manifest), hashes = {};
   assert.deepEqual(manifest, record.manifest); assert.deepEqual(Object.keys(manifest.scenes), [...STYLE_SCENES]);
@@ -22,9 +21,6 @@ for (const record of BUILTIN_STYLE_RECORDS) {
     const input = await readFile(path.join(dir, file)); hashes[file] = hash(input); assert.equal(hashes[file], record.hashes[file]);
     const meta = await sharp(input,{failOn:'warning'}).metadata(); assert.equal(meta.format,'png'); assert.equal(meta.pages??1,1);
     assert.ok(meta.width <= 4096 && meta.height <= 4096); assert.ok(input.length <= 8*1024*1024);
-    const dimensions = [meta.width, meta.height, meta.hasAlpha];
-    if (manifest.id === 'glacier-aurora') slotMetadata.set(file, dimensions);
-    if (manifest.id === 'rift-signature') assert.deepEqual(dimensions, slotMetadata.get(file), file);
     pixels += meta.width * meta.height; bytes += input.length;
   }
   assert.equal(hash(JSON.stringify({manifest,hashes})), record.revision);
@@ -35,4 +31,4 @@ for (const record of BUILTIN_STYLE_RECORDS) {
 assert.deepEqual((await readdir('public/style-packs')).sort(),checks.map(p=>p.id).sort());
 await mkdir('verification-output/release-1.0.0',{recursive:true});
 await writeFile('verification-output/release-1.0.0/builtin-assets.json',JSON.stringify({status:'passed',default:BUILTIN_STYLE_REF,packs:checks},null,2));
-console.log('Verified seven packs, 161 PNGs, immutable revisions and default Qinghua Celestial.');
+console.log('Verified six packs, 138 PNGs, immutable revisions and default Qinghua Celestial.');

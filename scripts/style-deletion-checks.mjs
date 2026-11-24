@@ -13,7 +13,7 @@ export async function checkStyleDeletion({ page, base, dir, checks }) {
   await page.reload();
   await page.getByRole('button', { name: '风格包', exact: true }).click({ timeout: 30000 });
   const dialog = page.getByRole('dialog'), remove = dialog.getByRole('button', { name: '删除风格包', exact: true });
-  await dialog.locator('.style-pack-choice').nth(6).waitFor();
+  await dialog.locator('.style-pack-choice').nth(5).waitFor();
   await dialog.locator('.style-pack-choice').filter({ hasText: '青花瓷 · 云山雅韵' }).click();
   assert.equal(await remove.isDisabled(), true);
   const input = await stylePackFixture();
@@ -65,7 +65,7 @@ export async function checkStyleDeletion({ page, base, dir, checks }) {
 }
 
 export async function checkDeletedAfterRestart(base, removed, checks, page) {
-  const list = await (await fetch(base + '/api/style-packs')).json(); assert.equal(list.packs.length, 6);
+  const list = await (await fetch(base + '/api/style-packs')).json(); assert.equal(list.packs.length, 5);
   for (const ref of [removed.ref, removed.builtin]) {
     assert.equal(list.packs.some(p => p.id === ref.id && p.revision === ref.revision), false);
     assert.equal((await fetch(`${base}/api/style-packs/${ref.id}/${ref.revision}`, { cache: 'no-store' })).status, 404);
@@ -77,6 +77,6 @@ export async function checkDeletedAfterRestart(base, removed, checks, page) {
   const body = new FormData(); body.append('file', new Blob([removed.archive]), 'restore-builtin.zip');
   const response = await fetch(base + '/api/style-packs/import', { method: 'POST', headers: { 'x-seat-token': seat.token }, body });
   assert.equal(response.status, 201); assert.equal((await response.json()).revision, removed.builtin.revision);
-  assert.equal((await (await fetch(base + '/api/style-packs')).json()).packs.length, 7);
+  assert.equal((await (await fetch(base + '/api/style-packs')).json()).packs.length, 6);
   checks.push('process restart keeps both custom and builtin deleted; original built-in ZIP restores availability');
 }
