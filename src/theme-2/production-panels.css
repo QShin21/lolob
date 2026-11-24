@@ -292,6 +292,12 @@
   font-size: 14px;
   letter-spacing: .04em;
 }
+.control-room .custom-scene-dialog .custom-transform-field input {
+  padding-inline-start: 28px;
+  font-family: var(--rc-font-display);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
 .control-room :is(.custom-scene-settings small, .custom-canvas-caption > small, .custom-transform-field small) {
   font-size: 12px;
 }

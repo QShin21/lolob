@@ -63,7 +63,10 @@
 }
 .control-room .bp-pick-row:hover:not(:disabled) { background: var(--ui-hover); }
 .control-room .bp-pick-row.is-current { background: var(--ui-selected); }
-.control-room .bp-pick-row:focus-visible { outline-offset: -4px; }
+.app-shell.control-room .bp-pick-row:focus-visible {
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 5px var(--rc-cyan-glow);
+}
 .control-room .bp-pick-order { font-size: 15px; }
 .control-room .bp-pick-champion strong { font-size: 14px; font-weight: 640; }
 .control-room .bp-pick-owner strong { font-weight: 560; }
