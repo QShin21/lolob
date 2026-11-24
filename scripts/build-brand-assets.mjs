@@ -12,7 +12,7 @@ export const ICON_SIZES = [16, 20, 24, 32, 40, 48, 64, 128, 256];
 const SMALL_MASTER_MAX = 32;
 
 async function renderIcon(size) {
-  const master = await readFile(path.join(brand, size <= SMALL_MASTER_MAX ? 'riftcast-icon-small.svg' : 'riftcast-icon.svg'));
+  const master = await readFile(path.join(brand, size <= SMALL_MASTER_MAX ? 'guanlan-icon-small.svg' : 'guanlan-icon.svg'));
   return sharp(master, { density: Math.max(72, 72 * size / 512 * 4) }).resize(size, size, { kernel: 'lanczos3' }).ensureAlpha().raw().toBuffer();
 }
 

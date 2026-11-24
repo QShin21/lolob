@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- 观澜 mark: a brass lens ring (观), one arc-light wave crossing it (澜), the on-air tally rising above the water. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#16233a"/><stop offset=".55" stop-color="#0b1220"/><stop offset="1" stop-color="#05080e"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3e0aa"/><stop offset=".45" stop-color="#c8aa6e" stop-opacity=".55"/><stop offset="1" stop-color="#7a6231" stop-opacity=".9"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2=".5" y2="1">
+      <stop offset="0" stop-color="#fbeec5"/><stop offset=".45" stop-color="#d9bc7c"/><stop offset="1" stop-color="#a07c3e"/>
+    </linearGradient>
+    <linearGradient id="arc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2a8fe0"/><stop offset=".38" stop-color="#63d9f2"/><stop offset=".62" stop-color="#e6fbff"/><stop offset="1" stop-color="#4fc4f2"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4fc4f2" stop-opacity=".42"/><stop offset="1" stop-color="#1b5fb4" stop-opacity=".06"/>
+    </linearGradient>
+    <radialGradient id="bloom" cx="50%" cy="58%" r="50%">
+      <stop offset="0" stop-color="#3fc8f0" stop-opacity=".3"/><stop offset="1" stop-color="#3fc8f0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tally" cx="38%" cy="34%" r="70%">
+      <stop offset="0" stop-color="#ff9aa2"/><stop offset=".5" stop-color="#ff4558"/><stop offset="1" stop-color="#c81d33"/>
+    </radialGradient>
+    <clipPath id="clip"><rect x="16" y="16" width="480" height="480" rx="108"/></clipPath>
+    <clipPath id="lens"><circle cx="256" cy="256" r="139"/></clipPath>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#tile)"/>
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#bloom)"/>
+  <rect x="21" y="21" width="470" height="470" rx="103" fill="none" stroke="url(#rim)" stroke-width="6"/>
+  <!-- water inside the lens -->
+  <g clip-path="url(#lens)">
+    <path fill="url(#water)" d="M40 292 C120 196 196 196 256 268 S392 340 472 244 V520 H40 Z"/>
+    <path fill="none" stroke="#9fe6fb" stroke-opacity=".34" stroke-width="12" stroke-linecap="round" d="M96 372 C150 326 200 326 256 362 S362 398 416 352"/>
+  </g>
+  <!-- lens ring -->
+  <circle cx="256" cy="256" r="156" fill="none" stroke="url(#gold)" stroke-width="34"/>
+  <!-- the wave: a tapered stroke of light that cuts the ring -->
+  <g clip-path="url(#clip)">
+    <path fill="#0a111e" stroke="#0a111e" stroke-width="22" stroke-linejoin="round" d="M44 290 C124 180 200 184 262 252 S392 318 468 236 C404 372 316 356 252 300 S128 236 44 290 Z"/>
+    <path fill="url(#arc)" d="M44 290 C124 180 200 184 262 252 S392 318 468 236 C404 372 316 356 252 300 S128 236 44 290 Z"/>
+    <path fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="5" stroke-linecap="round" d="M96 246 C150 204 204 204 258 258 S372 316 428 276"/>
+  </g>
+  <!-- on-air tally -->
+  <circle cx="306" cy="182" r="50" fill="#ff4558" opacity=".2"/>
+  <circle cx="306" cy="182" r="32" fill="url(#tally)"/>
+</svg>
