@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';import {pathToFileURL} from 'node:url';
@@ -13,7 +14,7 @@ await writeFile(path.join(dir,'index.html'),'<div id="root"></div><script type="
 await writeFile(path.join(dir,'entry.tsx'),`import React from 'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import'/src/styles.css';const s=${JSON.stringify(state)};s.overlay.stylePack=${JSON.stringify(BUILTIN_RUNTIME_STYLES.map(({id,revision,name})=>({id,revision,name})))}.find(p=>p.id===new URLSearchParams(location.search).get('pack'));if(new URLSearchParams(location.search).has('missing'))s.players.forEach(p=>{delete p.fullRuneIds;delete p.runeIds;delete p.runeSelection;delete p.statRuneIds;});document.body.style.margin='0';createRoot(document.getElementById('root')).render(<BroadcastCanvas state={s} champions={${JSON.stringify(bundledChampions())}} scene="lineup" output/>);`);
 const vite=await createServer({configFile:false,cacheDir:path.join(dir,'.vite'),plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;const errors=[],checks=[];
 try{
- browser=await chromium.launch({headless:true});const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));
+ browser=await chromium.launch({ headless:true, ...browserExecutable() });const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/api/**',async route=>{const parts=new URL(route.request().url()).pathname.split('/');if(parts[2]==='style-packs'){const record=BUILTIN_STYLE_RECORDS.find(p=>p.manifest.id===parts[3]);if(record){if(parts[5]==='assets')return route.fulfill({contentType:'image/png',body:await readFile(path.join('public/style-packs',parts[3],parts[4],record.manifest.assets[parts[6]]))});return route.fulfill({json:BUILTIN_RUNTIME_STYLES.find(p=>p.id===parts[3])});}}return route.fulfill({json:{}});});
  const origin=`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-${version}/runes/index.html`;
  for(const width of [1920,1280])for(const pack of BUILTIN_RUNTIME_STYLES){

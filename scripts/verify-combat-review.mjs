@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -21,7 +22,7 @@ await writeFile(path.join(dir,'index.html'),'<html><body style="margin:0"><div i
 await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import{CombatReviewControls}from'/src/components/CombatReview';import{bundledChampions}from'/shared/champion-art';import'/src/styles.css';const initial=${JSON.stringify(fixture)};function App(){const[s,set]=useState(initial),[controls,setControls]=useState(false);window.review={set:mode=>set(v=>({...v,overlay:{...v.overlay,combatReviewMode:mode,combatMomentId:''}})),controls:()=>setControls(true),stale:()=>set(v=>({...v,connections:{...v.connections,live:{status:'disconnected'}}}))};const send=async action=>{window.actions??=[];window.actions.push(action);if(action.type==='set-overlay')set(v=>({...v,overlay:{...v.overlay,...action.patch}}));};return controls?<CombatReviewControls state={s} send={send} notify={()=>{}}/>:<BroadcastCanvas state={s} champions={bundledChampions()} scene="live" output/>}createRoot(document.getElementById('root')).render(<App/>);`);
 const vite=await createServer({configFile:false,cacheDir:path.join(dir,'vite-cache'),plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;const checks=[],errors=[];
 try{
- browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
+ browser=await chromium.launch({ headless:true, ...browserExecutable() });const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/api/**',async route=>{const p=new URL(route.request().url()).pathname.split('/'),ref={id:p[3],revision:p[4],name:'fixture'};if(p[2]==='style-packs'){if(p[5]==='assets')return route.fulfill({body:await store.asset(ref,p[6]),contentType:'image/png'});return route.fulfill({json:store.get(ref)});}return route.fulfill({status:404,body:''});});
  await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/combat-review/index.html`);await page.locator('[data-style-status=ready]').waitFor();
  for(const width of [1920,1280]){await page.setViewportSize({width,height:width*9/16});for(const mode of ['damage-flow','death-recap','objective-dps','fight-history']){

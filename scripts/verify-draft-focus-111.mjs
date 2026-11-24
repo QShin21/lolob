@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
@@ -17,7 +18,7 @@ await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';i
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;
 const checks=[],errors=[];
 try{
- browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
+ browser=await chromium.launch({ headless:true, ...browserExecutable() });const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/api/**',async route=>{const parts=new URL(route.request().url()).pathname.split('/');if(parts[2]==='style-packs'){const record=BUILTIN_STYLE_RECORDS.find(p=>p.manifest.id===parts[3]);if(record){if(parts[5]==='assets')return route.fulfill({contentType:'image/png',body:await readFile(path.join('public/style-packs',parts[3],parts[4],record.manifest.assets[parts[6]]))});return route.fulfill({json:BUILTIN_RUNTIME_STYLES.find(p=>p.id===parts[3])});}}return route.fulfill({json:{}});});
  const origin=`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-${version}/draft-focus/index.html`;
  const patch=async value=>{await page.evaluate(p=>window.draftFixture.setDraft(p),value);await page.waitForTimeout(330);};

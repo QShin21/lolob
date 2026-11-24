@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -18,7 +19,7 @@ await writeFile(path.join(dir, 'entry.tsx'), `import React,{useState}from'react'
 const server = await createServer({ configFile: false, cacheDir: path.join(dir, 'vite-cache'), plugins: [react()], server: { host: '127.0.0.1', port: 0 } }); await server.listen();
 let browser; const checks = [], errors = [], requested = [];
 try {
-  browser = await chromium.launch({ headless: true }); const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } }); page.on('pageerror', error => errors.push(error.message));
+  browser = await chromium.launch({ headless: true, ...browserExecutable() }); const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } }); page.on('pageerror', error => errors.push(error.message));
   await page.route('**/api/resources/asset?*', async route => {
     const url = new URL(new URL(route.request().url()).searchParams.get('url')); requested.push(url.pathname);
     const metadata = /\/data\/zh_CN\/champion\/([A-Za-z0-9]+)\.json$/.exec(url.pathname);

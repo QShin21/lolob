@@ -1,5 +1,6 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Isolated real React component verification with a sampled clock; no game or output controls.
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import path from 'node:path';
@@ -40,7 +41,7 @@ let browser;
 const parseTime = value => value.split(':').map(Number).reduce((total, part) => total * 60 + part, 0);
 try {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, ...browserExecutable() });
   const page = await browser.newPage({ viewport: { width: 1000, height: 600 } });
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.goto(`http://127.0.0.1:${server.address().port}/`); await page.getByTestId('clock').waitFor();

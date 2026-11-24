@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -15,7 +16,7 @@ const fixture = createFixture(); fixture.production.control = { owner: 'test-dir
 const errors = [], checks = [];
 const vite = await createServer({ configFile: false, cacheDir: path.join(dir, 'vite-cache'), plugins: [react()], server: { host: '127.0.0.1', port: 0 } }); await vite.listen(); let browser;
 try {
-  browser = await chromium.launch({ headless: true, channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' });
+  browser = await chromium.launch({ headless: true, ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' }) });
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } }); page.on('pageerror', error => errors.push(error.message));
   await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-${version}/global-shortcuts/index.html`); await page.waitForFunction(() => !!window.setFixture);
   await page.evaluate(value => { sessionStorage.setItem('riftcast-seat-token', 'isolated_ui_probe'); window.setFixture(value); }, fixture);

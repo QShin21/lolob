@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
@@ -22,7 +23,7 @@ async function post(route,body,token){const response=await fetch(base+route,{met
 async function panel(name){await page.getByRole('button',{name:'连接与输出',exact:true}).click();await page.getByRole('tab',{name,exact:true}).click();}
 try{
   const fixture=createFixture();finalizeGame(fixture,{source:'manual',winner:'blue',terminal:true});await writeFile(path.join(dataDir,'state.json'),JSON.stringify(fixture));await start();
-  browser=await chromium.launch({headless:true,channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'});const context=await browser.newContext({viewport:{width:1600,height:1000}});await nativeRequestGuard(blocked).attach(context);page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(base);await page.waitForFunction(()=>!!sessionStorage.getItem('riftcast-seat-token'));
+  browser=await chromium.launch({ headless:true, ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL||'msedge' }) });const context=await browser.newContext({viewport:{width:1600,height:1000}});await nativeRequestGuard(blocked).attach(context);page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(base);await page.waitForFunction(()=>!!sessionStorage.getItem('riftcast-seat-token'));
   const onAir=structuredClone((await state()).production.program);
   await panel('节目包装');await page.getByRole('tab',{name:'局内与分析',exact:true}).click();await page.getByLabel('局内分析面板',{exact:true}).selectOption('participation');await page.locator('.settings-savebar').getByRole('button',{name:'保存基础包装到待播',exact:true}).click();await page.waitForFunction(()=>document.body.innerText.includes('基础包装草稿已保存到待播')||document.body.innerText.includes('基础包装与待播配置一致'));
   const staged=await state();assert.equal(staged.overlay.analysisMode,'participation');assert.deepEqual(staged.production.program,onAir);await page.screenshot({path:path.join(evidence,'analysis-controls.png')});checks.push('analysis controls persist into preview while programme snapshot stays unchanged');

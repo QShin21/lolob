@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -24,7 +25,7 @@ const base = `http://127.0.0.1:${vite.httpServer.address().port}`;
 const errors = [], requests = [], checks = [];
 let browser;
 try {
-  browser = await chromium.launch({ headless: true, channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' });
+  browser = await chromium.launch({ headless: true, ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' }) });
   const context = await browser.newContext({ viewport: { width: 1600, height: 1000 } });
   await context.route('**/api/**', async route => {
     const request = route.request(), url = new URL(request.url()), body = request.method() === 'POST' ? request.postDataJSON() : undefined;

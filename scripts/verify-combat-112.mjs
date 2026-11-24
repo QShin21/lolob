@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
@@ -28,7 +29,7 @@ await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';i
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;
 const checks=[],errors=[];
 try{
- browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
+ browser=await chromium.launch({ headless:true, ...browserExecutable() });const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/api/**',async route=>{
   const url=new URL(route.request().url()),parts=url.pathname.split('/');
   if(url.pathname==='/api/resources/asset'){try{const asset=await resources.read(url.searchParams.get('url'));return route.fulfill({contentType:asset.type,body:asset.bytes});}catch{return route.fulfill({status:404,body:''});}}

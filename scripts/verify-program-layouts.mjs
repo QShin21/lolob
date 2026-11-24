@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -17,7 +18,7 @@ await writeFile(path.join(dir,'index.html'),'<html><body style="margin:0;overflo
 await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import{bundledChampions}from'/shared/champion-art';import'/src/styles.css';const initial=${JSON.stringify(fixture)};function App(){const[s,set]=useState({...initial,overlay:{...initial.overlay,draftLayout:'full-height',championTabs:true,lFrame:false,sponsor:'',players:false}}),[scene,setScene]=useState('draft');window.layout={scene:setScene,stale:()=>set(v=>({...v,connections:{...v.connections,live:{status:'disconnected'}}})),pick:()=>set(v=>({...v,draft:{...v.draft,locked:false,activeTeam:'blue',action:'pick',bluePicks:v.draft.bluePicks.map((p,i)=>i===4?'':p),bluePreselect:['Ahri']}}))};return <BroadcastCanvas state={s} champions={bundledChampions()} scene={scene} output/>}createRoot(document.getElementById('root')).render(<App/>);`);
 const vite = await createServer({configFile:false,cacheDir:path.join(dir,'vite-cache'),plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;const checks=[],errors=[];
 try {
- browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
+ browser=await chromium.launch({ headless:true, ...browserExecutable() });const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/api/**',async route=>{const parts=new URL(route.request().url()).pathname.split('/'),ref={id:parts[3],revision:parts[4],name:'fixture'};if(parts[2]==='style-packs'){if(parts[5]==='assets')return route.fulfill({body:await store.asset(ref,parts[6]),contentType:'image/png'});return route.fulfill({json:store.get(ref)});}return route.fulfill({status:404,body:''});});
  await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/program-layouts/index.html`);await page.locator('.full-height-draft').waitFor();await page.locator('[data-style-status=ready]').waitFor();
  assert.equal(await page.locator('.fhd-picks article').count(),10);assert.equal(await page.locator('.fhd-bans .champion-image').count(),10);assert.equal(await page.locator('.fhd-timer').count(),0);

@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
@@ -31,7 +32,7 @@ try{
   assert.deepEqual(initial.players,[]);assert.deepEqual(initial.events,[]);assert.deepEqual(initial.economy,[]);assert.deepEqual(initial.schedule,[]);
   await new Promise(r=>setTimeout(r,1300));assert.equal((await state()).gameTime,0);
   checks.push('fresh service starts live-only with no match samples, schedule or advancing synthetic clock');
-  browser=await chromium.launch({headless:true,channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'});
+  browser=await chromium.launch({ headless:true, ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL||'msedge' }) });
   const context=await browser.newContext({viewport:{width:1600,height:1000}});await nativeRequestGuard(blocked).attach(context);
   page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await settings();const interval=page.getByRole('spinbutton',{name:'客户端 API 轮询间隔（毫秒）'});

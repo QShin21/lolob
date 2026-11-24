@@ -1,5 +1,6 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Built UI against an isolated real HTTP service. It never starts OBS or loads the operator's data.
+import { browserExecutable } from './browser-executable.mjs';
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { mkdir, mkdtemp, readFile, writeFile, rm } from "node:fs/promises";
@@ -67,7 +68,7 @@ try {
       ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href
       : "playwright"
   );
-  browser = await chromium.launch({ headless: true, ...(process.env.RIFTCAST_CHROMIUM_PATH ? { executablePath: process.env.RIFTCAST_CHROMIUM_PATH } : {}) });
+  browser = await chromium.launch({ headless: true, ...browserExecutable() });
   const context = await browser.newContext({
     viewport: { width: 1920, height: 1080 },
     locale: "zh-CN",

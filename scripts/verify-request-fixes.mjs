@@ -1,4 +1,5 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
+import { browserExecutable } from './browser-executable.mjs';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -15,7 +16,7 @@ await writeFile(path.join(dir,'entry.tsx'),`import React,{useState} from 'react'
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:5198,strictPort:true,watch:{ignored:['**/verification-output/**','**/runtime/**']}}});await vite.listen();
 let browser;
 try{
- browser=await chromium.launch({headless:true,channel:'msedge'});const page=await browser.newPage({viewport:{width:1920,height:1080}});
+ browser=await chromium.launch({ headless:true, ...browserExecutable({ channel: 'msedge' }) });const page=await browser.newPage({viewport:{width:1920,height:1080}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route('**/api/**',r=>r.fulfill({json:{}}));
  await page.goto('http://127.0.0.1:5198/verification-output/request-fixes/index.html?lineup');await page.locator('.rl-card').last().waitFor();await page.screenshot({path:path.join(dir,'lineup.png')});assert.equal(await page.locator('.rl-card').count(),10);
  const sides=await page.locator('.rl-pair').first().locator('.rl-card').evaluateAll(nodes=>nodes.map(n=>({x:n.getBoundingClientRect().x,y:n.getBoundingClientRect().y})));assert.equal(sides[0].y,sides[1].y);assert.ok(sides[1].x>sides[0].x);

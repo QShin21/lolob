@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,cp,readFile} from 'node:fs/promises';
 import {spawn} from 'node:child_process';
@@ -18,7 +19,7 @@ const get=async(base)=>fetch(base+'/api/collaboration').then(r=>r.json());
 try{
  const ports=[await freePort(),await freePort()],teamPort=await freePort(),bases=ports.map(p=>'http://127.0.0.1:'+p);
  for(let i=0;i<2;i++){const data=await mkdtemp(path.join(tmpdir(),'riftcast-team-'));sandboxes.push(data);const native=realObs&&i===0;if(native)await cp(path.resolve('runtime/obs-studio'),path.join(data,'runtime'),{recursive:true,filter:file=>!/[\\/]config(?:[\\/]|$)/.test(file)&&!file.endsWith('.riftcast-engine.lock')});const child=spawn(process.execPath,['--import','tsx','server/index.ts'],{windowsHide:true,env:{...await isolatedNativeEnvironment(data),RIFTCAST_DATA_DIR:data,PORT:String(ports[i]),RIFTCAST_OBS_RUNTIME_DIR:path.join(data,'runtime'),RIFTCAST_OBS_AUTOSTART:native?'1':'0'},stdio:['ignore','pipe','pipe','ipc']});let log='';child.stdout.on('data',b=>log+=b);child.stderr.on('data',b=>log+=b);processes.push(child);await until(async()=>{if(child.exitCode!==null)throw new Error(log);try{return(await fetch(bases[i]+'/api/health')).ok}catch{return false}},'service starts');}
- browser=await chromium.launch({channel:'msedge',headless:true});
+ browser=await chromium.launch({ headless:true, ...browserExecutable({ channel: 'msedge' }) });
  const context=await browser.newContext({viewport:{width:1600,height:1100}});
  await context.addInitScript(()=>{
   navigator.mediaDevices.getDisplayMedia=async(options)=>{const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;const ctx=canvas.getContext('2d');let n=0;const tick=setInterval(()=>{ctx.fillStyle=n%2?'#153249':'#264b31';ctx.fillRect(0,0,1280,720);ctx.fillStyle='white';ctx.font='42px sans-serif';ctx.fillText('TEAM OBS · '+(++n),80,180);ctx.fillStyle='#e8a844';ctx.fillRect((n*12)%1100,350,130,130)},33);const stream=canvas.captureStream(30);stream.getVideoTracks()[0].addEventListener('ended',()=>clearInterval(tick));if(options?.audio){const audio=new AudioContext();const tone=audio.createOscillator(),gain=audio.createGain(),output=audio.createMediaStreamDestination();gain.gain.value=.08;tone.frequency.value=440;tone.connect(gain).connect(output);tone.start();audio.resume();stream.addTrack(output.stream.getAudioTracks()[0]);stream.getVideoTracks()[0].addEventListener('ended',()=>audio.close())}return stream;};

@@ -1,6 +1,7 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Full console UI fixture: uses fresh in-memory state, an ephemeral local port,
 // mock OBS replies and a mock desktop bridge. Never loads persisted state or starts OBS.
+import { browserExecutable } from './browser-executable.mjs';
 import assert from "node:assert/strict";
 import http from "node:http";
 import path from "node:path";
@@ -470,7 +471,7 @@ async function assertScreen(page, width, height) {
 try {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   origin = `http://127.0.0.1:${server.address().port}`;
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, ...browserExecutable() });
   const page = await createPage();
   await page.getByRole("navigation", { name: "转播流程" }).waitFor();
   assert.equal(await page.locator("[data-workflow-step]").count(), 4);

@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -31,7 +32,7 @@ await writeFile(path.join(dir, 'entry.tsx'), `import React,{useState}from'react'
 const server = await createServer({ configFile: false, cacheDir: path.join(dir, 'vite-cache'), plugins: [react()], server: { host: '127.0.0.1', port: 0 } }); await server.listen();
 let browser; const errors = [], checks = [];
 try {
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, ...browserExecutable() });
   const context = await browser.newContext({ viewport: { width: 1920, height: 1080 }, permissions: ['clipboard-read', 'clipboard-write'] });
   const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
   const url = `http://127.0.0.1:${server.httpServer.address().port}/verification-output/archive-graphics/index.html`;
