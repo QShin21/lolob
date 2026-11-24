@@ -1,0 +1,105 @@
+/* RiftCast 2.0 live desk: monitors, handoff, TAKE, scene bank, task column. */
+
+/* ---------- Toolbar ---------- */
+.control-room .director-toolbar h1{font-weight:700;letter-spacing:-.01em}
+.control-room .director-phases{border:1px solid var(--ui-border);border-radius:9px;background:var(--ui-bg);padding:2px;gap:2px;box-shadow:var(--rc-inset)}
+.control-room .director-phases button{border-radius:6px;color:var(--ui-muted);font-weight:560;transition:background-color .14s var(--rc-ease),color .14s var(--rc-ease)}
+.control-room .director-phases button:hover:not(:disabled,[aria-pressed=true]){color:var(--ui-text);background:var(--ui-hover)}
+.control-room .director-phases [aria-pressed=true]{background:var(--ui-selected);color:var(--ui-accent);font-weight:680;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ui-selection-border) 55%,transparent)}
+.control-room .director-clock{font-size:26px;font-weight:600;letter-spacing:.05em;line-height:1;color:var(--ui-text)}
+
+/* ---------- Monitors ---------- */
+.control-room .monitor-pane{
+  --tally:var(--rc-pvw-solid);--tally-text:var(--ui-pvw);--tally-glow:var(--rc-pvw-glow);
+  border-radius:11px;background:#04070c;border:1px solid color-mix(in srgb,var(--tally) 55%,var(--ui-border));
+  box-shadow:0 0 0 1px #0006,0 10px 30px #0005,0 0 26px -6px var(--tally-glow);
+}
+.control-room .monitor-pane.program{--tally:var(--rc-pgm-solid);--tally-text:var(--ui-pgm);--tally-glow:var(--rc-pgm-glow)}
+.control-room .monitor-label{
+  border-top:0;color:var(--tally-text);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--tally) 26%,var(--ui-surface)),var(--ui-surface) 46%);
+  box-shadow:inset 0 2px 0 var(--tally);
+}
+.control-room .monitor-label>span:first-child{font-family:var(--rc-font-display);font-size:17px;font-weight:700;letter-spacing:.1em;line-height:1;color:var(--ui-text)}
+.control-room .monitor-label>span:first-child>i{width:8px;height:8px;background:var(--tally);box-shadow:0 0 0 3px var(--tally-glow)}
+.control-room .monitor-pane.program .monitor-label>span:first-child>i{animation:rc-pulse 1.8s ease-in-out infinite}
+.control-room .monitor-label b{font-family:var(--rc-font-ui);font-size:12px;font-weight:500;letter-spacing:0;color:var(--ui-muted);margin-left:2px}
+.control-room .monitor-label>span:nth-child(2){color:var(--ui-text);font-weight:600}
+.control-room .monitor-label>a{border-radius:6px;color:var(--ui-muted);transition:color .14s,background-color .14s}
+.control-room .monitor-label>a:hover{color:var(--ui-text);background:var(--ui-hover)}
+.control-room .monitor-footer{background:var(--ui-surface);border-top:1px solid var(--ui-border);color:var(--ui-muted)}
+.control-room .monitor-footer .text-button{color:var(--ui-accent)}
+
+/* ---------- Handoff and TAKE ---------- */
+.control-room .program-handoff{
+  border:1px solid var(--ui-border);border-radius:11px;background:var(--rc-panel);box-shadow:var(--rc-inset),var(--rc-shadow-1);
+}
+.control-room .handoff-receipt{border-left:3px solid var(--rc-pgm-solid)}
+.control-room .handoff-preview{border-left:3px solid var(--rc-pvw-solid)}
+.control-room .program-handoff :is(span,small){color:var(--ui-muted)}
+.control-room .program-handoff strong{font-weight:650;color:var(--ui-text)}
+.control-room .handoff-receipt[data-state=failed] strong{color:var(--ui-error)}
+.control-room .handoff-receipt[data-state=requested] strong{color:var(--ui-warning)}
+.control-room .handoff-diff{color:var(--ui-accent);font-weight:560}
+.control-room .handoff-diff:hover{text-decoration:underline;text-underline-offset:3px}
+
+.control-room .take-button,html .remote-workbench .take-button{
+  position:relative;border-radius:9px;border:1px solid #ff8f9c;color:var(--ui-on-take);
+  background:linear-gradient(180deg,#f0425a,var(--ui-take-bg) 55%,#b41a30);
+  font-family:var(--rc-font-ui);font-weight:720;letter-spacing:.06em;text-shadow:0 1px 0 #0005;
+  box-shadow:inset 0 1px 0 #ffffff59,inset 0 -2px 0 #0003,0 6px 22px -4px var(--rc-pgm-glow),0 0 0 1px #5a0c18;
+  transition:transform .08s var(--rc-ease),box-shadow .16s var(--rc-ease),filter .16s var(--rc-ease);
+}
+.control-room .take-button:hover:not(:disabled),html .remote-workbench .take-button:hover:not(:disabled){
+  filter:brightness(1.08);box-shadow:inset 0 1px 0 #ffffff66,inset 0 -2px 0 #0003,0 8px 30px -2px #ff4d5e99,0 0 0 1px #5a0c18,0 0 0 5px var(--rc-pgm-glow);
+}
+.control-room .take-button:active:not(:disabled),html .remote-workbench .take-button:active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 2px 6px #0006,0 0 0 1px #5a0c18}
+.control-room .take-button:disabled,html .remote-workbench .take-button:disabled{
+  opacity:1;color:color-mix(in srgb,var(--ui-on-take) 62%,transparent);border-color:color-mix(in srgb,var(--ui-take-bg) 55%,var(--ui-border));
+  background:color-mix(in srgb,var(--ui-take-bg) 34%,var(--ui-raised));box-shadow:none;text-shadow:none;
+}
+:root[data-ui-theme=light] :is(.control-room,.remote-workbench) .take-button:disabled{color:#fff;background:color-mix(in srgb,var(--ui-take-bg) 52%,#fff);border-color:transparent}
+.control-room .take-button kbd,html .remote-workbench .take-button kbd{border:1px solid #ffffff73;border-radius:4px;background:#0000002e;font-size:13px;letter-spacing:.04em;font-weight:600;text-shadow:none}
+.control-room .take-control>small{color:var(--ui-warning)}
+
+/* ---------- Scene bank ---------- */
+.control-room .scene-bank{border:1px solid var(--ui-border);border-radius:11px;background:var(--ui-surface);box-shadow:var(--rc-inset),var(--rc-shadow-1)}
+.control-room .scene-bank-heading{background:var(--rc-panel);border-bottom:1px solid var(--ui-border)}
+.control-room .scene-bank-heading h2{font-weight:680}
+.control-room .scene-bank-heading .task-tabs button[aria-selected=true]{box-shadow:inset 0 -2px var(--ui-accent)}
+.control-room .scene-bank-item{
+  border:1px solid var(--ui-border);border-radius:8px;background:var(--ui-raised);
+  transition:border-color .14s var(--rc-ease),box-shadow .14s var(--rc-ease),transform .14s var(--rc-ease);
+}
+.control-room .scene-bank-item:hover{border-color:var(--ui-control-border);box-shadow:var(--rc-shadow-1)}
+.control-room .scene-bank-entry{background:transparent;border-left:3px solid transparent;color:var(--ui-text);transition:background-color .14s var(--rc-ease)}
+.control-room .scene-bank-entry:hover{background:var(--ui-hover)}
+.control-room .scene-bank-entry[aria-pressed=true]{border-left-color:var(--rc-pvw-solid);background:linear-gradient(90deg,color-mix(in srgb,var(--rc-pvw-solid) 20%,var(--ui-raised)),var(--ui-selected))}
+.control-room .scene-bank-item:has(.scene-bank-entry[aria-pressed=true]){border-color:color-mix(in srgb,var(--rc-pvw-solid) 70%,var(--ui-border));box-shadow:0 0 0 1px var(--rc-pvw-glow),0 0 18px -6px var(--rc-pvw-glow)}
+.control-room .scene-bank-item:has(.bus-tag.pgm){border-color:color-mix(in srgb,var(--rc-pgm-solid) 70%,var(--ui-border));box-shadow:0 0 0 1px var(--rc-pgm-glow),0 0 18px -6px var(--rc-pgm-glow)}
+.control-room .scene-bank-item{background-color:var(--ui-raised)}
+.control-room .scene-bank-symbol kbd{
+  font-family:var(--rc-font-display);font-size:14px;font-weight:600;min-width:20px;text-align:center;line-height:18px;padding:1px 4px;
+  color:var(--ui-muted);background:var(--ui-bg);border:1px solid var(--ui-border);border-bottom-width:2px;border-radius:5px;
+}
+.control-room .scene-bank-copy strong{font-weight:640}
+.control-room .scene-bank-copy small{color:var(--ui-muted)}
+.control-room .scene-bank-tools button{border-radius:6px;color:var(--ui-muted)}
+.control-room .scene-bank-tools button:hover{background:var(--ui-hover);color:var(--rc-gold)}
+.control-room .scene-bank-tools button[aria-pressed=true]{color:var(--rc-gold)}
+.control-room .scene-bank-tools button[aria-pressed=true] svg{fill:currentColor;filter:drop-shadow(0 0 5px var(--rc-gold-line))}
+.control-room .scene-bank-note{border-top:1px solid var(--ui-border);background:color-mix(in srgb,var(--ui-bg) 45%,var(--ui-surface));color:var(--ui-muted)}
+
+/* ---------- Task column ---------- */
+.control-room .director-tasks{border:1px solid var(--ui-border);border-radius:11px;background:var(--ui-surface);box-shadow:var(--rc-inset),var(--rc-shadow-1)}
+.control-room .director-tasks .production-task-nav{background:var(--rc-panel);border-bottom:1px solid var(--ui-border)}
+.control-room .production-task-heading h2{font-weight:680}
+.control-room .audio-channel{border-color:var(--ui-border)}
+.control-room .audio-channel header span{font-weight:650}
+.control-room .audio-channel output{font-weight:600;letter-spacing:.03em;color:var(--ui-text)}
+.control-room .audio-channel-settings{color:var(--ui-muted)}
+.control-room .audio-channel-settings:hover{color:var(--ui-accent)}
+.control-room .audio-mute{border-radius:7px;font-weight:560}
+.control-room .program-audio-bus{border:1px solid var(--ui-border);border-radius:9px;background:var(--ui-bg);box-shadow:var(--rc-inset)}
+.control-room .program-audio-bus strong>b:first-child,.control-room .program-audio-bus>strong:first-child{letter-spacing:.06em}
+.control-room .music-file button{border-radius:7px}

@@ -11,5 +11,14 @@ import { UiThemeProvider } from './ui-theme';
 import './console-system.css';
 import './ui-theme.css';
 import './operator-150.css';
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource/barlow-condensed/500.css';
+import '@fontsource/barlow-condensed/600.css';
+import '@fontsource/barlow-condensed/700.css';
+import './theme-2/tokens.css';
+import './theme-2/base.css';
+import './theme-2/shell.css';
+import './theme-2/studio.css';
+import './theme-2/pages.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><UiThemeProvider><App/></UiThemeProvider></React.StrictMode>);
