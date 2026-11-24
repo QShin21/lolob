@@ -11,7 +11,7 @@
 .audio-fader-scale { display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end; color:var(--ui-muted); font-size:9px; width:19px; flex:none }
 .audio-channel input[type=range] { writing-mode:vertical-lr; direction:rtl; width:24px; min-width:24px; height:130px; min-height:0; padding:0; background:transparent; accent-color:var(--ui-text); cursor:ns-resize; margin:0; border:0; appearance:auto }
 .audio-signal-column { position:relative; width:7px; min-width:7px; background:var(--ui-bg); border:1px solid var(--ui-border); border-radius:1px; overflow:hidden }
-.audio-signal-column>span:not(.audio-no-meter) { position:absolute; bottom:0; left:0; width:100%; background:var(--ui-pvw) }.audio-signal-column>[data-clipping=true] { background:var(--ui-warning) }
+.audio-signal-column>span:not(.audio-no-meter) { position:absolute; bottom:0; left:0; width:100%; background:var(--ui-accent) }.audio-signal-column>span[data-clipping=true] { background:var(--ui-warning) }
 .audio-no-meter { display:block; font-size:10px; color:var(--ui-muted); text-align:center; margin-top:55px }
 .audio-meter-value { color:var(--ui-muted); font-size:10px; text-align:center; min-height:14px }
 .audio-mute { display:flex; align-items:center; justify-content:center; gap:5px; min-height:30px; font-size:12px; border:1px solid var(--ui-border); border-radius:3px; background:var(--ui-raised); color:var(--ui-text) }

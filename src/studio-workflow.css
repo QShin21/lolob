@@ -4,6 +4,6 @@
 .app-shell .studio-scene-shelf.scenes-panel{margin:0;border:0;background:none;box-shadow:none;border-radius:0}
 .app-shell .studio-scene-shelf{margin-top:9px!important}
 .app-shell .studio-scene-shelf .scene-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:0;gap:8px}
-.app-shell .button.output-stop{color:var(--program);background:#ff8f8310;border-color:#ff8f8350}
+.app-shell .button.output-stop{color:var(--ui-error);background:var(--ui-danger-bg);border-color:color-mix(in srgb, var(--ui-error) 55%, transparent)}
 @media(max-width:1099px) and (min-width:761px){.app-shell .studio-scene-shelf .scene-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:760px){.app-shell .studio-scene-shelf .scene-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
