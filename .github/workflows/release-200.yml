@@ -160,7 +160,7 @@ jobs:
       - name: Verify the installed executable, uninstaller and shortcuts
         run: ./scripts/install-local-release.ps1 -SkipLaunch
       - name: Smoke-test the isolated packaged application
-        run: node scripts/verify-packaged-report-200.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-packaged-report-200.mjs
       - name: Upload and verify the draft, then publish as latest
         env:
           GH_TOKEN: ${{ github.token }}

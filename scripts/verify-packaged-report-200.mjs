@@ -347,7 +347,8 @@ async function main() {
     }, null, 2) + '\n');
     throw error;
   } finally {
-    try { await stop(); } finally { await rm(sandbox, { recursive: true, force: true, maxRetries: 5, retryDelay: 1000 }); }
+    // A locked temp file must not hide the verification result: the runner discards the sandbox anyway.
+    try { await stop(); } finally { await rm(sandbox, { recursive: true, force: true, maxRetries: 10, retryDelay: 1000 }).catch(error => console.warn(`Sandbox cleanup skipped: ${error.message}`)); }
   }
 }
 
