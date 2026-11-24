@@ -29,7 +29,7 @@ function prepareReleaseRuntime({ resourcesRoot, userData, dataDir, runtimeRoot, 
   runtimeRoot = path.resolve(runtimeRoot || path.join(userData, 'runtime', 'obs-studio'));
   const bundled = path.join(resourcesRoot, 'obs-studio');
   const expected = marker(bundled);
-  if (!expected || !ready(bundled, expected)) throw new Error('安装包内置 OBS 文件校验失败，请重新安装完整的 RiftCast Release。');
+  if (!expected || !ready(bundled, expected)) throw new Error('安装包内置 OBS 文件校验失败，请重新安装完整版观澜。');
   const source = importFrom ? path.resolve(importFrom) : undefined;
   const sourceData = source && path.join(source, 'data');
   const sourceConfig = source && path.join(source, 'runtime', 'obs-studio', 'config');

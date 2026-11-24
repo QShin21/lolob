@@ -29,7 +29,7 @@ For Each taskArgument In WScript.Arguments
     Case "-lan"
       taskLan = True
     Case Else
-      taskShell.Popup "Unknown launch option: " & taskArgument & vbCrLf & "Available options: -Browser, -Rebuild, -Lan, -Console", 0, "RiftCast", 16
+      taskShell.Popup "Unknown launch option: " & taskArgument & vbCrLf & "Available options: -Browser, -Rebuild, -Lan, -Console", 0, "GUANLAN", 16
       WScript.Quit 2
   End Select
 Next
@@ -53,6 +53,6 @@ taskShell.CurrentDirectory = taskRoot
 On Error Resume Next
 taskShell.Run taskCommand, taskWindowStyle, False
 If Err.Number <> 0 Then
-  taskShell.Popup "RiftCast could not start PowerShell." & vbCrLf & Err.Description, 0, "RiftCast", 16
+  taskShell.Popup "GUANLAN could not start PowerShell." & vbCrLf & Err.Description, 0, "GUANLAN", 16
   WScript.Quit 1
 End If

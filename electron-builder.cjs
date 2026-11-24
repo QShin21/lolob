@@ -3,8 +3,8 @@ const { createRequire } = require('node:module');
 const version = require('./package.json').version;
 module.exports = {
   appId: 'cn.riftcast.director',
-  productName: 'RiftCast',
-  copyright: 'RiftCast contributors',
+  productName: 'GuanLan',
+  copyright: 'GUANLAN contributors',
   electronVersion: require('electron/package.json').version,
   electronDist: path.join(__dirname, 'node_modules', 'electron', 'dist'),
   directories: { output: `release/${version}`, buildResources: 'build' },
@@ -53,11 +53,34 @@ module.exports = {
     'THIRD_PARTY_OBS.md', 'third-party/OBS-COPYING',
   ],
   extraResources: [
-    { from: 'runtime/obs-studio', to: 'obs-studio', filter: ['bin/**/*', 'data/**/*', 'obs-plugins/**/*', 'COPYING', 'portable_mode.txt', '.riftcast-runtime.json', 'RIFTCAST-OBS-NOTICE.md'] },
+    { from: 'runtime/obs-studio', to: 'obs-studio', filter: ['bin/**/*', 'data/**/*', 'obs-plugins/**/*', 'COPYING', 'portable_mode.txt', '.riftcast-runtime.json'] },
+    { from: 'THIRD_PARTY_OBS.md', to: 'obs-studio/RIFTCAST-OBS-NOTICE.md' },
     { from: 'runtime/vbcable', to: 'vbcable', filter: ['VBCABLE_Driver_Pack45.zip', 'THIRD_PARTY_AUDIO.md'] },
-    { from: 'build/third-party', to: 'licenses', filter: ['**/*'] },
+    { from: 'build/third-party', to: 'licenses', filter: ['OBS-Studio-*-Sources.tar.gz', 'OBS-COPYING', 'THIRD_PARTY_*.md', 'GuanLan-Audio-Source/**/*'] },
     { from: 'build/release-manifest.json', to: 'release-manifest.json' },
   ],
-  win: { target: [{ target: 'nsis', arch: ['x64'] }, { target: 'zip', arch: ['x64'] }], icon: 'build/icon.ico', executableName: 'RiftCast', artifactName: 'RiftCast-${version}-Windows-${arch}.${ext}', requestedExecutionLevel: 'asInvoker' },
-  nsis: { installerIcon: 'build/icon.ico', uninstallerIcon: 'build/icon.ico', installerSidebar: 'build/installerSidebar.bmp', uninstallerSidebar: 'build/uninstallerSidebar.bmp', installerHeader: 'build/installerHeader.bmp', artifactName: 'RiftCast-${version}-Setup-${arch}.${ext}', oneClick: false, perMachine: false, allowElevation: false, allowToChangeInstallationDirectory: true, createDesktopShortcut: 'always', createStartMenuShortcut: true, shortcutName: 'RiftCast 导播', runAfterFinish: false, deleteAppDataOnUninstall: false, installerLanguages: ['zh_CN', 'en_US'], language: '2052' },
+  // Installed 1.6.0–1.7.1 clients relaunch the same executable path after setup.
+  win: { target: [{ target: 'nsis', arch: ['x64'] }, { target: 'zip', arch: ['x64'] }], icon: 'build/icon.ico', executableName: 'RiftCast', artifactName: 'GuanLan-${version}-Windows-${arch}.${ext}', requestedExecutionLevel: 'asInvoker' },
+  nsis: {
+    installerIcon: 'build/icon.ico',
+    uninstallerIcon: 'build/icon.ico',
+    // Explicit nulls suppress discovery of the old wordmark bitmaps until the new artwork lands.
+    installerSidebar: null,
+    uninstallerSidebar: null,
+    installerHeader: null,
+    // 1.6.0–1.7.1 require exactly one EXE asset with this prefix.
+    artifactName: 'RiftCast-${version}-Setup-${arch}.${ext}',
+    oneClick: false,
+    perMachine: false,
+    allowElevation: false,
+    allowToChangeInstallationDirectory: true,
+    createDesktopShortcut: 'always',
+    createStartMenuShortcut: true,
+    shortcutName: '观澜导播',
+    uninstallDisplayName: '观澜 ${version}',
+    runAfterFinish: false,
+    deleteAppDataOnUninstall: false,
+    installerLanguages: ['zh_CN', 'en_US'],
+    language: '2052',
+  },
 };

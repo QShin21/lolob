@@ -242,6 +242,7 @@ async function main() {
   await mkdir(dir, { recursive: true });
   const sandbox = await mkdtemp(path.join(tmpdir(), 'riftcast-200-package-'));
   const appRoot = path.join(sandbox, 'app'), userData = path.join(sandbox, 'user');
+  // The portable build uses the same executable name that the legacy updater restarts.
   const data = path.join(userData, 'data'), executable = path.join(appRoot, 'RiftCast.exe');
   const listener = createServer().listen(0, '127.0.0.1');
   await once(listener, 'listening');
@@ -284,13 +285,14 @@ async function main() {
     page.on('pageerror', error => errors.push(error.message));
     await page.waitForURL(base + '/', { waitUntil: 'domcontentloaded', timeout: 90_000 });
     await page.getByRole('button', { name: '风格包', exact: true }).waitFor();
+    assert.equal(await page.title(), '观澜 · 英雄联盟赛事导播');
     await page.waitForFunction(() => !!sessionStorage.getItem('riftcast-seat-token') && !!sessionStorage.getItem('riftcast-seat-info'));
     const health = await (await fetch(base + '/api/health')).json();
     assert.equal(health.version, version);
     const metadata = await application.evaluate(({ app }) => ({
-      version: app.getVersion(), packaged: app.isPackaged, userData: app.getPath('userData'),
+      name: app.getName(), version: app.getVersion(), packaged: app.isPackaged, userData: app.getPath('userData'),
     }));
-    assert.deepEqual(metadata, { version, packaged: true, userData });
+    assert.deepEqual(metadata, { name: '观澜', version, packaged: true, userData });
     const update = await page.evaluate(() => window.riftcastDesktop.update('status'));
     assert.equal(update.currentVersion, version);
     assert.equal(update.phase, 'idle');
@@ -301,6 +303,7 @@ async function main() {
     await cp(path.join('release', version, 'win-unpacked'), appRoot, { recursive: true });
     await mkdir(data, { recursive: true });
     const manifest = JSON.parse(await readFile(path.join(appRoot, 'resources/release-manifest.json'), 'utf8'));
+    assert.equal(manifest.product, 'GuanLan');
     assert.equal(manifest.version, version);
     assert.equal(manifest.sourceRevision, sourceRevision);
     assert.equal(manifest.workingTreeDirty, false);

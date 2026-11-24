@@ -11,7 +11,7 @@ test('browser demonstration has isolated complete graphic data with fresh teleme
   const now=Date.now(),state=createDemoState(now),other=createDemoState(now);
   assert.equal(state.players.length,10);assert.equal(new Set(state.players.map(p=>p.registeredPlayerId)).size,10);
   assert(state.players.every(p=>lineupRunes(p).length===6&&lineupStatRunes(p).length===3&&liveDamage(p,state,now)!>0));
-  assert.equal(state.settings.obsUrl,'');assert.equal(state.production?.program,undefined);assert.equal(state.match.title,'RiftCast 图形演示');
+  assert.equal(state.settings.obsUrl,'');assert.equal(state.production?.program,undefined);assert.equal(state.match.title,'观澜图形演示');
   assert.equal(seasonStatistics(state).games,2);assert.equal(seasonStatistics(state).players.length,10);assert(archiveMetrics(state,state.gameResults![0]).every(r=>r.blue!==null&&r.red!==null));
   state.players[0].name='changed';assert.notEqual(other.players[0].name,'changed');
 });

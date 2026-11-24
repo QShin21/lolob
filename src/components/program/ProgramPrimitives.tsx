@@ -37,7 +37,7 @@ export function TeamName({ team, side }: { team?: Team; side: Side }) {
   return <span className={`arena-team-name ${side}`}><strong title={team?.name}>{team?.tag || sideName(side)}</strong><span>{team?.name || '战队待定'}</span></span>;
 }
 export function ArenaMark() {
-  return <span className="arena-mark">RiftCast <b>ARENA</b></span>;
+  return <span className="arena-mark">GUANLAN <b>ARENA</b></span>;
 }
 export function ArenaHeader({ state, title }: { state: BroadcastState; title: string }) {
   return <header className="arena-header"><ArenaMark /><div><span>{state.match.title}</span><h2>{title}</h2></div><span className="arena-game">{state.match.format}<b>第 {state.match.game} 局</b></span></header>;

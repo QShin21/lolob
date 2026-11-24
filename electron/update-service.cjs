@@ -17,7 +17,7 @@ function releaseInfo(value) {
   const assets = Array.isArray(value.assets) ? value.assets.filter(a => typeof a?.name === 'string' && /\.exe$/i.test(a.name)) : [];
   if (assets.length !== 1) throw new Error('正式发布需包含唯一 Windows 安装包');
   const asset = assets[0];
-  if (!/^RiftCast[-A-Za-z0-9_.]{1,150}\.exe$/i.test(asset.name) || !Number.isSafeInteger(asset.size) || asset.size < 2 || asset.size > 3 * 1024 ** 3 || !/^sha256:[a-f0-9]{64}$/i.test(asset.digest ?? '')) throw new Error('安装包缺少有效的文件名、大小或官方 SHA-256，暂不能下载');
+  if (!/^(?:GuanLan|RiftCast)[-A-Za-z0-9_.]{1,150}\.exe$/i.test(asset.name) || !Number.isSafeInteger(asset.size) || asset.size < 2 || asset.size > 3 * 1024 ** 3 || !/^sha256:[a-f0-9]{64}$/i.test(asset.digest ?? '')) throw new Error('安装包缺少有效的文件名、大小或官方 SHA-256，暂不能下载');
   const url = new URL(asset.browser_download_url);
   if (url.origin !== 'https://github.com' || url.username || url.password || url.search || url.hash || url.pathname !== `/${repository}/releases/download/${encodeURIComponent(value.tag_name)}/${encodeURIComponent(asset.name)}`) throw new Error('安装包来源与当前仓库不一致');
   return { version: value.tag_name.replace(/^v/, ''), name: asset.name, size: asset.size, sha256: asset.digest.slice(7).toLowerCase(), url: url.href, publishedAt: typeof value.published_at === 'string' ? value.published_at : '' };
@@ -73,7 +73,7 @@ function createUpdateService({ currentVersion, downloadsDir, fetch: fetcher = gl
     if (!release || !newer(release.version, currentVersion)) throw new Error('请先检查可用的新版本');
     return begin('downloading', '正在下载到系统下载目录', async signal => {
       await fs.mkdir(downloadsDir, { recursive: true });
-      const target = path.join(downloadsDir, release.name), temporary = path.join(downloadsDir, `.RiftCast-${randomUUID()}.download`);
+      const target = path.join(downloadsDir, release.name), temporary = path.join(downloadsDir, `.GuanLan-${randomUUID()}.download`);
       const matches = async () => { try { const found = await fileDigest(target); if (found.size !== release.size || found.sha256 !== release.sha256) throw new Error('下载目录已有同名不同内容文件，已保留原文件；请先更名后重试'); return true; } catch (error) { if (error.code === 'ENOENT') return false; throw error; } };
       let handle, reader;
       const timeout = setTimeout(() => controller?.abort(), 20 * 60 * 1000);

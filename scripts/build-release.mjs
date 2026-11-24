@@ -37,7 +37,8 @@ if (Object.keys(serviceBundle.metafile.inputs).some(file => /(?:test-support|\.t
 const runtimeImports = [...new Set(Object.values(serviceBundle.metafile.outputs).flatMap(output => output.imports).filter(item => item.external && !item.path.startsWith('node:')).map(item => item.path.startsWith('@') ? item.path.split('/').slice(0, 2).join('/') : item.path.split('/')[0]))];
 for (const dependency of runtimeImports) if (!pkg.dependencies?.[dependency]) throw new Error(`Release 运行时依赖 ${dependency} 尚未列入 dependencies，请先修复后再打包。`);
 
-// Application icon (16–256 px) and NSIS installer artwork from the committed brand masters.
+const builderConfig = require('../electron-builder.cjs');
+// Generate the Windows application icon from the committed brand masters.
 await (await import('./build-brand-assets.mjs')).writeBuildResources(buildRoot);
 
 const obsRelease = require('./obs-runtime.json');
@@ -58,28 +59,28 @@ await copyFile(path.join(root, 'third-party/OBS-COPYING'), path.join(licenseRoot
 await copyFile(path.join(root, 'THIRD_PARTY_OBS.md'), path.join(licenseRoot, 'THIRD_PARTY_OBS.md'));
 await copyFile(path.join(root, 'THIRD_PARTY_AUDIO.md'), path.join(licenseRoot, 'THIRD_PARTY_AUDIO.md'));
 await copyFile(path.join(root, 'THIRD_PARTY_REPLAY.md'), path.join(licenseRoot, 'THIRD_PARTY_REPLAY.md'));
-const audioSources = path.join(licenseRoot, 'RiftCast-Audio-Source');
+const audioSources = path.join(licenseRoot, 'GuanLan-Audio-Source');
 await mkdir(audioSources, { recursive: true });
 await mkdir(path.join(audioSources, 'scripts/native'), { recursive: true });
 for (const file of ['audio-endpoints.hpp', 'audio-device-tool.cpp', 'obs-audio-bridge.cpp', 'riftcast-audio.lua']) await copyFile(path.join(root, 'scripts/native', file), path.join(audioSources, 'scripts/native', file));
 await copyFile(path.join(root, 'scripts/build-audio-bridge.cjs'), path.join(audioSources, 'scripts/build-audio-bridge.cjs'));
 await copyFile(path.join(root, 'scripts/obs-runtime.json'), path.join(audioSources, 'scripts/obs-runtime.json'));
 await copyFile(path.join(root, 'third-party/OBS-COPYING'), path.join(audioSources, 'COPYING'));
-await writeFile(path.join(audioSources, 'BUILDING.md'), '# Build the RiftCast audio components\n\nInstall Windows x64 Node.js and a MinGW-w64 g++ compiler (the release uses Strawberry C toolchain). Extract the unmodified OBS Studio 32.2.2 Windows x64 runtime to runtime/obs-studio. Place the matching OBS-Studio-32.2.2-Sources.tar.gz included beside this source directory in build/third-party, or let the script download the pinned official source archive. Keep this directory layout and run node scripts/build-audio-bridge.cjs. RIFTCAST_CXX can name the compiler executable; gendef.exe and dlltool.exe must be in its directory. The script extracts the exact headers, generates an import library from the official obs.dll, compiles both native programs and checks their source and binary SHA-256. It copies only the owned extension into the portable runtime. The OBS runtime marker is normally created by scripts/ensure-obs.cjs in the full RiftCast source repository; for an independent component build provide its owner/version/archiveSha256/files marker from the supplied runtime.\n');
+await writeFile(path.join(audioSources, 'BUILDING.md'), '# Build the GUANLAN audio components\n\nInstall Windows x64 Node.js and a MinGW-w64 g++ compiler (the release uses Strawberry C toolchain). Extract the unmodified OBS Studio 32.2.2 Windows x64 runtime to runtime/obs-studio. Place the matching OBS-Studio-32.2.2-Sources.tar.gz included beside this source directory in build/third-party, or let the script download the pinned official source archive. Keep this directory layout and run node scripts/build-audio-bridge.cjs. RIFTCAST_CXX can name the compiler executable; gendef.exe and dlltool.exe must be in its directory. The script extracts the exact headers, generates an import library from the official obs.dll, compiles both native programs and checks their source and binary SHA-256. It copies only the owned extension into the portable runtime. The OBS runtime marker is normally created by scripts/ensure-obs.cjs in the full GUANLAN source repository; for an independent component build provide its owner/version/archiveSha256/files marker from the supplied runtime.\n');
 const sources = {};
 for (const file of git(['ls-files', '-z', '--cached', '--others', '--exclude-standard']).split('\0').filter(Boolean)) {
   if (fs.existsSync(path.join(root, file)) && fs.statSync(path.join(root, file)).isFile()) sources[file] = await digest(path.join(root, file));
 }
-const manifest = { product: 'RiftCast', version: pkg.version, platform: 'Windows x64', builtAt: new Date().toISOString(), sourceRevision: git(['rev-parse', 'HEAD']), workingTreeDirty: Boolean(git(['status', '--porcelain'])), sourceDigest: createHash('sha256').update(JSON.stringify(sources)).digest('hex'), electronVersion: require('electron/package.json').version, obsVersion: obsRelease.version, runtimeImports, sourceFiles: sources };
+const manifest = { product: builderConfig.productName, version: pkg.version, platform: 'Windows x64', builtAt: new Date().toISOString(), sourceRevision: git(['rev-parse', 'HEAD']), workingTreeDirty: Boolean(git(['status', '--porcelain'])), sourceDigest: createHash('sha256').update(JSON.stringify(sources)).digest('hex'), electronVersion: require('electron/package.json').version, obsVersion: obsRelease.version, runtimeImports, sourceFiles: sources };
 await writeFile(path.join(buildRoot, 'release-manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 const { build } = require('electron-builder');
-await build({ config: { ...require('../electron-builder.cjs'), extraMetadata: { riftcastRelease: { builtAt: manifest.builtAt, sourceRevision: manifest.sourceRevision, workingTreeDirty: manifest.workingTreeDirty, sourceDigest: manifest.sourceDigest } } }, publish: 'never' });
+await build({ config: { ...builderConfig, extraMetadata: { riftcastRelease: { builtAt: manifest.builtAt, sourceRevision: manifest.sourceRevision, workingTreeDirty: manifest.workingTreeDirty, sourceDigest: manifest.sourceDigest } } }, publish: 'never' });
 const { builtinStyleArchive } = await tsImport('../server/style-packs.ts', import.meta.url);
 const { BUILTIN_RUNTIME_STYLES } = await tsImport('../shared/style-packs.ts', import.meta.url);
-for (const pack of BUILTIN_RUNTIME_STYLES) await writeFile(path.join(output, `RiftCast-${pkg.version}-${pack.id}.riftstyle.zip`), builtinStyleArchive(pack));
+for (const pack of BUILTIN_RUNTIME_STYLES) await writeFile(path.join(output, `GuanLan-${pkg.version}-${pack.id}.riftstyle.zip`), builtinStyleArchive(pack));
 run(path.join(root,'scripts/export-draft-art.mjs'),[output]);
-const manualAsset = `RiftCast-${pkg.version}-User-Manual.pdf`;
-await copyFile(path.join(root, 'docs', `user-manual-${pkg.version}`, `RiftCast-${pkg.version}-用户使用手册.pdf`), path.join(output, manualAsset));
+const manualAsset = `GuanLan-${pkg.version}-User-Manual.pdf`;
+await copyFile(path.join(root, 'docs', `user-manual-${pkg.version}`, `观澜-${pkg.version}-用户使用手册.pdf`), path.join(output, manualAsset));
 const artifacts = [];
 for (const name of (await readdir(output)).sort()) {
   if (name !== manualAsset && !/\.(exe|zip|blockmap)$/.test(name)) continue;

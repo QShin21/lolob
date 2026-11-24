@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "RiftCast style pack v1",
+  "title": "GUANLAN style pack v1",
   "type": "object",
   "additionalProperties": false,
   "required": [

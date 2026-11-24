@@ -8,7 +8,7 @@ export const emergencyScene = 'RiftCast 本地技术暂停';
 export async function prepareEmergencyCollection(collectionFile: string, dataDir: string): Promise<void> {
   const imageFile = path.join(dataDir, 'emergency', 'technical-pause.png');
   await mkdir(path.dirname(imageFile), { recursive: true });
-  await sharp(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><rect width="1920" height="1080" fill="#0e1719"/><rect x="100" y="460" width="80" height="8" fill="#83e6c5"/><text x="220" y="495" fill="#f1f6f5" font-size="72" font-family="Microsoft YaHei">技术暂停</text><text x="220" y="580" fill="#acbfbc" font-size="36" font-family="Microsoft YaHei">比赛信号恢复后继续播出</text><text x="220" y="850" fill="#83e6c5" font-size="30" font-family="Arial">RIFTCAST / ARENA</text></svg>')).png().toFile(imageFile);
+  await sharp(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><rect width="1920" height="1080" fill="#0e1719"/><rect x="100" y="460" width="80" height="8" fill="#83e6c5"/><text x="220" y="495" fill="#f1f6f5" font-size="72" font-family="Microsoft YaHei">技术暂停</text><text x="220" y="580" fill="#acbfbc" font-size="36" font-family="Microsoft YaHei">比赛信号恢复后继续播出</text><text x="220" y="850" fill="#83e6c5" font-size="30" font-family="Arial">GUANLAN / ARENA</text></svg>')).png().toFile(imageFile);
   const collection = JSON.parse(await readFile(collectionFile, 'utf8'));
   const sources: any[] = collection.sources ??= [];
   const inputName = 'RiftCast 本地备用图', image = sources.find(s => s.name === inputName);

@@ -8,19 +8,23 @@ $taskInstallDirectory = Join-Path $env:LOCALAPPDATA 'Programs\RiftCast'
 $taskExecutable = Join-Path $taskInstallDirectory 'RiftCast.exe'
 $taskEvidence = Join-Path $taskRoot "verification-output\release-$taskVersion"
 if (-not (Test-Path -LiteralPath $taskInstaller)) { throw 'Release 安装包缺失，请先完成构建。' }
-if (Get-Process -Name RiftCast -ErrorAction SilentlyContinue) { throw '请先关闭正在运行的 RiftCast，再安装 Release。' }
+if (Get-Process -Name RiftCast -ErrorAction SilentlyContinue) { throw '请先关闭正在运行的观澜，再安装 Release。' }
 $taskInstall = Start-Process -FilePath $taskInstaller -ArgumentList '/S' -WindowStyle Hidden -PassThru -Wait
 if ($taskInstall.ExitCode -ne 0) { throw "安装未完成，退出码 $($taskInstall.ExitCode)。" }
 if (-not (Test-Path -LiteralPath $taskExecutable)) { throw '安装程序已退出，但未找到 RiftCast.exe。' }
-$taskDesktop = [Environment]::GetFolderPath('Desktop')
-$taskShortcut = Join-Path $taskDesktop 'RiftCast 导播.lnk'
-if (-not (Test-Path -LiteralPath $taskShortcut)) { throw '安装后未找到桌面快捷方式。' }
+$taskUninstaller = Join-Path $taskInstallDirectory 'Uninstall RiftCast.exe'
+if (-not (Test-Path -LiteralPath $taskUninstaller -PathType Leaf)) { throw '安装后未找到 Uninstall RiftCast.exe。' }
+$taskShortcut = Join-Path ([Environment]::GetFolderPath('Desktop')) '观澜导播.lnk'
+$taskStartMenuShortcut = Join-Path ([Environment]::GetFolderPath('Programs')) '观澜导播.lnk'
 $taskShell = New-Object -ComObject WScript.Shell
-$taskLink = $taskShell.CreateShortcut($taskShortcut)
-if ($taskLink.TargetPath -ne $taskExecutable) { throw '桌面快捷方式未指向 Release 可执行文件。' }
+foreach ($taskLinkPath in @($taskShortcut, $taskStartMenuShortcut)) {
+  if (-not (Test-Path -LiteralPath $taskLinkPath -PathType Leaf)) { throw "安装后未找到快捷方式：$taskLinkPath" }
+  $taskLink = $taskShell.CreateShortcut($taskLinkPath)
+  if ($taskLink.TargetPath -ne $taskExecutable) { throw "快捷方式未指向观澜可执行文件：$taskLinkPath" }
+}
 $taskPackagedExecutable = Join-Path $taskRoot "release\$taskVersion\win-unpacked\RiftCast.exe"
 if ((Get-FileHash -LiteralPath $taskExecutable -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $taskPackagedExecutable -Algorithm SHA256).Hash) { throw '安装后的可执行文件与已验证 Release 不一致。' }
-$taskRecord = [ordered]@{ version = $taskVersion; installedAt = (Get-Date).ToUniversalTime().ToString('o'); installerExitCode = $taskInstall.ExitCode; executable = $taskExecutable; shortcut = $taskShortcut; shortcutTarget = $taskLink.TargetPath; executableSha256 = (Get-FileHash -LiteralPath $taskExecutable -Algorithm SHA256).Hash.ToLowerInvariant(); ready = $false }
+$taskRecord = [ordered]@{ version = $taskVersion; installedAt = (Get-Date).ToUniversalTime().ToString('o'); installerExitCode = $taskInstall.ExitCode; executable = $taskExecutable; uninstaller = $taskUninstaller; shortcut = $taskShortcut; startMenuShortcut = $taskStartMenuShortcut; shortcutTarget = $taskLink.TargetPath; executableSha256 = (Get-FileHash -LiteralPath $taskExecutable -Algorithm SHA256).Hash.ToLowerInvariant(); ready = $false }
 if (-not $SkipLaunch) {
   $taskPreviousImport = $env:RIFTCAST_IMPORT_FROM
   try {

@@ -212,7 +212,7 @@ export function EmbeddedObs({ section='video',onSection,controlReason='',notify,
         {section === 'video' && <div className="engine-preview-column">
           <div className="engine-section-heading"><h3>PGM 合成画面</h3><span>周期快照 / 每秒 1 帧</span></div>
           <div className="engine-preview-surface embedded-obs-preview"><ObsLivePreview kind="program" purpose="monitor" connected={connected} enabled={previewEnabled && section === 'video'} onStatus={setPreviewStatus} /></div>
-          <div className="engine-preview-meta"><span>{status?.sceneName || '场景待查询'}</span><button type="button" onClick={() => setPreviewEnabled(value => !value)} disabled={!connected}>{previewEnabled ? '暂停截图' : '恢复截图'}</button></div>
+          <div className="engine-preview-meta"><span>{connected && status?.sceneName || '场景待查询'}</span><button type="button" onClick={() => setPreviewEnabled(value => !value)} disabled={!connected}>{previewEnabled ? '暂停截图' : '恢复截图'}</button></div>
           <p className="engine-note">{previewStatus?.phase === 'live' ? '周期快照已更新；动态合成画面可在导播台核对。' : previewStatus?.message || '等待引擎合成画面。'}</p>
           {!!status?.inputs.length && <details className="engine-loaded-sources"><summary>已加载来源（{status.inputs.length}）</summary>{status.inputs.map(input => <div key={input.inputName}><LayersIcon kind={input.inputKind} /><span>{input.inputName}</span>{input.inputMuted && <small>静音</small>}</div>)}</details>}
         </div>}
@@ -227,7 +227,7 @@ export function EmbeddedObs({ section='video',onSection,controlReason='',notify,
               {section === 'video' && <label className="field"><span>视频输出目标帧率</span><select aria-label="输出帧率" value={outputFps} disabled={!canConfigure} onChange={event => editSelection(() => setOutputFps(Number(event.target.value) as 30 | 60))}><option value={60}>60 帧 / 优先硬件编码</option><option value={30}>30 帧 / 降低显卡负荷</option></select><small>软件编码时引擎采用 30 帧；实际表现见输出统计。</small></label>}
             </div>
             <div className="engine-source-apply"><p>{sourceBlockReason || '应用来源会更新引擎配置；启动输出仍需单独操作。'}</p><button className={'button small' + (dirty ? ' primary' : '')} disabled={!canConfigure} onClick={() => void run('setup', '/api/obs/engine/setup', { gameWindow, desktopDevice, micDevice, micEnabled, outputFps }, '游戏捕获与音频设置已应用')}><Save size={14} />{pending === 'setup' ? '正在应用…' : dirty ? '应用来源修改' : '应用画面与音频'}</button></div>
-          </> : <div className="engine-external-guidance"><h3>外部 OBS 来源</h3><p>在 OBS 的同一场景准备游戏捕获、系统声音与解说音频，再添加 RiftCast HUD 浏览器来源。</p>{section === 'video' ? <button className="button" onClick={() => document.getElementById('external-obs-setup')?.scrollIntoView({ block: 'start', behavior: 'auto' })}>连接与场景设置<ArrowRight size={14} /></button> : <button className="button" onClick={() => onSection?.('video')}>打开外部 OBS 设置</button>}</div>}
+          </> : <div className="engine-external-guidance"><h3>外部 OBS 来源</h3><p>在 OBS 的同一场景准备游戏捕获、系统声音与解说音频，再添加观澜的 HUD 浏览器来源。</p>{section === 'video' ? <button className="button" onClick={() => document.getElementById('external-obs-setup')?.scrollIntoView({ block: 'start', behavior: 'auto' })}>连接与场景设置<ArrowRight size={14} /></button> : <button className="button" onClick={() => onSection?.('video')}>打开外部 OBS 设置</button>}</div>}
           {receipt && <p className="engine-operation-receipt" role="status">{receipt}</p>}
         </div>
       </div>

@@ -6,7 +6,7 @@ type ObsCall = <T extends keyof OBSRequestTypes>(request: T, data?: OBSRequestTy
 export class ObsLFrame {
   constructor(private request: ObsCall) {}
   async apply(sceneName: string, enabled: boolean): Promise<{ applied: boolean; detail: string }> {
-    if (!['RiftCast 节目', 'RiftCast 预监'].includes(sceneName)) return { applied: false, detail: 'L 形构图使用 RiftCast 内置节目与预监场景' };
+    if (!['RiftCast 节目', 'RiftCast 预监'].includes(sceneName)) return { applied: false, detail: 'L 形构图使用观澜内置节目与预监场景' };
     const [video, items] = await Promise.all([this.request('GetVideoSettings'), this.request('GetSceneItemList', { sceneName })]);
     if (![video.baseWidth, video.baseHeight].every(n => Number.isFinite(n) && n > 0)) throw new Error('OBS 画布尺寸不可用');
     const game = items.sceneItems.find(i => i.sourceName === 'RiftCast 游戏画面');

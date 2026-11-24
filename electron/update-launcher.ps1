@@ -51,6 +51,6 @@ try {
   if (!$notified) { try { [System.IO.File]::WriteAllText($env:RIFTCAST_UPDATE_READY_FILE,'error') } catch { }; exit 1 }
   try {
     $shell=[Activator]::CreateInstance([Type]::GetTypeFromProgID('WScript.Shell'))
-    [void]$shell.Popup($message,0,'RiftCast 更新',16)
+    [void]$shell.Popup($message,0,'观澜更新',16)
   } catch { }
 }

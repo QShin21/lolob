@@ -95,7 +95,7 @@ try {
     Write-Host '本地控制台：http://127.0.0.1:3888（用浏览器打开）。Ctrl+C 停止服务。' -ForegroundColor Cyan
     Invoke-Npm -NpmArguments @('start')
   } else {
-    Write-Host '正在打开 RiftCast 桌面导播工作台。' -ForegroundColor Cyan
+    Write-Host '正在打开观澜桌面导播工作台。' -ForegroundColor Cyan
     if ($HiddenLaunch) {
       $taskElectronExecutable = Join-Path $taskRoot 'node_modules\electron\dist\electron.exe'
       if (-not (Test-Path -LiteralPath $taskElectronExecutable)) { throw 'Electron 可执行文件缺失，请使用 -Console 查看运行环境准备结果。' }
@@ -113,10 +113,10 @@ try {
     $taskFailureMessage = "$taskFailureReason`n`n启动日志：$taskLaunchLog`n`n可运行 启动导播.cmd -Console 查看安装与启动过程。"
     try {
       Add-Type -AssemblyName System.Windows.Forms
-      [System.Windows.Forms.MessageBox]::Show($taskFailureMessage, 'RiftCast 启动失败', 'OK', 'Error') | Out-Null
+      [System.Windows.Forms.MessageBox]::Show($taskFailureMessage, '观澜启动失败', 'OK', 'Error') | Out-Null
     } catch {
       $taskErrorShell = New-Object -ComObject WScript.Shell
-      $taskErrorShell.Popup($taskFailureMessage, 0, 'RiftCast 启动失败', 16) | Out-Null
+      $taskErrorShell.Popup($taskFailureMessage, 0, '观澜启动失败', 16) | Out-Null
     }
   } elseif ($Console) {
     Read-Host '按 Enter 关闭启动窗口' | Out-Null
