@@ -68,92 +68,85 @@ jobs:
           "RIFTCAST_PLAYWRIGHT_MODULE=$(Join-Path $module 'index.mjs')" >> $env:GITHUB_ENV
           "RIFTCAST_BROWSER_EXECUTABLE=$browser" >> $env:GITHUB_ENV
       - name: Verify operator UI, keyboard workflows and responsive layouts
-        run: npm run verify:operator-ui
+        run: ./scripts/ci-retry.ps1 npm run verify:operator-ui
       - name: Verify theme persistence and programme colour isolation
-        run: npm run verify:ui-theme
+        run: ./scripts/ci-retry.ps1 npm run verify:ui-theme
       - name: Verify production workflow and staged TAKE
-        run: npm run verify:production
+        run: ./scripts/ci-retry.ps1 npm run verify:production
       - name: Verify frontend permissions and state safety
-        run: npm run verify:frontend-safety
+        run: ./scripts/ci-retry.ps1 npm run verify:frontend-safety
       - name: Verify broadcast controls
-        run: npm run verify:broadcast-controls
+        run: ./scripts/ci-retry.ps1 npm run verify:broadcast-controls
       - name: Verify feature parity and programme isolation
-        run: node scripts/verify-feature-parity.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-feature-parity.mjs
       - name: Verify cinematic editor with Replay API test service
-        run: node scripts/verify-cinematics.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-cinematics.mjs
       - name: Verify analysis graphics and missing telemetry
-        run: node scripts/verify-broadcast-analysis.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-broadcast-analysis.mjs
       - name: Verify the visual style editor and derived packs
-        run: node scripts/verify-style-editor.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-style-editor.mjs
       - name: Verify season statistics and Twitch audience graphics
-        run: node scripts/verify-season-twitch-parity.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-season-twitch-parity.mjs
       - name: Verify global shortcut controls and role changes
-        run: node scripts/verify-global-shortcuts.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-global-shortcuts.mjs
       - name: Verify postgame damage composition
-        run: node scripts/verify-postgame-composition.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-postgame-composition.mjs
       - name: Verify full-height draft and champion tabs
-        run: node scripts/verify-program-layouts.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-program-layouts.mjs
       - name: Verify archive graphics and series history
-        run: node scripts/verify-archive-graphics.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-archive-graphics.mjs
       - name: Verify packet analysis and historical fights
-        run: node scripts/verify-combat-review.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-combat-review.mjs
       - name: Verify transition controls and Power Play
-        run: node scripts/verify-transitions.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-transitions.mjs
       - name: Verify expanded dynamic text targets
-        run: node scripts/verify-dynamic-text.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-dynamic-text.mjs
       - name: Verify roster identity and automatic side controls
-        run: node scripts/verify-player-identity.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-player-identity.mjs
       - name: Verify VDO feeds, demo graphics and resource maintenance
-        run: node scripts/verify-vdo-demo-resources.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-vdo-demo-resources.mjs
       - name: Verify update controls, local reporting and first-use guide
-        run: node scripts/verify-app-operations.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-app-operations.mjs
       - name: Verify player skin graphics and unknown fields
-        run: node scripts/verify-skin-display.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-skin-display.mjs
       - name: Verify BP statistics sources, samples and programme isolation
-        run: node scripts/verify-draft-statistics.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-draft-statistics.mjs
       - name: Verify live-only startup, migration and polling controls
-        run: node scripts/verify-live-only.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-live-only.mjs
       - name: Verify tournament creation, progression, archives and restart
-        run: node scripts/verify-tournaments-130.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-tournaments-130.mjs
       - name: Verify gold ranking and stale readings
-        run: node scripts/verify-gold-ranking-123.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-gold-ranking-123.mjs
       - name: Verify player rotation controls
-        run: node scripts/verify-player-rotation-115.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-player-rotation-115.mjs
       - name: Verify postgame crops, damage shares and scene entries
-        run: node scripts/verify-postgame-116.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-postgame-116.mjs
       - name: Verify full rune lineups across all built-in styles
-        run: node scripts/verify-lineup-runes-117.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-lineup-runes-117.mjs
       - name: Verify replay director controls and event navigation
-        run: node scripts/verify-replay-director-120.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-replay-director-120.mjs
       - name: Verify report layouts
-        run: node scripts/verify-report-093.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-report-093.mjs
       - name: Verify style pack import, preview, scenes and restart
-        run: npm run verify:style-packs
+        run: ./scripts/ci-retry.ps1 npm run verify:style-packs
       - name: Verify style pack deletion, permissions and restart
-        run: node scripts/verify-style-deletion.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-style-deletion.mjs
       - name: Verify seven built-ins, default migration and 91 scene renders
-        run: npm run verify:builtin-styles
+        run: ./scripts/ci-retry.ps1 npm run verify:builtin-styles
       - name: Verify draft and scoreboard layout across built-in styles
-        run: node scripts/verify-draft-layout-104.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-draft-layout-104.mjs
       - name: Verify cooldown HUD, vitals, names and stale data
-        run: node scripts/verify-telemetry-hud.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-telemetry-hud.mjs
       - name: Verify floating BP, lock reveal and portrait libraries
-        run: node scripts/verify-draft-focus-111.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-draft-focus-111.mjs
       - name: Verify teamfights, objectives and third report page
-        run: node scripts/verify-combat-112.mjs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-combat-112.mjs
       - name: Verify paired collaboration with isolated services
         # Screen-share encoding needs the runner's Microsoft Edge; the pinned Chromium build produced no frames here.
         env:
           RIFTCAST_BROWSER_EXECUTABLE: ''
           RIFTCAST_CHROMIUM_PATH: ''
-        # The headless screen-share start is timing-sensitive on hosted runners: allow up to three attempts.
-        run: |
-          foreach ($attempt in 1..3) {
-            node scripts/verify-collaboration-170.mjs
-            if ($LASTEXITCODE -eq 0) { break }
-            Write-Host "::warning::Collaboration verifier attempt $attempt exited with $LASTEXITCODE"
-          }
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        run: ./scripts/ci-retry.ps1 node scripts/verify-collaboration-170.mjs
       - name: Check verification reports and committed manual
         run: node scripts/publish-release-200.mjs --preflight
       - name: Select the runner's Windows x64 MinGW compiler
