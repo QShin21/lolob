@@ -6,6 +6,7 @@ import {createServer} from 'vite';
 import react from '@vitejs/plugin-react';
 import {tsImport} from 'tsx/esm/api';
 const {chromium}=await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE?pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href:'playwright');
+const executablePath=process.env.RIFTCAST_CHROMIUM_PATH;
 const {createFixture}=await tsImport('../server/test-support/fixture.ts',import.meta.url);
 const {BUILTIN_RUNTIME_STYLES,BUILTIN_STYLE_RECORDS}=await tsImport('../shared/style-packs.ts',import.meta.url);
 const {bundledChampions}=await tsImport('../shared/champion-art.ts',import.meta.url);
@@ -21,7 +22,7 @@ await writeFile(path.join(dir,'entry.tsx'),`import React from'react';import{crea
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();
 let browser;const checks=[],errors=[];
 try{
- browser=await chromium.launch({headless:true,channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'});
+ browser=await chromium.launch({headless:true,...(executablePath?{executablePath}:{channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'})});
  const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/api/**',async route=>{
   const parts=new URL(route.request().url()).pathname.split('/');
