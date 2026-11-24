@@ -10,6 +10,7 @@ import { isolatedNativeEnvironment, nativeRequestGuard } from './verify-native-s
 import { reportFixture } from './report-093-fixture.mjs';
 import { checkStyleDeletion, checkDeletedAfterRestart } from './style-deletion-checks.mjs';
 const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
+const executablePath = process.env.RIFTCAST_CHROMIUM_PATH;
 const version = JSON.parse(await readFile('package.json', 'utf8')).version;
 const dir = path.resolve('verification-output', `release-${version}`, 'deletion'); await mkdir(dir, { recursive: true });
 const sandbox = await mkdtemp(path.join(os.tmpdir(), 'riftcast-delete-')), data = path.join(sandbox, 'data'); await mkdir(data);
@@ -24,7 +25,7 @@ async function start() {
 }
 async function stop() { if (!service || service.exitCode !== null) return; const done = once(service, 'exit'); service.kill(); await done; service = undefined; }
 try {
-  await start(); browser = await chromium.launch({ headless: true, channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' });
+  await start(); browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : { channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' }) });
   const context = await browser.newContext({ viewport: { width: 1600, height: 1100 } }); await nativeRequestGuard(blocked).attach(context);
   page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
   const removed = await checkStyleDeletion({ page, base, dir, checks });

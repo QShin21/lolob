@@ -13,6 +13,7 @@ import { isolatedNativeEnvironment, nativeRequestGuard } from './verify-native-s
 import { reportFixture } from './report-093-fixture.mjs';
 import { stylePackFixture } from './style-pack-fixture.mjs';
 const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
+const executablePath = process.env.RIFTCAST_CHROMIUM_PATH || process.env.RIFTCAST_BROWSER_EXECUTABLE;
 const { STYLE_SCENES, BUILTIN_STYLE_REF } = await tsImport('../shared/style-packs.ts', import.meta.url);
 const { bundledChampions } = await tsImport('../shared/champion-art.ts', import.meta.url);
 const version = JSON.parse(await readFile('package.json','utf8')).version;
@@ -35,7 +36,7 @@ const state=async()=>await(await fetch(base+'/api/state')).json();
 try {
   await start();
   const seat=await(await fetch(base+'/api/control/seat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({role:'director'})})).json();assert.ok(seat.token);
-  browser=await chromium.launch({headless:true,args:['--no-sandbox'],...(process.env.RIFTCAST_BROWSER_EXECUTABLE?{executablePath:process.env.RIFTCAST_BROWSER_EXECUTABLE}:{channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'})});
+  browser=await chromium.launch({headless:true,args:['--no-sandbox'],...(executablePath?{executablePath}:{channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'})});
   const context=await browser.newContext({viewport:{width:1600,height:1000}});await nativeRequestGuard(blocked).attach(context);
   await context.addInitScript(token=>sessionStorage.setItem('riftcast-seat-token',token),seat.token);
   page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(base);
@@ -114,7 +115,7 @@ try {
   }
   await browser.close();browser=undefined;await vite.close();vite=undefined;
   await stop();await start();const restored=await state();assert.deepEqual(restored.overlay.stylePack,ref);assert.equal(restored.production.program.overlay.stylePack.id,BUILTIN_STYLE_REF.id);
-  assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,7);
+  assert.equal((await(await fetch(base+'/api/style-packs')).json()).packs.length,8);
   checks.push('real service restart restores both immutable style versions and separate preview/program selection');
   assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);
   await writeFile(path.join(dir,'report.json'),JSON.stringify({status:'passed',version,checks,errors,blocked},null,2));console.log(checks.join('\n'));
