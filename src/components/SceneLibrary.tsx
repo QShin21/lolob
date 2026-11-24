@@ -3,7 +3,7 @@ import { styleRef } from '../../shared/style-packs';
 import { useRef, useState } from "react";
 import type { BroadcastState, Champion, Scene, CustomScene, StateContext } from "../../shared/types";
 import { sceneDetails, sceneInfo } from "../lib";
-import { ArrowLeft, Palette, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
+import { ArrowLeft, Layers, Palette, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
 import { CustomSceneEditor } from "./CustomSceneEditor";
 import { TaskTabs } from "./ConsoleUI";
 import { SceneCard, reportPageNames } from "./SceneCard";
@@ -124,7 +124,7 @@ export function SceneLibrary(props: {
           </div>
         ))}
       </div>
-      {!visibleScenes.length && <p className="muted" style={{ padding: '0 20px 16px' }}>{group === 'custom' ? '还没有自定义场景，点击「新建场景」添加图片或应用窗口。' : query ? '没有匹配的场景，试试其他名称。' : '此分组暂无场景。'}</p>}
+      {!visibleScenes.length && <p className="scene-bank-empty"><Layers size={18} aria-hidden="true"/>{group === 'custom' ? '还没有自定义场景，点击「新建场景」添加图片或应用窗口。' : query ? '没有匹配的场景，试试其他名称。' : '此分组暂无场景。'}</p>}
       <div className="scene-bank-note"><span>单击只准备预监，核对后切入节目</span><span>{allScenes.length+2} 个场景 · {custom.length} / 50 自定义</span></div>
     </section>
   );

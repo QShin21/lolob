@@ -20,5 +20,10 @@ import './theme-2/base.css';
 import './theme-2/shell.css';
 import './theme-2/studio.css';
 import './theme-2/pages.css';
+import './theme-2/draft-data.css';
+import './theme-2/management.css';
+import './theme-2/settings-pages.css';
+import './theme-2/production-panels.css';
+import './theme-2/remote.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><UiThemeProvider><App/></UiThemeProvider></React.StrictMode>);

@@ -193,7 +193,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
     </aside>
 
     <section className="settings-task-workspace" id="settings-current-task" role="tabpanel" aria-labelledby={'settings-nav-' + section}>
-      <header className="settings-task-heading"><div><h1>{currentTask.label}</h1><p>{currentTask.description}</p></div>
+      <header className="settings-task-heading"><div className="settings-task-title"><currentTask.icon size={20} aria-hidden="true"/><div><h1>{currentTask.label}</h1><p>{currentTask.description}</p></div></div>
         {section === 'data' && <span className="settings-task-state">{'客户端实时数据'}</span>}
         {section === 'graphics' && <span className="settings-task-state">修改先进入待播</span>}
         {section === 'appearance' && <span className="settings-task-state">不改变节目画面</span>}

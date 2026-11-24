@@ -1,6 +1,6 @@
 import { objectiveCount, objectiveKeys, objectiveLabels } from '../../shared/objective-counts';
 import { useState } from "react";
-import { Activity, ArrowDownToLine, Search, UserRound } from "lucide-react";
+import { Activity, ArrowDownToLine, List, Search, UserRound, Users } from "lucide-react";
 import type { Player, Side, StateContext } from "../../shared/types";
 import {
   currentGameResult,
@@ -183,7 +183,8 @@ export function LiveData({
           <div className="data-tools">
             <div className="data-toolbar">
               <h2>
-                <span className="sr-only">十人对局数据</span>
+                <Users size={16} aria-hidden="true" />
+                <span>十人对局数据</span>
                 <small>{players.length} 人</small>
               </h2>
               <label className="domain-search">
@@ -286,24 +287,25 @@ export function LiveData({
                         </span>
                       </div>
                     </td>
-                    <td>{p.level ?? "—"}</td>
-                    <td title={statsDetail(p)}>
+                    <td className="data-number">{p.level ?? "—"}</td>
+                    <td className="data-number" title={statsDetail(p)}>
                       {available(p) ? playerKda(p) : "—"}
                     </td>
-                    <td title={statsDetail(p)}>{available(p) ? p.cs : "—"}</td>
+                    <td className="data-number" title={statsDetail(p)}>{available(p) ? p.cs : "—"}</td>
                     <td
+                      className="data-number"
                       title={`累计经济 · ${p.goldSource || "来源未提供"} · ${sampleTime(p.goldSampledAt)}`}
                     >
                       {p.gold == null ? "—" : p.gold.toLocaleString("zh-CN")}
                     </td>
                     {extra && (
                       <>
-                        <td>
+                        <td className="data-number">
                           {p.currentGold == null
                             ? "—"
                             : p.currentGold.toLocaleString("zh-CN")}
                         </td>
-                        <td>{gold(equipmentValue(p))}</td>
+                        <td className="data-number">{gold(equipmentValue(p))}</td>
                         <td>
                           <div className="data-grid-equipment">
                             {p.items.slice(0, 7).map((id, i) => {
@@ -348,9 +350,11 @@ export function LiveData({
             </table>
             {!players.length && (
               <div className="domain-empty">
-                {state.players.length
-                  ? "没有匹配的选手，调整搜索或阵营范围。"
-                  : "等待本局名单。连接客户端后，在这里核对十人数据。"}
+                <Users aria-hidden="true" />
+                <strong>{state.players.length ? "没有匹配的选手" : "等待本局名单"}</strong>
+                <p>{state.players.length
+                  ? "调整搜索或阵营范围。"
+                  : "连接客户端后，在这里核对十人数据。"}</p>
                 {!state.players.length&&onOpenConnections&&<button className="button primary" onClick={onOpenConnections}>打开数据连接</button>}
               </div>
             )}
@@ -362,7 +366,7 @@ export function LiveData({
         >
           {player ? (
             <>
-              <div className="data-player-heading">
+              <div className="data-player-heading" data-side={player.team}>
                 <ChampionImage champions={champions} id={player.championId} />
                 <div>
                   <small>
@@ -494,7 +498,8 @@ export function LiveData({
             </>
           ) : (
             <div className="domain-empty">
-              <UserRound />
+              <UserRound aria-hidden="true" />
+              <strong>等待检查选手</strong>
               <p>本局名单到达后可检查采样、装备与符文。</p>
             </div>
           )}
@@ -547,7 +552,7 @@ export function LiveData({
       </div>
       <div className="data-events domain-scroll" hidden={tab !== "events"}>
         <header>
-          <h2>比赛事件</h2>
+          <h2><List size={17} aria-hidden="true" /> 比赛事件</h2>
           <span>{state.events.length} 条 · 最近在前</span>
         </header>
         {[...state.events].reverse().map((e) => (
@@ -560,7 +565,11 @@ export function LiveData({
           </div>
         ))}
         {!state.events.length && (
-          <div className="domain-empty">尚无本局事件。对局开始后持续更新。</div>
+          <div className="domain-empty">
+            <List aria-hidden="true" />
+            <strong>尚无本局事件</strong>
+            <p>对局开始后持续更新。</p>
+          </div>
         )}
       </div>
       <div className="data-health domain-scroll" hidden={tab !== "health"}>

@@ -227,11 +227,11 @@ export function DraftChampionPicker({
           );
         })}
         {!visible.length && (
-          <p className="bp-empty">
-            {champions.length
-              ? "没有匹配英雄，试试中文名或英文 ID。"
-              : "英雄资料尚未载入，请检查连接后重新打开。"}
-          </p>
+          <div className="bp-empty">
+            <Search aria-hidden="true" />
+            <strong>{champions.length ? "没有匹配英雄" : "英雄资料尚未载入"}</strong>
+            <p>{champions.length ? "试试中文名或英文 ID。" : "请检查连接后重新打开。"}</p>
+          </div>
         )}
       </div>
       <footer className="bp-picker-footer">

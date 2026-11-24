@@ -1,1 +1,227 @@
-/* RiftCast 2.0 page-level styles. See docs/Design-System-2.0.md. */
+/* Shared surfaces for the secondary workspaces. Media and its descendants
+   keep the styles of the programme. */
+
+.control-room :is(.domain-heading h1, .settings-task-heading h1, .bp-round-copy h1) {
+  font-size: 25px;
+  line-height: 30px;
+  font-weight: 680;
+  letter-spacing: -.02em;
+}
+.control-room .bp-round-copy h1::after,
+.remote-workbench .remote-seat-heading h1::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 2px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--rc-gold), transparent);
+}
+.control-room :is(.domain-heading p, .settings-task-heading p, .bp-round-copy p) {
+  color: var(--ui-muted);
+  line-height: 1.6;
+}
+
+.control-room :is(
+  .bp-round, .bp-team, .bp-production, .bp-layout-review,
+  .data-comparison, .data-inspector, .data-connection-list,
+  .manage-directory, .manage-detail, .tournament-directory, .asset-review,
+  .wrap-identity, .wrap-task, .wrap-checklist, .guide-directory, .guide-article,
+  .settings-workspace, .settings-block, .settings-connection-list
+) {
+  background: var(--rc-panel);
+  background-color: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--rc-radius-panel);
+  box-shadow: var(--rc-inset), var(--rc-shadow-1);
+}
+
+.control-room :is(.data-workbench, .manage-workbench, .wrap-workbench, .bp-workbench) .task-tabs {
+  border-color: var(--ui-border);
+}
+.control-room :is(.domain-facts dt, .settings-fields .field, .manage-fields > label) {
+  color: var(--ui-muted);
+}
+.control-room .domain-facts dd {
+  color: var(--ui-text);
+  font-weight: 560;
+}
+.control-room :is(.domain-search, .settings-directory-search) {
+  background: var(--ui-surface);
+  border-color: var(--ui-control-border);
+  border-radius: var(--rc-radius-control);
+}
+html[data-ui-theme] .app-shell.control-room :is(.domain-search, .settings-directory-search, .search-field) input {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.control-room :is(.domain-search, .settings-directory-search):focus-within {
+  border-color: var(--ui-accent);
+  box-shadow: 0 0 0 3px var(--rc-cyan-glow);
+  outline: 0;
+}
+.control-room :is(.domain-search, .settings-directory-search) > svg {
+  flex: none;
+}
+
+.control-room :is(.domain-note, .bp-error, .bp-conflict, .bp-permission-note),
+.remote-workbench :is(.remote-connection-warning, .remote-task-error) {
+  border-radius: var(--rc-radius-control);
+}
+.app-shell.control-room .application-status:is(.applied, .confirmed),
+.control-room .control-sync:not(.disconnected) {
+  color: var(--ui-info);
+}
+:is(.app-shell.control-room, html .remote-workbench) .notice-success {
+  background: var(--ui-success-bg) !important;
+  border-color: color-mix(in srgb, var(--ui-text) 22%, var(--ui-success-bg)) !important;
+  color: var(--ui-text) !important;
+}
+
+:root[data-ui-theme=light] .app-shell.control-room :is(.domain-workspace, .settings-workspace, .director-tasks, dialog) .button.primary,
+:root[data-ui-theme=light] .remote-workbench .button.primary {
+  background: var(--ui-accent);
+}
+
+.control-room :is(.domain-empty, .empty-state, .bp-empty) {
+  color: var(--ui-muted);
+  text-align: center;
+}
+.control-room :is(.domain-empty, .empty-state, .bp-empty) > svg {
+  display: block;
+  box-sizing: content-box;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  padding: 12px;
+  margin-inline: auto;
+  color: var(--rc-gold);
+  background: color-mix(in srgb, var(--rc-gold-line) 48%, var(--ui-raised));
+  border: 1px solid var(--rc-gold-line);
+  border-radius: var(--rc-radius-panel);
+}
+.control-room :is(.domain-empty, .empty-state, .bp-empty) :is(strong, h2) {
+  color: var(--ui-text);
+  font-size: 16px;
+  font-weight: 650;
+}
+.control-room :is(.domain-empty, .empty-state, .bp-empty) > p {
+  color: var(--ui-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Champ portraits also appear in the programme. Apply the placeholder surface
+   only to the operator lists and portraits named here. */
+.control-room :is(
+  .bp-pick-row, .bp-ban, .bp-assignee, .bp-comparison-row, .bp-history-picks,
+  .bp-candidate, .bp-picker-selection, .data-champion, .data-player-heading,
+  .roster-row
+) .champion-image {
+  background: var(--ui-raised);
+  color: var(--ui-muted);
+  border-radius: var(--rc-radius-chip);
+  box-shadow: 0 0 0 1px var(--ui-border);
+}
+
+/* Wrap-up */
+.control-room .wrap-identity {
+  background: linear-gradient(90deg, var(--ui-raised), var(--ui-surface) 42% 58%, var(--ui-raised));
+}
+.control-room .wrap-identity > div {
+  --wrap-side: var(--rc-side-blue);
+  box-shadow: inset 3px 0 var(--wrap-side);
+  padding-inline-start: 12px;
+}
+.control-room .wrap-identity > div[data-side=red] {
+  --wrap-side: var(--rc-side-red);
+  box-shadow: inset -3px 0 var(--wrap-side);
+  padding-inline: 0 12px;
+}
+.control-room .wrap-identity > div > span { color: var(--wrap-side); }
+.control-room .wrap-identity > b {
+  font-family: var(--rc-font-display);
+  font-size: 36px;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: .08em;
+  font-variant-numeric: tabular-nums;
+}
+.control-room .wrap-result-label {
+  background: var(--ui-warning-bg);
+  color: var(--ui-warning);
+  border-radius: var(--rc-radius-chip);
+  box-shadow: inset 0 0 0 1px var(--ui-border);
+}
+.control-room .wrap-result-label[data-ready=true] {
+  background: var(--ui-info-bg);
+  color: var(--ui-info);
+}
+.control-room :is(.wrap-task-body, .wrap-checklist) { background-color: var(--ui-surface); }
+.control-room .wrap-checklist { padding-inline: 12px; }
+.control-room :is(.wrap-checklist > h2, .wrap-task-body h2:not(.broadcast-container *)) {
+  font-size: 17px;
+  font-weight: 660;
+}
+.control-room :is(.wrap-checklist > h2, .wrap-task-body h2:not(.broadcast-container *)) > svg {
+  color: var(--rc-gold);
+  vertical-align: -.18em;
+  margin-inline-end: 8px;
+}
+.control-room .wrap-check {
+  border-radius: var(--rc-radius-control);
+  transition: color .16s var(--rc-ease), background-color .16s var(--rc-ease);
+}
+.control-room .wrap-check:hover { background: var(--ui-hover); }
+.control-room .wrap-check[data-ready=true] > svg { color: var(--ui-info); }
+.control-room :is(.wrap-terminal, .wrap-next, .wrap-output, .wrap-video) {
+  border-color: var(--ui-border);
+}
+.control-room .wrap-terminal { background: var(--ui-raised); }
+.control-room .wrap-winner-choices > section { box-shadow: var(--rc-inset); }
+.control-room .wrap-history summary:hover { color: var(--ui-accent); }
+.control-room .wrap-series-id {
+  font-family: var(--rc-font-display);
+  letter-spacing: .06em;
+}
+
+/* Help */
+.control-room .guide-directory nav h2 { letter-spacing: .04em; }
+.control-room .guide-directory nav button {
+  border-radius: var(--rc-radius-control);
+  transition: background-color .16s var(--rc-ease), color .16s var(--rc-ease);
+}
+.control-room .guide-directory nav button[aria-current=page] {
+  color: var(--ui-accent);
+  background: var(--ui-selected);
+  box-shadow: inset 3px 0 var(--ui-selection-border);
+}
+.control-room .guide-directory nav button:not([aria-current=page]):hover {
+  background: var(--ui-hover);
+}
+.control-room .guide-article > header > span { color: var(--rc-gold); }
+.control-room .guide-article h2 {
+  font-size: 24px;
+  font-weight: 660;
+  line-height: 1.3;
+}
+.control-room .guide-article h3 { font-weight: 650; }
+.control-room .guide-steps li {
+  background: var(--ui-raised);
+  border-color: var(--ui-border);
+  border-radius: var(--rc-radius-control);
+}
+.control-room .guide-steps li::before {
+  color: var(--rc-gold);
+  font-family: var(--rc-font-display);
+  font-size: 16px;
+  letter-spacing: .06em;
+}
+.control-room .guide-keys kbd {
+  font-family: var(--rc-font-display);
+  font-size: 14px;
+  color: var(--ui-text);
+  border-radius: var(--rc-radius-chip);
+  box-shadow: inset 0 -1px var(--ui-control-border);
+}

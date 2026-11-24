@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { programState } from "../../shared/production";
 import type { ControlSeat, Notice, Scene, StateContext } from "../../shared/types";
+import { BrandMark } from "../components/BrandMark";
 import { MonitorPane } from "../components/MonitorPane";
 import { BroadcastCanvas } from "../components/BroadcastCanvas";
 import { Notification, TakeControl, TaskTabs } from "../components/ConsoleUI";
@@ -108,7 +109,7 @@ export function Remote(
     <main className={`remote-workbench ${owner ? "has-control" : ""} ${viewport.editing ? 'is-editing' : ''}`} data-keyboard={viewport.keyboardInset > 0 ? 'open' : 'closed'} style={{ '--remote-keyboard-inset': `${viewport.keyboardInset}px` } as CSSProperties}>
       <header className="remote-identity">
         <div className="remote-brand-line">
-          <strong>RiftCast</strong>
+          <strong><BrandMark size={22} />RiftCast</strong>
           <span className={`remote-sync ${connected ? "is-connected" : ""}`}>
             {connected ? <Wifi size={14} /> : <WifiOff size={14} />}{" "}
             {connected ? seat ? "已同步" : "数据已同步 · 待验证席位" : "同步中断"}
@@ -161,11 +162,11 @@ export function Remote(
             {displayState.match.title}
           </span>
           <strong>
-            {getTeam(displayState, "blue")?.tag || "蓝方"}
+            <span className="remote-side-blue">{getTeam(displayState, "blue")?.tag || "蓝方"}</span>
             <b>
               {displayState.match.blueScore} : {displayState.match.redScore}
             </b>
-            {getTeam(displayState, "red")?.tag || "红方"}
+            <span className="remote-side-red">{getTeam(displayState, "red")?.tag || "红方"}</span>
           </strong>
           <small>
             GAME {displayState.match.game}
@@ -457,9 +458,9 @@ function RemoteScenes({ ctx }: { ctx: StateContext }) {
             </span>
             <span className="remote-scene-status">
               {state.programScene === scene && (
-                <b className="is-program">PGM</b>
+                <b className="bus-tag pgm is-program">PGM</b>
               )}
-              {state.previewScene === scene && <b>PVW</b>}
+              {state.previewScene === scene && <b className="bus-tag pvw">PVW</b>}
               {state.previewScene !== scene && <ChevronRight size={16} />}
             </span>
           </button>

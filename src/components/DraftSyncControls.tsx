@@ -59,7 +59,7 @@ export function DraftSyncControls(ctx: StateContext) {
     <div className="bp-sync-controls">
       <div className="bp-section-heading">
         <div>
-          <h3>接管与客户端核对</h3>
+          <h3><RefreshCw size={17} aria-hidden="true" />接管与客户端核对</h3>
           <p>
             {p.draftMode === "auto"
               ? "客户端样本正在同步到 BP；手工保存槽位会进入人工接管。"

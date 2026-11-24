@@ -106,7 +106,7 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
               : `${activeTeam?.tag || (state.draft.activeTeam === "blue" ? "蓝方" : "红方")} ${state.draft.action || "等待 BP"}`}
           </h1>
           <p>
-            <span>GAME {state.match.game}</span>
+            <span className="bp-game">GAME {state.match.game}</span>
             {nextSlot && <strong>待处理 {draftSlotName(nextSlot)}</strong>}
             <span>{draftRuleLabel(state)}</span>
           </p>
