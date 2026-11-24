@@ -1,8 +1,12 @@
+<p align="center"><img src="brand/riftcast-banner.png" alt="RiftCast · 英雄联盟赛事导播工作台" width="100%"></p>
+
 # RiftCast · 英雄联盟赛事导播工作台
 
-当前源码版本为 **1.7.1**。本次维护恢复国服 `16.23.840.6595` 观战遥测，适配实时观战与本地回放的逐次伤害。详见 [1.7.1 说明](docs/Windows-Release-1.7.1.md) 与 [用户手册](docs/user-manual-1.7.0/README.md)。
+当前源码版本为 **2.0.0**「演播室暗场」。本版重做了全部视觉：导播工作台的深浅两套主题、品牌标志与应用图标、安装程序与启动画面，并新增第七套内置节目风格「裂隙曜金」。功能、操作流程和数据格式沿用 1.7.1。详见 [2.0.0 说明](docs/Windows-Release-2.0.0.md)、[设计系统](docs/Design-System-2.0.md) 与 [用户手册](docs/user-manual-2.0.0/README.md)。
 
 从 [最新 Release](https://github.com/QShin21/lolob/releases/latest) 的 **Assets** 下载 Windows x64 安装包。当前 Release 提供一个 `.exe` 安装文件。
+
+1.7.1 恢复国服 `16.23.840.6595` 观战遥测，适配实时观战与本地回放的逐次伤害，见 [1.7.1 说明](docs/Windows-Release-1.7.1.md)。
 
 ## 历史功能记录
 
