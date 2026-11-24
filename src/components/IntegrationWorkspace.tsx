@@ -20,7 +20,7 @@ export function IntegrationWorkspace({disabled=false}:{disabled?:boolean}) {
     </section>
     <section className="settings-block"><header><h2>制作 Webhook</h2><p>新事件通过 HTTPS 发送，使用 HMAC-SHA256 签名；失败最多尝试 3 次。回放跳转会重新建立事件基线。</p></header>
       {draft.webhooks.map((h,i)=><fieldset className="integration-hook" key={h.id} disabled={disabled||busy}><legend>{h.name||`Webhook ${i+1}`}</legend><div className="settings-fields settings-two-column">
-        <label className="field">名称<input value={h.name} onChange={e=>patchHook(i,{name:e.target.value})}/></label><label className="field">接收地址<input placeholder="https://example.com/hooks/riftcast" value={h.url} onChange={e=>patchHook(i,{url:e.target.value})}/></label>
+        <label className="field">名称<input value={h.name} onChange={e=>patchHook(i,{name:e.target.value})}/></label><label className="field">接收地址<input placeholder="https://example.com/hooks/guanlan" value={h.url} onChange={e=>patchHook(i,{url:e.target.value})}/></label>
         <label className="field">签名密钥<input type="password" autoComplete="new-password" placeholder="至少 16 字符；留空保留已存密钥" value={h.secret??''} onChange={e=>patchHook(i,{secret:e.target.value})}/></label><label className="integration-check"><input type="checkbox" checked={h.enabled} onChange={e=>patchHook(i,{enabled:e.target.checked})}/>启用发送</label>
       </div><div className="integration-events">{integrationEvents.map(event=><label key={event}><input type="checkbox" checked={h.events.includes(event)} onChange={e=>patchHook(i,{events:e.target.checked?[...h.events,event]:h.events.filter(v=>v!==event)})}/>{eventNames[event]}</label>)}</div>
       <button className="button" onClick={()=>setDraft({...draft,webhooks:draft.webhooks.filter((_,j)=>j!==i)})}>移除此接收端</button></fieldset>)}

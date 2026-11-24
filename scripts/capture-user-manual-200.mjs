@@ -80,8 +80,11 @@ async function stop() {
 
 async function shot(page, name, target = page) {
   await page.evaluate(() => document.fonts.ready);
+  const visibleText = await (target === page ? page.locator('body') : target).innerText();
+  assert.doesNotMatch(visibleText, /riftcast/i, name);
+  assert.doesNotMatch(await page.title(), /riftcast/i, name);
   await target.screenshot({ path: path.join(out, `${name}.png`), animations: 'disabled' });
-  await writeFile(path.join(evidence, `${name}.txt`), await page.locator('body').innerText());
+  await writeFile(path.join(evidence, `${name}.txt`), visibleText);
   captures.push(name);
   console.log('Captured', name);
 }
@@ -124,7 +127,8 @@ try {
   const prepare = await dialog.getByRole('button', { name: '准备到预监', exact: true }).boundingBox();
   const frame = await dialog.boundingBox();
   assert.ok(prepare && frame && prepare.y + prepare.height <= frame.y + frame.height, 'The style dialog footer must be in the capture');
-  await shot(page, 'style-manager', dialog);
+  // Show the preview and prepare action. The pack list carries immutable author credits.
+  await shot(page, 'style-manager', dialog.locator('.style-pack-detail'));
   await dialog.getByRole('button', { name: '关闭风格包', exact: true }).click();
   await page.setViewportSize({ width: 1600, height: 1000 });
 

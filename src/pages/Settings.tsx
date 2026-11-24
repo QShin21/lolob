@@ -127,7 +127,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
   async function addExternalHud() {
     await run('add-hud', async () => {
       const result = await request<{ sceneName: string; inputName: string; reused: boolean }>('/api/obs/hud', { sceneName: obsScene });
-      notify(`${result.reused ? '已复用' : '已添加'} RiftCast HUD · ${result.sceneName}`);
+      notify(`${result.reused ? '已复用' : '已添加'} HUD 浏览器来源 · ${result.sceneName}`);
     });
   }
   async function refreshScenes() {
@@ -261,7 +261,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
               </div>
               <div className="settings-fields">
                 <label className="field">外部 OBS 场景<div className="settings-inline-field"><select value={obsScene} disabled={!scenes.length} onChange={event => setObsScene(event.target.value)}><option value="">{scenes.length ? '选择场景' : '连接 OBS 后刷新场景'}</option>{scenes.map(scene => <option key={scene.sceneName} value={scene.sceneName}>{scene.sceneName}</option>)}</select><button className="button small" disabled={busy || !obsConnected} onClick={refreshScenes} aria-label="刷新外部 OBS 场景"><RefreshCw size={15} /></button></div></label>
-                <div className="settings-actions"><button className="button" disabled={busy || !!controlReason || !obsScene || !obsConnected} onClick={() => run('switch-scene', async () => { await request('/api/obs/scene', { sceneName: obsScene }); }, 'OBS 已切换至 ' + obsScene)}>切换外部 OBS 场景</button><button className="button" disabled={busy || !!controlReason || !obsScene || !obsConnected || engineActive} onClick={() => void addExternalHud()}><Layers size={14} />{pending === 'add-hud' ? '正在添加…' : '添加 RiftCast HUD 来源'}</button></div>
+                <div className="settings-actions"><button className="button" disabled={busy || !!controlReason || !obsScene || !obsConnected} onClick={() => run('switch-scene', async () => { await request('/api/obs/scene', { sceneName: obsScene }); }, 'OBS 已切换至 ' + obsScene)}>切换外部 OBS 场景</button><button className="button" disabled={busy || !!controlReason || !obsScene || !obsConnected || engineActive} onClick={() => void addExternalHud()}><Layers size={14} />{pending === 'add-hud' ? '正在添加…' : '添加 HUD 浏览器来源'}</button></div>
                 <p className="settings-note">HUD 画布为 1920 × 1080。场景切换即时影响外部 OBS；请先核对游戏捕获、系统声音与解说音频。</p>
               </div>
             </div>

@@ -19,11 +19,10 @@ html .remote-workbench .remote-identity {
   align-items: center;
   gap: 6px;
   color: var(--ui-text);
-  font-family: var(--rc-font-display);
+  font-family: var(--rc-font-ui);
   font-size: 16px;
   font-weight: 680;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  letter-spacing: normal;
 }
 .remote-workbench .remote-brand-line .brand-mark { flex: none; }
 html .remote-workbench .remote-seat-heading h1 {

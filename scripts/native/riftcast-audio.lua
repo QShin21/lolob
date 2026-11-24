@@ -33,12 +33,12 @@ local function initialize()
   if bridge and bridge.riftcast_audio_load() ~= 0 then obs.timer_remove(initialize) end
 end
 function script_description()
-  return "RiftCast Program audio track 1 to VB-CABLE (48 kHz stereo)."
+  return "GUANLAN program audio track 1 to VB-CABLE (48 kHz stereo)."
 end
 function script_load(settings)
   local file = obs.obs_data_get_string(settings, "library")
   if file == "" then return end
-  if ffi.C.LoadLibraryW(utf16(file)) == nil then error("RiftCast audio library load failed: " .. tonumber(ffi.C.GetLastError())) end
+  if ffi.C.LoadLibraryW(utf16(file)) == nil then error("GUANLAN audio library load failed: " .. tonumber(ffi.C.GetLastError())) end
   bridge = ffi.load("riftcast-audio-bridge.dll")
   initialize()
   obs.timer_add(initialize, 500)

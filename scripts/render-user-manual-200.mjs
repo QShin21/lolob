@@ -8,7 +8,7 @@ import { browserExecutable } from './browser-executable.mjs';
 const version = '2.0.0';
 const root = path.resolve('docs', `user-manual-${version}`);
 const evidence = path.resolve('verification-output', `user-manual-${version}`);
-const name = `RiftCast-${version}-用户使用手册`;
+const name = `观澜-${version}-用户使用手册`;
 const modulePath = process.env.RIFTCAST_PLAYWRIGHT_MODULE;
 const { chromium } = await import(modulePath ? pathToFileURL(modulePath).href : 'playwright');
 await mkdir(evidence, { recursive: true });
@@ -18,6 +18,9 @@ try {
   const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } });
   await page.context().setOffline(true);
   await page.goto(pathToFileURL(path.join(root, name + '.html')).href);
+  assert.equal(await page.title(), `观澜 ${version} 用户使用手册`);
+  assert.equal(await page.locator('#p5 a[href^="https://github.com/QShin21/lolob/releases/tag/"]').getAttribute('href'),
+    `https://github.com/QShin21/lolob/releases/tag/v${version}`);
   await page.locator('figure a').first().click();
   await page.locator('#image-viewer[open] img').evaluate(img => img.decode());
   await page.getByRole('button', { name: '关闭原图', exact: true }).click();

@@ -59,7 +59,7 @@ export function CinematicWorkspace({state,disabled=false}:{state:BroadcastState;
     },100);
     return()=>{stopped=true;clearInterval(timer);};
   },[armed,mode,disabled,names.join('|')]);
-  const exportTrack=()=>{const blob=new Blob([JSON.stringify(track,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='riftcast-camera-'+track.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+  const exportTrack=()=>{const blob=new Blob([JSON.stringify(track,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='GuanLan-camera-'+track.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
   const importTrack=async(value?:File)=>{if(!value)return;if(value.size>256000){setError('镜头文件最多 256 KB');return;}try{const p=JSON.parse(await value.text());if(!p||typeof p.name!=='string'||!Array.isArray(p.frames)||p.frames.length>100||p.frames.some((f:any)=>!f||typeof f.time!=='number'||!Number.isFinite(f.time)||!['position','rotation'].every(k=>f[k]&&['x','y','z'].every(axis=>typeof f[k][axis]==='number'&&Number.isFinite(f[k][axis])))))throw new Error();setTrack({...p,id:crypto.randomUUID(),frames:p.frames.map((f:CameraKeyframe)=>({...f,id:crypto.randomUUID()}))});setDirty(true);setSelected('');}catch{setError('镜头文件格式无效');}};
   return <section className="cinematic-workspace" ref={root} aria-label="电影镜头与手柄">
     <header className="cinematic-heading"><div><h3>电影镜头与手柄</h3><p>在游戏回放中编辑轨迹；播放、跳转和跟随直接作用于当前游戏画面。</p></div><span className={`badge ${view?.connected?'connected':''}`}>{view?.connected?'镜头已连接':'等待回放'}</span><button className="button small" onClick={()=>void refresh()}>刷新连接</button></header>

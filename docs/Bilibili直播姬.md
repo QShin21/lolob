@@ -1,9 +1,9 @@
 # Bilibili 直播姬第三方模式接入
 
-本流程将 RiftCast 的赛事 HUD、OBS 中的游戏画面和音频合成为一路直播信号，发送至 Windows 直播姬，再由直播姬转播到哔哩哔哩。导播电脑同时运行 RiftCast、OBS 和直播姬。
+本流程将观澜的赛事 HUD、OBS 中的游戏画面和音频合成为一路直播信号，发送至 Windows 直播姬，再由直播姬转播到哔哩哔哩。导播电脑同时运行观澜、OBS 和直播姬。
 
 ```text
-RiftCast HUD ─┐
+观澜 HUD ─┐
 游戏画面 ────┼→ OBS 合成 → RTMP → Windows 直播姬 → 哔哩哔哩直播间
 游戏 / 解说音频┘
 ```
@@ -37,21 +37,21 @@ RiftCast HUD ─┐
 
 工作台显示 OBS 返回的推流、录制状态，连接与输出中的诊断显示合成 FPS、渲染、编码与网络丢帧，用于检查发送端。B 站直播间是否上线、直播姬是否收到音画、平台端音画是否正常，需分别在直播姬和 B 站检查。OBS 活动状态来自 [官方 `GetStreamStatus` 协议](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#getstreamstatus)。
 
-推流配置表单仅保留当前页面中的输入，应用成功后清空推流码。推流码不会写入 RiftCast 项目状态、比赛记录或数据导出。本项目也不提供读取 OBS 现有推流配置的接口。应用成功后，配置由 OBS 自身保存；重新配置时从当次直播姬界面复制参数。
+推流配置表单仅保留当前页面中的输入，应用成功后清空推流码。推流码不会写入观澜的项目状态、比赛记录或数据导出。本项目也不提供读取 OBS 现有推流配置的接口。应用成功后，配置由 OBS 自身保存；重新配置时从当次直播姬界面复制参数。
 
 应用推流配置时，服务会先检查 OBS 推流状态。推流期间或正在重连时需先在工作台停止推流，再应用新配置。
 
 ## 项目接口和官方技术依据
 
-使用这些接口前需先成功连接 OBS WebSocket。推流配置与 HUD 添加这两项新增写操作仅允许本机请求，开启 RiftCast LAN 后，协作设备持有控制凭证也无法执行。状态查询只返回白名单字段，协作设备读取时遵循项目一般读取接口的鉴权规则。
+使用这些接口前需先成功连接 OBS WebSocket。推流配置与 HUD 添加这两项新增写操作仅允许本机请求，开启观澜的局域网访问后，协作设备持有控制凭证也无法执行。状态查询只返回白名单字段，协作设备读取时遵循项目一般读取接口的鉴权规则。
 
-| RiftCast 接口 | 当前行为 | OBS 技术依据 |
+| 观澜接口 | 当前行为 | OBS 技术依据 |
 | --- | --- | --- |
 | `GET /api/obs/stream/status` | 返回 OBS 推流状态的白名单字段；远端按一般读取接口鉴权 | [`GetStreamStatus`](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#getstreamstatus) |
 | `POST /api/obs/stream/settings` | 仅本机：接收 `{ server, key }`，应用自定义 RTMP 配置，推流中拒绝修改 | [`SetStreamServiceSettings`](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#setstreamservicesettings)，类型 `rtmp_custom`，字段 `server` / `key` |
-| `POST /api/obs/hud` | 仅本机：接收 `{ sceneName }`，向所选场景加入 1920 × 1080 RiftCast HUD 浏览器来源 | [`CreateInput`](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#createinput) 及场景来源相关请求 |
+| `POST /api/obs/hud` | 仅本机：接收 `{ sceneName }`，向所选场景加入 1920 × 1080 的 `RiftCast HUD` 浏览器来源 | [`CreateInput`](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#createinput) 及场景来源相关请求 |
 
-推流配置设置与开始推流是 OBS 协议中的独立请求。本项目的配置操作调用设置请求；随后由操作者在 RiftCast 工作台开始推流，再在直播姬按当次界面完成平台开播。
+推流配置设置与开始推流是 OBS 协议中的独立请求。本项目的配置操作调用设置请求；随后由操作者在观澜工作台开始推流，再在直播姬按当次界面完成平台开播。
 
 ## 接入排查
 
@@ -59,7 +59,7 @@ RiftCast HUD ─┐
 - **配置被拒绝**：查看状态卡，若 OBS 已推流或正在重连，先在 OBS 停止，再重新应用配置。
 - **直播姬收不到信号**：确认其第三方模式仍在运行，重新复制当前服务器与推流码；核对 OBS 服务器保持截图所示形式，两个字段分别填写。
 - **画面只有 HUD**：内置模式在「游戏画面与音频」选择对应游戏窗口并应用来源；外部模式在目标 OBS 场景核对游戏捕获与来源顺序。
-- **HUD 被遮挡**：在 OBS 来源列表中把 RiftCast 浏览器来源置于游戏捕获上层，检查来源尺寸与位置。
+- **HUD 被遮挡**：在 OBS 来源列表中把 `RiftCast HUD` 置于游戏捕获上层，检查来源尺寸与位置。
 - **已有同名来源且设置不同**：在 OBS 手工改名原来的 `RiftCast HUD` 来源，再执行添加；工作台会保留设置不同的既有来源。
 - **OBS 已推流但直播间无画面**：逐段查看 OBS 合成预览、直播姬接收预览和 B 站直播间；工作台显示的 OBS 状态用于检查发送端。
 

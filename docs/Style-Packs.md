@@ -1,6 +1,6 @@
-# RiftCast 风格包格式 v1
+# 观澜风格包格式 v1
 
-适用于 RiftCast 2.0.0，继续采用 v1 清单格式。风格包管理 11 个内置节目的背景、面板贴图、装饰框、配色、字体、元素位置和文字模板。赛事、队伍、英雄、选手、BP、比分、时间、经济和统计由数据接口与组件实时绘制。自定义场景继续使用自己的素材。
+适用于观澜 2.0.0，继续采用 v1 清单格式。风格包管理 11 个内置节目的背景、面板贴图、装饰框、配色、字体、元素位置和文字模板。赛事、队伍、英雄、选手、BP、比分、时间、经济和统计由数据接口与组件实时绘制。自定义场景继续使用自己的素材。
 
 ## 使用
 
@@ -18,7 +18,7 @@
 
 `rift-signature` v2.0.0 采用曜黑和深海军蓝基底，以青色裂隙照亮层叠切面和黄铜细边。赛前倒计时为主画面，首发对位、赛程和赛后报告各有独立构图。BP 卡片、首发信息卡和局内选手行沿用同一材质，并以蓝红侧光区分队伍。局内、BP 和采访等场景保留透明视频区域。
 
-在风格包窗口选择「裂隙曜金」即可预览和导出；发行包中的独立文件名为 `RiftCast-2.0.0-rift-signature.riftstyle.zip`。美术使用 `node scripts/generate-rift-signature.mjs` 生成，输出到 `verification-output/rift-signature-build/`，含 PNG、目录条目和 ZIP。构建与验证使用仓库中已校验的 PNG。
+在风格包窗口选择「裂隙曜金」即可预览和导出；发行包中的独立文件名为 `GuanLan-2.0.0-rift-signature.riftstyle.zip`。美术使用 `node scripts/generate-rift-signature.mjs` 生成，输出到 `verification-output/rift-signature-build/`，含 PNG、目录条目和 ZIP。构建与验证使用仓库中已校验的 PNG。
 
 ## 美术制作
 

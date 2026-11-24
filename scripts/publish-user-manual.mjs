@@ -9,7 +9,8 @@ const [version, file] = process.argv.slice(2);
 if (!/^\d+\.\d+\.\d+$/.test(version ?? '') || !file || process.argv.length !== 4) {
   throw new Error('Usage: node scripts/publish-user-manual.mjs <version> <reviewed.pdf>');
 }
-const repo = 'QShin21/lolob', tag = `v${version}`, name = `RiftCast-${version}-User-Manual.pdf`;
+const manualBrand = Number(version.split('.')[0]) >= 2 ? 'GuanLan' : 'RiftCast';
+const repo = 'QShin21/lolob', tag = `v${version}`, name = `${manualBrand}-${version}-User-Manual.pdf`;
 const run = args => execFileSync('gh', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], timeout: 300000 });
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const input = resolve(file), bytes = await readFile(input), digest = hash(bytes);

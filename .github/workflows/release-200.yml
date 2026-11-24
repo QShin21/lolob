@@ -1,4 +1,4 @@
-name: Release 2.0.0
+name: GuanLan 2.0.0 Release
 
 on:
   workflow_dispatch:
@@ -48,6 +48,8 @@ jobs:
           $tests = @(Get-ChildItem server -File -Filter '*.test.ts' | ForEach-Object FullName)
           node --import tsx --test --test-concurrency=1 @tests 2>&1 | Tee-Object verification-output/release-2.0.0/tests.txt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify the Windows update handoff and relaunch
+        run: npm run verify:update
       - name: Verify report archive restoration
         run: node scripts/verify-report-fixture-093.mjs
       - run: npm run build
@@ -151,6 +153,8 @@ jobs:
           "RIFTCAST_CXX=$compiler" >> $env:GITHUB_ENV
       - name: Build Windows Setup, portable ZIP and release assets
         run: npm run release:win
+      - name: Verify the installed executable, uninstaller and shortcuts
+        run: ./scripts/install-local-release.ps1 -SkipLaunch
       - name: Smoke-test the isolated packaged application
         run: node scripts/verify-packaged-report-200.mjs
       - name: Upload and verify the draft, then publish as latest

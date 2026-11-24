@@ -10,16 +10,16 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { api, apiRoot, assertAssets, findRelease, gh, repository } from './release-api-093.mjs';
 
 const version = '2.0.0', tag = `v${version}`;
-const title = 'RiftCast 2.0.0 · 演播室暗场视觉全面升级';
+const title = '观澜 2.0.0 · 演播室暗场视觉全面升级';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const evidence = path.join(root, 'verification-output');
 const releaseEvidence = path.join(evidence, `release-${version}`);
 const dist = path.join(root, 'release', version);
-const prefix = `RiftCast-${version}`;
-const setupName = `${prefix}-Setup-x64.exe`;
+const prefix = `GuanLan-${version}`;
+const setupName = `RiftCast-${version}-Setup-x64.exe`;
 const portableName = `${prefix}-Windows-x64.zip`;
 const manualName = `${prefix}-User-Manual.pdf`;
-const manualSource = `docs/user-manual-${version}/${prefix}-用户使用手册.pdf`;
+const manualSource = `docs/user-manual-${version}/观澜-${version}-用户使用手册.pdf`;
 const artifactNames = [
   setupName, `${setupName}.blockmap`, portableName, manualName,
   ...['glacier-aurora', 'regalia', 'neon-pulse', 'vermilion-ink', 'porcelain-racing', 'qinghua-celestial', 'rift-signature']
@@ -88,6 +88,7 @@ async function verifySourceEvidence(sha) {
 export async function verifyReleaseAssets(folder, sha, manual) {
   const manifestName = 'release-manifest.json', sumsName = 'SHA256SUMS.txt';
   const manifest = await json(path.join(folder, manifestName));
+  assert.equal(manifest.product, 'GuanLan');
   assert.equal(manifest.version, version);
   assert.equal(manifest.platform, 'Windows x64');
   assert.equal(manifest.sourceRevision, sha);

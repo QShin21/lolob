@@ -17,6 +17,18 @@ test('release selection requires a formal version, one repository installer, siz
  assert.equal(releaseInfo(release()).sha256,sha(bytes));assert.equal(newer('1.10.0','1.9.9'),true);assert.equal(newer('1.4.0','1.4.0'),false);
  for(const bad of [{...release(),draft:true},{...release(),prerelease:true},{...release(),tag_name:'v1.5.0-beta'},{...release(),assets:[...release().assets,...release().assets]}])assert.throws(()=>releaseInfo(bad));
  for(const patch of [{digest:null},{size:-1},{name:'../../evil.exe'},{browser_download_url:'https://evil.example/install.exe'},{browser_download_url:'https://github.com/Other/repo/releases/download/v1.5.0/RiftCast-Setup-1.5.0.exe'}])assert.throws(()=>releaseInfo({...release(),assets:[{...release().assets[0],...patch}]}));
+ const asset = (name: string) => ({
+   ...release().assets[0], name,
+   browser_download_url: `https://github.com/QShin21/lolob/releases/download/v2.0.0/${name}`,
+ });
+ const legacy = asset('RiftCast-2.0.0-Setup-x64.exe');
+ const renamed = asset('GuanLan-2.0.0-Setup-x64.exe');
+ const current = { ...release(), tag_name: 'v2.0.0' };
+ for (const installer of [legacy, renamed]) {
+   assert.equal(releaseInfo({ ...current, assets: [installer, { name: 'GuanLan-2.0.0-User-Manual.pdf' }] }).name, installer.name);
+ }
+ assert.throws(() => releaseInfo({ ...current, assets: [legacy, renamed] }), /唯一 Windows 安装包/);
+ assert.throws(() => releaseInfo({ ...current, assets: [asset('Other-2.0.0-Setup-x64.exe')] }), /文件名/);
 });
 test('verified download publishes once and reuses only identical existing installer',async()=>{
  const dir=await temporary();const service=createUpdateService({currentVersion:'1.4.0',downloadsDir:dir,fetch:fetcher()});

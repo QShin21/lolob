@@ -1,4 +1,4 @@
-/* RiftCast 2.0 design tokens — "演播室暗场 / Control Room".
+/* GUANLAN 2.0 design tokens — "演播室暗场 / Control Room".
    Loaded after every legacy operator sheet. Same scope as design-tokens.css:
    operator surfaces only. /overlay and broadcast media keep their own palette. */
 .app-shell,.remote-page,.remote-workbench,.loading-screen:not(.output-loading){

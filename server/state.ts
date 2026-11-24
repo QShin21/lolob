@@ -30,7 +30,7 @@ export function createSeed(): BroadcastState {
     stats:{blue:{kills:0,gold:null,towers:0,dragons:0,barons:0},red:{kills:0,gold:null,towers:0,dragons:0,barons:0}},
     draft:{bluePicks:[],redPicks:[],blueBans:[],redBans:[],timer:0,activeTeam:'blue',action:'等待客户端 BP 数据'},events:[],economy:[],
     connections:{lcu:{status:'disconnected',detail:'尚未连接客户端'},live:{status:'disconnected',detail:'等待游戏进入对局'},replay:{status:'disconnected',detail:'仅回放模式支持播放控制'},obs:{status:'disconnected',detail:'连接 OBS WebSocket 5.x'}},
-    overlay:{stylePack:{...BUILTIN_STYLE_REF},preset:'arena',scoreboard:true,players:true,objectives:true,ticker:false,goldDiff:true,sponsor:'RIFTCAST',tickerText:'',accent:'#83e6c5',scale:1,countdownEnd:null,nativeHud:'auto',patchVersion:'',bottomTitle:'',playerFeeds:{blue:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''},red:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''}}},
+    overlay:{stylePack:{...BUILTIN_STYLE_REF},preset:'arena',scoreboard:true,players:true,objectives:true,ticker:false,goldDiff:true,sponsor:'GUANLAN',tickerText:'',accent:'#83e6c5',scale:1,countdownEnd:null,nativeHud:'auto',patchVersion:'',bottomTitle:'',playerFeeds:{blue:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''},red:{mode:'image',imageUrl:'',cameraDeviceId:'',label:''}}},
     assets:[],recordings:[],selectedPlayerId:null,draftHistory:[],
     settings:{lockfilePath:'',obsUrl:'ws://127.0.0.1:4455',pollInterval:CLIENT_POLL_DEFAULT,autoPhase:true,gamePath:''},
   };

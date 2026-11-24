@@ -33,7 +33,7 @@ export function ArchiveGraphics({ state, champions, resultId, mode, timeline, de
       {(mode === 'fearless' || mode === 'fearless-tree') && <FearlessGraphic state={state} result={result} champions={champions} tree={mode === 'fearless-tree'} page={page}/>}
       {mode === 'items' && <ItemTimeline result={result} timeline={timeline} details={details} champions={champions} page={page}/>}
     </main>
-    <footer className="ag-footer"><span>{result.match.format} · 存档数据</span><span>{mode === 'gold' ? '蓝色为蓝方领先，红色为红方领先 · 采样中断处留空' : '— 表示未采集或尚未确认'}</span><strong>RIFTCAST</strong></footer>
+    <footer className="ag-footer"><span>{result.match.format} · 存档数据</span><span>{mode === 'gold' ? '蓝色为蓝方领先，红色为红方领先 · 采样中断处留空' : '— 表示未采集或尚未确认'}</span><strong>GUANLAN</strong></footer>
   </section></div></div></StyleTextProvider>;
 }
 function SeriesGraphic({ result, games, page }: { result: GameResult; games: GameResult[]; page: number }) {

@@ -89,14 +89,14 @@ export default function App() {
   return <GameClockConnectionProvider value={connected}>
     <div className={`app-shell control-room page-${page}`} data-layout={state.production?.layout ?? 'single'}>
       <aside className="control-rail">
-        <a className="control-monogram" href="#studio" aria-label="RiftCast 导播台"><BrandMark size={40}/></a>
+        <a className="control-monogram" href="#studio" aria-label="观澜导播台"><BrandMark size={40}/></a>
         <nav aria-label="主导航">{navigation.map(item => <button key={item.id} title={item.name} aria-label={item.name} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}><item.icon size={21}/><span>{item.label}</span></button>)}</nav>
         <button className="control-theme" title={theme === 'dark' ? '切换浅色主题' : '切换深色主题'} aria-label={theme === 'dark' ? '切换浅色主题' : '切换深色主题'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={19}/> : <Moon size={19}/>}</button>
-        <span className="control-version" title={`RiftCast ${version}`}>{version}</span>
+        <span className="control-version" title={`观澜 ${version}`}>{version}</span>
       </aside>
       <div className="control-body">
         <header className="control-header">
-          <div className="control-title"><strong>RIFT<i>CAST</i></strong><span>ARENA / {navigation.find(item => item.id === page)?.name}</span></div>
+          <div className="control-title"><strong><b>观澜</b><i>GUANLAN</i></strong><span>{navigation.find(item => item.id === page)?.name}</span></div>
           <button className="control-match" title="正在节目中的比赛 · 打开赛事资料" onClick={() => navigate('manage')}><span>{onAir.match.title}</span><b><i className="side-blue">{getTeam(onAir, 'blue')?.tag}</i> <em>{onAir.match.blueScore} : {onAir.match.redScore}</em> <i className="side-red">{getTeam(onAir, 'red')?.tag}</i></b><small>第 {onAir.match.game} 局</small></button>
           <span className="control-mode">{'本地实况'}</span>
           <span className="control-seat" title={`当前节目控制者：${state.production?.control?.name ?? '等待席位'}`}>{seat?.name ?? (seatStatus === 'invalid' ? '席位失效' : '验证席位中')}</span>

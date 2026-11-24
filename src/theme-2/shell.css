@@ -1,4 +1,4 @@
-/* RiftCast 2.0 shell: rail, header, safety bar, loading screen. Box sizes follow
+/* GUANLAN 2.0 shell: rail, header, safety bar, loading screen. Box sizes follow
    the 1.5 layer; this sheet changes material, colour, type and light. */
 .app-shell,.remote-workbench,.loading-screen:not(.output-loading){--rc-rail:#04070d;--rc-chrome:linear-gradient(180deg,#0f1826,#0b111c)}
 :root[data-ui-theme=light] :is(.app-shell,.remote-workbench,.loading-screen:not(.output-loading)){--rc-rail:#fff;--rc-chrome:linear-gradient(180deg,#fff,#f6f8fb)}
@@ -46,9 +46,9 @@
 .control-room .control-header{background:var(--rc-chrome);border-bottom:1px solid var(--ui-border);position:relative}
 .control-room .control-header::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;pointer-events:none;
   background:linear-gradient(90deg,var(--rc-gold) 0,var(--rc-gold-line) 180px,transparent 46%,transparent 54%,var(--rc-gold-line) calc(100% - 180px),transparent)}
-.control-room .control-title>strong{font-family:var(--rc-font-display);font-size:22px;font-weight:700;letter-spacing:.14em;line-height:1;color:var(--ui-text)}
-.control-room .control-title>strong>i{font-style:normal;color:var(--rc-gold);font-weight:500}
-.control-room .control-title>span{font-family:var(--rc-font-display);letter-spacing:.12em;color:var(--ui-muted)}
+.control-room .control-title>strong{display:flex;align-items:baseline;gap:7px;white-space:nowrap;font-family:var(--rc-font-ui);font-size:20px;letter-spacing:normal;line-height:1;color:var(--ui-text)}
+.control-room .control-title>strong>i{font-family:var(--rc-font-display);font-size:12px;font-style:normal;font-weight:600;letter-spacing:.12em;color:var(--rc-gold)}
+.control-room .control-title>span{font-family:var(--rc-font-ui);letter-spacing:normal;color:var(--ui-muted)}
 .control-room .control-match{
   border:1px solid var(--ui-border);border-radius:9px;background:var(--ui-bg);color:var(--ui-text);
   box-shadow:var(--rc-inset);transition:border-color .16s var(--rc-ease),background-color .16s var(--rc-ease);
@@ -106,8 +106,9 @@
 .loading-screen:not(.output-loading) .brand-icon{width:auto;height:auto;background:none;border:0;display:grid;place-items:center;position:relative}
 .loading-screen:not(.output-loading) .brand-icon .brand-mark{display:block;filter:drop-shadow(0 14px 34px #0009);animation:rc-rise .7s var(--rc-ease) both}
 .loading-screen:not(.output-loading) .brand-icon::after{content:'';position:absolute;inset:-22px;border-radius:50%;border:1.5px solid var(--rc-gold-line);border-top-color:var(--rc-gold);border-right-color:var(--ui-accent);animation:rc-spin 1.8s linear infinite}
-.loading-screen:not(.output-loading) .brand strong{display:block;font-family:var(--rc-font-display);font-size:34px;font-weight:700;letter-spacing:.2em;line-height:1;color:var(--ui-text);text-transform:uppercase}
-.loading-screen:not(.output-loading) .brand small{display:block;margin-top:8px;font-size:12px;letter-spacing:.42em;color:var(--rc-gold);text-indent:.42em}
+.loading-screen:not(.output-loading) .brand strong{display:block;font-family:var(--rc-font-ui);font-size:34px;font-weight:700;letter-spacing:normal;line-height:1.15;color:var(--ui-text)}
+.loading-screen:not(.output-loading) .brand small{display:block;margin-top:6px;font-size:12px;letter-spacing:normal;color:var(--ui-muted)}
+.loading-screen:not(.output-loading) .brand .brand-wordmark{font-family:var(--rc-font-display);font-size:16px;font-weight:600;letter-spacing:.24em;text-indent:.24em;color:var(--rc-gold)}
 .loading-screen:not(.output-loading) h2{margin:6px 0 0;font-size:16px;font-weight:600;color:var(--ui-text)}
 .loading-screen:not(.output-loading) p{color:var(--ui-muted);font-size:13px;max-width:520px;line-height:1.7}
 .loading-screen:not(.output-loading) .button{margin-top:14px;min-height:38px;padding:8px 20px;border-radius:var(--rc-radius-control);font:inherit;font-size:14px;font-weight:640;cursor:pointer;

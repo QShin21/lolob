@@ -109,7 +109,7 @@ export function Remote(
     <main className={`remote-workbench ${owner ? "has-control" : ""} ${viewport.editing ? 'is-editing' : ''}`} data-keyboard={viewport.keyboardInset > 0 ? 'open' : 'closed'} style={{ '--remote-keyboard-inset': `${viewport.keyboardInset}px` } as CSSProperties}>
       <header className="remote-identity">
         <div className="remote-brand-line">
-          <strong><BrandMark size={22} />RiftCast</strong>
+          <strong><BrandMark size={22} />观澜</strong>
           <span className={`remote-sync ${connected ? "is-connected" : ""}`}>
             {connected ? <Wifi size={14} /> : <WifiOff size={14} />}{" "}
             {connected ? seat ? "已同步" : "数据已同步 · 待验证席位" : "同步中断"}

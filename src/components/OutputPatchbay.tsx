@@ -103,7 +103,7 @@ export function OutputPatchbay(p: Props) {
         <span>{companionActive ? '收尾时先在伴侣结束直播，再停止此处音画。' : '录制、RTMP 和伴侣音画分别控制。'}</span>
       </div>
       {p.receipt && <p className="patchbay-receipt" role="status"><Check size={15} /><span><b>最近操作回执</b>{p.receipt}</span></p>}
-      {audio?.managing && !audio.active && <p className="patchbay-warning" role="alert">音频桥未活动，但路由仍由 RiftCast 托管。请重试停止并恢复；恢复失败的记录会保留。</p>}
+      {audio?.managing && !audio.active && <p className="patchbay-warning" role="alert">音频桥未活动，但路由仍由观澜托管。请重试停止并恢复；恢复失败的记录会保留。</p>}
     </section>
 
     {companion && <section className="patchbay-receiver-check" aria-label="伴侣视频接入方式">
@@ -119,7 +119,7 @@ export function OutputPatchbay(p: Props) {
           <button className="button" disabled={!programWindow.open || windowBusy || !canOutput} onClick={() => void controlWindow('close')}>关闭节目窗口</button>
           <span role="status">{programWindow.open ? programWindow.minimized ? '窗口已最小化，请恢复' : '节目窗口已打开' : '节目窗口未打开'}</span>
         </div>
-        {!window.riftcastDesktop && <p>请使用 RiftCast 桌面版打开节目窗口。</p>}
+        {!window.riftcastDesktop && <p>请使用观澜桌面版打开节目窗口。</p>}
         {windowError && <p role="alert">{windowError}</p>}
       </>}
     </section>}
@@ -153,7 +153,7 @@ export function OutputPatchbay(p: Props) {
         <div className="patchbay-route-line">
           <div className="patchbay-route-origin"><Camera size={17} /><strong>视频</strong><small>当前正式节目</small></div>
           <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
-          <div className="patchbay-route-node"><strong>{companion ? windowMode ? 'RiftCast 节目输出' : 'OBS Virtual Camera' : 'OBS 视频编码'}</strong><small>{companion ? windowMode ? programWindow.open ? '独立节目窗口已打开' : '窗口未打开' : !connected || !cameraKnown ? '运行状态待确认' : status?.virtualCamActive ? '视频正在送出' : '摄像头已停止' : '随 RTMP 推流启动'}</small></div>
+          <div className="patchbay-route-node"><strong>{companion ? windowMode ? '观澜节目窗口' : 'OBS Virtual Camera' : 'OBS 视频编码'}</strong><small>{companion ? windowMode ? programWindow.open ? '独立节目窗口已打开' : '窗口未打开' : !connected || !cameraKnown ? '运行状态待确认' : status?.virtualCamActive ? '视频正在送出' : '摄像头已停止' : '随 RTMP 推流启动'}</small></div>
           <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
           <div className="patchbay-route-node"><strong>{companion ? windowMode ? '伴侣窗口素材' : '伴侣摄像头' : 'RTMP 接收地址'}</strong><small>{companion ? windowMode ? '选择 RiftCast 节目输出' : '手动选择 OBS Virtual Camera' : '平台接收情况待人工核对'}</small></div>
         </div>

@@ -7,7 +7,7 @@ const http = require('node:http');
 const projectRoot = path.resolve(__dirname, '..');
 const dev = !app.isPackaged && process.env.RIFTCAST_DEV === '1';
 if (app.isPackaged) {
-  app.setName('RiftCast');
+  app.setName('观澜');
   app.setPath('userData', process.env.RIFTCAST_USER_DATA_DIR || path.join(app.getPath('appData'), 'RiftCast'));
 }
 const port = Number(process.env.PORT || 3888);
@@ -202,7 +202,10 @@ function installPreviewBridge() {
       const {assertUpdateCanInstall}=require('./update-coordinator.cjs');
       assertUpdateCanInstall(await engineStatus(), ownsService, programWindow.owned);
       const started=Math.round(Date.now()-process.uptime()*1000);
-      const installDir=path.dirname(process.execPath),installed=fs.existsSync(path.join(installDir,'Uninstall RiftCast.exe'));
+      const installDir = path.dirname(process.execPath);
+      // The pinned NSIS builder uses executableName for the uninstaller filename.
+      const installed = ['Uninstall RiftCast.exe', 'Uninstall GuanLan.exe']
+        .some(name => fs.existsSync(path.join(installDir, name)));
       const handshakeDir=fs.mkdtempSync(path.join(app.getPath('temp'),'riftcast-update-')),readyFile=path.join(handshakeDir,'ready');
       const env={...process.env,RIFTCAST_UPDATE_HELPER:path.join(__dirname,'update-launcher.ps1'),RIFTCAST_UPDATE_INSTALLER:artifact.path,RIFTCAST_UPDATE_PARENT_ID:String(process.pid),RIFTCAST_UPDATE_PARENT_STARTED:String(started),RIFTCAST_UPDATE_SHA256:artifact.sha256,RIFTCAST_UPDATE_INSTALL_DIR:installed?installDir:'',RIFTCAST_UPDATE_RESTART:installed?process.execPath:'',RIFTCAST_UPDATE_READY_FILE:readyFile};
       try {
@@ -423,11 +426,11 @@ function health() {
 async function ensureService() {
   const existing = await health();
   if (existing.ours) {
-    if (app.isPackaged) throw new Error('已有 RiftCast 数据服务正在运行。请先关闭原导播窗口或启动脚本，再打开 Release 版，以使用本版程序和赛事数据。');
+    if (app.isPackaged) throw new Error('已有观澜数据服务正在运行。请先关闭原导播窗口或启动脚本，再打开 Release 版，以使用本版程序和赛事数据。');
     if (process.env.ENABLE_LAN === '1' && !existing.lanEnabled) {
-      throw new Error('已有 RiftCast 服务仅允许本机访问。请先关闭原服务，再用 -Lan 重新启动以开启局域网。');
+      throw new Error('已有观澜服务仅允许本机访问。请先关闭原服务，再用 -Lan 重新启动以开启局域网。');
     }
-    log('复用已运行的 RiftCast 服务；关闭桌面窗口会保留该服务。');
+    log('复用已运行的观澜服务；关闭桌面窗口会保留该服务。');
     return;
   }
   if (existing.available) throw new Error(`端口 ${port} 已被其他服务占用，请先释放端口或用 PORT 指定其他端口。`);
@@ -453,7 +456,7 @@ async function ensureService() {
     log(`本窗口启动的服务已退出，代码 ${code ?? 'unknown'}。`);
     if (!quitting && mainWindow && !mainWindow.isDestroyed()) {
       dialog.showMessageBox(mainWindow, {
-        type: 'error', title: 'RiftCast 服务已停止',
+        type: 'error', title: '观澜服务已停止',
         message: '本地数据服务已停止，请关闭窗口后重新启动。',
         detail: `日志位置：${logPath}`, buttons: ['知道了'],
       });
@@ -515,7 +518,7 @@ function windowIcon() {
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1600, height: 1000, minWidth: 1080, minHeight: 720,
-    title: 'RiftCast · 英雄联盟赛事导播', backgroundColor: '#070b12', show: false, icon: windowIcon(),
+    title: '观澜 · 英雄联盟赛事导播', backgroundColor: '#070b12', show: false, icon: windowIcon(),
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false, preload: path.join(__dirname, 'preload.cjs') },
   });
   installPreviewBridge();
@@ -587,7 +590,7 @@ function createWindow() {
       ...(dev ? [{ role: 'toggleDevTools', label: '开发者工具' }] : []),
     ] },
     { label: '帮助', submenu: [
-      { label: `RiftCast ${app.getVersion()} · 使用指南与快捷键`, click: () => mainWindow.webContents.executeJavaScript("location.hash='help'") },
+      { label: `观澜 ${app.getVersion()} · 使用指南与快捷键`, click: () => mainWindow.webContents.executeJavaScript("location.hash='help'") },
       { label: '显示模式说明', click: () => dialog.showMessageBox(mainWindow,{type:'info',title:'节目与预监显示',message:'节目使用 OBS 原生投影；普通监视使用每秒快照。',detail:'原生动态预监在制作台镜头设置中启用。HUD 排版示意用于检查文字布局。'}) },
       { label: '打开启动日志', click: () => shell.openPath(logPath).catch((error) => log(error.message)) },
       { label: '打开赛事数据目录', click: () => shell.openPath(process.env.RIFTCAST_DATA_DIR || path.join(projectRoot, 'data')).catch((error) => log(error.message)) },
@@ -634,7 +637,7 @@ else {
     try {
       if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT 需要是 1 至 65535 的整数。');
       if (!dev && !fs.existsSync(path.join(projectRoot, 'dist', 'index.html'))) {
-        throw new Error(app.isPackaged ? 'Release 程序文件不完整，请重新安装 RiftCast。' : '缺少已构建的界面，请先在项目目录运行 npm run build。');
+        throw new Error(app.isPackaged ? 'Release 程序文件不完整，请重新安装观澜。' : '缺少已构建的界面，请先在项目目录运行 npm run build。');
       }
       if (app.isPackaged) {
         const prepared = require('./release-runtime.cjs').prepareReleaseRuntime({
@@ -651,8 +654,8 @@ else {
       createWindow();
     } catch (error) {
       log(`启动失败: ${error.message}`);
-      dialog.showErrorBox('RiftCast 启动失败', `${error.message}\n\n日志位置：${logPath}`);
+      dialog.showErrorBox('观澜启动失败', `${error.message}\n\n日志位置：${logPath}`);
       app.quit();
     }
-  }).catch((error) => { dialog.showErrorBox('RiftCast 启动失败', redact(error.message)); app.quit(); });
+  }).catch((error) => { dialog.showErrorBox('观澜启动失败', redact(error.message)); app.quit(); });
 }

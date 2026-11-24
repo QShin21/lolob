@@ -36,7 +36,7 @@ export function GlobalShortcutControls({ state, seat, connected, send, notify }:
   });
   return <><section className="global-shortcuts" aria-label="后台全局快捷键">
     <div className="global-shortcuts-heading"><div><h3>后台全局快捷键</h3><p>桌面程序在后台时可执行导播动作和已配置的解说按钮。每次启动默认关闭，启用后持续核对主导播控制权。</p></div><span className={status.enabled ? 'global-shortcuts-active' : ''}>{status.enabled ? '系统已注册' : '已关闭'}</span></div>
-    {!desktop && <p className="global-shortcuts-notice">后台注册需要从 RiftCast 桌面程序打开；浏览器窗口内快捷键可继续使用。</p>}
+    {!desktop && <p className="global-shortcuts-notice">后台注册需要通过观澜桌面程序启用；浏览器窗口内快捷键可继续使用。</p>}
     <div className="global-shortcuts-grid">{(Object.keys(globalShortcutLabels) as CasterBaseAction[]).map(action => <label key={action}>{globalShortcutLabels[action]}<input aria-label={`${globalShortcutLabels[action]}快捷键`} value={keys[action]} disabled={!owner || busy} onChange={event => setDraft({ ...keys, [action]: event.target.value })} onKeyDown={event => {
       if (event.ctrlKey || event.altKey) {
         event.preventDefault(); event.stopPropagation();
