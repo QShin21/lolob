@@ -9,8 +9,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const brand = path.join(root, 'brand');
 const woff = async weight => (await readFile(path.join(root, `node_modules/@fontsource/barlow-condensed/files/barlow-condensed-latin-${weight}-normal.woff2`))).toString('base64');
 const icon = (await readFile(path.join(brand, 'guanlan-icon.svg'), 'utf8')).replace(/<\?xml[^>]*>/, '');
-// Mark without the tile: drop the tile, its bloom, the rim and the dark cut behind the wave.
-const mark = icon.replace(/<rect x="(?:16|21)"[^>]*(?:fill="url\(#(?:tile|bloom)\)"|stroke="url\(#rim\)")[^>]*\/>\s*/g, '').replace(/<path fill="#0a111e"[^>]*\/>\s*/, '');
+// Mark without the tile: drop the tile, its bloom, the rim and the dark cuts behind river, lens and bases.
+const mark = icon.replace(/<rect x="(?:16|21)"[^>]*\/>\s*/g, '').replace(/<(?:path|circle) class="cut"[^>]*\/>/g, '');
 // The wave motif (澜) for backgrounds: layered sine strokes, brightest in the middle.
 const waves = (w, h, y, amp, n = 5) => `<svg style="position:absolute;left:0;top:0" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><linearGradient id="wv" x1="0" x2="1"><stop offset="0" stop-color="#2a8fe0" stop-opacity="0"/><stop offset=".45" stop-color="#5cd6f3"/><stop offset=".62" stop-color="#e6fbff"/><stop offset="1" stop-color="#2a8fe0" stop-opacity="0"/></linearGradient></defs>${Array.from({ length: n }, (_, i) => { const yy = y + i * amp * .62, a = amp * (1 - i * .13), q = w / 4; return `<path fill="none" stroke="url(#wv)" stroke-width="${i ? 1.2 : Math.max(2, amp / 9)}" stroke-opacity="${i ? .5 - i * .08 : 1}" d="M0 ${yy} C${q * .5} ${yy - a} ${q * .5} ${yy - a} ${q} ${yy} S${q * 1.5} ${yy + a} ${q * 2} ${yy} S${q * 2.5} ${yy - a} ${q * 3} ${yy} S${q * 3.5} ${yy + a} ${w} ${yy}"/>`; }).join('')}</svg>`;
 const css = `
