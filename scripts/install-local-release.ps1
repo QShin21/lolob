@@ -9,7 +9,8 @@ $taskExecutable = Join-Path $taskInstallDirectory 'RiftCast.exe'
 $taskEvidence = Join-Path $taskRoot "verification-output\release-$taskVersion"
 if (-not (Test-Path -LiteralPath $taskInstaller)) { throw 'Release 安装包缺失，请先完成构建。' }
 if (Get-Process -Name RiftCast -ErrorAction SilentlyContinue) { throw '请先关闭正在运行的观澜，再安装 Release。' }
-$taskInstall = Start-Process -FilePath $taskInstaller -ArgumentList '/S' -WindowStyle Hidden -PassThru -Wait
+# Keep this current-user install check separate from any existing all-users installation.
+$taskInstall = Start-Process -FilePath $taskInstaller -ArgumentList '/S /currentuser' -WindowStyle Hidden -PassThru -Wait
 if ($taskInstall.ExitCode -ne 0) { throw "安装未完成，退出码 $($taskInstall.ExitCode)。" }
 if (-not (Test-Path -LiteralPath $taskExecutable)) { throw '安装程序已退出，但未找到 RiftCast.exe。' }
 $taskUninstaller = Join-Path $taskInstallDirectory 'Uninstall RiftCast.exe'
