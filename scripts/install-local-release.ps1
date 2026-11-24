@@ -19,12 +19,16 @@ $taskStartMenuShortcut = Join-Path ([Environment]::GetFolderPath('Programs')) '�
 $taskShell = New-Object -ComObject WScript.Shell
 foreach ($taskLinkPath in @($taskShortcut, $taskStartMenuShortcut)) {
   if (-not (Test-Path -LiteralPath $taskLinkPath -PathType Leaf)) { throw "安装后未找到快捷方式：$taskLinkPath" }
-  $taskLink = $taskShell.CreateShortcut($taskLinkPath)
-  if ($taskLink.TargetPath -ne $taskExecutable) { throw "快捷方式未指向观澜可执行文件：$taskLinkPath" }
+  # WScript.Shell opens .lnk files through the ANSI code page; read a copy under an ASCII name so
+  # the Chinese shortcut name also resolves on non-Chinese Windows.
+  $taskLinkCopy = Join-Path ([IO.Path]::GetTempPath()) ("guanlan-shortcut-" + [guid]::NewGuid().ToString('N') + ".lnk")
+  Copy-Item -LiteralPath $taskLinkPath -Destination $taskLinkCopy -Force
+  try { $taskLink = $taskShell.CreateShortcut($taskLinkCopy); $taskLinkTarget = $taskLink.TargetPath } finally { Remove-Item -LiteralPath $taskLinkCopy -Force -ErrorAction SilentlyContinue }
+  if ($taskLinkTarget -ne $taskExecutable) { throw "快捷方式未指向观澜可执行文件：$taskLinkPath -> '$taskLinkTarget'（应为 $taskExecutable）" }
 }
 $taskPackagedExecutable = Join-Path $taskRoot "release\$taskVersion\win-unpacked\RiftCast.exe"
 if ((Get-FileHash -LiteralPath $taskExecutable -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $taskPackagedExecutable -Algorithm SHA256).Hash) { throw '安装后的可执行文件与已验证 Release 不一致。' }
-$taskRecord = [ordered]@{ version = $taskVersion; installedAt = (Get-Date).ToUniversalTime().ToString('o'); installerExitCode = $taskInstall.ExitCode; executable = $taskExecutable; uninstaller = $taskUninstaller; shortcut = $taskShortcut; startMenuShortcut = $taskStartMenuShortcut; shortcutTarget = $taskLink.TargetPath; executableSha256 = (Get-FileHash -LiteralPath $taskExecutable -Algorithm SHA256).Hash.ToLowerInvariant(); ready = $false }
+$taskRecord = [ordered]@{ version = $taskVersion; installedAt = (Get-Date).ToUniversalTime().ToString('o'); installerExitCode = $taskInstall.ExitCode; executable = $taskExecutable; uninstaller = $taskUninstaller; shortcut = $taskShortcut; startMenuShortcut = $taskStartMenuShortcut; shortcutTarget = $taskLinkTarget; executableSha256 = (Get-FileHash -LiteralPath $taskExecutable -Algorithm SHA256).Hash.ToLowerInvariant(); ready = $false }
 if (-not $SkipLaunch) {
   $taskPreviousImport = $env:RIFTCAST_IMPORT_FROM
   try {
