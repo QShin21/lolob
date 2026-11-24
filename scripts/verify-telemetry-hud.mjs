@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import path from 'node:path';
@@ -43,7 +44,7 @@ const server=http.createServer(async(req,res)=>{
 });
 const dir=path.join(root,`verification-output/release-${version}/telemetry-hud`),checks=[],errors=[];let browser;
 try{
- await mkdir(dir,{recursive:true});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({headless:true});
+ await mkdir(dir,{recursive:true});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({ headless:true, ...browserExecutable() });
  const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
  await page.goto(`http://127.0.0.1:${server.address().port}`);await page.locator('.lb-scoreboard').waitFor();
  await page.waitForFunction(()=>document.querySelectorAll('.lb-ultimate img').length===10&&[...document.querySelectorAll('.lb-scoreboard img')].every(i=>i.complete));

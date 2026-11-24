@@ -78,8 +78,14 @@ const { builtinStyleArchive } = await tsImport('../server/style-packs.ts', impor
 const { BUILTIN_RUNTIME_STYLES } = await tsImport('../shared/style-packs.ts', import.meta.url);
 for (const pack of BUILTIN_RUNTIME_STYLES) await writeFile(path.join(output, `RiftCast-${pkg.version}-${pack.id}.riftstyle.zip`), builtinStyleArchive(pack));
 run(path.join(root,'scripts/export-draft-art.mjs'),[output]);
+const manualAsset = `RiftCast-${pkg.version}-User-Manual.pdf`;
+await copyFile(path.join(root, 'docs', `user-manual-${pkg.version}`, `RiftCast-${pkg.version}-用户使用手册.pdf`), path.join(output, manualAsset));
 const artifacts = [];
-for (const name of await readdir(output)) if (/\.(exe|zip|blockmap)$/.test(name)) { const file = path.join(output, name); artifacts.push({ name, bytes: (await stat(file)).size, sha256: await digest(file) }); }
+for (const name of (await readdir(output)).sort()) {
+  if (name !== manualAsset && !/\.(exe|zip|blockmap)$/.test(name)) continue;
+  const file = path.join(output, name);
+  artifacts.push({ name, bytes: (await stat(file)).size, sha256: await digest(file) });
+}
 await writeFile(path.join(output, 'release-manifest.json'), JSON.stringify({ ...manifest, artifacts }, null, 2) + '\n');
 await writeFile(path.join(output, 'SHA256SUMS.txt'), artifacts.map(file => `${file.sha256}  ${file.name}`).join('\n') + '\n');
 await copyFile(path.join(root, 'docs', `Windows-Release-${pkg.version}.md`), path.join(output, '使用说明.md'));

@@ -1,5 +1,6 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Render source in an isolated browser; no persisted state, OBS, game commands or outputs.
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import path from 'node:path';
@@ -55,7 +56,7 @@ async function opaqueAgainstBackground(page,selector,inset=0,hideArtwork=false){
  await page.locator('.fixture-stage').evaluate(e=>e.style.background='repeating-linear-gradient(45deg,#91145b 0px,#91145b 35px,#176144 35px,#176144 70px)');
 }
 try{
- await mkdir(evidence,{recursive:true});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({headless:true,args:['--disable-gpu']});
+ await mkdir(evidence,{recursive:true});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({ headless:true,args:['--disable-gpu'], ...browserExecutable() });
  const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',error=>errors.push(error.message));
  console.log('Render fixture: load all official static artwork');
  await page.goto(`http://127.0.0.1:${server.address().port}`);await page.locator('.lb-scoreboard').waitFor();

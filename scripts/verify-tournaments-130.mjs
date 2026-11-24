@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
@@ -36,7 +37,7 @@ async function action(value, token) {
 }
 try {
   await start();
-  browser = await chromium.launch({ headless: true, channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' });
+  browser = await chromium.launch({ headless: true, ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' }) });
   const context = await browser.newContext({ viewport: { width: 1600, height: 1000 } }); await nativeRequestGuard(blocked).attach(context);
   page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
   await page.goto(base + '/#manage'); await page.getByRole('button', { name: '建立整届赛事', exact: true }).first().click();

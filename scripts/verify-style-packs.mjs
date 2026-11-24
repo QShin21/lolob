@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import path from 'node:path';
@@ -13,7 +14,6 @@ import { isolatedNativeEnvironment, nativeRequestGuard } from './verify-native-s
 import { reportFixture } from './report-093-fixture.mjs';
 import { stylePackFixture } from './style-pack-fixture.mjs';
 const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
-const executablePath = process.env.RIFTCAST_CHROMIUM_PATH || process.env.RIFTCAST_BROWSER_EXECUTABLE;
 const { STYLE_SCENES, BUILTIN_STYLE_REF } = await tsImport('../shared/style-packs.ts', import.meta.url);
 const { bundledChampions } = await tsImport('../shared/champion-art.ts', import.meta.url);
 const version = JSON.parse(await readFile('package.json','utf8')).version;
@@ -36,7 +36,7 @@ const state=async()=>await(await fetch(base+'/api/state')).json();
 try {
   await start();
   const seat=await(await fetch(base+'/api/control/seat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({role:'director'})})).json();assert.ok(seat.token);
-  browser=await chromium.launch({headless:true,args:['--no-sandbox'],...(executablePath?{executablePath}:{channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'})});
+  browser=await chromium.launch({ headless:true,args:['--no-sandbox'], ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' }) });
   const context=await browser.newContext({viewport:{width:1600,height:1000}});await nativeRequestGuard(blocked).attach(context);
   await context.addInitScript(token=>sessionStorage.setItem('riftcast-seat-token',token),seat.token);
   page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(base);

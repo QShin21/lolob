@@ -1,6 +1,7 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Isolated UI regression; --desktop additionally exercises owned OBS HWNDs
 // through the production Electron bridge. No operator state or output is used.
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import path from 'node:path';
@@ -132,7 +133,7 @@ try {
     electron = await _electron.launch({ executablePath: path.join(root, 'node_modules/electron/dist/electron.exe'), args: [desktopEntry], env: { ...process.env, PORT: String(server.address().port), RIFTCAST_DEV: '0' }, timeout: 30000 });
     page = await electron.firstWindow();
   } else {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true, ...browserExecutable() });
     page = await browser.newPage({ viewport: { width: 1600, height: 1000 } });
     await page.addInitScript(() => {
       window.__native = { active: {}, calls: [], delay: null, pending: null };

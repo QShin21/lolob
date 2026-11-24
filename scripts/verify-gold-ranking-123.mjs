@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
@@ -17,7 +18,7 @@ await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';i
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;
 const checks=[],errors=[];
 try{
- browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
+ browser=await chromium.launch({ headless:true, ...browserExecutable() });const page=await browser.newPage({viewport:{width:1920,height:1080}});page.on('pageerror',e=>errors.push(e.message));
  await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-${version}/gold-ranking/index.html`);await page.waitForFunction(()=>!!window.setRanking);
  const fresh=()=>{const s=structuredClone(fixture);s.players.forEach(p=>Object.assign(p,{goldSampledAt:new Date().toISOString(),goldExpiresAt:new Date(Date.now()+3000).toISOString()}));return s;};
  const set=async s=>{await page.evaluate(s=>window.setRanking(s),s);};

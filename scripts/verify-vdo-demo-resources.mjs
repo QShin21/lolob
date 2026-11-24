@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import path from 'node:path';
@@ -10,7 +11,7 @@ const dir=path.resolve('verification-output/vdo-demo-resources');await mkdir(dir
 const vite=await createServer({configFile:false,cacheDir:path.join(dir,'.vite'),plugins:[react()],server:{host:'127.0.0.1',port:0},logLevel:'error'});await vite.listen();const base=`http://127.0.0.1:${vite.httpServer.address().port}`;
 const checks=[],errors=[],requests=[],external=[];let browser;let progress={phase:'idle',completed:0,total:0,failed:0,detail:'等待准备离线素材'};
 try{
- browser=await chromium.launch({headless:true,channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'});const context=await browser.newContext({viewport:{width:1600,height:1100}});
+ browser=await chromium.launch({ headless:true, ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL||'msedge' }) });const context=await browser.newContext({viewport:{width:1600,height:1100}});
  await context.route('https://vdo.ninja/**',route=>{external.push(route.request().url());return route.fulfill({contentType:'text/html; charset=utf-8',body:'<meta charset="utf-8"><body style="margin:0;display:grid;place-items:center;height:100vh;background:#194962;color:white;font:40px sans-serif">隔离视频样本</body>'});});
  await context.route('**/api/**',async route=>{const req=route.request(),url=new URL(req.url()),body=req.method()==='POST'?req.postDataJSON():undefined;requests.push({path:url.pathname,method:req.method(),op:body?.op});
   if(url.pathname==='/api/state')return route.fulfill({json:state});

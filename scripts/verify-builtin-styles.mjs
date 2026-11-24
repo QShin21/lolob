@@ -1,4 +1,5 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { copyFile, mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -14,7 +15,6 @@ import { tsImport } from 'tsx/esm/api';
 import { isolatedNativeEnvironment, nativeRequestGuard } from './verify-native-safety.mjs';
 import { reportFixture } from './report-093-fixture.mjs';
 const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
-const executablePath = process.env.RIFTCAST_CHROMIUM_PATH || process.env.RIFTCAST_BROWSER_EXECUTABLE;
 const { BUILTIN_STYLE_REF, BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_RECORDS, STYLE_SCENES } = await tsImport('../shared/style-packs.ts', import.meta.url);
 const { bundledChampions } = await tsImport('../shared/champion-art.ts', import.meta.url);
 const version = JSON.parse(await readFile('package.json', 'utf8')).version;
@@ -54,7 +54,7 @@ try {
     const exported = await fetch(`${base}/api/style-packs/${pack.id}/${pack.revision}/export`); assert.equal(exported.status, 200);
     checks.push(`${pack.id}: all 23 approved normalized PNG hashes verified through the real asset API and ZIP export`);
   }
-  browser = await chromium.launch({ headless: true, args: ['--no-sandbox'], ...(executablePath ? { executablePath } : { channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' }) });
+  browser = await chromium.launch({ headless: true, args: ['--no-sandbox'], ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' }) });
   const context = await browser.newContext({ viewport: { width: 1600, height: 1000 } }); await nativeRequestGuard(blocked).attach(context);
   page = await context.newPage(); page.on('pageerror', e => errors.push(e.message)); await page.goto(base);
   await page.getByRole('button', { name: '风格包', exact: true }).click({ timeout: 30000 });

@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -21,7 +22,7 @@ await writeFile(path.join(dir, 'entry.tsx'), `import React from 'react';import{c
 const server = await createServer({ configFile: false, cacheDir: path.join(dir, 'vite-cache'), plugins: [react()], server: { host: '127.0.0.1', port: 0 } }); await server.listen();
 let browser; const errors = [], checks = [];
 try {
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, ...browserExecutable() });
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } }); page.on('pageerror', e => errors.push(e.message));
   await page.route('**/api/**', r => r.fulfill({ status: 404, body: '' }));
   await page.goto(`http://127.0.0.1:${server.httpServer.address().port}/verification-output/postgame-composition/index.html`);

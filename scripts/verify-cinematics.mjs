@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
@@ -29,7 +30,7 @@ await writeFile(path.join(dir,'index.html'),'<html><body style="margin:0"><div i
 await writeFile(path.join(dir,'entry.tsx'),`import React,{useState} from 'react';import{createRoot}from'react-dom/client';import{CinematicWorkspace}from'/src/components/CinematicWorkspace';import'/src/styles.css';function App(){const[state,setState]=useState(null);const[disabled,setDisabled]=useState(false);window.setCameraFixture=setState;window.setCameraDisabled=setDisabled;return <div style={{padding:24,maxWidth:1540,margin:'auto'}}>{state&&<CinematicWorkspace state={state} disabled={disabled}/>}</div>}createRoot(document.getElementById('root')).render(<App/>);`);
 const vite=await createServer({configFile:false,cacheDir:path.join(dir,'vite-cache'),plugins:[react()],server:{host:'127.0.0.1',port:0}});await vite.listen();let browser;
 try {
-  browser=await chromium.launch({headless:true,channel:process.env.RIFTCAST_BROWSER_CHANNEL||'msedge'});const page=await browser.newPage({viewport:{width:1600,height:1100}});page.on('pageerror',e=>errors.push(e.message));
+  browser=await chromium.launch({ headless:true, ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL||'msedge' }) });const page=await browser.newPage({viewport:{width:1600,height:1100}});page.on('pageerror',e=>errors.push(e.message));
   await page.route('**/api/cinematics',async route=>{try{const result=route.request().method()==='POST'?await engine.command(route.request().postDataJSON()):await engine.view();await route.fulfill({contentType:'application/json',body:JSON.stringify(result)});}catch(e){await route.fulfill({status:400,contentType:'application/json',body:JSON.stringify({error:e.message})});}});
   await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/verification-output/release-${version}/cinematics/index.html`);await page.waitForFunction(()=>!!window.setCameraFixture);await page.evaluate(value=>window.setCameraFixture(value),fixture);
   const capture=page.getByRole('button',{name:'抓取当前镜头',exact:true});await capture.waitFor();await capture.click();await page.locator('.cinematic-frame').waitFor();

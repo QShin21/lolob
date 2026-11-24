@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -22,7 +23,7 @@ await writeFile(path.join(dir, 'entry.tsx'), `import React,{useState} from 'reac
 const server = await createServer({ configFile: false, cacheDir: path.join(dir, 'vite-cache'), plugins: [react()], server: { host: '127.0.0.1', port: 0 } }); await server.listen();
 let browser; const errors = [], checks = [];
 try {
-  browser = await chromium.launch({ headless: true, channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' });
+  browser = await chromium.launch({ headless: true, ...browserExecutable({ channel: process.env.RIFTCAST_BROWSER_CHANNEL || 'msedge' }) });
   const page = await browser.newPage({ viewport: { width: 1600, height: 1080 } }); page.on('pageerror', e => errors.push(e.message));
   await page.route('**/api/**', async route => {
     const u = new URL(route.request().url()), parts = u.pathname.split('/'), ref = { id: parts[3], revision: parts[4], name: 'fixture' };

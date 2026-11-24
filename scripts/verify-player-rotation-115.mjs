@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import path from 'node:path';
@@ -22,7 +23,7 @@ await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';i
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0}});
 await vite.listen();let browser;
 try{
- browser=await chromium.launch({headless:true});
+ browser=await chromium.launch({ headless:true, ...browserExecutable() });
  const page=await browser.newPage({viewport:{width:680,height:900}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.exposeFunction('dispatchAction',action=>{state=applyAction(state,action);return state;});

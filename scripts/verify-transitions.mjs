@@ -1,3 +1,4 @@
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -19,7 +20,7 @@ await writeFile(path.join(dir, 'entry.tsx'), `import React,{useState}from'react'
 const server = await createServer({ configFile: false, cacheDir: path.join(dir, 'vite-cache'), plugins: [react()], server: { host: '127.0.0.1', port: 0 } }); await server.listen();
 let browser; const checks = [], errors = [];
 try {
-  browser = await chromium.launch({ headless: true }); const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } }); page.on('pageerror', e => errors.push(e.message));
+  browser = await chromium.launch({ headless: true, ...browserExecutable() }); const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } }); page.on('pageerror', e => errors.push(e.message));
   await page.goto(`http://127.0.0.1:${server.httpServer.address().port}/verification-output/transitions/index.html`);
   await page.getByLabel('默认转场方式').selectOption('fade'); await page.getByLabel('默认转场时长').fill('600'); await page.getByRole('button', { name: '保存转场设置' }).click(); await page.getByText('转场设置已保存').waitFor();
   assert.equal(await page.evaluate(() => window.saved.default.durationMs), 600); checks.push('fade settings save the configured duration');

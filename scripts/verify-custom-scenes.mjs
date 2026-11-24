@@ -1,4 +1,5 @@
 // Isolated browser + real OBS integration. Never reads or mutates the operator's data/config.
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, writeFile, readdir, link } from 'node:fs/promises';
@@ -18,7 +19,7 @@ await mkdir(sandbox);
 const checks = [], errors = [], failures = [];
 const blockedRequests = [], guard = nativeRequestGuard(blockedRequests);
 const playwrightModule = process.env.RIFTCAST_PLAYWRIGHT_MODULE;
-const chromiumExecutable = process.env.RIFTCAST_CHROMIUM_EXECUTABLE;
+const launchBrowser = browserExecutable({ executablePath: process.env.RIFTCAST_CHROMIUM_EXECUTABLE });
 const runnerEnv = { ...await isolatedNativeEnvironment(sandbox), RIFTCAST_OBS_MODE: 'embedded', RIFTCAST_OBS_RUNTIME_DIR: path.join(sandbox, 'runtime', 'obs-studio'), RIFTCAST_USER_DATA_DIR: path.join(sandbox, 'user-data') };
 applyRunnerEnvironment(runnerEnv);
 let engine, service, browser, fixtureBrowser, page;
@@ -58,7 +59,7 @@ try {
   const originalProgram = (await obs.call('GetCurrentProgramScene')).sceneName;
   checks.push('isolated real OBS connected with streaming and recording off');
   // A dedicated test window provides known pixels for actual Windows capture.
-  fixtureBrowser = await chromium.launch({ executablePath: chromiumExecutable, env: runnerEnv, headless: false, args: ['--window-position=30,30', '--window-size=720,480'] });
+  fixtureBrowser = await chromium.launch({ ...launchBrowser, env: runnerEnv, headless: false, args: ['--window-position=30,30', '--window-size=720,480'] });
   const fixture = await fixtureBrowser.newPage({ viewport: { width: 640, height: 360 } });
   await fixture.setContent('<title>RiftCast Custom Scene Test</title><body style="margin:0;background:#12bc68;color:white;font:36px sans-serif"><h1>RiftCast window fixture</h1><p>Custom scene capture</p></body>');
   await fixture.bringToFront();
@@ -66,7 +67,7 @@ try {
   await until(async () => { choices = await api('/api/obs/custom-sources'); return choices.windows.some(w => w.name.includes('RiftCast Custom Scene Test')); }, 'fixture window is discoverable');
   const windowChoice = choices.windows.find(w => w.name.includes('RiftCast Custom Scene Test'));
   checks.push('actual Windows application window enumerated through OBS');
-  browser = await chromium.launch({ executablePath: chromiumExecutable, env: runnerEnv, headless: true, args: ['--disable-gpu'] });
+  browser = await chromium.launch({ ...launchBrowser, env: runnerEnv, headless: true, args: ['--disable-gpu'] });
   page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: 'zh-CN' });
   await guard.attach(page.context());
   page.on('pageerror', error => errors.push(error.message));

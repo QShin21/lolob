@@ -1,6 +1,7 @@
 const { createFixture: createSeed } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 // Focused browser regressions for the independent 35893d9 findings.
 // Real isolated HTTP + renderer, with explicitly labelled synthetic device acknowledgements.
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -119,7 +120,7 @@ async function ready(page) {
 
 try {
   const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
-  browser = await chromium.launch({ headless: true, ...(process.env.RIFTCAST_CHROMIUM_PATH ? { executablePath: process.env.RIFTCAST_CHROMIUM_PATH } : {}) });
+  browser = await chromium.launch({ headless: true, ...browserExecutable() });
   const service = await start(), ctx = await context(service), page = await ctx.newPage();
   await page.goto(service.base + '/#draft'); await ready(page);
   const owner = await page.evaluate(() => sessionStorage.getItem('riftcast-seat-token'));

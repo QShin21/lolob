@@ -1,5 +1,6 @@
 // Built operator UI against its own disposable HTTP service. Synthetic data is
 // labelled in the report; no live client, OBS, media device or platform is used.
+import { browserExecutable } from './browser-executable.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
@@ -10,7 +11,7 @@ import { tsImport } from 'tsx/esm/api';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
-const evidence = path.join(root, 'verification-output', 'operator-ui-1.5.0');
+const evidence = path.join(root, 'verification-output', `operator-ui-${version}`);
 await mkdir(evidence, { recursive: true });
 const { createFixture } = await tsImport('../server/test-support/fixture.ts', import.meta.url);
 const { ensureProduction, captureProgram } = await tsImport('../shared/production.ts', import.meta.url);
@@ -77,7 +78,7 @@ try {
   await until(async () => { try { return (await fetch(base + '/api/health')).ok; } catch { return false; } }, 'isolated service ready');
   assert.equal((await fetch(base + '/api/health').then(r => r.json())).version, version);
   const { chromium } = await import(process.env.RIFTCAST_PLAYWRIGHT_MODULE ? pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODULE).href : 'playwright');
-  browser = await chromium.launch({ headless: true, ...(process.env.RIFTCAST_CHROMIUM_PATH ? { executablePath: process.env.RIFTCAST_CHROMIUM_PATH } : {}) });
+  browser = await chromium.launch({ headless: true, ...browserExecutable() });
   const context = await browser.newContext({ viewport: { width: 1366, height: 768 }, locale: 'zh-CN' });
   await context.route('**/*', request => {
     const url = new URL(request.request().url());
