@@ -258,7 +258,10 @@ async function main() {
   const check = detail => { checks.push(detail); console.log(detail); };
   let application, page;
 
+  let stopped = false;
   async function stop() {
+    // After a clean close Playwright disposes the application handle, so process() must not be asked again.
+    if (stopped) return;
     const child = application?.process();
     if (!child || child.exitCode !== null) return;
     let timer;
@@ -266,6 +269,7 @@ async function main() {
       await Promise.race([application.close(), new Promise((_, reject) => {
         timer = setTimeout(() => reject(new Error('Packaged application did not shut down within 60 seconds')), 60_000);
       })]);
+      stopped = true;
     } catch (error) {
       assert.equal(path.resolve(child.spawnfile).toLowerCase(), executable.toLowerCase());
       if (child.exitCode === null) {
