@@ -64,10 +64,9 @@ module.exports = {
   nsis: {
     installerIcon: 'build/icon.ico',
     uninstallerIcon: 'build/icon.ico',
-    // Explicit nulls suppress discovery of the old wordmark bitmaps until the new artwork lands.
-    installerSidebar: null,
-    uninstallerSidebar: null,
-    installerHeader: null,
+    installerSidebar: 'build/installerSidebar.bmp',
+    uninstallerSidebar: 'build/uninstallerSidebar.bmp',
+    installerHeader: 'build/installerHeader.bmp',
     // 1.6.0–1.7.1 require exactly one EXE asset with this prefix.
     artifactName: 'RiftCast-${version}-Setup-${arch}.${ext}',
     oneClick: false,

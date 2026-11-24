@@ -18,7 +18,7 @@ pdfinfo "docs/user-manual-2.0.0/观澜-2.0.0-用户使用手册.pdf" &&
 pdftoppm -r 150 -png "docs/user-manual-2.0.0/观澜-2.0.0-用户使用手册.pdf" verification-output/user-manual-2.0.0/page
 ```
 
-手册生成器读取 `images/`、前版章节修订和 `brand/riftcast-icon.svg`，生成自包含 HTML 和 `manual-content.json`。截图步骤校验当前界面的可见文字。PDF 步骤校验目录跳转、发布链接、全部图像及分页布局。检查 `verification-output/user-manual-2.0.0/layout.json` 和 47 张逐页 PNG，核对版面、图片与页码。
+手册生成器读取 `images/`、前版章节修订和 `brand/guanlan-icon.svg`，生成自包含 HTML 和 `manual-content.json`。截图步骤校验当前界面的可见文字。PDF 步骤校验目录跳转、发布链接、全部图像及分页布局。检查 `verification-output/user-manual-2.0.0/layout.json` 和 47 张逐页 PNG，核对版面、图片与页码。
 
 ## 发布
 

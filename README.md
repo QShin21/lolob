@@ -1,3 +1,5 @@
+<p align="center"><img src="brand/guanlan-banner.png" alt="观澜 GUANLAN · 英雄联盟赛事导播工作台" width="100%"></p>
+
 # 观澜 · 英雄联盟赛事导播
 
 **GUANLAN** · 原名 RiftCast。观澜取自《孟子》“观水有术，必观其澜”。观赛时，从每一波攻守读懂局势变化。

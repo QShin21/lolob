@@ -82,7 +82,7 @@ brand/                   品牌矢量源文件与栅格母版
 
 `theme-2` 在 `src/main.tsx` 中排在全部旧样式之后。旧样式表保留布局与尺寸职责；其中写死的颜色逐步替换为令牌。
 
-安装向导当前使用默认插图。新版侧栏和页眉美术就绪后，在 `electron-builder.cjs` 移除三个图片选项的 `null` 覆盖，打包时会自动加载生成的位图。应用图标更新后，按[手册生成说明](user-manual-2.0.0/README.md)重新截图和打印。
+标志画的是峡谷地图：三条黄铜金兵线、左下蓝方基地、右上红方基地，河道是一道弧光浪线（澜），河道与中路交汇处是一只导播镜头（观）。红方基地同时充当播出指示灯。矢量源文件是 `brand/guanlan-icon.svg`，16 至 32 像素使用简化稿 `brand/guanlan-icon-small.svg`；界面内由 `src/components/BrandMark.tsx` 绘制。`npm run brand:art` 重绘安装向导侧栏、页眉和横幅，`npm run brand` 生成应用图标，打包时自动写入安装程序位图。标志变更后，按[手册生成说明](user-manual-2.0.0/README.md)重新截图和打印。
 
 ## 边界
 

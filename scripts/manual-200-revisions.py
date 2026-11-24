@@ -10,7 +10,7 @@ def shift_reference(match):
 for item in pages[2:]:
     item['body'] = re.sub(r'第 (\d+)(?:–(\d+))? 页', shift_reference, item['body'])
 
-icon = base64.b64encode((ROOT / 'brand' / 'riftcast-icon.svg').read_bytes()).decode()
+icon = base64.b64encode((ROOT / 'brand' / 'guanlan-icon.svg').read_bytes()).decode()
 pages[0].update(
     title='观澜 2.0.0 用户使用手册',
     lead='适用于 Windows x64',
