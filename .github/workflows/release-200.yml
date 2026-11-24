@@ -142,6 +142,10 @@ jobs:
       - name: Verify teamfights, objectives and third report page
         run: node scripts/verify-combat-112.mjs
       - name: Verify paired collaboration with isolated services
+        # Screen-share encoding needs the runner's Microsoft Edge; the pinned Chromium build produced no frames here.
+        env:
+          RIFTCAST_BROWSER_EXECUTABLE: ''
+          RIFTCAST_CHROMIUM_PATH: ''
         run: node scripts/verify-collaboration-170.mjs
       - name: Check verification reports and committed manual
         run: node scripts/publish-release-200.mjs --preflight
