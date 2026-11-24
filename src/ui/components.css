@@ -121,13 +121,13 @@ button.gl-row:hover + .gl-row, .gl-row[aria-selected="true"] + .gl-row, .gl-row[
 
 /* ── Toast ──────────────────────────────────────────────────────────────── */
 .toast {
-  display: flex; align-items: center; gap: 10px; width: max-content; max-width: min(560px, calc(100vw - 32px)); padding: 8px 8px 8px 14px;
+  display: flex; align-items: flex-start; gap: 10px; width: max-content; max-width: min(560px, calc(100vw - 32px)); max-height: min(160px, 25dvh); padding: 8px 8px 8px 14px; overflow-y: auto;
   border: 1px solid var(--gl-line-strong); border-radius: 10px; background: var(--gl-panel-2); color: var(--gl-text); box-shadow: var(--gl-shadow-float);
   font-size: var(--gl-fs-sm); line-height: 1.45;
 }
-.toast > svg { color: var(--gl-text-2); }
-.toast > span { min-width: 0; overflow-wrap: anywhere; }
-.toast > button { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 6px; color: var(--gl-text-3); }
+.toast > svg { position: sticky; top: 6px; margin-top: 6px; color: var(--gl-text-2); }
+.toast > span { min-width: 0; padding: 6px 0; overflow-wrap: anywhere; }
+.toast > button { position: sticky; top: 0; display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 6px; color: var(--gl-text-3); }
 .toast > button:hover { background: var(--gl-control); color: var(--gl-text); }
 .toast.notice-success > svg { color: var(--gl-pvw); }
 .toast.notice-warning > svg { color: var(--gl-warn); }
