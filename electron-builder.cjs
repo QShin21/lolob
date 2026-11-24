@@ -59,5 +59,5 @@ module.exports = {
     { from: 'build/release-manifest.json', to: 'release-manifest.json' },
   ],
   win: { target: [{ target: 'nsis', arch: ['x64'] }, { target: 'zip', arch: ['x64'] }], icon: 'build/icon.ico', executableName: 'RiftCast', artifactName: 'RiftCast-${version}-Windows-${arch}.${ext}', requestedExecutionLevel: 'asInvoker' },
-  nsis: { artifactName: 'RiftCast-${version}-Setup-${arch}.${ext}', oneClick: false, perMachine: false, allowElevation: false, allowToChangeInstallationDirectory: true, createDesktopShortcut: 'always', createStartMenuShortcut: true, shortcutName: 'RiftCast 导播', runAfterFinish: false, deleteAppDataOnUninstall: false, installerLanguages: ['zh_CN', 'en_US'], language: '2052' },
+  nsis: { installerIcon: 'build/icon.ico', uninstallerIcon: 'build/icon.ico', installerHeaderIcon: 'build/icon.ico', installerSidebar: 'build/installerSidebar.bmp', uninstallerSidebar: 'build/uninstallerSidebar.bmp', installerHeader: 'build/installerHeader.bmp', artifactName: 'RiftCast-${version}-Setup-${arch}.${ext}', oneClick: false, perMachine: false, allowElevation: false, allowToChangeInstallationDirectory: true, createDesktopShortcut: 'always', createStartMenuShortcut: true, shortcutName: 'RiftCast 导播', runAfterFinish: false, deleteAppDataOnUninstall: false, installerLanguages: ['zh_CN', 'en_US'], language: '2052' },
 };

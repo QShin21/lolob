@@ -29,6 +29,8 @@
     "desktop": "electron .",
     "test": "tsx --test server/*.test.ts",
     "check": "tsc --noEmit",
+    "brand": "node scripts/build-brand-assets.mjs --public",
+    "brand:art": "node scripts/render-brand-art.mjs",
     "verify:style-packs": "node scripts/verify-style-packs.mjs",
     "export:style-pack": "node scripts/export-style-pack.mjs",
     "verify:builtin-styles": "node scripts/verify-builtin-styles.mjs",

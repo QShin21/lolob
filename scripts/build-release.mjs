@@ -37,10 +37,8 @@ if (Object.keys(serviceBundle.metafile.inputs).some(file => /(?:test-support|\.t
 const runtimeImports = [...new Set(Object.values(serviceBundle.metafile.outputs).flatMap(output => output.imports).filter(item => item.external && !item.path.startsWith('node:')).map(item => item.path.startsWith('@') ? item.path.split('/').slice(0, 2).join('/') : item.path.split('/')[0]))];
 for (const dependency of runtimeImports) if (!pkg.dependencies?.[dependency]) throw new Error(`Release 运行时依赖 ${dependency} 尚未列入 dependencies，请先修复后再打包。`);
 
-const icon = await sharp(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="#080c12"/><path fill="#76f0c2" d="M59 54h76c43 0 65 20 65 52 0 25-14 43-37 50l42 47h-47l-40-44H97v44H59V54zm38 34v38h34c20 0 30-6 30-19s-10-19-30-19H97z"/><circle cx="202" cy="45" r="10" fill="#76f0c2"/></svg>')).png().toBuffer();
-const header = Buffer.alloc(22); header.writeUInt16LE(1, 2); header.writeUInt16LE(1, 4); header[8] = 0; header.writeUInt16LE(1, 10); header.writeUInt16LE(32, 12); header.writeUInt32LE(icon.length, 14); header.writeUInt32LE(22, 18);
-await writeFile(path.join(buildRoot, 'icon.ico'), Buffer.concat([header, icon]));
-await writeFile(path.join(buildRoot, 'icon.png'), icon);
+// Application icon (16–256 px) and NSIS installer artwork from the committed brand masters.
+await (await import('./build-brand-assets.mjs')).writeBuildResources(buildRoot);
 
 const obsRelease = require('./obs-runtime.json');
 const licenseRoot = path.join(buildRoot, 'third-party');

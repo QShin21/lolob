@@ -21,7 +21,7 @@ export function UiThemeProvider({ children }: { children: ReactNode }) {
     const applied = isOutput() ? 'dark' : theme;
     document.documentElement.dataset.uiTheme = applied;
     document.documentElement.style.colorScheme = applied;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', applied === 'light' ? '#f2f4f6' : '#11151b');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', applied === 'light' ? '#eef1f5' : '#070b12');
   }, [theme]);
 
   useEffect(() => {

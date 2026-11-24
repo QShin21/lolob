@@ -506,10 +506,16 @@ function openExternal(url) {
   } catch { /* Ignore malformed or unsupported URLs. */ }
 }
 
+// Window and taskbar icon for source runs; packaged builds also carry it in the executable.
+function windowIcon() {
+  const file = path.join(__dirname, '..', 'dist', 'brand', 'icon-256.png');
+  return fs.existsSync(file) ? file : undefined;
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1600, height: 1000, minWidth: 1080, minHeight: 720,
-    title: 'RiftCast · 英雄联盟赛事导播', backgroundColor: '#080c12', show: false,
+    title: 'RiftCast · 英雄联盟赛事导播', backgroundColor: '#070b12', show: false, icon: windowIcon(),
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false, preload: path.join(__dirname, 'preload.cjs') },
   });
   installPreviewBridge();
