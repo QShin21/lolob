@@ -126,9 +126,9 @@ html .remote-workbench :is(input:not([type=checkbox],[type=radio],[type=range],[
 :is(.app-shell,.remote-workbench) .notice-error{background:var(--ui-danger-bg)!important;border-color:color-mix(in srgb,var(--ui-error) 60%,transparent)!important;color:var(--ui-error)!important}
 :is(.app-shell,.remote-workbench) .notice-warning{background:var(--ui-warning-bg)!important;border-color:color-mix(in srgb,var(--ui-warning) 60%,transparent)!important;color:var(--ui-warning)!important}
 :is(.app-shell,.remote-workbench) :is(.notice-info,.notice-loading){background:var(--ui-info-bg)!important;border-color:color-mix(in srgb,var(--ui-info) 55%,transparent)!important;color:var(--ui-info)!important}
-:is(.app-shell,.remote-workbench) .notice-success{background:var(--ui-success-bg)!important;border-color:color-mix(in srgb,var(--ui-pvw) 55%,transparent)!important;color:var(--ui-pvw)!important}
+:is(.app-shell,.remote-workbench) .notice-success{background:var(--ui-success-bg)!important;border-color:color-mix(in srgb,var(--ui-success) 55%,transparent)!important;color:var(--ui-success)!important}
 .app-shell.control-room .application-status{color:var(--ui-warning)}
-.app-shell.control-room :is(.application-status.applied,.application-status.confirmed){color:var(--ui-pvw)}
+.app-shell.control-room :is(.application-status.applied,.application-status.confirmed){color:var(--ui-success)}
 .app-shell.control-room .application-status.failed{color:var(--ui-error)}
 
 /* ---------- Dialogs ---------- */

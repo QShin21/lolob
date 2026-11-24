@@ -26,8 +26,8 @@ RiftCast 是赛事导播的控制室。控制室界面有三条原则：
 | `--ui-accent` / `--ui-on-accent` | `#5cc8f5` / `#04121c` | `#0a67a3` / `#ffffff` | 交互强调、主按钮 |
 | `--ui-selected` / `--ui-selection-border` | `#12304a` / `#4fb3e0` | `#dcebf7` / `#2f85c0` | 选中态 |
 | `--ui-pgm` / `--ui-pvw` | `#ff6b78` / `#3fdc97` | `#c01f37` / `#0a704b` | PGM / PVW 文字色 |
-| `--rc-pgm-solid` / `--rc-pvw-solid` | `#d7263d` / `#12a56a` | `#c01f37` / `#0a704b` | Tally 实底（白字） |
-| `--ui-error` / `--ui-warning` / `--ui-info` | `#ff8a94` / `#ffb84d` / `#5cc8f5` | `#b3212f` / `#8a5600` / `#0a67a3` | 状态文字 |
+| `--rc-pgm-solid` / `--rc-pvw-solid` | `#d7263d` / `#0c8452` | `#c01f37` / `#0a704b` | Tally 实底（白字） |
+| `--ui-error` / `--ui-warning` / `--ui-info` / `--ui-success` | `#ff8a94` / `#ffb84d` / `#5cc8f5` / `#58dba0` | `#b3212f` / `#8a5600` / `#0a67a3` / `#0a704b` | 状态文字 |
 | `--ui-*-bg`（danger、warning、info、success） | 见 tokens.css | 见 tokens.css | 状态底色 |
 | `--rc-gold` / `--rc-gold-bright` / `--rc-gold-dim` / `--rc-gold-line` | `#d4b676` 系 | `#7d5f17` 系 | 品牌金：装饰线、图标、星标 |
 | `--rc-side-blue` / `--rc-side-red` | `#5aa9ff` / `#ff7a7a` | `#1565b8` / `#b83240` | 蓝方 / 红方身份色 |
@@ -75,7 +75,8 @@ src/theme-2/tokens.css   令牌（深色、浅色）
 src/theme-2/base.css     字体、滚动条、焦点、按钮、输入、面板、标签页、Tally、提示、对话框
 src/theme-2/shell.css    导航栏、顶栏、底部安全带、启动屏
 src/theme-2/studio.css   导播台：监视器、切入、场景库、任务栏
-src/theme-2/pages.css    各业务页面与对话框
+src/theme-2/pages.css    页面公共层级、空状态、对话框
+src/theme-2/draft-data.css、management.css、settings-pages.css、production-panels.css、remote.css   各业务页面
 brand/                   品牌矢量源文件与栅格母版
 ```
 

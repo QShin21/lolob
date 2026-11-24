@@ -14,7 +14,7 @@
   --ui-pgm:#ff6b78;--ui-pvw:#3fdc97;
   --ui-take-bg:#d7263d;--ui-on-take:#fff;
   /* Status */
-  --ui-error:#ff8a94;--ui-warning:#ffb84d;--ui-info:#5cc8f5;
+  --ui-error:#ff8a94;--ui-warning:#ffb84d;--ui-info:#5cc8f5;--ui-success:#58dba0;
   --ui-warning-bg:#33270f;--ui-danger-bg:#3a1a22;--ui-info-bg:#0f2b40;--ui-success-bg:#0f3326;
   --ui-radius:10px;--ui-shadow:0 14px 40px #0007;
 
@@ -22,7 +22,7 @@
   --rc-ink:#04070c;
   --rc-gold:#d4b676;--rc-gold-bright:#f3e0aa;--rc-gold-dim:#8a7443;--rc-gold-line:#d4b6762e;
   --rc-cyan-glow:#5cc8f533;
-  --rc-pgm-solid:#d7263d;--rc-pvw-solid:#12a56a;--rc-on-tally:#fff;
+  --rc-pgm-solid:#d7263d;--rc-pvw-solid:#0c8452;--rc-on-tally:#fff;
   --rc-pgm-glow:#ff4d5e55;--rc-pvw-glow:#3fdc9740;
   --rc-side-blue:#5aa9ff;--rc-side-red:#ff7a7a;
   --rc-hairline:#ffffff0d;
@@ -51,7 +51,7 @@
   --ui-selected:#dcebf7;--ui-selection-border:#2f85c0;--ui-focus:#0a67a3;
   --ui-pgm:#c01f37;--ui-pvw:#0a704b;
   --ui-take-bg:#c01f37;--ui-on-take:#fff;
-  --ui-error:#b3212f;--ui-warning:#8a5600;--ui-info:#0a67a3;
+  --ui-error:#b3212f;--ui-warning:#8a5600;--ui-info:#0a67a3;--ui-success:#0a704b;
   --ui-warning-bg:#fff1d6;--ui-danger-bg:#ffe9ec;--ui-info-bg:#e3f1fb;--ui-success-bg:#e0f5ec;
   --ui-shadow:0 10px 30px #0f1b2d1f;
 
