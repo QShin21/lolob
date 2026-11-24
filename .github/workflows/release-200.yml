@@ -146,7 +146,14 @@ jobs:
         env:
           RIFTCAST_BROWSER_EXECUTABLE: ''
           RIFTCAST_CHROMIUM_PATH: ''
-        run: node scripts/verify-collaboration-170.mjs
+        # The headless screen-share start is timing-sensitive on hosted runners: allow up to three attempts.
+        run: |
+          foreach ($attempt in 1..3) {
+            node scripts/verify-collaboration-170.mjs
+            if ($LASTEXITCODE -eq 0) { break }
+            Write-Host "::warning::Collaboration verifier attempt $attempt exited with $LASTEXITCODE"
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Check verification reports and committed manual
         run: node scripts/publish-release-200.mjs --preflight
       - name: Select the runner's Windows x64 MinGW compiler
