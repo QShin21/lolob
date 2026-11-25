@@ -21,6 +21,8 @@
 
 .engine-errors { display: grid; gap: 4px; padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-error-wash); }
 .engine-errors p { color: var(--gl-error); font-size: var(--gl-fs-sm); line-height: 1.55; overflow-wrap: anywhere; }
+/* The engine runtime is missing: say so plainly, and name the way forward. Not an error, so no hue. */
+.engine-unavailable-note { max-width: 88ch; margin-top: -8px; padding-left: 18px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; text-wrap: pretty; }
 .engine-access-note { padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-warn-wash); color: var(--gl-warn); font-size: var(--gl-fs-sm); line-height: 1.55; }
 
 /* ── Engine mode ────────────────────────────────────────────────────────── */
@@ -40,7 +42,7 @@
 .engine-section-heading h3, .engine-external-guidance h3 { font-size: var(--gl-fs-md); font-weight: 600; }
 .engine-section-heading > span { color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; }
 .engine-section-heading > span[data-dirty="true"] { color: var(--gl-warn); }
-.engine-preview-surface { position: relative; aspect-ratio: 16 / 9; border-radius: 6px; background: #050607; overflow: hidden; }
+.engine-preview-surface { position: relative; aspect-ratio: 16 / 9; border-radius: 6px; background: var(--gl-media); overflow: hidden; }
 .engine-preview-surface > .obs-live-preview { width: 100%; height: 100%; }
 .engine-preview-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
 .engine-preview-meta > span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }

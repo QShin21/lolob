@@ -190,6 +190,7 @@ export function EmbeddedObs({ section='video',onSection,controlReason='',notify,
       {status?.error && status.error !== statusError && <p role="alert">{status.error}</p>}
       {operationError && operationError !== status?.error && <p role="alert">{operationError}</p>}
     </div>}
+    {mode === 'embedded' && status && !status.available && !connected && !statusError && <p className="engine-unavailable-note">未找到随观澜打包的 OBS 运行组件，内置引擎暂不能启动。请使用观澜 Windows 桌面版，或在「画面」中切换到外部 OBS 兼容模式。</p>}
     {(!local || controlReason) && <p className="engine-access-note">{!local ? '请在导播主机的 localhost 工作台控制引擎与输出。' : controlReason}</p>}
 
     {section === 'output' ? <OutputPatchbay

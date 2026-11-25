@@ -57,6 +57,8 @@
 .settings-task-scroll { flex: 1; min-width: 0; min-height: 0; padding: 0 12px 24px 20px; border-top: 1px solid var(--gl-line); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-block: 16px; }
 .settings-task-pane { display: flex; flex-direction: column; gap: 20px; min-width: 0; padding-top: 20px; }
 .settings-task-pane:empty { display: none; }
+/* The frame's own tasks keep a reading measure on wide screens; hosted task panels use the full width. */
+.settings-measure { max-width: 1320px; }
 /* Two panes can share a task (engine + mixer, engine + external OBS). */
 .settings-task-pane:not([hidden], :empty) ~ .settings-task-pane:not([hidden], :empty) { margin-top: 20px; border-top: 1px solid var(--gl-line); }
 .graphics-subtask { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
@@ -154,7 +156,7 @@
 .settings-mixer-pane .production-task-heading > span { display: none; }
 .settings-mixer-pane .production-desk .task-content { overflow: visible; }
 .settings-mixer-pane .production-desk :is(.production-error, .production-health-details) { margin-inline: 0; }
-.settings-mixer-pane .audio-workspace { grid-template-columns: minmax(0, 468px) minmax(0, 1fr); grid-template-rows: auto auto 1fr auto; gap: 12px 32px; align-items: start; padding: 0; }
+.settings-mixer-pane .audio-workspace { grid-template-columns: minmax(0, 468px) minmax(0, 640px); grid-template-rows: auto auto 1fr auto; gap: 12px 32px; align-items: start; padding: 0; }
 .settings-mixer-pane .audio-channel-bank { grid-column: 1; grid-row: 1 / span 3; }
 .settings-mixer-pane .audio-more-channels { grid-column: 1; grid-row: 4; margin-top: -4px; }
 .settings-mixer-pane .audio-workspace > :is(.program-audio-bus, .music-transport, .audio-track-settings) { grid-column: 2; }

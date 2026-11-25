@@ -210,7 +210,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
         {operationError && <p className="settings-operation-error" role="alert">{operationError}</p>}
         {operationReceipt && <p className="settings-operation-receipt" role="status">{operationReceipt}</p>}
 
-        <div className="settings-task-pane" hidden={section !== 'data'}>
+        <div className="settings-task-pane settings-measure" hidden={section !== 'data'}>
           <div className="settings-source">
             <section className="settings-source-mode">
               <div><strong>数据来源</strong><p>{'读取本机客户端，进入游戏后再核对实时样本。'}</p></div>
@@ -246,15 +246,15 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
         </div>
 
         {/* The engine comes first: status and capture sit above the mixer, and the device disclosure opens under its toggle. */}
-        <div className="settings-task-pane settings-engine-pane" hidden={!(['video', 'audio', 'output'] as string[]).includes(section) || section==='audio'&&!audioDevices}>
+        <div className="settings-task-pane settings-engine-pane settings-measure" hidden={!(['video', 'audio', 'output'] as string[]).includes(section) || section==='audio'&&!audioDevices}>
           <EmbeddedObs notify={notify} onStatus={setObsEngine} onOpenStudio={onOpenStudio} onConnectExternal={() => connect('obs')}
             outputReady={outputReady} onOutputReady={onOutputReady} connectionBusy={busy} section={section} onSection={setSection} controlReason={controlReason} />
         </div>
-        <div className="settings-task-pane settings-mixer-pane" hidden={section !== 'audio'}>
+        <div className="settings-task-pane settings-mixer-pane settings-measure" hidden={section !== 'audio'}>
           <ProductionDesk {...{ state, send, notify, champions, seat, connected }} initialTask="audio" allowedTasks={['audio']} />
         </div>
 
-        <div className="settings-task-pane" hidden={section !== 'video'}>
+        <div className="settings-task-pane settings-measure" hidden={section !== 'video'}>
           {obsMode === 'external' && <section id="external-obs-setup" className="settings-block">
             <header><h2>外部 OBS 连接与场景</h2><p>在 OBS「工具 → WebSocket 服务器设置」启用服务，然后保存连接配置。</p></header>
             <div className="settings-external-layout">
@@ -312,7 +312,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
           <div className="graphics-subtask" hidden={graphicsTask!=='graphics'}><GraphicControls {...{ state, send, notify, champions }} /></div>
         </div>
 
-        <div className="settings-task-pane" hidden={section !== 'diagnostics'}>
+        <div className="settings-task-pane settings-measure" hidden={section !== 'diagnostics'}>
           <div className="settings-diagnostic-layout">
             <ReplayDiagnostics status={state.connections.replay.status} />
             <section className="settings-block">
@@ -329,7 +329,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
           <EconomySourcePanel {...{ state, notify }} />
         </div>
 
-        <div className="settings-task-pane settings-collaboration-pane" hidden={section !== 'collaboration'}>
+        <div className="settings-task-pane settings-collaboration-pane settings-measure" hidden={section !== 'collaboration'}>
           <TeamWorkspace />
           <section className="settings-block">
             <header><h2>画面链接与移动接入</h2><p>内置引擎自动加载 HUD；外部 OBS 可使用画面链接，协作席位从遥控页面进入。</p></header>

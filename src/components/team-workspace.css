@@ -36,8 +36,8 @@
 .team-monitors > div { display: grid; gap: 6px; min-width: 0; }
 .team-monitors strong { color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; }
 /* Media surfaces keep the fixed near-black in both themes. */
-.team-monitors iframe, .team-empty { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 6px; background: #050607; }
-.team-empty { display: grid; place-items: center; padding: 16px; color: #9a9ea6; font-size: var(--gl-fs-sm); text-align: center; }
+.team-monitors iframe, .team-empty { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 6px; background: var(--gl-media); }
+.team-empty { display: grid; place-items: center; padding: 16px; color: color-mix(in srgb, var(--gl-on-media) 72%, var(--gl-media)); font-size: var(--gl-fs-sm); text-align: center; }
 .team-request { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; min-height: 44px; padding: 6px 0; font-size: var(--gl-fs-sm); }
 .team-request + .team-request { border-top: 1px solid var(--gl-line); }
 .team-request > strong { font-weight: 600; }

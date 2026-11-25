@@ -23,10 +23,7 @@
 .patchbay-warning, .patchbay-error { flex-basis: 100%; padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-warn-wash); color: var(--gl-warn); font-size: var(--gl-fs-sm); line-height: 1.55; overflow-wrap: anywhere; }
 .patchbay-error { margin-top: 10px; background: var(--gl-error-wash); color: var(--gl-error); }
 
-/* Hold-to-stop: the fill runs for as long as the press is required. */
-.output-patchbay .button.danger { position: relative; overflow: hidden; }
-.output-patchbay .hold-progress { position: absolute; inset: 0; background: color-mix(in srgb, var(--gl-error-solid) 34%, transparent); transform: scaleX(0); transform-origin: left center; pointer-events: none; }
-.output-patchbay .holding .hold-progress { transform: scaleX(1); transition: transform 1000ms linear; }
+/* Hold-to-stop buttons draw their fill from production-desk.css (solid rose under white text). */
 .output-patchbay .button.danger small { color: inherit; font-size: var(--gl-fs-xs); font-weight: 400; }
 
 /* ── Destination ────────────────────────────────────────────────────────── */
@@ -141,7 +138,7 @@
 
 @container task (max-width: 900px) {
   .patchbay-route-map { grid-template-columns: 112px minmax(0, 1fr); gap: 0 16px; }
-  .patchbay-route-labels, .patchbay-route-line { grid-template-columns: minmax(88px, .7fr) 28px minmax(0, 1.2fr) 28px minmax(0, 1.2fr); column-gap: 10px; }
+  .patchbay-route-labels, .patchbay-route-line { grid-template-columns: minmax(124px, .8fr) 28px minmax(0, 1.1fr) 28px minmax(0, 1.1fr); column-gap: 10px; }
   .patchbay-credential-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .patchbay-credential-fields > .button { justify-self: start; }
 }
