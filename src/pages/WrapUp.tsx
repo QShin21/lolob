@@ -1,6 +1,6 @@
 import {PostgamePageControl} from '../components/PostgamePageControl';
 import { useEffect, useRef, useState } from "react";
-import { Archive, ArrowRight, Check, Circle, ClipboardCheck, Film, Trophy } from "lucide-react";
+import { AlertCircle, Archive, ArrowRight, CheckCircle2, Circle, ClipboardCheck, Film, Trophy } from "lucide-react";
 import type { BroadcastAction, StateContext } from "../../shared/types";
 import type { OutputAction } from "../../shared/obs-output";
 import {
@@ -129,11 +129,13 @@ export function WrapUp({
     {
       title: "本局胜方",
       ready: !!result?.winner,
+      problem: !!result && !result.winner,
       detail: winner ? `${winner.name} 获胜` : "等待裁判或客户端确认",
     },
     {
       title: "终局数据",
       ready: !!result && !waiting,
+      problem: waiting,
       detail: !result
         ? "本局尚未结算"
         : waiting
@@ -145,6 +147,7 @@ export function WrapUp({
     {
       title: "节目报告",
       ready: reportConfirmed,
+      problem: false,
       detail: reportConfirmed
         ? "本局本版节目已人工核对"
         : "准备报告后，在导播台核对节目版本",
@@ -152,6 +155,7 @@ export function WrapUp({
     {
       title: "本局录像",
       ready: videos.some((v) => v.verified === true),
+      problem: videos.some((v) => v.file) && !videos.some((v) => v.verified === true),
       detail: videos.some((v) => v.file)
         ? "文件已索引，请核对可播放性"
         : "未取得对应录像文件",
@@ -169,17 +173,17 @@ export function WrapUp({
             {state.match.title} · 第 {state.match.game} 局 · 尝试 {attempt}
           </p>
         </div>
-        <span>
-          {state.match.format} · {time(view.gameTime)}
-          <small className="wrap-series-id">{state.match.seriesId}</small>
+        <span className="wrap-context">
+          <span className="gl-num">{state.match.format} · {time(view.gameTime)}</span>
+          <small className="wrap-series-id" title={state.match.seriesId}>{state.match.seriesId}</small>
         </span>
       </header>
-      <div className="wrap-identity">
+      <div className="wrap-identity gl-panel">
         <div data-side="blue">
           <span>蓝方</span>
           <strong>{getTeam(view, "blue")?.name ?? "未提供战队"}</strong>
         </div>
-        <b>
+        <b className="gl-num" aria-label={`系列赛比分 ${view.match.blueScore} 比 ${view.match.redScore}`}>
           {view.match.blueScore}
           <i>:</i>
           {view.match.redScore}
@@ -188,7 +192,7 @@ export function WrapUp({
           <span>红方</span>
           <strong>{getTeam(view, "red")?.name ?? "未提供战队"}</strong>
         </div>
-        <span className="wrap-result-label" data-ready={!!winner}>
+        <span className="wrap-result-label" data-ready={!!winner} data-pending={!!result && !winner}>
           {winner
             ? `${winner.tag} 获胜`
             : result
@@ -207,7 +211,7 @@ export function WrapUp({
         </p>
       )}
       <div className="wrap-stage">
-        <div className="wrap-task">
+        <div className="wrap-task gl-panel">
           <TaskTabs
             items={[
               { id: "result", label: "胜方与终局" },
@@ -276,7 +280,7 @@ export function WrapUp({
                   <>
                     <div className="wrap-winner-choices">
                       {(["blue", "red"] as const).map((side) => (
-                        <section key={side} data-side={side}>
+                        <section key={side} data-side={side} data-won={result.winner === side}>
                           <span>{side === "blue" ? "蓝方" : "红方"}</span>
                           <h3>{getTeam(view, side)?.name ?? "战队未提供"}</h3>
                           {result.winner ? (
@@ -361,11 +365,13 @@ export function WrapUp({
                 {result ? (
                   <>
 <PostgamePageControl state={state} send={send} />
-                    <BroadcastCanvas
-                      state={{ ...view, selectedPlayerId: null }}
-                      champions={champions}
-                      scene="postgame"
-                    />
+                    <div className="wrap-report-preview">
+                      <BroadcastCanvas
+                        state={{ ...view, selectedPlayerId: null }}
+                        champions={champions}
+                        scene="postgame"
+                      />
+                    </div>
                     <p>
                       本页是本局归档排版预览，不代表已经切入。先准备预监，再在导播台
                       TAKE、查看应用回执并核对节目版本。
@@ -616,13 +622,17 @@ export function WrapUp({
             )}
           </div>
         </div>
-        <aside className="wrap-checklist domain-scroll">
-          <h2><ClipboardCheck size={17} aria-hidden="true" />本局核对</h2>
+        <aside className="wrap-checklist domain-scroll gl-panel">
+          <div className="wrap-checklist-head">
+            <h2><ClipboardCheck size={17} aria-hidden="true" />本局核对</h2>
+            <span className="gl-num">{checks.filter((c) => c.ready).length}/{checks.length}</span>
+          </div>
           {checks.map((c) => (
             <button
               key={c.title}
               className="wrap-check"
               data-ready={c.ready}
+              data-state={c.ready ? "done" : c.problem ? "problem" : "pending"}
               onClick={() =>
                 setTab(
                   c.title === "节目报告"
@@ -633,7 +643,7 @@ export function WrapUp({
                 )
               }
             >
-              {c.ready ? <Check size={17} /> : <Circle size={17} />}
+              {c.ready ? <CheckCircle2 size={18} aria-hidden="true" /> : c.problem ? <AlertCircle size={18} aria-hidden="true" /> : <Circle size={18} aria-hidden="true" />}
               <span>
                 <strong>{c.title}</strong>
                 <small>{c.detail}</small>
@@ -662,12 +672,14 @@ export function WrapUp({
               下一局 · GAME {state.match.game + 1}
             </button>
             {nextReason && <small>{nextReason}</small>}
-            <button className="button" onClick={onManage}>
-              载入另一场比赛
-            </button>
-            <button className="button small" onClick={onNewSeries}>
-              前往 BP 规则开启新系列赛
-            </button>
+            <div className="wrap-next-more">
+              <button className="button" onClick={onManage}>
+                载入另一场比赛
+              </button>
+              <button className="button" onClick={onNewSeries}>
+                前往 BP 规则开启新系列赛
+              </button>
+            </div>
           </div>
           <WrapOutput
             controller={controller}

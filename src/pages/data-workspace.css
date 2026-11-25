@@ -71,7 +71,7 @@
 .data-champion .champion-fallback { font-size: 0; }
 .data-champion > span { display: inline-flex; align-items: baseline; gap: 8px; min-width: 0; }
 .data-champion small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
-.data-kda { display: inline-grid; grid-template-columns: 2ch max-content 2ch max-content 2ch; column-gap: 4px; justify-items: end; color: var(--gl-text-3); }
+.data-kda { display: inline-grid; grid-template-columns: 2ch max-content 2ch max-content 2ch; column-gap: 3px; justify-items: center; color: var(--gl-text-3); }
 .data-kda b { color: var(--gl-text); font-weight: 500; }
 .data-grid-equipment { display: flex; align-items: center; gap: 3px; min-height: 24px; color: var(--gl-text-3); }
 .data-grid-equipment img { width: 24px; height: 24px; border-radius: 4px; background: var(--gl-well); object-fit: cover; }
@@ -115,7 +115,7 @@
 .data-analysis { display: grid; grid-template-columns: clamp(340px, 30cqw, 440px) minmax(0, 1fr); gap: var(--gl-gap); flex: 1; min-height: 0; }
 .data-compare-panel { display: flex; flex-direction: column; min-height: 0; padding: 4px 16px 16px; overflow: auto; }
 /* Two <dl>s laid out as one mirrored scoreboard: blue figure, shared label, red figure. */
-.data-team-comparison { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); grid-template-rows: auto; grid-auto-rows: minmax(40px, 64px); align-items: center; flex: 1; min-height: 0; }
+.data-team-comparison { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); grid-template-rows: auto; grid-auto-rows: minmax(44px, 56px); align-content: start; align-items: center; flex: 1; min-height: 0; }
 .data-team-comparison > section, .data-team-comparison dl, .data-team-comparison dl > div { display: contents; }
 .data-team-comparison h2 { display: grid; gap: 2px; grid-area: 1 / 1 / 2 / -1; align-self: stretch; align-content: center; width: calc(50% - 8px); min-width: 0; padding: 12px 0; font-size: var(--gl-fs-lg); overflow-wrap: anywhere; }
 .data-team-comparison h2 small { order: -1; font-size: var(--gl-fs-xs); font-weight: 500; }
