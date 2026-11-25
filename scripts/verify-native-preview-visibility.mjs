@@ -44,7 +44,7 @@ const entry = `
 import React, {useState} from 'react';import {createRoot} from 'react-dom/client';
 import {ObsLivePreview} from '/src/components/ObsLivePreview.tsx';
 import {CustomSceneEditor} from '/src/components/CustomSceneEditor.tsx';
-import '/src/styles.css';import '/src/ui-theme.css';
+import '/src/styles.css';
 const state=${JSON.stringify(state)};
 function Fixture(){
   const [enabled,setEnabled]=useState(true),[editor,setEditor]=useState(false),[dynamic,setDynamic]=useState(false);

@@ -14,7 +14,7 @@ const { version } = JSON.parse(await fs.readFile('package.json', 'utf8'));
 const dir=path.resolve('verification-output', `release-${version}`, 'layout');await fs.mkdir(dir,{recursive:true});
 const fixtures=Object.fromEntries(['full','partial','missing'].map(v=>[v,reportFixture(v)]));
 await fs.writeFile(path.join(dir,'index.html'),'<div id="root"></div><script type="module" src="./entry.tsx"></script>');
-await fs.writeFile(path.join(dir,'entry.tsx'),`import React from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import'/src/styles.css';import'/src/design-tokens.css';const q=new URLSearchParams(location.search);const state=${JSON.stringify(fixtures)}[q.get('variant')||'full'];state.overlay.postgamePage=Number(q.get('page')||1);document.body.style.margin='0';createRoot(document.getElementById('root')).render(<BroadcastCanvas state={state} champions={${JSON.stringify(bundledChampions())}} scene="postgame" output/>);`);
+await fs.writeFile(path.join(dir,'entry.tsx'),`import React from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas';import'/src/styles.css';const q=new URLSearchParams(location.search);const state=${JSON.stringify(fixtures)}[q.get('variant')||'full'];state.overlay.postgamePage=Number(q.get('page')||1);document.body.style.margin='0';createRoot(document.getElementById('root')).render(<BroadcastCanvas state={state} champions={${JSON.stringify(bundledChampions())}} scene="postgame" output/>);`);
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:5198,strictPort:true}});await vite.listen();
 let browser;const errors=[],checks=[];
 try {

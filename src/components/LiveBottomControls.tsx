@@ -4,6 +4,7 @@ import type { Asset, OverlaySettings, PlayerFeedPair, PlayerFeedSettings, Side, 
 import { api } from '../lib';
 import { playerFeedControl, playerFeedPairs, playerFeedRoles, resolvedPlayerFeed } from '../../shared/player-feeds';
 import { PlayerFeedSwitcher } from './PlayerFeedSwitcher';
+import './task-panels.css';
 import './live-bottom-controls.css';
 
 type BottomDraft = {
@@ -175,41 +176,47 @@ export function LiveBottomControls({ state, champions, send, notify }: StateCont
     try { await applySavedCameras(); } finally { setPending(null); }
   }
 
-  return <section className="panel live-bottom-controls">
-    <div className="panel-head"><div><h2>局内底部包装</h2><p className="muted">五行计分板使用全不透明黑色背景；选手属性区域与小地图保留游戏原生画面。</p></div><span className={`badge ${dirty ? 'live-bottom-unsaved' : ''}`}>{dirty ? '本地未保存' : '已保存到待播'}</span></div>
+  return <section className="panel live-bottom-controls tpanel">
+    <div className="panel-head tpanel-head"><div className="tpanel-heading"><h2 className="tpanel-title">局内底部包装</h2><p className="muted tpanel-note">五行计分板使用全不透明黑色背景；选手属性区域与小地图保留游戏原生画面。</p></div><span className={`badge gl-tag ${dirty ? 'live-bottom-unsaved' : ''}`} data-tone={dirty ? 'warn' : undefined}>{dirty ? '本地未保存' : '已保存到待播'}</span></div>
     <div className="live-bottom-controls-body">
       <div className="live-bottom-text-fields">
-        <p className="muted">五路对位使用五行完整画幅，中央显示经济差；两侧展示选手状态、技能、符文与装备。</p>
-        <label className="field">左下角游戏版本<input maxLength={20} value={draft.patchVersion} disabled={busy} onChange={event => setDraft(current => ({ ...current, patchVersion: event.target.value }))} placeholder="26.18" /><small className="muted">留空可隐藏版本文字。</small></label>
+        <p className="muted tpanel-note">五路对位使用五行完整画幅，中央显示经济差；两侧展示选手状态、技能、符文与装备。</p>
+        <label className="field"><span>左下角游戏版本</span><input className="tpanel-mono" maxLength={20} value={draft.patchVersion} disabled={busy} onChange={event => setDraft(current => ({ ...current, patchVersion: event.target.value }))} placeholder="26.18" /><small className="muted">留空可隐藏版本文字。</small></label>
       </div>
       <PlayerFeedSwitcher {...{state,champions,send,notify}}/>
-      <div className="live-bottom-camera-heading"><div><strong>两侧选手画面</strong><p className="muted">五组对位各自保存蓝、红双方画面。留空图片时自动使用赛事阵容中的定妆照。</p></div><button type="button" className="button small" disabled={cameraLoading} onClick={() => void refreshCameras()}><RefreshCw size={14} className={cameraLoading ? 'spinning' : ''} />{cameraLoading ? '正在读取…' : '刷新摄像头'}</button></div>
-      {(cameraError || cameraDetail) && <p className={`live-bottom-camera-detail ${cameraError ? 'request-error' : 'muted'}`} role={cameraError ? 'status' : undefined}>{cameraError || cameraDetail}</p>}
-      <div className="live-bottom-edit-tabs" role="tablist" aria-label="编辑选手对位素材">{playerFeedRoles.map((role,index)=><button type="button" role="tab" aria-selected={index===editIndex} key={role} disabled={busy} className={index===editIndex?'selected':''} onClick={()=>setEditIndex(index)}>编辑{role}</button>)}</div>
-      <div className="live-bottom-feed-grid">{sides.map(side => {
-        const feed = draft.playerFeedPairs[editIndex][side];
-        const automatic = resolvedPlayerFeed({...state,overlay:{...state.overlay,playerFeedPairs:draft.playerFeedPairs}}, side, editIndex);
-        const previewUrl = feed.imageUrl || automatic.imageUrl;
-        const missingCamera = !!feed.cameraDeviceId && !devices.some(device => device.id === feed.cameraDeviceId);
-        const missingAsset = !!feed.imageUrl && !assets.some(asset => asset.url === feed.imageUrl);
-        const imageFailed = failedImages[`${editIndex}-${side}`] === previewUrl;
-        return <div className={`live-bottom-feed-card ${side}`} key={side}>
-          <div className="live-bottom-feed-title"><i /><h3>{sideName[side]} · {playerFeedRoles[editIndex]}</h3></div>
-          <div className="live-bottom-feed-preview" aria-label={`${sideName[side]}选手画面预览`}>
-            {feed.mode === 'image' && previewUrl && !imageFailed ? <img src={previewUrl} style={{objectPosition:`${feed.focusX??50}% ${feed.focusY??35}%`}} alt={`${sideName[side]}选手图片`} onError={() => setFailedImages(current => ({ ...current, [`${editIndex}-${side}`]: previewUrl }))} /> : <div className="live-bottom-feed-placeholder">{feed.mode === 'camera' ? <Camera size={26} /> : <Image size={26} />}<span>{feed.mode === 'camera' ? '摄像头画面在 OBS 视频预览中显示' : feed.mode === 'off' ? '选手画面已隐藏' : imageFailed ? '图片加载失败，请重新上传或选择素材' : '选择或上传选手图片'}</span></div>}
-            {feed.mode !== 'off' && automatic.label && <div className="live-bottom-feed-nameplate">{automatic.label}</div>}
-          </div>
-          <label className="field">展示来源<select aria-label={`${sideName[side]}展示来源`} value={feed.mode} disabled={busy} onChange={event => updateFeed(side, { mode: event.target.value as PlayerFeedSettings['mode'] })}><option value="image">自定义图片</option><option value="camera">摄像头源</option><option value="off">隐藏选手画面</option></select></label>
-          {feed.mode === 'image' && <>{(['focusX','focusY'] as const).map((key,i)=><label className="field" key={key}>{i===0?'水平焦点':'垂直焦点'} · {feed[key]??(i===0?50:35)}%<input type="range" min="0" max="100" value={feed[key]??(i===0?50:35)} onChange={e=>updateFeed(side,{[key]:Number(e.target.value)})}/></label>)}<label className="field">图片素材<select aria-label={`${sideName[side]}图片素材`} value={feed.imageUrl} disabled={busy} onChange={event => updateFeed(side, { imageUrl: event.target.value })}><option value="">使用阵容定妆照</option>{missingAsset && <option value={feed.imageUrl}>当前已保存图片</option>}{assets.map(asset => <option key={asset.id} value={asset.url}>{asset.name}</option>)}</select></label><label className={`button small live-bottom-upload ${busy ? 'disabled' : ''}`}><Upload size={14} />{pending === side ? '正在上传…' : '上传选手图片'}<input type="file" aria-label={`${sideName[side]}上传选手图片`} accept="image/png,image/jpeg,image/webp,image/gif" disabled={busy} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; void uploadImage(side, file); }} /></label><small className="muted live-bottom-upload-note">PNG / JPG / WebP / GIF，最大 8 MB</small></>}
-          {feed.mode === 'camera' && <label className="field">摄像头设备<select aria-label={`${sideName[side]}摄像头设备`} value={feed.cameraDeviceId} disabled={busy || cameraLoading} onChange={event => updateFeed(side, { cameraDeviceId: event.target.value })}><option value="">{devices.length ? '请选择摄像头' : '等待摄像头列表'}</option>{missingCamera && <option value={feed.cameraDeviceId}>已保存设备 · 当前未发现</option>}{devices.map(device => <option key={device.id} value={device.id}>{device.name}</option>)}</select><small className="muted">保存到待播并切入后由 OBS 采集；请在 OBS 视频预览中确认画面。</small></label>}
-          <label className="field">选手名称<input maxLength={80} aria-label={`${sideName[side]}选手名称`} value={feed.label} disabled={busy} onChange={event => updateFeed(side, { label: event.target.value })} placeholder={automatic.label || `${playerFeedRoles[editIndex]}选手名称`} /><small className="muted">留空时使用当前对位选手名称。</small></label>
-        </div>;
-      })}</div>
-      <p className="live-bottom-economy-note muted">每行经济领先使用双方同位置选手的累计金币计算，由国服观战直接采集。</p>
-      {cameraApplyDetail && <div className="live-bottom-camera-apply"><p className={cameraApplyFailed ? 'request-error' : 'muted'} role="status">{cameraApplyDetail}</p>{cameraApplyFailed && incoming.playerFeedPairs.some(pair => sides.some(side => pair[side].mode === 'camera')) && <button type="button" className="button small" disabled={busy || dirty} onClick={() => void retryCameras()}><RefreshCw size={14} className={pending === 'camera-apply' ? 'spinning' : ''} />{pending === 'camera-apply' ? '正在应用…' : '重新应用已保存摄像头'}</button>}</div>}
-      {error && <p className="request-error live-bottom-error" role="alert">{error}</p>}
-      {conflict&&<div className="request-error" role="alert"><strong>底部配置已由其他页面修改，草稿已保留</strong><details><summary>比较当前待播与本地草稿</summary><p>当前待播</p><pre>{JSON.stringify(incoming,null,2)}</pre><p>本地草稿</p><pre>{JSON.stringify(draft,null,2)}</pre></details><button className="button" onClick={()=>{baseVersion.current=state.production?.configVersion;setConflict(false);}}>已核对，保留本地修改</button></div>}
-      <div className="live-bottom-save-row save-bar"><span className="muted">{dirty ? '本地修改待保存，保存后需核对预监并整体切入' : '当前配置已保存到待播'}</span><button className="button" disabled={busy||!dirty} onClick={()=>{setDraft(incoming);setConflict(false);baseVersion.current=state.production?.configVersion;}}>放弃修改</button><button type="button" className="button primary small" disabled={busy || !dirty || conflict} onClick={() => void save()}><Save size={14} />{pending === 'save' ? '正在保存…' : '保存底部配置'}</button></div>
+      <section className="live-bottom-materials">
+        <div className="live-bottom-camera-heading tpanel-head"><div className="tpanel-heading"><strong className="tpanel-subtitle">两侧选手画面</strong><p className="muted tpanel-note">五组对位各自保存蓝、红双方画面。留空图片时自动使用赛事阵容中的定妆照。</p></div><button type="button" className="button small" disabled={cameraLoading} onClick={() => void refreshCameras()}><RefreshCw size={14} className={cameraLoading ? 'spinning' : ''} />{cameraLoading ? '正在读取…' : '刷新摄像头'}</button></div>
+        {(cameraError || cameraDetail) && <p className={`live-bottom-camera-detail ${cameraError ? 'request-error gl-callout' : 'muted tpanel-hint'}`} data-tone={cameraError ? 'error' : undefined} role={cameraError ? 'status' : undefined}>{cameraError || cameraDetail}</p>}
+        <div className="live-bottom-edit-tabs task-tabs" role="tablist" aria-label="编辑选手对位素材">{playerFeedRoles.map((role,index)=><button type="button" role="tab" aria-selected={index===editIndex} key={role} disabled={busy} className={index===editIndex?'selected':''} onClick={()=>setEditIndex(index)}>编辑{role}</button>)}</div>
+        <div className="live-bottom-feed-grid">{sides.map(side => {
+          const feed = draft.playerFeedPairs[editIndex][side];
+          const automatic = resolvedPlayerFeed({...state,overlay:{...state.overlay,playerFeedPairs:draft.playerFeedPairs}}, side, editIndex);
+          const previewUrl = feed.imageUrl || automatic.imageUrl;
+          const missingCamera = !!feed.cameraDeviceId && !devices.some(device => device.id === feed.cameraDeviceId);
+          const missingAsset = !!feed.imageUrl && !assets.some(asset => asset.url === feed.imageUrl);
+          const imageFailed = failedImages[`${editIndex}-${side}`] === previewUrl;
+          return <div className={`live-bottom-feed-card ${side}`} key={side}>
+            <div className="live-bottom-feed-title"><i /><h3>{sideName[side]} · {playerFeedRoles[editIndex]}</h3></div>
+            <div className="live-bottom-feed-layout">
+              <div className="live-bottom-feed-preview tpanel-media" aria-label={`${sideName[side]}选手画面预览`}>
+                {feed.mode === 'image' && previewUrl && !imageFailed ? <img src={previewUrl} style={{objectPosition:`${feed.focusX??50}% ${feed.focusY??35}%`}} alt={`${sideName[side]}选手图片`} onError={() => setFailedImages(current => ({ ...current, [`${editIndex}-${side}`]: previewUrl }))} /> : <div className="live-bottom-feed-placeholder">{feed.mode === 'camera' ? <Camera size={22} /> : <Image size={22} />}<span>{feed.mode === 'camera' ? '摄像头画面在 OBS 视频预览中显示' : feed.mode === 'off' ? '选手画面已隐藏' : imageFailed ? '图片加载失败，请重新上传或选择素材' : '选择或上传选手图片'}</span></div>}
+                {feed.mode !== 'off' && automatic.label && <div className="live-bottom-feed-nameplate">{automatic.label}</div>}
+              </div>
+              <div className="live-bottom-feed-fields">
+                <label className="field"><span>展示来源</span><select aria-label={`${sideName[side]}展示来源`} value={feed.mode} disabled={busy} onChange={event => updateFeed(side, { mode: event.target.value as PlayerFeedSettings['mode'] })}><option value="image">自定义图片</option><option value="camera">摄像头源</option><option value="off">隐藏选手画面</option></select></label>
+                {feed.mode === 'image' && <><label className="field"><span>图片素材</span><select aria-label={`${sideName[side]}图片素材`} value={feed.imageUrl} disabled={busy} onChange={event => updateFeed(side, { imageUrl: event.target.value })}><option value="">使用阵容定妆照</option>{missingAsset && <option value={feed.imageUrl}>当前已保存图片</option>}{assets.map(asset => <option key={asset.id} value={asset.url}>{asset.name}</option>)}</select></label>{(['focusX','focusY'] as const).map((key,i)=><label className="field" key={key}><span>{i===0?'水平焦点':'垂直焦点'} · {feed[key]??(i===0?50:35)}%</span><input type="range" min="0" max="100" value={feed[key]??(i===0?50:35)} onChange={e=>updateFeed(side,{[key]:Number(e.target.value)})}/></label>)}<div className="live-bottom-upload-row"><label className={`button small live-bottom-upload ${busy ? 'disabled' : ''}`}><Upload size={14} />{pending === side ? '正在上传…' : '上传选手图片'}<input type="file" aria-label={`${sideName[side]}上传选手图片`} accept="image/png,image/jpeg,image/webp,image/gif" disabled={busy} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; void uploadImage(side, file); }} /></label><small className="muted live-bottom-upload-note">PNG / JPG / WebP / GIF，最大 8 MB</small></div></>}
+                {feed.mode === 'camera' && <label className="field live-bottom-wide-field"><span>摄像头设备</span><select aria-label={`${sideName[side]}摄像头设备`} value={feed.cameraDeviceId} disabled={busy || cameraLoading} onChange={event => updateFeed(side, { cameraDeviceId: event.target.value })}><option value="">{devices.length ? '请选择摄像头' : '等待摄像头列表'}</option>{missingCamera && <option value={feed.cameraDeviceId}>已保存设备 · 当前未发现</option>}{devices.map(device => <option key={device.id} value={device.id}>{device.name}</option>)}</select><small className="muted">保存到待播并切入后由 OBS 采集；请在 OBS 视频预览中确认画面。</small></label>}
+                <label className="field live-bottom-wide-field"><span>选手名称</span><input maxLength={80} aria-label={`${sideName[side]}选手名称`} value={feed.label} disabled={busy} onChange={event => updateFeed(side, { label: event.target.value })} placeholder={automatic.label || `${playerFeedRoles[editIndex]}选手名称`} /><small className="muted">留空时使用当前对位选手名称。</small></label>
+              </div>
+            </div>
+          </div>;
+        })}</div>
+        <p className="live-bottom-economy-note muted tpanel-hint">每行经济领先使用双方同位置选手的累计金币计算，由国服观战直接采集。</p>
+      </section>
+      {cameraApplyDetail && <div className="live-bottom-camera-apply gl-callout" data-tone={cameraApplyFailed ? 'error' : undefined}><p className={cameraApplyFailed ? 'request-error' : 'muted'} role="status">{cameraApplyDetail}</p>{cameraApplyFailed && incoming.playerFeedPairs.some(pair => sides.some(side => pair[side].mode === 'camera')) && <button type="button" className="button small" disabled={busy || dirty} onClick={() => void retryCameras()}><RefreshCw size={14} className={pending === 'camera-apply' ? 'spinning' : ''} />{pending === 'camera-apply' ? '正在应用…' : '重新应用已保存摄像头'}</button>}</div>}
+      {error && <p className="request-error live-bottom-error gl-callout" data-tone="error" role="alert">{error}</p>}
+      {conflict&&<div className="request-error gl-callout live-bottom-conflict" data-tone="warn" role="alert"><div className="tpanel-callout-body"><strong>底部配置已由其他页面修改，草稿已保留</strong><details><summary>比较当前待播与本地草稿</summary><p>当前待播</p><pre>{JSON.stringify(incoming,null,2)}</pre><p>本地草稿</p><pre>{JSON.stringify(draft,null,2)}</pre></details></div><button className="button small" onClick={()=>{baseVersion.current=state.production?.configVersion;setConflict(false);}}>已核对，保留本地修改</button></div>}
+      <div className="live-bottom-save-row save-bar tpanel-savebar"><span className="muted">{dirty ? '本地修改待保存，保存后需核对预监并整体切入' : '当前配置已保存到待播'}</span><button className="button small" disabled={busy||!dirty} onClick={()=>{setDraft(incoming);setConflict(false);baseVersion.current=state.production?.configVersion;}}>放弃修改</button><button type="button" className="button primary small" disabled={busy || !dirty || conflict} onClick={() => void save()}><Save size={14} />{pending === 'save' ? '正在保存…' : '保存底部配置'}</button></div>
     </div>
   </section>;
 }

@@ -77,8 +77,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BroadcastCanvas } from '/src/components/BroadcastCanvas';
 import '/src/styles.css';
-import '/src/design-tokens.css';
-import '/src/director.css';
+
+
 const q = new URLSearchParams(location.search);
 const packs = ${JSON.stringify(BUILTIN_RUNTIME_STYLES.map(({id,revision,name})=>({id,revision,name})))};
 const scene = q.get('scene') || 'standby';

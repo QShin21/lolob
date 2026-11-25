@@ -1,8 +1,4 @@
-/* Global stylesheet entry. Broadcast defaults first, then the operator console system. */
+/* Single stylesheet entry for component harnesses and tools: broadcast defaults, then the console system.
+   The application itself imports the two parts separately in src/main.tsx to control their order. */
 @import './broadcast-base.css';
-@import './ui/tokens.css';
-@import './ui/legacy-aliases.css';
-@import './ui/base.css';
-@import './ui/components.css';
-@import './ui/shell.css';
-@import './ui/studio.css';
+@import './ui/index.css';

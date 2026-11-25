@@ -26,7 +26,7 @@ state.players[0].summonerSpells=[{name:'GeneratedTip_SummonerSpell_S12_SummonerT
 state.players[1].summonerSpells=[{name:'GeneratedTip_SummonerSpell_SummonerSmiteAvatarOffensive_DisplayName'},{id:4,name:'Flash'}];
 const champions=fallbackChampions();
 const entryPath=path.join(root,'_lpl-fixture.tsx').replaceAll('\\','/');
-const entry=`import React,{useState} from 'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas.tsx';import'/src/styles.css';import'/src/responsive.css';
+const entry=`import React,{useState} from 'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas.tsx';import'/src/styles.css';
 const initial=await fetch('/fixture/state').then(r=>r.json()),champions=await fetch('/fixture/champions').then(r=>r.json());
 function App(){const[state,setState]=useState(initial),[scene,setScene]=useState('live');window.hudFixture={setState,setScene};return <div className="fixture-stage" style={{width:'100vw',height:'56.25vw',position:'relative',background:'repeating-linear-gradient(45deg,#91145b 0px,#91145b 35px,#176144 35px,#176144 70px)'}}><BroadcastCanvas state={state} champions={champions} scene={scene} output/></div>};createRoot(document.getElementById('root')).render(<App/>);`;
 const vite=await createServer({root,configFile:false,appType:'custom',plugins:[react(),{name:'lpl-hud-fixture',resolveId:id=>id==='/_lpl-fixture.tsx'?entryPath:undefined,load:id=>id===entryPath?entry:undefined}],server:{middlewareMode:true,hmr:false}});

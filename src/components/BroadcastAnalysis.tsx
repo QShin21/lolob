@@ -8,6 +8,8 @@ import { powerPlayRows } from '../../shared/power-play';
 import { championFor, getTeam, time } from '../lib';
 import { useGameClock } from './GameTime';
 import './broadcast-analysis.css';
+import './task-panels.css';
+import './broadcast-analysis-controls.css';
 
 function useNow() {
   const [now, setNow] = useState(Date.now);
@@ -105,10 +107,12 @@ export interface BroadcastAnalysisControlsProps {
   disabled?: boolean; onGoldGraph?: () => void;
 }
 export function BroadcastAnalysisControls(props: BroadcastAnalysisControlsProps) {
-  return <section className="panel broadcast-analysis-controls"><div className="panel-head"><h2>局内分析与事件图层</h2></div><fieldset disabled={props.disabled}>
-    <label>分析面板<select aria-label="局内分析面板" value={props.mode} onChange={e => props.onModeChange(e.target.value as BroadcastAnalysisMode)}>{analysisModes.map(mode => <option key={mode} value={mode}>{analysisLabels[mode]}</option>)}</select></label>
-    {props.onGoldGraph && <button className="button small" type="button" onClick={props.onGoldGraph}>预监经济曲线</button>}
-    <div className="ba-switches"><label><input type="checkbox" checked={props.killFeed} onChange={e => props.onKillFeedChange(e.target.checked)}/>击杀播报</label><label><input type="checkbox" checked={props.announcer} onChange={e => props.onAnnouncerChange(e.target.checked)}/>事件公告</label><label><input type="checkbox" checked={props.inhibitors} onChange={e => props.onInhibitorsChange(e.target.checked)}/>水晶复活计时</label></div>
-    <p className="muted">分析面板共用下方区域。切入团战视图开始记录伤害时间线；水晶计时跟随有效摧毁事件。</p>
+  return <section className="panel broadcast-analysis-controls analysis-controls tpanel"><div className="panel-head"><h2>局内分析与事件图层</h2></div><fieldset disabled={props.disabled}>
+    <div className="analysis-controls-mode">
+      <label className="field"><span>分析面板</span><select aria-label="局内分析面板" value={props.mode} onChange={e => props.onModeChange(e.target.value as BroadcastAnalysisMode)}>{analysisModes.map(mode => <option key={mode} value={mode}>{analysisLabels[mode]}</option>)}</select></label>
+      {props.onGoldGraph && <button className="button small" type="button" onClick={props.onGoldGraph}>预监经济曲线</button>}
+    </div>
+    <p className="muted tpanel-hint">分析面板共用下方区域。切入团战视图开始记录伤害时间线；水晶计时跟随有效摧毁事件。</p>
+    <div className="ba-switches tpanel-toggles"><label className="tpanel-toggle"><span>击杀播报</span><input type="checkbox" checked={props.killFeed} onChange={e => props.onKillFeedChange(e.target.checked)}/></label><label className="tpanel-toggle"><span>事件公告</span><input type="checkbox" checked={props.announcer} onChange={e => props.onAnnouncerChange(e.target.checked)}/></label><label className="tpanel-toggle"><span>水晶复活计时</span><input type="checkbox" checked={props.inhibitors} onChange={e => props.onInhibitorsChange(e.target.checked)}/></label></div>
   </fieldset></section>;
 }

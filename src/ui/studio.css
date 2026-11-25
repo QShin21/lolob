@@ -78,8 +78,8 @@
 .production-desk { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; border-radius: var(--gl-r-panel); background: var(--gl-panel); overflow: hidden; }
 .production-task-nav { display: flex; align-items: center; gap: 4px; flex: none; padding: 8px 8px 0; }
 .production-task-nav > .task-tabs { flex: 1; min-width: 0; }
-.production-task-nav > .task-tabs > button { flex: 1; padding: 0 6px; }
-.production-task-nav > select { flex: none; width: auto; max-width: 96px; min-height: 32px; padding: 0 22px 0 10px; border: 0; background-color: transparent; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; }
+.production-task-nav > .task-tabs > button { flex: 1 1 0; min-width: 0; padding: 0 4px; }
+.production-task-nav > select { flex: none; width: auto; max-width: 132px; min-height: 32px; padding: 0 22px 0 10px; border: 0; background-color: transparent; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; }
 .production-task-nav > select:hover { background-color: var(--gl-control); color: var(--gl-text); }
 .production-task-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex: none; padding: 14px 16px 8px; }
 .production-task-heading h2 { font-size: var(--gl-fs-lg); }
@@ -87,7 +87,7 @@
 .production-desk .task-content { flex: 1; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; }
 .production-error { display: flex; align-items: center; gap: 8px; flex: none; margin: 0 12px 8px; padding: 9px 12px; border-radius: var(--gl-r-control); background: var(--gl-error-wash); color: var(--gl-error); font-size: var(--gl-fs-sm); overflow-wrap: anywhere; }
 .production-error button { margin-left: auto; flex: none; }
-.production-error button[aria-label] { width: 28px; height: 28px; border-radius: 6px; font-size: 16px; }
+.production-error button[aria-label] { display: grid; place-items: center; width: 32px; height: 32px; margin: -4px -6px -4px auto; border-radius: 6px; }
 .production-desk .production-health-details { flex: none; margin: 0; padding: 8px 16px 10px; border-top: 1px solid var(--gl-line); }
 .production-health-details > summary { overflow: hidden; color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; text-overflow: ellipsis; }
 .production-health-details > summary:hover { color: var(--gl-text); }

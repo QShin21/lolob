@@ -53,7 +53,7 @@ export async function buildPng(size) {
 
 /** 24-bit bottom-up BMP, the format NSIS loads for installer artwork. */
 export async function buildBmp(file, width, height) {
-  const { data } = await sharp(await readFile(file)).resize(width, height, { fit: 'cover', kernel: 'lanczos3' }).flatten({ background: '#070b12' }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { data } = await sharp(await readFile(file)).resize(width, height, { fit: 'cover', kernel: 'lanczos3' }).flatten({ background: '#0e0f11' }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   const row = Math.ceil(width * 3 / 4) * 4, body = Buffer.alloc(row * height), header = Buffer.alloc(54);
   header.write('BM', 0, 'ascii'); header.writeUInt32LE(54 + body.length, 2); header.writeUInt32LE(54, 10); header.writeUInt32LE(40, 14);
   header.writeInt32LE(width, 18); header.writeInt32LE(height, 22); header.writeUInt16LE(1, 26); header.writeUInt16LE(24, 28); header.writeUInt32LE(body.length, 34);

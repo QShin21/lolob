@@ -1,1 +1,33 @@
-.caster-controls{padding:18px;border:1px solid var(--ui-border);border-radius:12px;margin-top:18px;background:var(--ui-surface);color:var(--ui-text)}.caster-controls h3{margin:0 0 8px}.caster-controls p{font-size:12px;color:var(--ui-muted);line-height:1.6}.caster-pad{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}.caster-pad button{padding:14px;text-align:left;min-width:160px}.caster-pad small{display:block;font-size:11px;margin-top:5px}.caster-controls fieldset{border:0;padding:14px 0}.caster-controls summary{cursor:pointer}.caster-aliases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.caster-controls label{display:flex;flex-direction:column;gap:6px;font-size:12px;min-width:0}.caster-controls input,.caster-controls select{min-width:0;width:100%;box-sizing:border-box;padding:8px;border-radius:6px;border:1px solid var(--ui-control-border);background:var(--ui-bg);color:var(--ui-text)}.caster-button-list{display:grid;gap:10px}.caster-button-list article{display:flex;align-items:end;flex-wrap:wrap;gap:10px;padding:12px;border:1px solid var(--ui-control-border);border-radius:8px}.caster-button-list article>label{flex:1;min-width:120px}.caster-drag{cursor:grab;align-self:center}.caster-button-list article>div,.caster-config-actions{display:flex;flex-wrap:wrap;gap:7px}.caster-config-actions{margin-top:14px}.caster-controls button{border:1px solid var(--ui-control-border);border-radius:7px;background:var(--ui-raised);color:var(--ui-text);padding:8px 12px;cursor:pointer}.caster-controls button:disabled{opacity:.45;cursor:default}@media(max-width:800px){.caster-aliases{grid-template-columns:1fr}.caster-controls{padding:12px}.caster-pad button{flex:1}}
+/* Caster buttons: a pad of saved actions and their configuration.
+   The host supplies the surface (dialog section, settings panel, remote panel); on its own the
+   block is a section under a hairline. */
+.caster-controls { container: caster / inline-size; min-width: 0; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gl-line); color: var(--gl-text); font-size: var(--gl-fs-sm); }
+.caster-controls > header { display: grid; gap: 4px; }
+.caster-controls h3 { margin: 0; font-size: var(--gl-fs-md); font-weight: 600; line-height: 1.3; }
+.caster-controls p { margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; text-wrap: pretty; }
+.caster-pad { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 6px; margin: 12px 0 8px; }
+.caster-pad > button { display: grid; align-content: center; gap: 2px; min-width: 0; min-height: 52px; padding: 8px 12px; border-radius: var(--gl-r-control); background: var(--gl-control); color: var(--gl-text); font-size: var(--gl-fs-sm); font-weight: 600; line-height: 1.3; text-align: left; transition: background var(--gl-fast) var(--gl-ease), color var(--gl-fast) var(--gl-ease); }
+.caster-pad > button:hover:not(:disabled) { background: var(--gl-control-hover); }
+.caster-pad > button:active:not(:disabled) { background: var(--gl-control-active); }
+.caster-pad > button:disabled { color: var(--gl-text-off); cursor: not-allowed; }
+.caster-pad small { overflow: hidden; color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 400; white-space: nowrap; text-overflow: ellipsis; }
+.caster-pad > button:disabled small { color: var(--gl-text-off); }
+.caster-controls .caster-pad > p { grid-column: 1 / -1; color: var(--gl-text-3); }
+.caster-controls > details > summary { min-height: 32px; color: var(--gl-text-2); font-weight: 500; line-height: 32px; cursor: pointer; }
+.caster-controls > details > summary:hover { color: var(--gl-text); }
+.caster-controls > details[open] > summary { color: var(--gl-text); }
+.caster-controls fieldset { display: grid; gap: 14px; min-width: 0; margin: 0; padding: 10px 0 2px; border: 0; }
+.caster-aliases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.caster-controls label { display: grid; gap: 6px; min-width: 0; color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; }
+.caster-controls :is(input, select) { width: 100%; min-width: 0; }
+.caster-button-list { display: grid; }
+.caster-button-list article { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; padding: 12px 0; border-top: 1px solid var(--gl-line); }
+.caster-button-list article > label { flex: 1 1 132px; }
+.caster-drag { align-self: flex-end; display: inline-grid; place-items: center; flex: none; min-width: 40px; height: var(--gl-h-control); padding: 0 6px; border-radius: var(--gl-r-control); color: var(--gl-text-3); font-family: var(--gl-font-mono); font-size: var(--gl-fs-xs); font-weight: 500; white-space: nowrap; cursor: grab; }
+.caster-drag:hover { background: var(--gl-control); color: var(--gl-text); }
+.caster-row-actions, .caster-config-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.caster-config-actions { padding-top: 12px; border-top: 1px solid var(--gl-line); }
+.caster-config-actions > .button:nth-child(2) { margin-right: auto; }
+.caster-controls .caster-owner-note { margin-top: 6px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+@container caster (max-width: 640px) { .caster-aliases { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container caster (max-width: 420px) { .caster-aliases { grid-template-columns: minmax(0, 1fr); } .caster-pad { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
