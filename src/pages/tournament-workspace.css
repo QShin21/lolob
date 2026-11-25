@@ -8,6 +8,7 @@
 .tournament-directory > .tournament-event-list { flex: 1; min-height: 0; padding: 8px; }
 .tournament-directory > .tournament-muted { flex: none; margin: 0; padding: 10px 16px 4px; border-top: 1px solid var(--gl-line); }
 .tournament-directory > .button { flex: none; margin: 8px; }
+.tournament-list-empty { margin: 0; padding: 24px 12px; color: var(--gl-text-3); font-size: var(--gl-fs-sm); text-align: center; }
 
 /* ── Event panel ────────────────────────────────────────────────────────── */
 .tournament-workspace > .tournament-content { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-radius: var(--gl-r-panel); background: var(--gl-panel); overflow: hidden; container-type: inline-size; container-name: tcontent; }
@@ -121,7 +122,7 @@
 .tournament-asset { display: grid; align-content: start; gap: 6px; min-width: 0; padding: 8px; border-radius: 10px; cursor: pointer; transition: background var(--gl-fast) var(--gl-ease); }
 .tournament-asset:hover { background: var(--gl-control); }
 .tournament-asset:has(input:disabled) { cursor: default; }
-.tournament-asset img { width: 100%; aspect-ratio: 16 / 10; border-radius: 6px; background: #050607; object-fit: contain; }
+.tournament-asset img { width: 100%; aspect-ratio: 16 / 10; border-radius: 6px; background: var(--gl-media); object-fit: contain; }
 .tournament-asset > span { display: flex; align-items: flex-start; gap: 8px; min-width: 0; font-size: var(--gl-fs-sm); line-height: 1.4; overflow-wrap: anywhere; }
 .tournament-asset > span input { margin-top: 1px; }
 .tournament-asset > small { justify-self: start; padding: 0 7px; border-radius: var(--gl-r-chip); background: var(--gl-control); color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; line-height: 20px; }

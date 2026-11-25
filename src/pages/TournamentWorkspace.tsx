@@ -63,6 +63,7 @@ export function TournamentWorkspace(ctx: StateContext) {
         {events.map(t => <button key={t.id} className="manage-object" aria-pressed={!creating && t.id === event?.id} onClick={() => openEvent(t.id)}>
           <span><strong>{t.config.name}</strong><small>{tournamentFormats[t.config.format]} · {t.config.teamIds.length} 队</small><small>{eventStatus[t.status]}</small></span>
         </button>)}
+        {!events.length && <p className="tournament-list-empty">还没有整届赛事。</p>}
       </div>
       <p className="tournament-muted">一次选择参赛队伍与赛制，自动生成各轮对阵。单局归档后同步大场比分和晋级。</p>
       <button className="button" disabled={!canEdit || busy} onClick={() => { setCreating(true); setError(''); }}><Plus size={16} />建立整届赛事</button>

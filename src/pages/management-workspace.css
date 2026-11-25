@@ -18,6 +18,13 @@
 .manage-receipt::before { content: ""; position: absolute; left: 0; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--gl-pvw); }
 .manage-workbench > .domain-note { flex: none; }
 
+/* Controls that sit directly on the page canvas take the on-canvas tones (control fills vanish on the light canvas). */
+:is(.manage-nav, .manage-assets) > .task-tabs > button:hover { background: var(--gl-on-canvas-hover); }
+:is(.manage-nav, .manage-assets) > .task-tabs > button[aria-selected="true"] { background: var(--gl-on-canvas); }
+.manage-onair > .button { background: var(--gl-on-canvas); }
+.manage-onair > .button:hover:not(:disabled) { background: var(--gl-control-hover); }
+.manage-assets :is(.asset-workspace-toolbar, .manage-heroes > header) > .domain-search { background: var(--gl-on-canvas); }
+
 /* ── Automatic side detection: one strip above the directories ──────────── */
 .autosides-controls { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; column-gap: 16px; flex: none; padding: 6px 8px 6px 16px; }
 .autosides-controls > header { display: contents; }
@@ -59,7 +66,7 @@
 
 /* Media slot for logos; a quiet placeholder stands in until one is assigned. */
 .manage-mark { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 6px; background: var(--gl-control); color: var(--gl-text-3); overflow: hidden; }
-.manage-mark:has(img) { background: #050607; }
+.manage-mark:has(img) { background: var(--gl-media); }
 .manage-mark img { width: 100%; height: 100%; object-fit: contain; }
 .manage-object:hover .manage-mark:not(:has(img)), .manage-object[aria-pressed="true"] .manage-mark:not(:has(img)) { background: var(--gl-control-hover); }
 
@@ -148,7 +155,7 @@
 .manage-roster-row { margin: 0; padding: 0 0 8px; border: 0; }
 .manage-roster-row :is(input, select) { width: 100%; min-width: 0; }
 .manage-roster-photo { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-width: 0; }
-.manage-roster-photo img { flex: none; width: 28px; height: 34px; border-radius: 6px; background: #050607; object-fit: cover; }
+.manage-roster-photo img { flex: none; width: 28px; height: 34px; border-radius: 6px; background: var(--gl-media); object-fit: cover; }
 .manage-roster-photo select { flex: 1 1 120px; width: auto; }
 .manage-roster-photo small { flex: none; color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; }
 
@@ -162,7 +169,7 @@
 .manage-roster-player { min-height: 44px; border-top: 1px solid var(--gl-line); font-size: var(--gl-fs-sm); }
 .manage-roster-role { color: var(--gl-text-3); }
 .manage-roster-player > img, .manage-player-placeholder { width: 28px; height: 28px; border-radius: 6px; }
-.manage-roster-player > img { background: #050607; object-fit: cover; }
+.manage-roster-player > img { background: var(--gl-media); object-fit: cover; }
 .manage-player-placeholder { display: grid; place-items: center; background: var(--gl-control); color: var(--gl-text-3); }
 .manage-roster-player > div { display: contents; }
 .manage-roster-player strong { min-width: 0; overflow: hidden; font-size: var(--gl-fs-md); font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
@@ -189,11 +196,11 @@
 .manage-hero-grid button { display: grid; justify-items: center; align-content: start; gap: 6px; min-width: 0; padding: 8px 4px 6px; border-radius: var(--gl-r-control); color: var(--gl-text-2); font-size: var(--gl-fs-xs); text-align: center; transition: background var(--gl-fast) var(--gl-ease), color var(--gl-fast) var(--gl-ease); }
 .manage-hero-grid button:hover { background: var(--gl-control); color: var(--gl-text); }
 .manage-hero-grid button[aria-pressed="true"] { background: var(--gl-selected); color: var(--gl-text); font-weight: 600; }
-.manage-hero-grid img { width: 56px; height: 56px; border-radius: 6px; background: #050607; object-fit: cover; }
+.manage-hero-grid img { width: 56px; height: 56px; border-radius: 6px; background: var(--gl-media); object-fit: cover; }
 .manage-hero-grid span { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .manage-hero-grid > .domain-empty { grid-column: 1 / -1; }
 .manage-hero-inspector { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; padding: 16px; border-radius: var(--gl-r-panel); background: var(--gl-panel); }
-.manage-hero-inspector > img { width: 100%; aspect-ratio: 16 / 9; border-radius: 6px; background: #050607; object-fit: cover; object-position: 60% 20%; }
+.manage-hero-inspector > img { width: 100%; aspect-ratio: 16 / 9; border-radius: 6px; background: var(--gl-media); object-fit: cover; object-position: 60% 20%; }
 .manage-hero-inspector h2 { margin: 4px 0 0; font-size: var(--gl-fs-xl); font-weight: 600; }
 .manage-hero-inspector > p { margin: -10px 0 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
 .manage-hero-inspector > .button { align-self: flex-start; }
@@ -225,7 +232,7 @@
 .manage-video .button { grid-column: 2; grid-row: 1 / span 2; }
 .manage-record-detail > .button { margin-top: 4px; }
 .manage-report-preview { display: grid; gap: 8px; max-width: 760px; margin-top: 12px; }
-.manage-report-canvas { border-radius: 6px; background: #050607; overflow: hidden; }
+.manage-report-canvas { border-radius: 6px; background: var(--gl-media); overflow: hidden; }
 .manage-report-preview > p { margin: 0; color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
 
 /* ── Responsive steps ───────────────────────────────────────────────────── */

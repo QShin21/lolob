@@ -38,7 +38,7 @@
 .asset-object { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 8px; border-radius: 10px; color: var(--gl-text); text-align: left; transition: background var(--gl-fast) var(--gl-ease); }
 .asset-object:hover { background: var(--gl-control); }
 .asset-object[aria-pressed="true"] { background: var(--gl-selected); }
-.asset-thumb { display: block; aspect-ratio: 16 / 10; border-radius: 6px; background: #050607; overflow: hidden; }
+.asset-thumb { display: block; aspect-ratio: 16 / 10; border-radius: 6px; background: var(--gl-media); overflow: hidden; }
 .asset-thumb img { width: 100%; height: 100%; object-fit: contain; }
 .asset-caption { display: grid; gap: 4px; min-width: 0; }
 .asset-caption strong { overflow: hidden; font-size: var(--gl-fs-sm); font-weight: 500; line-height: 1.4; white-space: nowrap; text-overflow: ellipsis; }
@@ -49,7 +49,7 @@
 .asset-object[data-used="false"] .asset-usage { display: none; }
 
 /* Review panel */
-.asset-review { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; padding: 14px 16px 16px; border-radius: var(--gl-r-panel); background: var(--gl-panel); }
+.asset-review { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; padding: 14px 16px 16px; border-radius: var(--gl-r-panel); background: var(--gl-panel); overflow: auto; overscroll-behavior: contain; }
 .asset-review > .domain-empty { flex: 1; font-size: var(--gl-fs-sm); line-height: 1.6; }
 .asset-review > header { display: grid; gap: 2px; }
 .asset-review h2 { margin: 0; font-size: var(--gl-fs-lg); font-weight: 600; overflow-wrap: anywhere; }
@@ -57,8 +57,8 @@
 .asset-crops { display: grid; grid-template-columns: minmax(0, 1fr) 30%; align-items: start; gap: 8px; }
 .asset-crops figure { display: grid; gap: 6px; min-width: 0; margin: 0; }
 .asset-crops img { width: 100%; border-radius: 6px; }
-.asset-crops figure:first-child img { aspect-ratio: 16 / 10; background: repeating-conic-gradient(#17191c 0% 25%, #050607 0% 50%) 0 0 / 16px 16px; object-fit: contain; }
-.asset-crops figure:last-child img { aspect-ratio: 3 / 4; background: #050607; object-fit: cover; }
+.asset-crops figure:first-child img { aspect-ratio: 16 / 10; background: repeating-conic-gradient(color-mix(in srgb, var(--gl-on-media) 7%, var(--gl-media)) 0% 25%, var(--gl-media) 0% 50%) 0 0 / 12px 12px; object-fit: contain; }
+.asset-crops figure:last-child img { aspect-ratio: 3 / 4; background: var(--gl-media); object-fit: cover; }
 .asset-crops figcaption { color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.4; }
 .asset-focus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .asset-focus label { display: grid; gap: 6px; color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; }
