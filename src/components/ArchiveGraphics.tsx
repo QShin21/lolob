@@ -69,5 +69,18 @@ export function archiveGraphicsUrl(resultId: string, mode: ArchiveGraphicMode, p
 export function ArchiveGraphicsLinks({ state }: { state: BroadcastState }) {
   const results = graphicArchives(state), [selected, setSelected] = useState(''), [mode, setMode] = useState<ArchiveGraphicMode>('team'), [page, setPage] = useState(1), [message, setMessage] = useState('');
   const resultId = results.some(r => r.id === selected) ? selected : results[0]?.id || '', url = resultId ? archiveGraphicsUrl(resultId, mode, page) : '';
-  return <section className="panel archive-graphics-links"><h2>归档图形浏览器来源</h2><p>选择已保存的对局，复制链接添加到自定义浏览器图层或 OBS。</p><div><label>比赛存档<select aria-label="图形比赛存档" value={resultId} onChange={e => { setSelected(e.target.value); setPage(1); }}>{results.map(r => <option key={r.id} value={r.id}>{r.match.title} · 第 {r.game} 局 · {time(r.snapshot.duration)}</option>)}</select></label><label>图形模式<select aria-label="归档图形模式" value={mode} onChange={e => { setMode(e.target.value as ArchiveGraphicMode); setPage(1); }}>{archiveGraphicModes.map(m => <option key={m} value={m}>{archiveGraphicLabels[m]}</option>)}</select></label>{['series', 'fearless', 'fearless-tree', 'items'].includes(mode) && <label>历史页码<input type="number" aria-label="归档图形页码" min={1} max={100} value={page} onChange={e => setPage(Math.max(1, Math.min(100, Number(e.target.value) || 1)))}/></label>}<button className="button" disabled={!url} onClick={() => { void navigator.clipboard.writeText(url).then(() => setMessage('链接已复制'), () => setMessage('复制失败，可从下方文本框复制')); }}>复制图形链接</button>{url && <a className="button" href={url} target="_blank" rel="noreferrer">打开预览</a>}</div><input aria-label="归档图形链接" readOnly value={url} onFocus={e => e.target.select()}/><small role="status">{message || (!resultId ? '保存首局结果后，可生成归档图形。' : '链接固定对局身份；图形随该存档的补采和修订更新。')}</small></section>;
+  return <section className="panel archive-graphics-links">
+    <header><h2>归档图形浏览器来源</h2><p>选择已保存的对局，复制链接添加到自定义浏览器图层或 OBS。</p></header>
+    <div className="archive-graphics-fields">
+      <label className="field"><span>比赛存档</span><select aria-label="图形比赛存档" value={resultId} disabled={!results.length} onChange={e => { setSelected(e.target.value); setPage(1); }}>{!results.length && <option value="">尚无比赛存档</option>}{results.map(r => <option key={r.id} value={r.id}>{r.match.title} · 第 {r.game} 局 · {time(r.snapshot.duration)}</option>)}</select></label>
+      <label className="field"><span>图形模式</span><select aria-label="归档图形模式" value={mode} onChange={e => { setMode(e.target.value as ArchiveGraphicMode); setPage(1); }}>{archiveGraphicModes.map(m => <option key={m} value={m}>{archiveGraphicLabels[m]}</option>)}</select></label>
+      {['series', 'fearless', 'fearless-tree', 'items'].includes(mode) && <label className="field"><span>历史页码</span><input type="number" aria-label="归档图形页码" min={1} max={100} value={page} onChange={e => setPage(Math.max(1, Math.min(100, Number(e.target.value) || 1)))}/></label>}
+    </div>
+    <div className="archive-graphics-link">
+      <input aria-label="归档图形链接" readOnly value={url} placeholder="保存首局结果后生成链接" onFocus={e => e.target.select()}/>
+      <button className="button primary" disabled={!url} onClick={() => { void navigator.clipboard.writeText(url).then(() => setMessage('链接已复制'), () => setMessage('复制失败，可从左侧链接框手动复制')); }}>复制图形链接</button>
+      {url && <a className="button" href={url} target="_blank" rel="noreferrer">打开预览</a>}
+    </div>
+    <small role="status">{message || (!resultId ? '保存首局结果后，可生成归档图形。' : '链接固定对局身份；图形随该存档的补采和修订更新。')}</small>
+  </section>;
 }

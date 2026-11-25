@@ -161,7 +161,7 @@ export function AssetLibrary({
           ))}
         </select>
         <span>{assets.length} 张</span>
-        <label>
+        <label className="asset-import-category">
           导入分类
           <select
             value={category}
@@ -175,7 +175,7 @@ export function AssetLibrary({
             ))}
           </select>
         </label>
-        <label className="button asset-upload-button">
+        <label className={`button asset-upload-button${state.assets.length ? " primary" : ""}`}>
           <Upload size={15} />
           {progress === null ? "批量导入图片" : "正在导入…"}
           <input
@@ -222,32 +222,42 @@ export function AssetLibrary({
       )}
       <div className="asset-workspace-stage">
         <div className="asset-list domain-scroll">
-          {assets.map((asset) => (
-            <button
-              className="asset-object"
-              key={asset.id}
-              aria-pressed={asset.id === selected?.id}
-              onClick={() => {
-                setSelectedId(asset.id);
-                setFocus({ x: 50, y: 35 });
-              }}
-            >
-              <img src={asset.url} alt="" loading="lazy" />
-              <span>
-                <strong>{asset.name}</strong>
-                <small>
-                  {categories[asset.category ?? "other"]} ·{" "}
-                  {asset.width && asset.height
-                    ? `${asset.width} × ${asset.height}`
-                    : "尺寸未提供"}
-                </small>
-                <small>
-                  {references(state, asset.url).length} 项待播引用 /{" "}
-                  {references(onAir, asset.url).length} 项节目引用
-                </small>
-              </span>
-            </button>
-          ))}
+          {assets.map((asset) => {
+            const pending = references(state, asset.url).length,
+              live = references(onAir, asset.url).length;
+            return (
+              <button
+                className="asset-object"
+                key={asset.id}
+                aria-pressed={asset.id === selected?.id}
+                data-used={pending + live > 0}
+                title={asset.name}
+                onClick={() => {
+                  setSelectedId(asset.id);
+                  setFocus({ x: 50, y: 35 });
+                }}
+              >
+                <span className="asset-thumb">
+                  <img src={asset.url} alt="" loading="lazy" />
+                </span>
+                <span className="asset-caption">
+                  <strong>{asset.name}</strong>
+                  <small>
+                    <span className="gl-tag">
+                      {categories[asset.category ?? "other"]}
+                    </span>
+                    <span className="sr-only"> · </span>
+                    {asset.width && asset.height
+                      ? `${asset.width} × ${asset.height}`
+                      : "尺寸未提供"}
+                  </small>
+                  <small className="asset-usage">
+                    {pending} 项待播引用 / {live} 项节目引用
+                  </small>
+                </span>
+              </button>
+            );
+          })}
           {!assets.length && (
             <div className="domain-empty">
               <Image size={30} />
@@ -290,30 +300,32 @@ export function AssetLibrary({
                   <figcaption>人物竖幅裁切预览</figcaption>
                 </figure>
               </div>
-              <label>
-                水平焦点 {focus.x}%
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={focus.x}
-                  onChange={(e) =>
-                    setFocus({ ...focus, x: Number(e.target.value) })
-                  }
-                />
-              </label>
-              <label>
-                垂直焦点 {focus.y}%
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={focus.y}
-                  onChange={(e) =>
-                    setFocus({ ...focus, y: Number(e.target.value) })
-                  }
-                />
-              </label>
+              <div className="asset-focus">
+                <label>
+                  水平焦点 {focus.x}%
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={focus.x}
+                    onChange={(e) =>
+                      setFocus({ ...focus, x: Number(e.target.value) })
+                    }
+                  />
+                </label>
+                <label>
+                  垂直焦点 {focus.y}%
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={focus.y}
+                    onChange={(e) =>
+                      setFocus({ ...focus, y: Number(e.target.value) })
+                    }
+                  />
+                </label>
+              </div>
               <p>
                 这里只检查构图。照片焦点在选手画面设置保存，队标使用完整图片。
               </p>

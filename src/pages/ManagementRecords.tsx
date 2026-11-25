@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Archive, Download, FileJson, Save, Search } from "lucide-react";
+import { Archive, Download, Save, Search } from "lucide-react";
 import type { BroadcastAction, Champion, Recording, StateContext } from "../../shared/types";
 import { csvRecording } from "../../shared/recording-export";
 import {
@@ -215,7 +215,6 @@ export function ManagementRecords({
                   setShowReport(false);
                 }}
               >
-                <FileJson size={18} />
                 <span>
                   <strong>{r.title}</strong>
                   <small>
@@ -223,7 +222,7 @@ export function ManagementRecords({
                       ? `第 ${r.result.game} 局 / 尝试 ${r.result.attempt} / v${r.result.version}`
                       : dateLabel(r.createdAt)}
                   </small>
-                  <small>
+                  <small data-valid={r.result?.valid !== false}>
                     {r.result?.valid === false
                       ? "已作废"
                       : r.result?.terminalComplete
@@ -234,6 +233,13 @@ export function ManagementRecords({
                 </span>
               </button>
             ))}
+            {!list.length && (
+              <div className="domain-empty">
+                {all.length
+                  ? "没有匹配的记录。可清除搜索或筛选。"
+                  : "还没有比赛记录。"}
+              </div>
+            )}
           </div>
         </aside>
         <section className="manage-detail">
@@ -241,13 +247,12 @@ export function ManagementRecords({
             <>
               <div className="manage-detail-head">
                 <div>
-                  <small>
-                    {"本地客户端采集记录"}
-                  </small>
                   <h2>{record.title}</h2>
-                  <p>{dateLabel(record.createdAt)}</p>
+                  <div className="manage-detail-meta">
+                    <span>{"本地客户端采集记录"}</span>
+                    <span>{dateLabel(record.createdAt)}</span>
+                  </div>
                 </div>
-                <Archive size={24} />
               </div>
               <div className="manage-record-detail domain-scroll">
                 <dl className="domain-facts">
@@ -333,14 +338,16 @@ export function ManagementRecords({
                           onChange={setScene}
                           label="归档报告视图"
                         />
-                        <BroadcastCanvas
-                          state={{
-                            ...frozenGameState(state, result),
-                            selectedPlayerId: null,
-                          }}
-                          champions={champions}
-                          scene={scene}
-                        />
+                        <div className="manage-report-canvas">
+                          <BroadcastCanvas
+                            state={{
+                              ...frozenGameState(state, result),
+                              selectedPlayerId: null,
+                            }}
+                            champions={champions}
+                            scene={scene}
+                          />
+                        </div>
                         <p>归档排版预览，不改变 PGM 或 PVW。</p>
                       </div>
                     )}

@@ -13,10 +13,9 @@ import {
 } from "lucide-react";
 import type { Match, StateContext, Team } from "../../shared/types";
 import { programState } from "../../shared/production";
-import { TaskTabs } from "../components/ConsoleUI";
 import { HoldButton } from "../components/ProductionDesk";
 import { AssetLibrary } from "../components/AssetLibrary";
-import { MatchForm, TeamForm } from "./ManagementEditors";
+import { BusTag, CountTabs, MatchForm, TeamForm, scheduleBus } from "./ManagementEditors";
 import { ManagementRecords, HeroLibrary } from "./ManagementRecords";
 import "../components/domain-workspace.css";
 import "./management-workspace.css";
@@ -233,8 +232,8 @@ export function Management(
         </div>
         <div className="manage-onair">
           <span className="bus-tag pgm">PGM</span>
-          <span>
-            {onAir.match.title}
+          <span className="manage-onair-match">
+            <b>{onAir.match.title}</b>
             <small>
               第 {onAir.match.game} 局 · {onAir.match.blueScore}:
               {onAir.match.redScore}
@@ -248,31 +247,33 @@ export function Management(
           )}
         </div>
       </header>
-      <TaskTabs
-        items={[
-          { id: "schedule", label: `赛事中心 · ${state.tournaments?.length ?? 0}` },
-          { id: "matches", label: `独立对阵 · ${state.schedule.filter(m => !m.tournament).length}` },
-          { id: "teams", label: `战队与选手 · ${state.teams.length}` },
-          { id: "assets", label: `图片素材 · ${state.assets.length}` },
-          { id: "season", label: "赛季统计" },
-          { id: "archive-graphics", label: "赛后图形" },
-          { id: "recordings", label: `比赛记录 · ${state.recordings.length}` },
-        ]}
-        value={tab}
-        onChange={(value) => {
-          setTab(value);
-          setQuery("");
-        }}
-        label="赛事管理分类"
-      />
+      <div className="manage-nav">
+        <CountTabs
+          items={[
+            { id: "schedule", label: "赛事中心", count: state.tournaments?.length ?? 0 },
+            { id: "matches", label: "独立对阵", count: state.schedule.filter(m => !m.tournament).length },
+            { id: "teams", label: "战队与选手", count: state.teams.length },
+            { id: "assets", label: "图片素材", count: state.assets.length },
+            { id: "season", label: "赛季统计" },
+            { id: "archive-graphics", label: "赛后图形" },
+            { id: "recordings", label: "比赛记录", count: state.recordings.length },
+          ]}
+          value={tab}
+          onChange={(value) => {
+            setTab(value);
+            setQuery("");
+          }}
+          label="赛事管理分类"
+        />
+        {receipt && !error && (
+          <div className="manage-receipt" role="status">
+            {receipt} · 正在播出的资料由 TAKE 更新。
+          </div>
+        )}
+      </div>
       {error && (
         <div className="domain-note error" role="alert">
           {error}
-        </div>
-      )}
-      {receipt && !error && (
-        <div className="manage-receipt" role="status">
-          {receipt} · 正在播出的资料由 TAKE 更新。
         </div>
       )}
       {tab === "schedule" && <TournamentWorkspace {...ctx} />}
@@ -301,17 +302,20 @@ export function Management(
                       aria-pressed={match?.id === m.id}
                       onClick={() => setMatchId(m.id)}
                     >
-                      <CalendarDays size={17} />
                       <span>
                         <strong>{matches[m.id]?.value.title ?? m.title}</strong>
-                        <small>
-                          {teamOf(m.blueTeamId)?.tag || "待定"} {m.blueScore}:
-                          {m.redScore} {teamOf(m.redTeamId)?.tag || "待定"}
+                        <small className="manage-object-versus">
+                          <i>{teamOf(m.blueTeamId)?.tag || "待定"}</i>{" "}
+                          <b>
+                            {m.blueScore}:{m.redScore}
+                          </b>{" "}
+                          <i>{teamOf(m.redTeamId)?.tag || "待定"}</i>
                         </small>
                         <small>
                           {dateLabel(m.scheduledAt)} · {statuses[m.status]}
                         </small>
                       </span>
+                      <BusTag bus={scheduleBus(state, onAir, m.id)} />
                       {matches[m.id] && <em>草稿</em>}
                     </button>
                   ))
@@ -323,11 +327,13 @@ export function Management(
                       aria-pressed={team?.id === t.id}
                       onClick={() => editTeam(t)}
                     >
-                      {t.logo ? (
-                        <img src={t.logo} alt="" />
-                      ) : (
-                        <Shield size={22} />
-                      )}
+                      <span className="manage-mark">
+                        {t.logo ? (
+                          <img src={t.logo} alt="" />
+                        ) : (
+                          <Shield size={16} />
+                        )}
+                      </span>
                       <span>
                         <strong>{teams[t.id]?.value.name ?? t.name}</strong>
                         <small>
@@ -454,11 +460,13 @@ export function Management(
                 <>
                   <div className="manage-detail-head">
                     <div>
-                      <small>
-                        {statuses[match.status]} · {match.format}
-                      </small>
                       <h2>{match.title}</h2>
-                      <p>{dateLabel(match.scheduledAt)}</p>
+                      <div className="manage-detail-meta">
+                        <BusTag bus={scheduleBus(state, onAir, match.id)} />
+                        <span className="gl-tag">{statuses[match.status]}</span>
+                        <span>{match.format}</span>
+                        <span>{dateLabel(match.scheduledAt)}</span>
+                      </div>
                     </div>
                     <button
                       className="button"
@@ -472,14 +480,16 @@ export function Management(
                     <div className="manage-versus">
                       {(["blue", "red"] as const).map((side) => (
                         <div key={side} data-side={side}>
-                          {teamOf(match[`${side}TeamId`])?.logo ? (
-                            <img
-                              src={teamOf(match[`${side}TeamId`])?.logo}
-                              alt="战队标志"
-                            />
-                          ) : (
-                            <Shield size={34} />
-                          )}
+                          <span className="manage-mark">
+                            {teamOf(match[`${side}TeamId`])?.logo ? (
+                              <img
+                                src={teamOf(match[`${side}TeamId`])?.logo}
+                                alt="战队标志"
+                              />
+                            ) : (
+                              <Shield size={20} />
+                            )}
+                          </span>
                           <small>{side === "blue" ? "蓝方" : "红方"}</small>
                           <h3>
                             {teamOf(match[`${side}TeamId`])?.name ??
@@ -489,18 +499,20 @@ export function Management(
                         </div>
                       ))}
                     </div>
-                    <h3>载入这场比赛</h3>
-                    <p>
-                      准备区将使用以上双方、赛制与比分。首次载入从第 1
-                      局开始；已有同系列赛归档时按实际记录续接。当前节目保留已播版本，核对预监后再
-                      TAKE。
-                    </p>
-                    <p>
-                      载入不会代替开始新系列赛。重赛、下一局和新系列赛分别在赛后收尾与
-                      BP 规则中操作。
-                    </p>
+                    <section className="manage-load-note">
+                      <h3>载入这场比赛</h3>
+                      <p>
+                        准备区将使用以上双方、赛制与比分。首次载入从第 1
+                        局开始；已有同系列赛归档时按实际记录续接。当前节目保留已播版本，核对预监后再
+                        TAKE。
+                      </p>
+                      <p>
+                        载入不会代替开始新系列赛。重赛、下一局和新系列赛分别在赛后收尾与
+                        BP 规则中操作。
+                      </p>
+                    </section>
                   </div>
-                  <footer className="manage-save">
+                  <footer className="manage-save manage-load">
                     <span>
                       {!canLoad
                         ? `由当前主导播 ${state.production?.control?.name ?? "待确认"} 载入比赛`
@@ -578,9 +590,94 @@ export function Management(
                 />
               ) : team ? (
                 <div className="manage-team-summary">
-                  <header><div className="manage-team-mark" style={{borderColor:team.color}}>{team.logo?<img src={team.logo} alt={`${team.name} 队标`}/>:<Users size={28}/>}</div><div><small>{team.tag}</small><h3>{team.name}</h3><p>{team.players.length} 名选手 · {team.players.filter(player=>!!player.account).length} 个已填账号</p></div><button className="button primary" disabled={!canEdit} onClick={()=>editTeam(team)}>编辑战队资料</button></header>
-                  <div className="manage-roster" aria-label="战队选手名单">{team.players.length?team.players.map((player,index)=><div className="manage-roster-player" key={player.id||index}><span className="manage-roster-role">{player.role||`选手 ${index+1}`}</span>{player.portrait?<img src={player.portrait} alt=""/>:<span className="manage-player-placeholder"><Users size={18}/></span>}<div><strong>{player.name||'姓名待填写'}</strong><small>{player.account||'游戏账号待填写'}</small></div><span className={player.account?'roster-complete':'roster-incomplete'}>{player.account?'已填账号':'待补充'}</span></div>):<div className="domain-empty"><p>这支战队还没有选手。编辑资料后可加入本局名单。</p><button className="button" disabled={!canEdit} onClick={()=>editTeam(team)}>添加选手</button></div>}</div>
-                  <p className="manage-team-note">队伍身份、选手账号与照片在这里核对。编辑保存后进入待播资料。</p>
+                  <header className="manage-detail-head">
+                    <div className="manage-mark manage-team-mark">
+                      {team.logo ? (
+                        <img src={team.logo} alt={`${team.name} 队标`} />
+                      ) : (
+                        <Users size={20} />
+                      )}
+                    </div>
+                    <div>
+                      <div className="manage-identity">
+                        <h2>{team.name}</h2>
+                        <small className="manage-team-tag">{team.tag}</small>
+                      </div>
+                      <p>
+                        <i
+                          className="manage-team-swatch"
+                          style={{ background: team.color }}
+                          aria-hidden="true"
+                        />
+                        {team.players.length} 名选手 ·{" "}
+                        {team.players.filter((player) => !!player.account).length}{" "}
+                        个已填账号
+                      </p>
+                    </div>
+                    <button
+                      className="button primary"
+                      disabled={!canEdit}
+                      onClick={() => editTeam(team)}
+                    >
+                      编辑战队资料
+                    </button>
+                  </header>
+                  <div className="manage-roster" aria-label="战队选手名单">
+                    {team.players.length ? (
+                      <>
+                        <div className="manage-roster-head" aria-hidden="true">
+                          <span>位置</span>
+                          <span>播出名称</span>
+                          <span>游戏账号 / ID</span>
+                          <span>状态</span>
+                        </div>
+                        {team.players.map((player, index) => (
+                          <div
+                            className="manage-roster-player"
+                            key={player.id || index}
+                          >
+                            <span className="manage-roster-role">
+                              {player.role || `选手 ${index + 1}`}
+                            </span>
+                            {player.portrait ? (
+                              <img src={player.portrait} alt="" />
+                            ) : (
+                              <span className="manage-player-placeholder">
+                                <Users size={14} />
+                              </span>
+                            )}
+                            <div>
+                              <strong>{player.name || "姓名待填写"}</strong>
+                              <small>{player.account || "游戏账号待填写"}</small>
+                            </div>
+                            <span
+                              className={
+                                player.account
+                                  ? "roster-complete"
+                                  : "roster-incomplete"
+                              }
+                            >
+                              {player.account ? "已填账号" : "待补充"}
+                            </span>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="domain-empty">
+                        <p>这支战队还没有选手。编辑资料后可加入本局名单。</p>
+                        <button
+                          className="button"
+                          disabled={!canEdit}
+                          onClick={() => editTeam(team)}
+                        >
+                          添加选手
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <p className="manage-team-note">
+                    队伍身份、选手账号与照片在这里核对。编辑保存后进入待播资料。
+                  </p>
                 </div>
               ) : (
                 <div className="domain-empty">先新建两支战队，再准备对阵。</div>
@@ -590,10 +687,10 @@ export function Management(
       )}
       {(assetsVisited || tab === "assets") && (
         <div className="manage-assets" hidden={tab !== "assets"}>
-          <TaskTabs
+          <CountTabs
             items={[
               { id: "local", label: "上传素材" },
-              { id: "heroes", label: `英雄图库 · ${champions.length}` },
+              { id: "heroes", label: "英雄图库", count: champions.length },
             ]}
             value={assetTab}
             onChange={setAssetTab}
