@@ -191,6 +191,11 @@
 .data-workbench > .domain-footer { min-height: var(--gl-h-small); }
 .data-workbench > .domain-footer > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .data-workbench > .domain-footer .domain-actions { flex: none; flex-wrap: nowrap; gap: 6px; }
+/* Controls and notes that sit on the page canvas take the on-canvas tone (--gl-control vanishes on the light canvas). */
+.data-workbench > .domain-footer .button { background: var(--gl-on-canvas); }
+.data-workbench > .domain-footer .button:hover { background: var(--gl-on-canvas-hover); }
+.data-workbench > .domain-footer .button:active { background: var(--gl-control); }
+.data-health > .domain-note { background: var(--gl-on-canvas); }
 
 /* ── Density and narrow steps ───────────────────────────────────────────── */
 @media (max-height: 800px) { .data-grid tbody td { height: 40px; } }

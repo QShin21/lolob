@@ -84,7 +84,7 @@
   .guide-workbench > .domain-heading { flex-wrap: wrap; }
   .guide-workbench > .domain-heading > .guide-version { white-space: normal; text-align: left; }
   .guide-stage { grid-template-columns: minmax(0, 1fr); }
-  .guide-directory > nav { max-height: 300px; }
+  .guide-directory > nav { max-height: 300px; overflow: auto; }
   .guide-article { overflow: visible; }
   .guide-keys { grid-template-columns: minmax(0, 1fr); }
 }

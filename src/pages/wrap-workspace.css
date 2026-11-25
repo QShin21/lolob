@@ -55,7 +55,8 @@
 .wrap-finalize > .button { margin-top: 4px; }
 .wrap-finalize > small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.5; }
 
-.wrap-winner-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-self: stretch; margin-top: 4px; }
+.wrap-winner-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-self: stretch; width: min(100%, 880px); margin-top: 4px; }
+.wrap-task-body > .wrap-winner-choices { max-width: 880px; }
 /* Side carried by a 2px bar above each team; no card around it. */
 .wrap-winner-choices > section { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; padding-top: 12px; border-top: 2px solid var(--gl-blue); }
 .wrap-winner-choices > section[data-side="red"] { border-top-color: var(--gl-red); }
