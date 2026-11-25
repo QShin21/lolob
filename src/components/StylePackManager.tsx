@@ -1,14 +1,47 @@
 import { useEffect, useRef, useState } from 'react';
-import { Download, Upload, X, Palette, Trash2 } from 'lucide-react';
+import { Check, Download, Upload, X, Palette, Trash2 } from 'lucide-react';
 import { stylePackDeleteBlock } from '../../shared/style-pack-usage';
 import type { BroadcastState, Champion, StateContext, BuiltinScene } from '../../shared/types';
 import { BUILTIN_RUNTIME_STYLES, BUILTIN_STYLE_REF, STYLE_PACK_MAX_BYTES, STYLE_SCENES, sameStyle, styleRef, styleSummary } from '../../shared/style-packs';
-import type { StylePackSummary } from '../../shared/style-packs';
+import type { RuntimeStylePack, StylePackSummary } from '../../shared/style-packs';
 import { api, sceneInfo } from '../lib';
 import { BroadcastCanvas } from './BroadcastCanvas';
 import { loadStylePack } from './useStylePack';
 import { StyleEditor } from './StyleEditor';
 import './style-pack-manager.css';
+
+/** The pack's own key art for its list tile: a full-scene background, else its first surface texture. */
+function keyArt(pack: RuntimeStylePack): string | undefined {
+  const id = pack.scenes.standby?.background ?? Object.values(pack.scenes).find(scene => scene.background)?.background ?? pack.textures.header ?? pack.textures.panel;
+  const url = id ? pack.assets[id] : undefined;
+  return url && url.startsWith(`/api/style-packs/${pack.id}/${pack.revision}/assets/`) && /^\/api\/style-packs\/[a-z][a-z0-9-]*\/[a-f0-9]{64}\/assets\/[a-z][a-z0-9-]*$/.test(url) ? url : undefined;
+}
+const manifests = new Map<string, Promise<string | undefined>>();
+/** Imported packs keep their manifest on the service; it is immutable per revision, so one read is enough. */
+function importedKeyArt(pack: StylePackSummary): Promise<string | undefined> {
+  const key = `${pack.id}/${pack.revision}`;
+  let pending = manifests.get(key);
+  if (!pending) {
+    pending = fetch(`/api/style-packs/${key}`, { signal: AbortSignal.timeout(15000) })
+      .then(response => response.ok ? response.json() as Promise<RuntimeStylePack> : undefined)
+      .then(value => value && sameStyle(value, pack) ? keyArt(value) : undefined)
+      .catch(() => { manifests.delete(key); return undefined; });
+    manifests.set(key, pending);
+  }
+  return pending;
+}
+function PackThumbnail({ pack }: { pack: StylePackSummary }) {
+  const builtin = BUILTIN_RUNTIME_STYLES.find(item => sameStyle(item, pack));
+  const [url, setUrl] = useState<string | undefined>(() => builtin && keyArt(builtin));
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    let live = true; setFailed(false);
+    if (builtin) setUrl(keyArt(builtin));
+    else { setUrl(undefined); void importedKeyArt(pack).then(value => { if (live) setUrl(value); }); }
+    return () => { live = false; };
+  }, [pack.id, pack.revision]);
+  return <span className="style-pack-thumb" aria-hidden="true">{url && !failed ? <img src={url} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)}/> : <Palette size={18}/>}</span>;
+}
 
 type Props = { state: BroadcastState; champions: Champion[]; onClose: () => void } & Pick<StateContext, 'send' | 'notify' | 'seat' | 'connected'>;
 export function StylePackManager({ state, champions, send, notify, seat, connected, onClose }: Props) {
@@ -72,21 +105,34 @@ export function StylePackManager({ state, champions, send, notify, seat, connect
     finally { working.current = false; setBusy(false); }
   }
   const previewState = { ...state, overlay: { ...state.overlay, stylePack: selected } };
-  if (editing) return <dialog ref={dialog} className="style-pack-dialog" aria-label="可视化风格编辑器" onCancel={e => { e.preventDefault(); setEditing(false); }}><StyleEditor state={previewState} champions={champions} base={selected} initialScene={scene} disabled={!canEdit} onClose={() => setEditing(false)} onSaved={pack => { setPacks(current => [...current.filter(p => !sameStyle(p, pack)), pack]); setSelected(pack); setEditing(false); notify(`已保存 ${pack.name}，可准备到预监`); }}/></dialog>;
-  return <dialog ref={dialog} className="style-pack-dialog" aria-labelledby="style-pack-title" onCancel={e => { e.preventDefault(); if (!busy) onClose(); }}>
-    <header><div><h2 id="style-pack-title"><Palette size={20}/>风格包</h2><p>统一管理预设节目的美术，不修改赛事数据与自定义场景。</p></div><button className="button small" aria-label="关闭风格包" disabled={busy} onClick={onClose}><X size={18}/></button></header>
-    <div className="style-pack-buses"><span>当前节目：<b>{onAir.name}</b></span><span>待播配置：<b>{active.name}</b></span>{!sameStyle(active, onAir) && <strong>新风格待 TAKE</strong>}</div>
+  if (editing) return <dialog ref={dialog} className="style-pack-dialog" data-view="editor" aria-label="可视化风格编辑器" onCancel={e => { e.preventDefault(); setEditing(false); }}><StyleEditor state={previewState} champions={champions} base={selected} initialScene={scene} disabled={!canEdit} onClose={() => setEditing(false)} onSaved={pack => { setPacks(current => [...current.filter(p => !sameStyle(p, pack)), pack]); setSelected(pack); setEditing(false); notify(`已保存 ${pack.name}，可准备到预监`); }}/></dialog>;
+  return <dialog ref={dialog} className="style-pack-dialog" data-view="manager" aria-labelledby="style-pack-title" onCancel={e => { e.preventDefault(); if (!busy) onClose(); }}>
+    <header><div><h2 id="style-pack-title"><Palette size={20}/>风格包</h2><p>统一管理预设节目的美术，不修改赛事数据与自定义场景。</p></div><button className="button small ghost" aria-label="关闭风格包" disabled={busy} onClick={onClose}><X size={18}/></button></header>
+    <div className="style-pack-buses"><span><i className="bus-tag pgm" aria-hidden="true">PGM</i>当前节目：<b>{onAir.name}</b></span><span><i className="bus-tag pvw" aria-hidden="true">PVW</i>待播配置：<b>{active.name}</b></span>{!sameStyle(active, onAir) && <strong className="gl-tag" data-tone="warn">新风格待 TAKE</strong>}</div>
     <div className="style-pack-layout">
-      <aside><div className="style-pack-import"><button className="button primary" disabled={!canEdit || busy || loading} onClick={() => fileInput.current?.click()}><Upload size={15}/>{busy ? '处理中…' : '导入风格包'}</button><input ref={fileInput} type="file" accept=".zip,application/zip" aria-label="导入 ZIP 风格包" hidden onChange={e => { const file = e.target.files?.[0]; e.target.value = ''; void importFile(file); }}/><small>ZIP · 最多 48 MiB</small></div>
-        <div className="style-pack-list" aria-label="已安装风格包">{packs.map(pack => <button key={`${pack.id}/${pack.revision}`} className="style-pack-choice" aria-pressed={sameStyle(pack, selected)} disabled={busy} onClick={() => setSelected(pack)}><strong>{pack.name}</strong><span>{pack.builtin ? (sameStyle(pack, BUILTIN_STYLE_REF) ? '内置 · 默认 · ' : '内置 · ') : ''}v{pack.version} · {pack.author || '未署名'}</span><small>{pack.id} · {pack.revision.slice(0, 10)}</small>{sameStyle(pack, active) && <b>待播使用中</b>}</button>)}</div>
+      <aside>
+        <div className="style-pack-import"><button className="button primary" disabled={!canEdit || busy || loading} onClick={() => fileInput.current?.click()}><Upload size={15}/>{busy ? '处理中…' : '导入风格包'}</button><input ref={fileInput} type="file" accept=".zip,application/zip" aria-label="导入 ZIP 风格包" hidden onChange={e => { const file = e.target.files?.[0]; e.target.value = ''; void importFile(file); }}/><small>ZIP · 最多 48 MiB</small></div>
+        <div className="style-pack-list" aria-label="已安装风格包">{packs.map(pack => <button key={`${pack.id}/${pack.revision}`} className="style-pack-choice" aria-pressed={sameStyle(pack, selected)} disabled={busy} onClick={() => setSelected(pack)}>
+          <PackThumbnail pack={pack}/>
+          <span className="style-pack-choice-copy">
+            <strong>{pack.name}</strong>
+            <span>{pack.builtin ? (sameStyle(pack, BUILTIN_STYLE_REF) ? '内置 · 默认 · ' : '内置 · ') : ''}v{pack.version} · {pack.author || '未署名'}</span>
+            <span className="style-pack-choice-use">{sameStyle(pack, onAir) && <i className="bus-tag pgm" title="当前节目使用中">PGM</i>}{sameStyle(pack, active) && <i className="bus-tag pvw" title="待播使用中">PVW</i>}<small>{pack.id} · {pack.revision.slice(0, 10)}</small></span>
+          </span>
+          {sameStyle(pack, active) && <b className="sr-only">待播使用中</b>}
+          {sameStyle(pack, selected) && <Check className="style-pack-choice-check" size={16} aria-hidden="true"/>}
+        </button>)}</div>
         {loading && <p role="status">正在读取已安装风格包…</p>}
       </aside>
-      <section className="style-pack-detail"><div className="style-pack-preview-heading"><div><h3>{selectedInfo?.name ?? selected.name}</h3><p>{selectedInfo?.description}</p></div><label>预览节目<select aria-label="风格包预览节目" value={scene} onChange={e => setScene(e.target.value as BuiltinScene)}>{STYLE_SCENES.map(s => <option key={s} value={s}>{sceneInfo[s].name}</option>)}</select></label></div>
-        <div className="style-pack-preview"><BroadcastCanvas state={previewState} champions={champions} scene={scene}/></div>
-        <p>此处仅查看效果。导入后选择“准备到预监”，再回导播台核对并 TAKE；正在播出的风格保持不变。</p>
-        <p>可视化编辑器可调整图层颜色、字体、位置和缩放；整套贴图可通过导出、编辑与重新导入更新。</p>
-        {scene === 'teamfight' && <p>团战节目叠加十人状态和中立资源计时，游戏区域保持透明。</p>}
-        {!canEdit && <p>导入、删除和切换由当前主导播操作；此席位可查看与导出。</p>}
+      <section className="style-pack-detail">
+        <div className="style-pack-preview-heading"><div><h3>{selectedInfo?.name ?? selected.name}</h3><p>{selectedInfo?.description}</p></div><label>预览节目<select aria-label="风格包预览节目" value={scene} onChange={e => setScene(e.target.value as BuiltinScene)}>{STYLE_SCENES.map(s => <option key={s} value={s}>{sceneInfo[s].name}</option>)}</select></label></div>
+        <div className="style-pack-stage"><div className="style-pack-preview"><BroadcastCanvas state={previewState} champions={champions} scene={scene}/></div></div>
+        <div className="style-pack-notes">
+          <p>此处仅查看效果。导入后选择“准备到预监”，再回导播台核对并 TAKE；正在播出的风格保持不变。</p>
+          <p>可视化编辑器可调整图层颜色、字体、位置和缩放；整套贴图可通过导出、编辑与重新导入更新。</p>
+          {scene === 'teamfight' && <p>团战节目叠加十人状态和中立资源计时，游戏区域保持透明。</p>}
+          {!canEdit && <p>导入、删除和切换由当前主导播操作；此席位可查看与导出。</p>}
+        </div>
         <div className="style-pack-delete">
           <button className="button danger" disabled={!canEdit || busy || loading || !selectedInfo || !!deleteBlock} onClick={() => setConfirmDelete(true)}><Trash2 size={15}/>删除风格包</button>
           <small>{deleteBlock ?? '删除当前选中的版本，可重新导入原 ZIP 恢复。需要保留素材时请先导出。'}</small>

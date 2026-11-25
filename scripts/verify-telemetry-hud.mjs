@@ -32,7 +32,7 @@ state.players.forEach((p,i)=>{
  if(i===4||i===9){p.cs=1234;p.kills=123;p.deaths=45;p.assists=123;}
 });
 const entryPath=path.join(root,'_telemetry-fixture.tsx').replaceAll('\\','/');
-const entry=`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas.tsx';import'/src/styles.css';import'/src/responsive.css';
+const entry=`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{BroadcastCanvas}from'/src/components/BroadcastCanvas.tsx';import'/src/styles.css';
 const initial=await fetch('/fixture/state').then(r=>r.json()),champions=await fetch('/fixture/champions').then(r=>r.json());
 function App(){const[state,setState]=useState(initial);window.hudFixture={setState};return <div className="fixture-stage" style={{width:'100vw',height:'56.25vw',position:'relative',background:'#17313a'}}><BroadcastCanvas state={state} champions={champions} scene="live" output/></div>};createRoot(document.getElementById('root')).render(<App/>);`;
 const vite=await createServer({root,configFile:false,appType:'custom',plugins:[react(),{name:'telemetry-fixture',resolveId:id=>id==='/_telemetry-fixture.tsx'?entryPath:undefined,load:id=>id===entryPath?entry:undefined}],server:{middlewareMode:true,hmr:false}});

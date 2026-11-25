@@ -1,4 +1,93 @@
-.style-editor{min-height:600px;display:flex;flex-direction:column;gap:14px}.se-toolbar{display:flex;align-items:end;gap:14px;padding:12px 18px;border-bottom:1px solid var(--ui-border);flex-wrap:wrap}.se-toolbar label{display:grid;gap:5px;font-size:12px}.se-toolbar label:first-of-type{flex:1}.se-toolbar input{min-width:160px}.se-layout{display:grid;grid-template-columns:190px minmax(300px,1fr) 235px;min-height:490px;gap:15px;padding:0 16px 16px}.se-tree,.se-properties{padding:12px;background:var(--ui-raised);border:1px solid var(--ui-border);border-radius:8px;max-height:620px;overflow:auto}.se-tree h3,.se-properties h3{font-size:14px;margin:0 0 13px}.se-tree button{display:block;width:100%;padding:9px 8px;text-align:left;font-size:12px;border:0;border-radius:5px;background:transparent;color:inherit;cursor:pointer;margin:2px 0}.se-tree button[aria-pressed=true]{background:var(--ui-selected);color:var(--ui-accent)}.se-tree summary{font-size:12px;margin:14px 0}.se-tree p,.se-properties p,.se-canvas-column>p{font-size:12px;line-height:1.7;color:var(--ui-muted)}.se-canvas-column{min-width:0;display:flex;flex-direction:column;gap:9px}.se-preview{position:relative;background:var(--rc-ink);touch-action:none;overflow:hidden;user-select:none;width:100%;aspect-ratio:16/9}.se-preview .broadcast-container{width:100%;height:100%}.se-preview .broadcast-canvas{width:100%;height:100%}.se-selection{position:absolute;border:2px solid var(--ui-accent);background:color-mix(in srgb, var(--ui-accent) 10%, transparent);pointer-events:none;box-sizing:border-box;z-index:100}.se-properties>label,.se-properties fieldset>label{display:flex;flex-direction:column;gap:6px;margin:0 0 12px;font-size:12px}.se-properties input,.se-properties select{width:100%;min-height:32px}.se-properties input[type=color]{padding:3px;height:35px}.se-properties fieldset{border:0;margin:15px 0 0;padding:0}.se-global{padding:12px;border:1px solid var(--ui-border);border-radius:7px}.se-global summary{font-size:13px;cursor:pointer}.se-palette{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}.se-palette label{font-size:11px;display:grid;gap:5px;min-width:85px}.se-palette input[type=color]{width:80px;height:30px}.se-error{margin:0 18px;color:var(--ui-error);font-size:13px}.style-editor-loading{padding:25px}@media(max-width:1100px){.se-layout{grid-template-columns:150px minmax(250px,1fr)}.se-properties{grid-column:1/-1;max-height:none;display:block}.se-properties fieldset{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.se-properties fieldset>label{margin:0}}@media(max-width:650px){.se-layout{grid-template-columns:1fr}.se-tree{max-height:180px}.se-properties fieldset{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* 可视化风格编辑器 · a tool view: layer tree, stage, properties on one surface with hairline dividers.
+   The style pack dialog hosts it, and it also mounts on its own, so the layout answers to the
+   editor's own width through a container query. */
+.style-editor { container: style-editor / inline-size; display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; background: var(--gl-panel); color: var(--gl-text); font-family: var(--gl-font); font-size: var(--gl-fs-sm); line-height: 1.5; }
+.style-editor-loading { display: grid; place-content: center; justify-items: center; gap: 12px; flex: 1; min-height: 240px; padding: 32px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); text-align: center; }
+
+/* Slim header: back, title, name, scene, save. */
+.se-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; flex: none; min-height: 56px; padding: 10px 12px; border-bottom: 1px solid var(--gl-line); }
+.se-title { margin: 0 4px; font-family: var(--gl-font-title); font-size: 20px; font-weight: 800; letter-spacing: .01em; line-height: 1.2; white-space: nowrap; }
+.se-toolbar label { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; white-space: nowrap; }
+.se-toolbar label:first-of-type { flex: 1 1 280px; }
+.se-toolbar label:first-of-type input { flex: 1; width: 100%; min-width: 120px; max-width: 440px; color: var(--gl-text); font-weight: 600; }
+.se-toolbar select { min-width: 132px; }
+.se-toolbar > .button.primary { margin-left: auto; }
+.se-error { margin: 0; padding: 8px 16px; background: var(--gl-error-wash); color: var(--gl-error); font-size: var(--gl-fs-sm); line-height: 1.5; }
+
+.se-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 288px; flex: 1; min-height: 0; }
+.se-tree, .se-properties { min-width: 0; min-height: 0; padding: 12px; overflow: auto; overscroll-behavior: contain; }
+.se-tree { border-right: 1px solid var(--gl-line); }
+.se-properties { border-left: 1px solid var(--gl-line); }
+.se-tree h3, .se-properties h3 { margin: 4px 4px 10px; font-size: var(--gl-fs-sm); font-weight: 600; line-height: 1.3; }
+
+/* Layer tree. */
+.se-tree button { display: flex; align-items: center; width: 100%; min-height: 32px; margin: 0; padding: 4px 8px; border: 0; border-radius: 6px; background: none; color: var(--gl-text-2); font: inherit; font-size: var(--gl-fs-sm); text-align: left; cursor: pointer; transition: background var(--gl-fast) var(--gl-ease), color var(--gl-fast) var(--gl-ease); }
+.se-tree button:hover { background: var(--gl-control); color: var(--gl-text); }
+.se-tree button[aria-pressed="true"] { background: var(--gl-selected); color: var(--gl-text); font-weight: 600; }
+.se-tree details { margin-top: 10px; padding-top: 6px; border-top: 1px solid var(--gl-line); }
+.se-tree summary { min-height: 32px; padding: 0 4px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; line-height: 32px; cursor: pointer; }
+.se-tree summary:hover { color: var(--gl-text); }
+.se-tree p { margin: 4px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.6; }
+
+/* Stage: tool row, the canvas on a well, a hint, then the pack-wide palette. */
+.se-canvas-column { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.se-edit-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; flex: none; min-height: 48px; padding: 8px 16px; border-bottom: 1px solid var(--gl-line); }
+.se-edit-actions label { display: inline-flex; align-items: center; gap: 6px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); white-space: nowrap; }
+.se-edit-actions input[type="checkbox"] { width: 16px; height: 16px; margin: 0; }
+.se-edit-actions > span { margin-left: auto; color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.se-edit-actions .se-archive { flex-wrap: wrap; white-space: normal; }
+.se-edit-actions .se-archive > span { color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.se-stage { flex: none; padding: 16px; background: var(--gl-well); }
+.se-preview { position: relative; width: 100%; max-width: calc((100vh - 280px) * 16 / 9); min-width: min(100%, 320px); aspect-ratio: 16 / 9; margin: 0 auto; background: #050607; overflow: hidden; touch-action: none; user-select: none; }
+/* Selection and snap guides are drawn over arbitrary artwork: white with a near-black edge reads on both. */
+.se-selection { position: absolute; z-index: 100; box-sizing: border-box; border: 1px solid var(--gl-on-signal); background: color-mix(in srgb, var(--gl-on-signal) 10%, transparent); box-shadow: 0 0 0 1px #050607, inset 0 0 0 1px #050607; pointer-events: none; }
+.se-guide { position: absolute; z-index: 101; display: block; background: var(--gl-on-signal); box-shadow: 0 0 0 .5px #050607; pointer-events: none; }
+.se-guide.vertical { top: 0; bottom: 0; width: 1px; }
+.se-guide.horizontal { right: 0; left: 0; height: 1px; }
+.se-hint { flex: none; margin: 0; padding: 10px 16px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.6; }
+.se-global { flex: none; margin: 0; padding: 0 16px; border-top: 1px solid var(--gl-line); }
+.se-global > summary { min-height: 40px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; line-height: 40px; cursor: pointer; }
+.se-global > summary:hover, .se-global[open] > summary { color: var(--gl-text); }
+.se-palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px 12px; padding: 4px 0 14px; }
+.se-palette + .se-palette { padding-top: 12px; border-top: 1px solid var(--gl-line); }
+.se-palette label { display: grid; gap: 4px; min-width: 0; overflow: hidden; color: var(--gl-text-3); font-family: var(--gl-font-mono); font-size: var(--gl-fs-xs); white-space: nowrap; text-overflow: ellipsis; }
+.se-palette label:has(select) { color: var(--gl-text-2); font-family: var(--gl-font); font-weight: 500; }
+.se-palette input[type="color"] { width: 100%; height: 28px; }
+.se-palette select { width: 100%; }
+
+/* Properties: compact fields, figures in mono. */
+.se-properties > label, .se-properties fieldset > label, .se-text-editor > label { display: grid; gap: 5px; min-width: 0; color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; }
+.se-properties > label { margin: 0 4px 12px; }
+.se-properties fieldset { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px 8px; min-width: 0; margin: 0; padding: 12px 4px 0; border: 0; border-top: 1px solid var(--gl-line); }
+.se-properties fieldset > * { grid-column: 1 / -1; }
+.se-properties fieldset > label:has(> input[type="color"]) { grid-column: span 2; }
+.se-properties fieldset > label:has(> input[type="number"]) { grid-column: span 3; }
+.se-properties :is(input, select, textarea) { width: 100%; min-width: 0; }
+.se-properties input[type="number"] { font-family: var(--gl-font-mono); }
+.se-properties input[type="color"] { height: 32px; padding: 3px; }
+.se-properties fieldset > .button { justify-self: start; }
+.se-text-editor { display: grid; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--gl-line); }
+.se-text-editor textarea { min-height: 84px; font-family: inherit; resize: vertical; }
+.se-text-editor > .button { justify-self: start; }
+.se-text-editor p, .se-properties > p { margin: 0; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.6; }
+.se-text-editor .se-error { padding: 6px 8px; border-radius: 6px; }
+.se-properties > p { margin: 14px 4px 4px; padding-top: 12px; border-top: 1px solid var(--gl-line); }
+
+@container style-editor (max-width: 1040px) {
+  .se-layout { grid-template-columns: 188px minmax(0, 1fr); grid-auto-rows: min-content; overflow: auto; }
+  .se-tree { max-height: 560px; }
+  .se-canvas-column { overflow: visible; }
+  .se-properties { grid-column: 1 / -1; border-top: 1px solid var(--gl-line); border-left: 0; overflow: visible; }
+  .se-properties fieldset { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .se-edit-actions > span { display: none; }
+}
+@container style-editor (max-width: 640px) {
+  .se-layout { grid-template-columns: minmax(0, 1fr); }
+  .se-tree { max-height: 200px; border-right: 0; border-bottom: 1px solid var(--gl-line); }
+  .se-properties fieldset { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+/* The embedded canvas is frozen broadcast output. These rules only size it to the stage and let the
+   editor receive pointer events on its elements; they are kept exactly as written. */
+.se-preview .broadcast-container{width:100%;height:100%}.se-preview .broadcast-canvas{width:100%;height:100%}
 .se-preview .cast-canvas *{pointer-events:auto}.se-preview .cast-canvas>.style-pack-frame{pointer-events:none}
-.se-edit-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 18px}.se-edit-actions label{display:flex;align-items:center;gap:6px;font-size:12px}.se-edit-actions input[type=checkbox]{width:16px;height:16px;min-height:0}.se-edit-actions>span{font-size:12px;color:var(--ui-muted)}.se-guide{position:absolute;pointer-events:none;z-index:101;display:block;background:var(--ui-accent);box-shadow:0 0 3px var(--rc-cyan-glow)}.se-guide.vertical{top:0;bottom:0;width:1px}.se-guide.horizontal{left:0;right:0;height:1px}
-.se-text-editor{grid-column:1/-1;border-bottom:1px solid var(--ui-border);padding-bottom:14px;margin-bottom:14px}.se-text-editor>label{display:grid;gap:6px;margin-bottom:10px;font-size:12px}.se-text-editor textarea{width:100%;min-height:90px;resize:vertical;box-sizing:border-box;font-family:inherit}.se-text-editor .se-error{margin:5px 0}

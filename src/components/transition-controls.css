@@ -1,1 +1,42 @@
-.transition-controls fieldset{border:0;padding:16px;margin:0;min-width:0}.transition-config{display:flex;gap:12px;flex-wrap:wrap;align-items:end}.transition-config label{display:grid;gap:6px;font-size:12px;flex:1;min-width:130px}.transition-config input,.transition-config select{min-height:34px;width:100%}.transition-config .transition-path{flex:2;min-width:240px}.transition-controls .muted{font-size:12px;line-height:1.6}.transition-enable{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:20px}.transition-rules{display:grid;gap:12px}.transition-rules article{padding:12px;border:1px solid var(--ui-border);border-radius:8px}.transition-rules article>header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:12px}.transition-rules .transition-config+.transition-config{margin-top:12px}.transition-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}.transition-receipt{font-size:12px;padding:0 16px 16px;margin:0;color:var(--ui-info)}.transition-receipt.failed{color:var(--ui-error)}
+/* Programme transitions: the default TAKE transition, then an ordered list of event rules.
+   One save scope ("保存转场设置"). Also mounted bare by verify-transitions, hence the explicit resets. */
+.transition-controls, .transition-controls *, .transition-controls *::before, .transition-controls *::after { box-sizing: border-box; }
+.transition-controls { gap: 16px; margin: 0; container-type: inline-size; container-name: transitions; }
+.transition-controls > fieldset { display: flex; flex-direction: column; gap: 20px; min-width: 0; margin: 0; padding: 0; border: 0; }
+
+/* Four tracks shared by every row, so rule fields and transition fields line up on the same edges.
+   The two figure tracks keep room for their longest label. */
+.transition-config { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(164px, 1.25fr) minmax(0, 2fr) minmax(124px, 1fr); align-items: end; gap: 12px; min-width: 0; }
+
+.transition-automatic { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.transition-rules { display: flex; flex-direction: column; min-width: 0; }
+.transition-rules:empty { display: none; }
+.transition-rules > article { display: grid; grid-template-columns: 84px minmax(0, 1fr) 32px; column-gap: 16px; row-gap: 12px; margin: 0; padding: 14px 0; border-top: 1px solid var(--gl-line); }
+.transition-rules > article:last-child { border-bottom: 1px solid var(--gl-line); }
+.transition-rules > article > header { display: contents; }
+.transition-rules > article > header > label { grid-column: 1; grid-row: 1; align-self: end; display: flex; align-items: center; gap: 8px; min-height: var(--gl-h-control); color: var(--gl-text); font-size: var(--gl-fs-sm); font-weight: 600; white-space: nowrap; cursor: pointer; }
+.transition-rules > article > header > label > input { flex: none; margin: 0; }
+.transition-rules > article > header > button { grid-column: 3; grid-row: 1; align-self: end; margin-bottom: 1px; }
+.transition-rules > article > .transition-config { grid-column: 2; }
+.transition-rules > article:has(> header input:not(:checked)) > .transition-config { opacity: .56; }
+
+/* Save row: list action left, status and the one primary right. Pinned while the rules scroll. */
+.transition-actions { position: sticky; bottom: 0; z-index: 2; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-height: 52px; margin: 0; padding: 8px 0; border-top: 1px solid var(--gl-line); background: var(--gl-panel); box-shadow: 0 24px 0 var(--gl-panel); }
+.transition-actions > .button.primary { order: 3; }
+.transition-actions > small { order: 2; flex: 1 1 120px; min-width: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); text-align: right; }
+/* Stays in the row while empty so the primary keeps its place at the row end. */
+.transition-controls .transition-actions > small:empty { display: block; }
+
+/* Receipt of the last transition OBS executed. */
+.transition-receipt { display: flex; align-items: flex-start; gap: 8px; margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-xs); line-height: 1.5; overflow-wrap: anywhere; }
+.transition-receipt::before { content: ""; flex: none; width: 8px; height: 8px; margin-top: 5px; border-radius: 50%; background: var(--gl-pvw); }
+.transition-receipt.failed { color: var(--gl-error); }
+.transition-receipt.failed::before { background: var(--gl-error); }
+
+@container transitions (max-width: 760px) {
+  .transition-config { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .transition-config > .field.transition-path { grid-column: 1 / -1; }
+  .transition-rules > article { grid-template-columns: minmax(0, 1fr) 32px; }
+  .transition-rules > article > header > button { grid-column: 2; }
+  .transition-rules > article > .transition-config { grid-column: 1 / -1; }
+}
