@@ -1,6 +1,7 @@
 import { defaultObjectiveRegions, hudObjectives, hudObjectiveLabels } from '../../shared/hud-ocr';
 import { useEffect, useRef, useState } from "react";
 import type { EconomyOcrConfig, EconomyRoi, Side, HudObjective } from "../../shared/types";
+import "./economy-source.css";
 const defaultPlayers = { x: 0, y: 0.4, width: 1, height: 0.6 };
 export function OcrCalibration({
   config,
@@ -122,6 +123,7 @@ export function OcrCalibration({
               <div
                 key={key}
                 className={`ocr-box ${key.split(':')[0]}`}
+                data-label={roi.y < 0.08 ? "below" : "above"}
                 style={{
                   left: `${roi.x * 100}%`,
                   top: `${roi.y * 100}%`,
@@ -181,7 +183,7 @@ export function OcrCalibration({
                   drag.current = undefined;
                 }}
               >
-                {label(key)}
+                <span className="ocr-box-label">{label(key)}</span>
                 <i className="ocr-handle" />
               </div>
             );
