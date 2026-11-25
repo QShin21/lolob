@@ -17,7 +17,13 @@ export function DraftProductionControls(
   const { state, task, onTaskChange } = ctx,
     p = state.production,
     tabId = useId();
-  if (!p) return <p className="bp-empty">制作状态尚未就绪，请等待同步。</p>;
+  if (!p)
+    return (
+      <div className="bp-empty bp-empty-panel">
+        <strong>制作状态尚未就绪</strong>
+        <p>请等待同步。</p>
+      </div>
+    );
   const tabs: { id: DraftControlTask; label: string; detail?: string }[] = [
     {
       id: "assignments",

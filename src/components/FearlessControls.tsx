@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { History } from "lucide-react";
 import type { DraftHistoryGame, Side, StateContext } from "../../shared/types";
 import { championFor, getTeam } from "../lib";
 import {
@@ -94,20 +95,24 @@ export function FearlessControls(ctx: StateContext) {
     <section className="bp-history" aria-label="本系列赛英雄历史">
       <div className="bp-section-heading">
         <div>
-          <h3>本系列赛历史</h3>
+          <h3><History size={17} aria-hidden="true" />本系列赛历史</h3>
           <p>{draftRuleLabel(state)}。换边后历史跟随战队。</p>
         </div>
         <span>{games.length} 局已登记</span>
       </div>
+      <div className="bp-panel-body">
       {games.length ? (
         <div className="bp-history-table">
           <div className="bp-history-heading">
             <span>局号</span>
             {(["blue", "red"] as const).map((side) => (
-              <strong key={side} title={getTeam(state, side)?.name}>
-                {getTeam(state, side)?.name ||
-                  (side === "blue" ? "蓝方战队" : "红方战队")}
-              </strong>
+              <span className="bp-side-heading" data-side={side} key={side}>
+                <span>{side === "blue" ? "蓝色方" : "红色方"}</span>
+                <strong title={getTeam(state, side)?.name}>
+                  {getTeam(state, side)?.name ||
+                    (side === "blue" ? "蓝方战队" : "红方战队")}
+                </strong>
+              </span>
             ))}
           </div>
           {games.map((game) => (
@@ -135,9 +140,10 @@ export function FearlessControls(ctx: StateContext) {
           ))}
         </div>
       ) : (
-        <p className="bp-empty">
-          尚无前局记录。最终阵容进入对局后登记，预选不会计入历史。
-        </p>
+        <div className="bp-empty">
+          <strong>尚无前局记录</strong>
+          <p>最终阵容进入对局后登记，预选不会计入历史。</p>
+        </div>
       )}
       <details className="bp-series-actions">
         <summary>推进局号与新系列赛</summary>
@@ -146,7 +152,7 @@ export function FearlessControls(ctx: StateContext) {
         </p>
         <div className="bp-actions">
           <button
-            className="bp-button"
+            className="bp-button button small"
             disabled={
               busy ||
               connected === false ||
@@ -192,6 +198,7 @@ export function FearlessControls(ctx: StateContext) {
           </small>
         )}
       </details>
+      </div>
       {error && (
         <p className="bp-error" role="alert">
           {error}

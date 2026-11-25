@@ -121,18 +121,26 @@ export function DraftAssignments(ctx: StateContext) {
         </div>
         <span>{locked.length} 人已勾选</span>
       </div>
+      <div className="bp-panel-body">
       {!assignments.length ? (
-        <p className="bp-empty">
-          等待本局选手名单。先在赛事资料中准备双方名单，或连接客户端。
-        </p>
+        <div className="bp-empty">
+          <strong>等待本局选手名单</strong>
+          <p>先在赛事资料中准备双方名单，或连接客户端。</p>
+          <a className="button small" href="#manage">
+            打开赛事与素材
+          </a>
+        </div>
       ) : (
         <div className="bp-assignment-teams">
           {(["blue", "red"] as const).map((side) => (
             <section className={`bp-assignment-team ${side}`} key={side}>
-              <h4>
-                {getTeam(state, side)?.name ||
-                  (side === "blue" ? "蓝方" : "红方")}
-              </h4>
+              <div className="bp-side-heading" data-side={side}>
+                <span>{side === "blue" ? "蓝色方" : "红色方"}</span>
+                <h4>
+                  {getTeam(state, side)?.name ||
+                    (side === "blue" ? "蓝方" : "红方")}
+                </h4>
+              </div>
               <div className="bp-assignment-head">
                 <span>选手</span>
                 <span>最终英雄 / 交换</span>
@@ -251,9 +259,10 @@ export function DraftAssignments(ctx: StateContext) {
         </div>
       )}
       <p className="bp-inline-note">
-        <ArrowLeftRight size={15} />
+        <ArrowLeftRight size={14} />
         交换英雄或更改分路会取消相应锁定，需要重新确认。
       </p>
+      </div>
       {conflict && (
         <div className="bp-conflict" role="status">
           <strong>待播配置有更新，本地归属修改已保留</strong>
@@ -268,7 +277,7 @@ export function DraftAssignments(ctx: StateContext) {
               .join("；") || "尚未确认归属"}
           </p>
           <button
-            className="bp-button"
+            className="bp-button button small"
             disabled={busy}
             onClick={() => {
               setBaseVersion(p.configVersion);
@@ -298,7 +307,7 @@ export function DraftAssignments(ctx: StateContext) {
             : `${p.assignments.filter((a) => a.locked).length} 人归属已保存到待播`}
         </span>
         <button
-          className="bp-button"
+          className="bp-button button"
           disabled={!dirty || busy}
           onClick={() => {
             setDirty(false);
@@ -308,7 +317,7 @@ export function DraftAssignments(ctx: StateContext) {
           放弃归属修改
         </button>
         <button
-          className="bp-button bp-primary"
+          className="bp-button bp-primary button primary"
           disabled={
             !dirty || busy || !permitted || conflict || invalid || duplicate
           }
