@@ -1,6 +1,7 @@
 /* Shared task body for the production dock. Each task owns its data and actions; the dock frame is in ui/studio.css. */
 .production-desk .task-content > div > :is(div, section):not(.audio-workspace) { margin-inline: 16px; }
-.production-task { display: grid; gap: 12px; padding-bottom: 16px; font-size: var(--gl-fs-sm); }
+.production-task { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding-bottom: 16px; font-size: var(--gl-fs-sm); }
+.production-task select { min-width: 0; max-width: 100%; }
 .production-task h3 { font-size: var(--gl-fs-md); }
 .production-desk p { color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; }
 .production-desk .muted { color: var(--gl-text-3); }
@@ -16,7 +17,10 @@
 .production-form input[type="number"], .production-clip input { width: 92px; }
 .production-checks > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 10px 0; border-top: 1px solid var(--gl-line); font-size: var(--gl-fs-sm); }
 .production-checks > div:first-child { border-top: 0; }
-.production-checks small { grid-column: 1; color: var(--gl-text-3); }
+.production-checks > div > span { display: flex; align-items: center; gap: 8px; }
+.production-checks > div > span svg { color: var(--gl-text-off); }
+.production-checks > div > span.green-text svg { color: var(--gl-pvw); }
+.production-checks small { grid-column: 1; padding-left: 23px; color: var(--gl-text-3); }
 .production-checks > div > :last-child { grid-column: 2; grid-row: 1 / span 2; }
 .production-current-game { display: grid; gap: 6px; max-width: 400px; font-size: var(--gl-fs-sm); }
 .production-current-game img { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; border-radius: 6px; background: #050607; }
@@ -27,3 +31,35 @@
 .production-video-index { overflow-wrap: anywhere; }
 .production-video-index p { color: var(--gl-text-3); }
 .production-native-hint { width: 100%; }
+
+/* Task bodies: labels stack above their controls; one decision per row. */
+.production-task > label, .production-task fieldset > label, .incident-card > label { display: grid; gap: 5px; color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; }
+.production-task :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]), select, textarea) { width: 100%; }
+.production-form :is(input, select) { width: auto; }
+.production-task > a, .production-video-index a { color: var(--gl-text-2); font-size: var(--gl-fs-sm); text-decoration: underline; text-decoration-color: var(--gl-line-strong); text-underline-offset: 3px; }
+.production-task > a:hover, .production-video-index a:hover { color: var(--gl-text); text-decoration-color: currentColor; }
+.production-task > p:empty { display: none; }
+.task-fieldset { display: grid; gap: 12px; }
+.task-fieldset:disabled { opacity: .6; }
+.production-follow { align-items: center; }
+.incident-card { display: grid; gap: 10px; padding: 12px 0 0; border-top: 1px solid var(--gl-line); }
+.incident-card:first-of-type { border-top: 0; padding-top: 0; }
+.incident-card > strong, .incident-card > b { font-size: var(--gl-fs-md); font-weight: 600; }
+.subtitle-onair, .feed-onair-summary { padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-well); }
+.subtitle-onair { display: grid; gap: 2px; }
+.subtitle-onair b { color: var(--gl-pgm); font-size: var(--gl-fs-xs); font-weight: 600; }
+.subtitle-onair p { color: var(--gl-text); overflow-wrap: anywhere; }
+.feed-onair-summary { margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+.clip-trim { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; width: 100%; }
+.production-clip { align-items: flex-start; }
+.production-rundown > :first-child { flex: 1; min-width: 0; }
+
+/* Hold-to-confirm: the fill is the timer. */
+.button.danger:has(.hold-progress) { position: relative; overflow: hidden; isolation: isolate; }
+.hold-progress { position: absolute; inset: 0; z-index: -1; background: var(--gl-error-solid); transform: scaleX(0); transform-origin: left; }
+.button.holding .hold-progress { transform: scaleX(1); transition: transform 1s linear; }
+.button.holding { color: var(--gl-on-signal); }
+.button.holding small { font-size: var(--gl-fs-xs); }
+
+/* A checkbox reads as one row with its label. */
+.production-desk label:has(> input[type="checkbox"]), .production-desk label:has(> input[type="radio"]) { display: flex; align-items: center; gap: 8px; min-height: 32px; color: var(--gl-text); font-size: var(--gl-fs-sm); font-weight: 400; }

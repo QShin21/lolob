@@ -70,7 +70,7 @@ const entryPath = path
   .join(root, "_broadcast-controls-fixture.tsx")
   .replaceAll("\\", "/");
 const entry = `import React,{useEffect,useState} from 'react';import{createRoot}from'react-dom/client';
-import{BroadcastCanvas}from'/src/components/BroadcastCanvas.tsx';import{LiveBottomControls}from'/src/components/LiveBottomControls.tsx';import{PlayerFeedSwitcher}from'/src/components/PlayerFeedSwitcher.tsx';import{GoldRankingControls}from'/src/components/GoldRanking.tsx';import{championArtwork}from'/shared/champion-art.ts';import'/src/styles.css';import'/src/responsive.css';import'/src/director.css';import'/src/console-system.css';import'/src/audience-system.css';
+import{BroadcastCanvas}from'/src/components/BroadcastCanvas.tsx';import{LiveBottomControls}from'/src/components/LiveBottomControls.tsx';import{PlayerFeedSwitcher}from'/src/components/PlayerFeedSwitcher.tsx';import{GoldRankingControls}from'/src/components/GoldRanking.tsx';import{championArtwork}from'/shared/champion-art.ts';import'/src/styles.css';
 const initial=await fetch('/fixture/state').then(r=>r.json()),champions=await fetch('/fixture/champions').then(r=>r.json()),seat=await fetch('/fixture/seat').then(r=>r.json());
 function Fixture(){const[state,setState]=useState(initial),[scene,setScene]=useState(null),[gallery,setGallery]=useState(null);
 useEffect(()=>{const timer=setInterval(()=>fetch('/fixture/state').then(r=>r.json()).then(setState),100);return()=>clearInterval(timer)},[]);

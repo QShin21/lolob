@@ -1,0 +1,14 @@
+/* In-game analysis selector and event layers (operator control). broadcast-analysis.css is frozen output
+   and still carries the 2.0.0 control rules, so everything here is written at two-class specificity to
+   replace them. Part of the shared packaging draft: the pane's save bar commits it. */
+.broadcast-analysis-controls.analysis-controls, .broadcast-analysis-controls.analysis-controls *, .broadcast-analysis-controls.analysis-controls *::before, .broadcast-analysis-controls.analysis-controls *::after { box-sizing: border-box; }
+.broadcast-analysis-controls.analysis-controls { gap: 0; margin: 0; }
+/* The pane section above already carries this title. */
+.broadcast-analysis-controls.analysis-controls > .panel-head { display: none; }
+.broadcast-analysis-controls.analysis-controls fieldset { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.broadcast-analysis-controls.analysis-controls .analysis-controls-mode { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 8px 12px; min-width: 0; }
+.broadcast-analysis-controls.analysis-controls .analysis-controls-mode > .field { flex: 1 1 280px; max-width: 420px; }
+.broadcast-analysis-controls.analysis-controls select { width: 100%; margin-bottom: 0; }
+.broadcast-analysis-controls.analysis-controls p { margin: 0; font-size: var(--gl-fs-xs); line-height: 1.55; }
+.broadcast-analysis-controls.analysis-controls .ba-switches { display: flex; flex-flow: column nowrap; gap: 0; margin-top: 0; }
+.broadcast-analysis-controls.analysis-controls .ba-switches label { gap: 16px; }

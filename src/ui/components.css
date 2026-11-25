@@ -33,7 +33,8 @@
 .button.danger:hover:not(:disabled) { background: color-mix(in srgb, var(--gl-error-solid) 26%, var(--gl-panel)); }
 .button.danger:disabled { background: var(--gl-control); color: var(--gl-text-off); }
 .button.ghost { background: transparent; color: var(--gl-text-2); }
-.button.ghost:hover:not(:disabled) { background: var(--gl-control); color: var(--gl-text); }
+.button.ghost:hover:not(:disabled) { background: var(--gl-on-canvas-hover); color: var(--gl-text); }
+.button[aria-pressed="true"]:not(.primary, .danger) { background: var(--gl-selected); box-shadow: inset 0 0 0 1px var(--gl-line-strong); font-weight: 600; }
 
 .text-button { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 0 2px; color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; text-decoration: underline; text-decoration-color: var(--gl-line-strong); text-underline-offset: 3px; }
 .text-button:hover:not(:disabled) { color: var(--gl-text); text-decoration-color: currentColor; }
@@ -73,6 +74,7 @@
 .status-dot.red { background: var(--gl-pgm); }
 .status-dot.amber { background: var(--gl-warn); }
 .status-dot.gray { background: var(--gl-text-off); }
+.status-dot.rose { background: var(--gl-error); }
 
 /* ── Panels ─────────────────────────────────────────────────────────────── */
 .panel, .gl-panel { min-width: 0; border-radius: var(--gl-r-panel); background: var(--gl-panel); }
@@ -87,11 +89,10 @@
 
 /* ── Lists and facts ────────────────────────────────────────────────────── */
 .gl-list { display: flex; flex-direction: column; min-width: 0; }
-.gl-row { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 12px; border-radius: var(--gl-r-control); min-width: 0; text-align: left; }
-.gl-row + .gl-row { box-shadow: 0 -1px 0 var(--gl-line); }
-button.gl-row:hover:not(:disabled), a.gl-row:hover { background: var(--gl-control); box-shadow: none; }
-button.gl-row:hover + .gl-row, .gl-row[aria-selected="true"] + .gl-row, .gl-row[aria-current="true"] + .gl-row { box-shadow: none; }
-.gl-row[aria-selected="true"], .gl-row[aria-current="true"], .gl-row[aria-pressed="true"] { background: var(--gl-selected); box-shadow: none; }
+.gl-row { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 12px; border-radius: 0; min-width: 0; text-align: left; }
+.gl-row + .gl-row { border-top: 1px solid var(--gl-line); }
+button.gl-row:hover:not(:disabled), a.gl-row:hover { background: var(--gl-control); }
+.gl-row[aria-selected="true"], .gl-row[aria-current="true"], .gl-row[aria-pressed="true"] { background: var(--gl-selected); }
 .gl-kv { display: grid; grid-template-columns: minmax(96px, max-content) minmax(0, 1fr); column-gap: 16px; margin: 0; font-size: var(--gl-fs-sm); }
 .gl-kv > dt, .gl-kv > dd { padding: 8px 0; border-top: 1px solid var(--gl-line); margin: 0; }
 .gl-kv > dt { color: var(--gl-text-3); }
@@ -121,13 +122,13 @@ button.gl-row:hover + .gl-row, .gl-row[aria-selected="true"] + .gl-row, .gl-row[
 
 /* ── Toast ──────────────────────────────────────────────────────────────── */
 .toast {
-  display: flex; align-items: center; gap: 10px; width: max-content; max-width: min(560px, calc(100vw - 32px)); padding: 8px 8px 8px 14px;
+  display: flex; align-items: flex-start; gap: 10px; width: max-content; max-width: min(560px, calc(100vw - 32px)); max-height: min(160px, 25dvh); padding: 8px 8px 8px 14px; overflow-y: auto;
   border: 1px solid var(--gl-line-strong); border-radius: 10px; background: var(--gl-panel-2); color: var(--gl-text); box-shadow: var(--gl-shadow-float);
   font-size: var(--gl-fs-sm); line-height: 1.45;
 }
-.toast > svg { color: var(--gl-text-2); }
-.toast > span { min-width: 0; overflow-wrap: anywhere; }
-.toast > button { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 6px; color: var(--gl-text-3); }
+.toast > svg { position: sticky; top: 6px; margin-top: 6px; color: var(--gl-text-2); }
+.toast > span { min-width: 0; padding: 6px 0; overflow-wrap: anywhere; }
+.toast > button { position: sticky; top: 0; display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 6px; color: var(--gl-text-3); }
 .toast > button:hover { background: var(--gl-control); color: var(--gl-text); }
 .toast.notice-success > svg { color: var(--gl-pvw); }
 .toast.notice-warning > svg { color: var(--gl-warn); }

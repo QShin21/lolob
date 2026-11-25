@@ -1,0 +1,181 @@
+name: GuanLan 2.1.0 Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-2.1.0
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'QShin21/lolob' && github.ref == 'refs/heads/new'
+    runs-on: windows-2022
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          architecture: x64
+          cache: npm
+      - name: Verify version, platform and exact new revision
+        run: |
+          node -e "const a = require('node:assert/strict'); a.equal(require('./package.json').version, '2.1.0'); a.equal(process.platform, 'win32'); a.equal(process.arch, 'x64')"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git fetch origin refs/heads/new:refs/remotes/origin/new
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ((git rev-parse origin/new) -ne (git rev-parse HEAD)) { throw 'new advanced concurrently; build its latest revision' }
+      - run: npm ci
+      - name: Prepare pinned VB-CABLE archive for tests
+        run: node scripts/ensure-vbcable.cjs
+      - run: npm run check
+      - run: npm run verify:builtin-assets
+      - name: Verify bundled champion crops and hashes
+        run: npm run prepare:champion-art -- --verify
+      - name: Windows tests including the OCR worker
+        timeout-minutes: 15
+        run: |
+          New-Item -ItemType Directory -Force verification-output/release-2.1.0 | Out-Null
+          $tests = @(Get-ChildItem server -File -Filter '*.test.ts' | ForEach-Object FullName)
+          node --import tsx --test --test-concurrency=1 @tests 2>&1 | Tee-Object verification-output/release-2.1.0/tests.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify the Windows update handoff and relaunch
+        run: npm run verify:update
+      - name: Verify report archive restoration
+        run: node scripts/verify-report-fixture-093.mjs
+      - run: npm run build
+      - run: npm run verify:builtin-contracts
+      - name: Prepare isolated Playwright and pinned Chromium
+        run: |
+          $playwright = Join-Path $env:RUNNER_TEMP 'rc-playwright'
+          npm install --prefix "$playwright" --no-save --package-lock=false playwright@1.56.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $module = Join-Path $playwright 'node_modules/playwright'
+          node (Join-Path $module 'cli.js') install chromium
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $browser = node -e "console.log(require(process.argv[1]).chromium.executablePath())" "$module"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (!(Test-Path -LiteralPath $browser)) { throw 'Playwright Chromium is missing' }
+          "RIFTCAST_PLAYWRIGHT_MODULE=$(Join-Path $module 'index.mjs')" >> $env:GITHUB_ENV
+          "RIFTCAST_BROWSER_EXECUTABLE=$browser" >> $env:GITHUB_ENV
+      - name: Verify operator UI, keyboard workflows and responsive layouts
+        run: ./scripts/ci-retry.ps1 npm run verify:operator-ui
+      - name: Verify theme persistence and programme colour isolation
+        run: ./scripts/ci-retry.ps1 npm run verify:ui-theme
+      - name: Verify production workflow and staged TAKE
+        run: ./scripts/ci-retry.ps1 npm run verify:production
+      - name: Verify frontend permissions and state safety
+        run: ./scripts/ci-retry.ps1 npm run verify:frontend-safety
+      - name: Verify broadcast controls
+        run: ./scripts/ci-retry.ps1 npm run verify:broadcast-controls
+      - name: Verify feature parity and programme isolation
+        run: ./scripts/ci-retry.ps1 node scripts/verify-feature-parity.mjs
+      - name: Verify cinematic editor with Replay API test service
+        run: ./scripts/ci-retry.ps1 node scripts/verify-cinematics.mjs
+      - name: Verify analysis graphics and missing telemetry
+        run: ./scripts/ci-retry.ps1 node scripts/verify-broadcast-analysis.mjs
+      - name: Verify the visual style editor and derived packs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-style-editor.mjs
+      - name: Verify season statistics and Twitch audience graphics
+        run: ./scripts/ci-retry.ps1 node scripts/verify-season-twitch-parity.mjs
+      - name: Verify global shortcut controls and role changes
+        run: ./scripts/ci-retry.ps1 node scripts/verify-global-shortcuts.mjs
+      - name: Verify postgame damage composition
+        run: ./scripts/ci-retry.ps1 node scripts/verify-postgame-composition.mjs
+      - name: Verify full-height draft and champion tabs
+        run: ./scripts/ci-retry.ps1 node scripts/verify-program-layouts.mjs
+      - name: Verify archive graphics and series history
+        run: ./scripts/ci-retry.ps1 node scripts/verify-archive-graphics.mjs
+      - name: Verify packet analysis and historical fights
+        run: ./scripts/ci-retry.ps1 node scripts/verify-combat-review.mjs
+      - name: Verify transition controls and Power Play
+        run: ./scripts/ci-retry.ps1 node scripts/verify-transitions.mjs
+      - name: Verify expanded dynamic text targets
+        run: ./scripts/ci-retry.ps1 node scripts/verify-dynamic-text.mjs
+      - name: Verify roster identity and automatic side controls
+        run: ./scripts/ci-retry.ps1 node scripts/verify-player-identity.mjs
+      - name: Verify VDO feeds, demo graphics and resource maintenance
+        run: ./scripts/ci-retry.ps1 node scripts/verify-vdo-demo-resources.mjs
+      - name: Verify update controls, local reporting and first-use guide
+        run: ./scripts/ci-retry.ps1 node scripts/verify-app-operations.mjs
+      - name: Verify player skin graphics and unknown fields
+        run: ./scripts/ci-retry.ps1 node scripts/verify-skin-display.mjs
+      - name: Verify BP statistics sources, samples and programme isolation
+        run: ./scripts/ci-retry.ps1 node scripts/verify-draft-statistics.mjs
+      - name: Verify live-only startup, migration and polling controls
+        run: ./scripts/ci-retry.ps1 node scripts/verify-live-only.mjs
+      - name: Verify tournament creation, progression, archives and restart
+        run: ./scripts/ci-retry.ps1 node scripts/verify-tournaments-130.mjs
+      - name: Verify gold ranking and stale readings
+        run: ./scripts/ci-retry.ps1 node scripts/verify-gold-ranking-123.mjs
+      - name: Verify player rotation controls
+        run: ./scripts/ci-retry.ps1 node scripts/verify-player-rotation-115.mjs
+      - name: Verify postgame crops, damage shares and scene entries
+        run: ./scripts/ci-retry.ps1 node scripts/verify-postgame-116.mjs
+      - name: Verify full rune lineups across all built-in styles
+        run: ./scripts/ci-retry.ps1 node scripts/verify-lineup-runes-117.mjs
+      - name: Verify replay director controls and event navigation
+        run: ./scripts/ci-retry.ps1 node scripts/verify-replay-director-120.mjs
+      - name: Verify report layouts
+        run: ./scripts/ci-retry.ps1 node scripts/verify-report-093.mjs
+      - name: Verify style pack import, preview, scenes and restart
+        run: ./scripts/ci-retry.ps1 npm run verify:style-packs
+      - name: Verify style pack deletion, permissions and restart
+        run: ./scripts/ci-retry.ps1 node scripts/verify-style-deletion.mjs
+      - name: Verify six built-ins, default migration and 78 scene renders
+        run: ./scripts/ci-retry.ps1 npm run verify:builtin-styles
+      - name: Verify draft and scoreboard layout across built-in styles
+        run: ./scripts/ci-retry.ps1 node scripts/verify-draft-layout-104.mjs
+      - name: Verify cooldown HUD, vitals, names and stale data
+        run: ./scripts/ci-retry.ps1 node scripts/verify-telemetry-hud.mjs
+      - name: Verify floating BP, lock reveal and portrait libraries
+        run: ./scripts/ci-retry.ps1 node scripts/verify-draft-focus-111.mjs
+      - name: Verify teamfights, objectives and third report page
+        run: ./scripts/ci-retry.ps1 node scripts/verify-combat-112.mjs
+      - name: Verify paired collaboration with isolated services
+        # Screen-share encoding needs the runner's Microsoft Edge; the pinned Chromium build produced no frames here.
+        env:
+          RIFTCAST_BROWSER_EXECUTABLE: ''
+          RIFTCAST_CHROMIUM_PATH: ''
+        run: ./scripts/ci-retry.ps1 node scripts/verify-collaboration-170.mjs
+      - name: Check verification reports and committed manual
+        run: node scripts/publish-release-210.mjs --preflight
+      - name: Select the runner's Windows x64 MinGW compiler
+        run: |
+          $compiler = 'C:/mingw64/bin/g++.exe'
+          $target = & $compiler -dumpmachine
+          if ($LASTEXITCODE -ne 0 -or $target -ne 'x86_64-w64-mingw32') { throw 'Windows x64 MinGW is required' }
+          "RIFTCAST_CXX=$compiler" >> $env:GITHUB_ENV
+      - name: Build Windows Setup, portable ZIP and release assets
+        run: npm run release:win
+      - name: Verify the installed executable, uninstaller and shortcuts
+        run: ./scripts/install-local-release.ps1 -SkipLaunch
+      - name: Smoke-test the isolated packaged application
+        run: ./scripts/ci-retry.ps1 node scripts/verify-packaged-report-210.mjs
+      - name: Upload and verify the draft, then publish as latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/publish-release-210.mjs
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-2.1.0
+          retention-days: 30
+          path: |
+            verification-output/**/*.json
+            verification-output/**/*.png
+            verification-output/release-2.1.0/tests.txt
+            verification-output/release-2.1.0/packaged-startup.log
+            verification-output/release-2.1.0/release-notes.md
+            release/2.1.0/release-manifest.json
+            release/2.1.0/SHA256SUMS.txt

@@ -12,6 +12,7 @@ import { GraphicControls } from "./GraphicControls";
 import type { GameResult, Side } from "../../shared/types";
 import type { ReplayClip } from "../../shared/production-types";
 import { useEffect, useId, useRef, useState } from "react";
+import { Circle, CircleCheck, X } from "lucide-react";
 import { OutputSignals } from "./OutputSignals";
 import { AudioWorkspace } from "./AudioWorkspace";
 import { GameReplayDirector } from './GameReplayDirector';
@@ -288,12 +289,12 @@ export function ProductionDesk(
             ))}
         </select>
       </div>
-      <div className="production-task-heading"><h2>{current === "audio" ? "节目混音" : tasks.find(t => t.id === current)?.label}</h2><span>{current === "audio" ? "直接作用于节目混音" : current === "subtitle" || current === "graphics" ? "草稿与播出分别操作" : "临场制作"}</span></div>
+      <div className="production-task-heading"><h2>{current === "audio" ? "节目混音" : tasks.find(t => t.id === current)?.label}</h2>{(current === "audio" || current === "subtitle" || current === "graphics") && <span>{current === "audio" ? "直接作用于节目混音" : "草稿与播出分别操作"}</span>}</div>
       {error && (
         <div role="alert" className="production-error">
           {error}
           <button aria-label="关闭制作错误" onClick={() => setError("")}>
-            ×
+            <X size={15} />
           </button>
         </div>
       )}
@@ -402,7 +403,7 @@ function PreparationTask(ctx: TaskContext) {
         {checks.map(([id, label]) => (
           <div key={id}>
             <span className={checkValid(state, id) ? "green-text" : ""}>
-              {checkValid(state, id) ? "✓" : "○"} {label}
+              {checkValid(state, id) ? <CircleCheck size={15} /> : <Circle size={15} />} {label}
             </span>
             <small>
               {checkValid(state, id)

@@ -28,6 +28,10 @@
   --gl-topbar: 52px;
   --gl-deck: 64px;
 
+  /* Media surfaces keep one near-black in both themes. */
+  --gl-media: #050607;
+  --gl-on-media: #eeeff1;
+
   --gl-ease: cubic-bezier(.2, .7, .2, 1);
   --gl-fast: 120ms;
   --gl-med: 180ms;
@@ -57,6 +61,8 @@
   --gl-on-solid: #0e0f11;
   --gl-focus: #ffffff;
   --gl-selected: #2a2c31;
+  --gl-on-canvas: #24262a;
+  --gl-on-canvas-hover: #17181b;
   --gl-scrim: rgb(4 5 6 / .66);
 
   --gl-pgm: #ff6450;
@@ -109,6 +115,8 @@
   --gl-on-solid: #ffffff;
   --gl-focus: #15171a;
   --gl-selected: #e6e8eb;
+  --gl-on-canvas: #ffffff;
+  --gl-on-canvas-hover: #f6f7f8;
   --gl-scrim: rgb(21 23 26 / .42);
 
   --gl-pgm: #c02e18;
