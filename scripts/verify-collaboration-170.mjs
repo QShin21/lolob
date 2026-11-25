@@ -14,11 +14,11 @@ const {chromium}=await import(pathToFileURL(process.env.RIFTCAST_PLAYWRIGHT_MODU
 const out=path.resolve('verification-output',realObs?'collaboration-170-obs':'collaboration-170');await mkdir(out,{recursive:true});
 async function freePort(){const s=createServer();await new Promise(r=>s.listen(0,'127.0.0.1',r));const p=s.address().port;await new Promise(r=>s.close(r));return p;}
 async function until(work,label,timeout=25000){const end=Date.now()+timeout;while(Date.now()<end){if(await work())return;await new Promise(r=>setTimeout(r,150));}throw new Error(label);}
-const processes=[],errors=[],checks=[],sandboxes=[];let browser;
+const processes=[],errors=[],checks=[],sandboxes=[],serviceLogs=[];let browser;
 const get=async(base)=>fetch(base+'/api/collaboration').then(r=>r.json());
 try{
  const ports=[await freePort(),await freePort()],teamPort=await freePort(),bases=ports.map(p=>'http://127.0.0.1:'+p);
- for(let i=0;i<2;i++){const data=await mkdtemp(path.join(tmpdir(),'riftcast-team-'));sandboxes.push(data);const native=realObs&&i===0;if(native)await cp(path.resolve('runtime/obs-studio'),path.join(data,'runtime'),{recursive:true,filter:file=>!/[\\/]config(?:[\\/]|$)/.test(file)&&!file.endsWith('.riftcast-engine.lock')});const child=spawn(process.execPath,['--import','tsx','server/index.ts'],{windowsHide:true,env:{...await isolatedNativeEnvironment(data),RIFTCAST_DATA_DIR:data,PORT:String(ports[i]),RIFTCAST_OBS_RUNTIME_DIR:path.join(data,'runtime'),RIFTCAST_OBS_AUTOSTART:native?'1':'0'},stdio:['ignore','pipe','pipe','ipc']});let log='';child.stdout.on('data',b=>log+=b);child.stderr.on('data',b=>log+=b);processes.push(child);await until(async()=>{if(child.exitCode!==null)throw new Error(log);try{return(await fetch(bases[i]+'/api/health')).ok}catch{return false}},'service starts');}
+ for(let i=0;i<2;i++){const data=await mkdtemp(path.join(tmpdir(),'riftcast-team-'));sandboxes.push(data);const native=realObs&&i===0;if(native)await cp(path.resolve('runtime/obs-studio'),path.join(data,'runtime'),{recursive:true,filter:file=>!/[\\/]config(?:[\\/]|$)/.test(file)&&!file.endsWith('.riftcast-engine.lock')});const child=spawn(process.execPath,['--import','tsx','server/index.ts'],{windowsHide:true,env:{...await isolatedNativeEnvironment(data),RIFTCAST_DATA_DIR:data,PORT:String(ports[i]),RIFTCAST_OBS_RUNTIME_DIR:path.join(data,'runtime'),RIFTCAST_OBS_AUTOSTART:native?'1':'0'},stdio:['ignore','pipe','pipe','ipc']});let log='';child.stdout.on('data',b=>log+=b);child.stderr.on('data',b=>log+=b);child.on('error',()=>{});child.once('exit',(code,signal)=>{log+=`\n[service ${i} exited: code ${code}, signal ${signal}]`;});serviceLogs.push(()=>log);processes.push(child);await until(async()=>{if(child.exitCode!==null)throw new Error(log);try{return(await fetch(bases[i]+'/api/health')).ok}catch{return false}},'service starts');}
  browser=await chromium.launch({ headless:true, ...browserExecutable({ channel: 'msedge' }) });
  const context=await browser.newContext({viewport:{width:1600,height:1100}});
  await context.addInitScript(()=>{
@@ -42,4 +42,9 @@ try{
  await client.getByRole('button',{name:'停止共享',exact:true}).click();await until(async()=>!(await get(bases[0])).sources.find(s=>s.id===collaborator.id)?.sharing,'share stops');checks.push('remote stop removes live media state');
  if(realObs){await until(async()=>(await get(bases[0])).activeSource==='host','real OBS fallback');checks.push('remote stop automatically restores main game source in real OBS');}
  assert.deepEqual(errors,[]);await writeFile(path.join(out,'report.json'),JSON.stringify({status:'passed',checks,errors},null,2));console.log(JSON.stringify({status:'passed',checks,errors},null,2));
-}finally{await obs?.disconnect();await browser?.close();for(const child of processes){child.send?.('riftcast-shutdown');await Promise.race([new Promise(r=>child.once('exit',r)),new Promise(r=>setTimeout(r,12000))]);if(child.exitCode===null)child.kill();}}
+}catch(error){
+ // A service that dies mid-run only shows up as a reset connection; print what it logged before failing.
+ for(const [i,read] of serviceLogs.entries())console.error(`--- service ${i} log (tail) ---\n${read().slice(-6000)}`);
+ if(errors.length)console.error('page errors:',errors.slice(0,5));
+ throw error;
+}finally{await obs?.disconnect().catch(()=>{});await browser?.close().catch(()=>{});for(const child of processes){if(child.exitCode!==null||!child.connected)continue;try{child.send('riftcast-shutdown');}catch{}await Promise.race([new Promise(r=>child.once('exit',r)),new Promise(r=>setTimeout(r,12000))]);if(child.exitCode===null)child.kill();}}
