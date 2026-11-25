@@ -11,11 +11,11 @@
   color: var(--gl-text-3); font-size: 12px; font-weight: 500; line-height: 1.2; white-space: nowrap;
   transition: background var(--gl-fast) var(--gl-ease), color var(--gl-fast) var(--gl-ease);
 }
-.control-rail nav button:hover { color: var(--gl-text); background: var(--gl-panel); }
-.control-rail nav button[aria-current="page"] { color: var(--gl-text); background: var(--gl-control); font-weight: 600; }
+.control-rail nav button:hover { color: var(--gl-text); background: var(--gl-on-canvas-hover); }
+.control-rail nav button[aria-current="page"] { color: var(--gl-text); background: var(--gl-on-canvas); font-weight: 600; }
 .control-rail-foot { display: grid; justify-items: center; gap: 6px; margin-top: auto; }
 .control-theme { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; color: var(--gl-text-3); }
-.control-theme:hover { color: var(--gl-text); background: var(--gl-panel); }
+.control-theme:hover { color: var(--gl-text); background: var(--gl-on-canvas-hover); }
 .control-version { font-family: var(--gl-font-mono); font-size: 12px; font-weight: 500; color: var(--gl-text-3); }
 
 /* ── Body column ────────────────────────────────────────────────────────── */
@@ -29,7 +29,7 @@
   display: flex; align-items: center; gap: 12px; max-width: 46cqw; min-height: 36px; padding: 0 14px; border-radius: 10px; background: var(--gl-panel);
   color: var(--gl-text-2); font-size: var(--gl-fs-sm); white-space: nowrap; transition: background var(--gl-fast) var(--gl-ease);
 }
-.control-match:hover { background: var(--gl-control); }
+.control-match:hover { background: var(--gl-on-canvas-hover); }
 .control-match b { display: flex; align-items: baseline; gap: 10px; font-weight: 600; }
 .control-match b i { font-family: var(--gl-font-cond); font-size: 14px; font-weight: 600; letter-spacing: .04em; }
 .control-match b em { font-size: 16px; font-weight: 600; letter-spacing: .02em; color: var(--gl-text); }

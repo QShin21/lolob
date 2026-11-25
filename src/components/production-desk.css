@@ -1,6 +1,7 @@
 /* Shared task body for the production dock. Each task owns its data and actions; the dock frame is in ui/studio.css. */
 .production-desk .task-content > div > :is(div, section):not(.audio-workspace) { margin-inline: 16px; }
-.production-task { display: grid; gap: 12px; padding-bottom: 16px; font-size: var(--gl-fs-sm); }
+.production-task { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding-bottom: 16px; font-size: var(--gl-fs-sm); }
+.production-task select { min-width: 0; max-width: 100%; }
 .production-task h3 { font-size: var(--gl-fs-md); }
 .production-desk p { color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; }
 .production-desk .muted { color: var(--gl-text-3); }
