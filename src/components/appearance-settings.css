@@ -1,0 +1,69 @@
+/* 工作台外观: two choice cards, each showing a miniature of the studio page in that theme. */
+.appearance-panel { display: grid; justify-items: start; gap: 14px; border-radius: 0; background: none; }
+.appearance-panel > .panel-head { min-height: 0; padding: 0; }
+.appearance-panel > .panel-head p { margin-top: 4px; }
+.appearance-panel > p { max-width: 78ch; line-height: 1.6; }
+
+.theme-options { display: grid; grid-template-columns: repeat(2, minmax(0, 340px)); gap: 12px; width: 100%; }
+.theme-option { position: relative; display: grid; align-content: start; gap: 12px; min-width: 0; padding: 12px; border-radius: var(--gl-r-panel); cursor: pointer; transition: background var(--gl-fast) var(--gl-ease); }
+.theme-option:hover { background: color-mix(in srgb, var(--gl-control) 60%, transparent); }
+.theme-option.selected { background: var(--gl-control); }
+/* The radio covers the card: the whole card is the target, and assistive technology keeps a real radio group. */
+.theme-option > input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.theme-option:has(input:focus-visible) { outline: 2px solid var(--gl-focus); outline-offset: 2px; }
+.theme-option-copy { display: grid; gap: 2px; min-width: 0; padding: 0 2px 2px; }
+.theme-option-copy strong { display: flex; align-items: center; gap: 8px; font-size: var(--gl-fs-md); font-weight: 500; }
+.theme-option-copy strong > svg:first-child { color: var(--gl-text-3); }
+.theme-option-copy strong > svg + svg { margin-left: auto; }
+.theme-option.selected .theme-option-copy strong { font-weight: 600; }
+.theme-option.selected .theme-option-copy strong > svg:first-child { color: var(--gl-text); }
+.theme-option-copy small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.5; }
+.theme-save-status { color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.theme-save-status.warning { color: var(--gl-warn); }
+
+/* ── Miniature ──────────────────────────────────────────────────────────────
+   The picture is content: each preview carries the literal values of its own theme from ui/tokens.css,
+   so both read correctly whichever theme the console is in. Units are container-relative. */
+.theme-preview-dark { --tm-canvas: #0e0f11; --tm-panel: #17181b; --tm-control: #24262a; --tm-well: #0a0b0c; --tm-text: #eeeff1; --tm-text-3: #969aa4; --tm-edge: #363940; --tm-pgm-wash: #2a1512; --tm-pvw-wash: #0f2219; }
+.theme-preview-light { --tm-canvas: #eef0f2; --tm-panel: #ffffff; --tm-control: #eceef0; --tm-well: #e7e9ec; --tm-text: #15171a; --tm-text-3: #60656e; --tm-edge: #d1d4d9; --tm-pgm-wash: #fdece8; --tm-pvw-wash: #e6f5ec; }
+.theme-option-preview { --tm-pgm: #d4301a; --tm-pvw: #12844a; container-type: inline-size; display: grid; grid-template-columns: 8cqi minmax(0, 1fr); aspect-ratio: 16 / 10; border-radius: 8px; background: var(--tm-canvas); outline: 1px solid var(--tm-edge); outline-offset: -1px; overflow: hidden; }
+.theme-option-preview :where(span, i, b, em) { display: block; min-width: 0; min-height: 0; }
+
+.theme-mini-rail { display: grid; align-content: start; justify-items: center; gap: 1.5cqi; padding-top: 2.6cqi; }
+.theme-mini-rail > i { width: 2.5cqi; height: 2.5cqi; margin-bottom: 1.4cqi; border-radius: 50%; background: #e5381f; }
+.theme-mini-rail > b { position: relative; width: 4.6cqi; height: 4.2cqi; border-radius: 1.1cqi; }
+.theme-mini-rail > b::after { content: ""; position: absolute; inset: 0; width: 1.6cqi; height: 1.6cqi; margin: auto; border-radius: .5cqi; background: var(--tm-text-3); opacity: .7; }
+.theme-mini-rail > b:first-of-type { background: var(--tm-control); }
+.theme-mini-rail > b:first-of-type::after { background: var(--tm-text); opacity: 1; }
+
+.theme-mini-body { display: grid; grid-template-rows: 6.4cqi minmax(0, 1fr) 7.4cqi; gap: 1.2cqi; padding: 0 1.4cqi 1.4cqi 0; }
+.theme-mini-top { display: flex; align-items: center; gap: 2cqi; padding: 1.2cqi .6cqi 0; }
+.theme-mini-top > b { width: 15cqi; height: 2.1cqi; border-radius: .5cqi; background: var(--tm-text); }
+.theme-mini-top > i { width: 24cqi; height: 3.8cqi; margin-inline: auto; border-radius: 1.1cqi; background: var(--tm-panel); }
+.theme-mini-top > em { width: 15cqi; height: 1.3cqi; border-radius: .5cqi; background: var(--tm-text-3); opacity: .7; }
+
+.theme-mini-page { display: grid; grid-template-columns: minmax(0, 1fr) 24cqi; gap: 1.2cqi; }
+.theme-mini-vision { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 1.6cqi; }
+.theme-mini-monitors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.6cqi; padding: .5cqi .5cqi 0; }
+.theme-mini-monitors > i { aspect-ratio: 16 / 9; border-radius: .7cqi; background: #050607; outline: max(1.5px, .45cqi) solid var(--tm-pgm); }
+.theme-mini-monitors > i[data-bus="pvw"] { outline-color: var(--tm-pvw); }
+.theme-mini-bank, .theme-mini-dock, .theme-mini-deck { border-radius: 1.1cqi; background: var(--tm-panel); }
+.theme-mini-bank { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 1.3cqi; padding: 1.5cqi; }
+.theme-mini-bank > b, .theme-mini-dock > b { width: 9cqi; height: 1.5cqi; border-radius: .5cqi; background: var(--tm-text); }
+.theme-mini-bank > span { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: .9cqi; }
+.theme-mini-bank > span > i { border-radius: .8cqi; background: var(--tm-control); }
+.theme-mini-bank > span > i[data-bus="pvw"] { background: var(--tm-pvw-wash); box-shadow: inset 0 0 0 max(1px, .3cqi) var(--tm-pvw); }
+.theme-mini-bank > span > i[data-bus="pgm"] { background: var(--tm-pgm-wash); box-shadow: inset 0 0 0 max(1px, .3cqi) var(--tm-pgm); }
+.theme-mini-dock { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1.3cqi; padding: 1.5cqi; }
+.theme-mini-dock > span { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9cqi; }
+.theme-mini-dock > span > i { position: relative; border-radius: .8cqi; background: var(--tm-control); }
+.theme-mini-dock > span > i::after { content: ""; position: absolute; inset: 22% 30% 16%; border-radius: .6cqi; background: var(--tm-well); }
+.theme-mini-dock > em { height: 3.4cqi; border-radius: .8cqi; background: var(--tm-well); }
+.theme-mini-deck { display: flex; align-items: center; gap: 1.6cqi; padding: 0 1.2cqi 0 1.8cqi; }
+.theme-mini-deck > i { width: 5.4cqi; height: 2.6cqi; border-radius: .6cqi; background: var(--tm-pgm); }
+.theme-mini-deck > b { width: 14cqi; height: 1.5cqi; border-radius: .5cqi; background: var(--tm-text); }
+.theme-mini-deck > em { width: 16cqi; height: 4.8cqi; margin-left: auto; border-radius: 1.1cqi; background: var(--tm-pgm); }
+
+@container task (max-width: 560px) {
+  .theme-options { grid-template-columns: minmax(0, 340px); }
+}

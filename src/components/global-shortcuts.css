@@ -1,1 +1,28 @@
-.global-shortcuts{padding:18px;border:1px solid var(--ui-border);border-radius:12px;background:var(--ui-surface);color:var(--ui-text);margin:16px 0}.global-shortcuts-heading{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.global-shortcuts-heading h3{margin:0 0 8px;font-size:17px}.global-shortcuts p{line-height:1.6;margin:8px 0}.global-shortcuts-heading p,.global-shortcuts-help{font-size:13px;color:var(--ui-muted)}.global-shortcuts-heading>span{white-space:nowrap;border:1px solid var(--ui-border);border-radius:20px;padding:5px 10px;font-size:12px}.global-shortcuts-active{color:var(--ui-info)}.global-shortcuts-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}.global-shortcuts-grid label{display:flex;flex-direction:column;gap:7px;font-size:13px}.global-shortcuts-grid input{width:100%;min-width:0;box-sizing:border-box}.global-shortcuts-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.global-shortcuts-actions span{font-size:13px}.global-shortcuts-notice{padding:10px 12px;background:var(--ui-warning-bg);border:1px solid color-mix(in srgb, var(--ui-warning) 35%, transparent);border-radius:8px;font-size:13px}@media(max-width:900px){.global-shortcuts-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.global-shortcuts-grid{grid-template-columns:1fr}.global-shortcuts-heading{flex-wrap:wrap}}
+/* Background global shortcuts: state, six bindings, one save. Scoped to its own root so the
+   section also stands alone outside the settings pane. */
+.global-shortcuts { display: grid; gap: 12px; min-width: 0; color: var(--gl-text); font-family: var(--gl-font); font-size: var(--gl-fs-sm); line-height: 1.5; }
+.global-shortcuts p { margin: 0; }
+.global-shortcuts-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.global-shortcuts-heading > div { display: grid; gap: 4px; min-width: 0; }
+.global-shortcuts-heading h3 { margin: 0; font-size: var(--gl-fs-lg); font-weight: 600; line-height: 1.3; }
+.global-shortcuts-heading p { max-width: 78ch; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; }
+/* Registered with the system: ready. Closed: neutral. */
+.global-shortcuts-heading > span { display: inline-flex; align-items: center; flex: none; min-height: 20px; margin-top: 1px; padding: 0 7px; border-radius: var(--gl-r-chip); background: var(--gl-control); color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; white-space: nowrap; }
+.global-shortcuts-heading > span.global-shortcuts-active { background: var(--gl-pvw-wash); color: var(--gl-pvw); }
+.global-shortcuts-notice { padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-warn-wash); color: var(--gl-warn); font-size: var(--gl-fs-sm); line-height: 1.55; overflow-wrap: anywhere; }
+.global-shortcuts-notice[role="alert"] { background: var(--gl-error-wash); color: var(--gl-error); }
+.global-shortcuts-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 16px; max-width: 880px; }
+.global-shortcuts-grid label { display: grid; gap: 6px; min-width: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; }
+.global-shortcuts-grid input { width: 100%; min-width: 0; min-height: var(--gl-h-control); padding: 6px 10px; border: 1px solid var(--gl-field-border); border-radius: var(--gl-r-control); background: var(--gl-field, transparent); color: var(--gl-text); font-family: var(--gl-font-mono); font-size: var(--gl-fs-sm); font-weight: 500; box-sizing: border-box; }
+.global-shortcuts-grid input:disabled { border-color: var(--gl-line-strong); background: var(--gl-panel-2); color: var(--gl-text-off); cursor: not-allowed; }
+.global-shortcuts-help { max-width: 88ch; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.6; }
+.global-shortcuts-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.global-shortcuts-actions > span { margin-left: 4px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+
+@container task (max-width: 740px) {
+  .global-shortcuts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .global-shortcuts-grid { grid-template-columns: minmax(0, 1fr); }
+  .global-shortcuts-heading { flex-wrap: wrap; }
+}

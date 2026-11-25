@@ -44,7 +44,7 @@ export function GlobalShortcutControls({ state, seat, connected, send, notify }:
       }
     }}/></label>)}</div>
     <p className="global-shortcuts-help">支持 Control+Shift+字母、Alt+Shift+字母及 Control+Enter。可直接在输入框中按组合键。当前窗口编辑文字或打开对话框时暂停执行。</p>
-    <div className="global-shortcuts-actions"><button disabled={!owner || !draft || busy} onClick={save}>保存六项绑定</button><button disabled={!desktop || busy || (!status.enabled && (!owner || !!draft))} onClick={() => void run(async () => {
+    <div className="global-shortcuts-actions"><button className="button primary" disabled={!owner || !draft || busy} onClick={save}>保存六项绑定</button><button className="button" disabled={!desktop || busy || (!status.enabled && (!owner || !!draft))} onClick={() => void run(async () => {
       if (!desktop) return;
       const result = status.enabled ? await desktop.globalShortcuts({ action: 'disable' }) : await desktop.globalShortcuts({ action: 'enable', seatToken: sessionStorage.getItem('riftcast-seat-token') ?? '', bindings: casterBindings(production) });
       setStatus(result);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, Camera, Check, Monitor, Radio, Volume2 } from 'lucide-react';
+import { ArrowRight, Camera, Check, Radio, Volume2 } from 'lucide-react';
 import type { ObsEngineStatus } from './EmbeddedObs';
 import type { OutputAction, OutputDestination } from '../../shared/obs-output';
 import { HoldButton } from './ProductionDesk';
@@ -89,49 +89,35 @@ export function OutputPatchbay(p: Props) {
   const canStart = canOutput && !startReason && !selectedActive;
   const setupBlocked = !local || !!p.controlReason || busy || activeOutput || status?.mode !== 'embedded';
   const sample = (value: number | undefined) => value === undefined || !Number.isFinite(value) ? '未提供' : value.toLocaleString('zh-CN');
+  // Presentation only: which legs of the viewed path carry the live programme right now.
+  const videoLive = companion ? windowMode ? programWindow.open && !programWindow.minimized : connected && !!status?.virtualCamActive : connected && !!status?.streamActive;
+  const audioLive = connected && (companion ? !!audio?.active : !!status?.streamActive);
+  const anyLive = connected && (!!status?.streamActive || !!status?.recordActive || companionActive);
 
-  return <div className="output-patchbay">
-    <section className="patchbay-running" aria-label="实际运行状态与独立停止">
+  return <div className="output-patchbay" data-route={route}>
+    <section className="patchbay-running" aria-label="实际运行状态与独立停止" data-live={anyLive}>
       <div className="patchbay-running-summary"><div className="patchbay-running-heading"><h3>当前实际运行</h3><span>{connected ? '来自 OBS 与节目音频桥' : '状态未确认，请刷新连接'}</span></div>
       <OutputSignals status={connected ? status : null} /></div>
       <div className="patchbay-stop-actions">
         {!!status?.streamActive && <HoldButton disabled={!canOutput} onExecute={() => p.output('stop-stream')}>按住停止 RTMP</HoldButton>}
         {companionActive && <HoldButton disabled={!canOutput} onExecute={() => p.output(status?.virtualCamActive ? 'stop-virtual-camera' : 'stop-companion-audio')}>{audio?.managing && !audio.active ? '按住重试停止并恢复音频' : '按住停止伴侣送出'}</HoldButton>}
-        <button className="button" disabled={!canOutput || !status?.recordActive && (!p.sourcesLoaded || p.dirty)} onClick={() => p.output(status?.recordActive ? 'stop-record' : 'start-record')}>
+        <button className={'button' + (status?.recordActive ? ' danger' : '')} disabled={!canOutput || !status?.recordActive && (!p.sourcesLoaded || p.dirty)} onClick={() => p.output(status?.recordActive ? 'stop-record' : 'start-record')}>
           {status?.recordActive ? '停止本机录制' : '开始本机录制'}
         </button>
-        <span>{companionActive ? '收尾时先在伴侣结束直播，再停止此处音画。' : '录制、RTMP 和伴侣音画分别控制。'}</span>
       </div>
+      <span className="patchbay-running-note">{companionActive ? '收尾时先在伴侣结束直播，再停止此处音画。' : '录制、RTMP 和伴侣音画分别控制。'}</span>
       {p.receipt && <p className="patchbay-receipt" role="status"><Check size={15} /><span><b>最近操作回执</b>{p.receipt}</span></p>}
       {audio?.managing && !audio.active && <p className="patchbay-warning" role="alert">音频桥未活动，但路由仍由观澜托管。请重试停止并恢复；恢复失败的记录会保留。</p>}
     </section>
 
-    {companion && <section className="patchbay-receiver-check" aria-label="伴侣视频接入方式">
-      <h3>视频接入方式</h3>
-      <div className="patchbay-buttons">
-        <button className="button" aria-pressed={windowMode} disabled={companionActive} onClick={() => setVideo('window')}>窗口采集（推荐）</button>
-        <button className="button" aria-pressed={!windowMode} disabled={companionActive} onClick={() => setVideo('camera')}>虚拟摄像头</button>
-      </div>
-      {windowMode && <>
-        <p>在直播伴侣添加「窗口」素材，选择「RiftCast 节目输出」。窗口连续显示正式节目，预监内容经 TAKE 后才会进入。保持窗口打开且不要最小化；建议放在第二块屏幕，采集客户区并关闭鼠标显示。</p>
-        <div className="patchbay-buttons">
-          <button className="button primary" disabled={!window.riftcastDesktop || !canOutput || windowBusy || status?.mode !== 'embedded'} onClick={() => void controlWindow('open')}>{windowBusy ? '处理中…' : programWindow.open ? '显示 / 恢复节目窗口' : '打开节目输出窗口'}</button>
-          <button className="button" disabled={!programWindow.open || windowBusy || !canOutput} onClick={() => void controlWindow('close')}>关闭节目窗口</button>
-          <span role="status">{programWindow.open ? programWindow.minimized ? '窗口已最小化，请恢复' : '节目窗口已打开' : '节目窗口未打开'}</span>
-        </div>
-        {!window.riftcastDesktop && <p>请使用观澜桌面版打开节目窗口。</p>}
-        {windowError && <p role="alert">{windowError}</p>}
-      </>}
-    </section>}
-
     <div className="patchbay-path-choice">
       <div className="patchbay-path-tabs" role="group" aria-label="查看输出路径">
-        <button aria-pressed={!companion} onClick={() => setRoute('rtmp')}><Radio size={17} /><span>RTMP 推流</span></button>
-        <button aria-pressed={companion} onClick={() => setRoute('douyin')}><Camera size={17} /><span>抖音直播伴侣</span></button>
+        <button aria-pressed={!companion} onClick={() => setRoute('rtmp')}><Radio size={16} /><span>RTMP 推流</span></button>
+        <button aria-pressed={companion} onClick={() => setRoute('douyin')}><Camera size={16} /><span>抖音直播伴侣</span></button>
       </div>
       <div className="patchbay-destination">
         <span>引擎已配置<strong>{status ? p.destination === 'douyin' ? '抖音直播伴侣' : 'RTMP' : '待查询'}</strong></span>
-        {!configured && <button className="button small" disabled={selectionLocked || companion && status?.mode !== 'embedded'} onClick={() => p.selectDestination(route)}>
+        {!configured && <button className="button small primary" disabled={selectionLocked || companion && status?.mode !== 'embedded'} onClick={() => p.selectDestination(route)}>
           {p.pending === 'output-destination' ? '正在应用…' : '设为下一次输出'}
         </button>}
       </div>
@@ -140,53 +126,54 @@ export function OutputPatchbay(p: Props) {
       </p>}
     </div>
 
+    {companion && <section className="patchbay-receiver-check patchbay-video-access" aria-label="伴侣视频接入方式">
+      <div className="patchbay-video-mode">
+        <h3>视频接入方式</h3>
+        <div className="patchbay-buttons">
+          <button className="button" aria-pressed={windowMode} disabled={companionActive} onClick={() => setVideo('window')}>窗口采集（推荐）</button>
+          <button className="button" aria-pressed={!windowMode} disabled={companionActive} onClick={() => setVideo('camera')}>虚拟摄像头</button>
+        </div>
+      </div>
+      {windowMode && <>
+        <p>在直播伴侣添加「窗口」素材，选择「RiftCast 节目输出」。窗口连续显示正式节目，预监内容经 TAKE 后才会进入。保持窗口打开且不要最小化；建议放在第二块屏幕，采集客户区并关闭鼠标显示。</p>
+        <div className="patchbay-buttons">
+          <button className={'button' + (programWindow.open ? '' : ' primary')} disabled={!window.riftcastDesktop || !canOutput || windowBusy || status?.mode !== 'embedded'} onClick={() => void controlWindow('open')}>{windowBusy ? '处理中…' : programWindow.open ? '显示 / 恢复节目窗口' : '打开节目输出窗口'}</button>
+          <button className="button" disabled={!programWindow.open || windowBusy || !canOutput} onClick={() => void controlWindow('close')}>关闭节目窗口</button>
+          <span role="status" data-open={programWindow.open && !programWindow.minimized}>{programWindow.open ? programWindow.minimized ? '窗口已最小化，请恢复' : '节目窗口已打开' : '节目窗口未打开'}</span>
+        </div>
+        {!window.riftcastDesktop && <p>请使用观澜桌面版打开节目窗口。</p>}
+        {windowError && <p role="alert">{windowError}</p>}
+      </>}
+    </section>}
+
     <section className="patchbay-route-map" aria-label={companion ? 'Program 到直播伴侣的音画路径' : 'Program 到 RTMP 的音画路径'}>
       <div className="patchbay-program-source">
-        <Monitor size={24} />
-        <strong>PGM</strong>
+        <strong className="bus-tag pgm">PGM</strong>
         <span>正式节目</span>
         <small title={status?.sceneName}>{connected ? status?.sceneName || '场景名称未提供' : '等待引擎连接'}</small>
-        {p.onOpenStudio && <button onClick={p.onOpenStudio}>核对节目画面</button>}
+        {p.onOpenStudio && <button className="text-button" onClick={p.onOpenStudio}>核对节目画面</button>}
       </div>
       <div className="patchbay-route-lines">
         <div className="patchbay-route-labels" aria-hidden="true"><span>Program 信号</span><span>送出设备</span><span>接收端</span></div>
-        <div className="patchbay-route-line">
-          <div className="patchbay-route-origin"><Camera size={17} /><strong>视频</strong><small>当前正式节目</small></div>
-          <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
-          <div className="patchbay-route-node"><strong>{companion ? windowMode ? '观澜节目窗口' : 'OBS Virtual Camera' : 'OBS 视频编码'}</strong><small>{companion ? windowMode ? programWindow.open ? '独立节目窗口已打开' : '窗口未打开' : !connected || !cameraKnown ? '运行状态待确认' : status?.virtualCamActive ? '视频正在送出' : '摄像头已停止' : '随 RTMP 推流启动'}</small></div>
-          <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
-          <div className="patchbay-route-node"><strong>{companion ? windowMode ? '伴侣窗口素材' : '伴侣摄像头' : 'RTMP 接收地址'}</strong><small>{companion ? windowMode ? '选择 RiftCast 节目输出' : '手动选择 OBS Virtual Camera' : '平台接收情况待人工核对'}</small></div>
+        <div className="patchbay-route-line" data-live={videoLive}>
+          <div className="patchbay-route-origin"><Camera size={16} /><strong>视频</strong><small>当前正式节目</small></div>
+          <span className="patchbay-route-link" aria-hidden="true"><ArrowRight className="patchbay-route-arrow" size={16} /></span>
+          <div className="patchbay-route-node" data-role="device"><strong>{companion ? windowMode ? '观澜节目窗口' : 'OBS Virtual Camera' : 'OBS 视频编码'}</strong><small>{companion ? windowMode ? programWindow.open ? '独立节目窗口已打开' : '窗口未打开' : !connected || !cameraKnown ? '运行状态待确认' : status?.virtualCamActive ? '视频正在送出' : '摄像头已停止' : '随 RTMP 推流启动'}</small></div>
+          <span className="patchbay-route-link" aria-hidden="true"><ArrowRight className="patchbay-route-arrow" size={16} /></span>
+          <div className="patchbay-route-node" data-role="receiver"><strong>{companion ? windowMode ? '伴侣窗口素材' : '伴侣摄像头' : 'RTMP 接收地址'}</strong><small>{companion ? windowMode ? '选择 RiftCast 节目输出' : '手动选择 OBS Virtual Camera' : '平台接收情况待人工核对'}</small></div>
         </div>
-        <div className="patchbay-route-line">
-          <div className="patchbay-route-origin"><Volume2 size={17} /><strong>音轨 1</strong><small>最终 Program 混音</small></div>
-          <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
-          <div className="patchbay-route-node"><strong>{companion ? 'CABLE Input' : 'OBS 节目音频编码'}</strong><small>{companion ? '48 kHz / 双声道' : '与正式节目画面一同发送'}</small>{companion && <span title={audio?.render?.name}>{audio?.render?.name || '送出端点尚未识别'}</span>}</div>
-          <ArrowRight className="patchbay-route-arrow" size={17} aria-hidden="true" />
-          <div className="patchbay-route-node"><strong>{companion ? 'CABLE Output' : 'RTMP 平台音频'}</strong><small>{companion ? '在伴侣麦克风中选择' : '在平台预览中试听'}</small>{companion && <span title={audio?.capture?.name}>{audio?.capture?.name || '接收端点尚未识别'}</span>}</div>
+        <div className="patchbay-route-line" data-live={audioLive}>
+          <div className="patchbay-route-origin"><Volume2 size={16} /><strong>音轨 1</strong><small>最终 Program 混音</small></div>
+          <span className="patchbay-route-link" aria-hidden="true"><ArrowRight className="patchbay-route-arrow" size={16} /></span>
+          <div className="patchbay-route-node" data-role="device"><strong>{companion ? 'CABLE Input' : 'OBS 节目音频编码'}</strong><small>{companion ? '48 kHz / 双声道' : '与正式节目画面一同发送'}</small>{companion && <span title={audio?.render?.name}>{audio?.render?.name || '送出端点尚未识别'}</span>}</div>
+          <span className="patchbay-route-link" aria-hidden="true"><ArrowRight className="patchbay-route-arrow" size={16} /></span>
+          <div className="patchbay-route-node" data-role="receiver"><strong>{companion ? 'CABLE Output' : 'RTMP 平台音频'}</strong><small>{companion ? '在伴侣麦克风中选择' : '在平台预览中试听'}</small>{companion && <span title={audio?.capture?.name}>{audio?.capture?.name || '接收端点尚未识别'}</span>}</div>
         </div>
       </div>
     </section>
-
-    <section className="patchbay-start-strip" aria-label="启动选定输出">
-      <div><strong>{companion ? windowMode ? '启动伴侣节目混音' : '启动伴侣音画' : '开始 RTMP 推流'}</strong><p>{selectedActive ? companion ? '已有伴侣链路活动；停止与恢复入口在上方运行栏。' : 'RTMP 正在运行。' : startReason || '启动会将当前正式节目的画面与声音送出。'}</p></div>
-      <button className="button" onClick={() => p.onSection?.('audio')} disabled={!p.onSection}>核对混音与音乐</button>
-      <button className="button primary" disabled={!canStart} onClick={() => p.output(companion ? windowMode ? 'start-companion-audio' : 'start-virtual-camera' : 'start-stream')}>
-        <PlayMark />{busy && (p.pending === 'start-virtual-camera' || p.pending === 'start-stream') ? '等待引擎回执…' : companion ? windowMode ? '启动伴侣节目混音' : '启动伴侣音画' : '开始 RTMP 推流'}
-      </button>
-    </section>
-
-    <div className="patchbay-check-and-meter">
-      <div className="patchbay-receiver-check">
-        <h3>在接收端核对</h3>
-        <p>{companion ? (windowMode ? '窗口素材选择 RiftCast 节目输出；' : '伴侣摄像头选择 OBS Virtual Camera；') + '麦克风选择 CABLE Output。使用基础双声道端点，避免选择额外的 16ch 端点。' : '打开直播平台预览，核对当前比赛画面、游戏声、解说和音乐，再检查直播间。'}</p>
-        {companion && <p>麦克风音量设为 100%；按接入策略关闭重复系统声、原麦克风及降噪 / 自动增益，试听后由操作者在伴侣开播。</p>}
-        <span className="patchbay-manual-status">平台开播 / 接收状态：待人工核对</span>
-      </div>
-      <ProgramAudioStatus audio={connected ? audio : undefined} />
-    </div>
 
     {companion ? <details className="patchbay-device-preparation" open={!companionReady || !!audio?.error || !!camera?.error || !!camera?.driver.error}>
-      <summary><strong>设备准备与恢复</strong><span>{companionReady ? '设备已就绪，可按需检查' : '查看未就绪原因与准备入口'}</span></summary>
+      <summary><strong>设备准备与恢复</strong><span data-ready={companionReady}>{companionReady ? '设备已就绪，可按需检查' : '查看未就绪原因与准备入口'}</span></summary>
       <div className="patchbay-device-grid">
         {!windowMode && <section><h4>OBS Virtual Camera</h4><dl>
           <Fact label="当前引擎支持" value={camera?.supported} />
@@ -218,14 +205,32 @@ export function OutputPatchbay(p: Props) {
         <small>VB-CABLE：<a href="https://vb-audio.com/Cable/" target="_blank" rel="noreferrer">VB-Audio 官方来源</a> / <a href="https://vb-audio.com/Services/licensing.htm" target="_blank" rel="noreferrer">许可说明</a>。原游戏输出与真实麦克风须保持正确，避免形成反馈回路。</small>
       </div>
     </details> : <section className="patchbay-credentials" aria-label="本次 RTMP 推流配置">
-      <div className="patchbay-credentials-heading"><h3>本次推流凭据</h3><span>{p.destinationApplied && configured ? '引擎已确认应用' : '等待应用本次凭据'}</span></div>
+      <div className="patchbay-credentials-heading"><h3>本次推流凭据</h3><span data-applied={p.destinationApplied && configured}>{p.destinationApplied && configured ? '引擎已确认应用' : '等待应用本次凭据'}</span></div>
       <div className="patchbay-credential-fields">
-        <label>RTMP 服务器<input aria-label="RTMP 服务器" type="url" maxLength={2048} value={p.server} disabled={!canConfigure || !configured} onChange={e => p.setServer(e.target.value)} placeholder="rtmp://主机/应用" autoComplete="off" spellCheck={false} /></label>
-        <label>推流码<input aria-label="推流码" type="password" autoComplete="new-password" maxLength={1024} value={p.streamKey} disabled={!canConfigure || !configured} onChange={e => p.setStreamKey(e.target.value)} placeholder="从直播应用复制本次推流码" /></label>
+        <label className="field"><span>RTMP 服务器</span><input aria-label="RTMP 服务器" type="url" maxLength={2048} value={p.server} disabled={!canConfigure || !configured} onChange={e => p.setServer(e.target.value)} placeholder="rtmp://主机/应用" autoComplete="off" spellCheck={false} /></label>
+        <label className="field"><span>推流码</span><input aria-label="推流码" type="password" autoComplete="new-password" maxLength={1024} value={p.streamKey} disabled={!canConfigure || !configured} onChange={e => p.setStreamKey(e.target.value)} placeholder="从直播应用复制本次推流码" /></label>
         <button className="button" disabled={!canConfigure || !configured || !p.server.trim() || !p.streamKey.trim()} onClick={p.applyDestination}>{p.pending === 'destination' ? '正在应用…' : '应用推流配置'}</button>
       </div>
       <p>凭据仅用于本次引擎配置；应用成功后清空推流码，不保存到浏览器。活动输出或录制期间不能更改。</p>
     </section>}
+
+    <section className="patchbay-start-strip" aria-label="启动选定输出" data-state={selectedActive ? 'live' : startReason ? 'blocked' : 'ready'}>
+      <div><strong>{companion ? windowMode ? '启动伴侣节目混音' : '启动伴侣音画' : '开始 RTMP 推流'}</strong><p>{selectedActive ? companion ? '已有伴侣链路活动；停止与恢复入口在上方运行栏。' : 'RTMP 正在运行。' : startReason || '启动会将当前正式节目的画面与声音送出。'}</p></div>
+      <button className="button" onClick={() => p.onSection?.('audio')} disabled={!p.onSection}>核对混音与音乐</button>
+      <button className="button primary" disabled={!canStart} onClick={() => p.output(companion ? windowMode ? 'start-companion-audio' : 'start-virtual-camera' : 'start-stream')}>
+        <PlayMark />{busy && (p.pending === 'start-virtual-camera' || p.pending === 'start-stream') ? '等待引擎回执…' : companion ? windowMode ? '启动伴侣节目混音' : '启动伴侣音画' : '开始 RTMP 推流'}
+      </button>
+    </section>
+
+    <div className="patchbay-check-and-meter">
+      <div className="patchbay-receiver-check">
+        <h3>在接收端核对</h3>
+        <p>{companion ? (windowMode ? '窗口素材选择 RiftCast 节目输出；' : '伴侣摄像头选择 OBS Virtual Camera；') + '麦克风选择 CABLE Output。使用基础双声道端点，避免选择额外的 16ch 端点。' : '打开直播平台预览，核对当前比赛画面、游戏声、解说和音乐，再检查直播间。'}</p>
+        {companion && <p>麦克风音量设为 100%；按接入策略关闭重复系统声、原麦克风及降噪 / 自动增益，试听后由操作者在伴侣开播。</p>}
+        <span className="patchbay-manual-status">平台开播 / 接收状态：待人工核对</span>
+      </div>
+      <ProgramAudioStatus audio={connected ? audio : undefined} />
+    </div>
 
     <details className="patchbay-diagnostics">
       <summary>音频桥采样与端点诊断</summary>
