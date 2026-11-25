@@ -31,6 +31,8 @@
 | `--gl-solid` / `--gl-on-solid` | `#eeeff1` / `#0e0f11` | `#15171a` / `#ffffff` | 主按钮实底与其文字 |
 | `--gl-focus` | `#ffffff` | `#15171a` | 焦点环 |
 | `--gl-selected` | `#2a2c31` | `#e6e8eb` | 选中行 |
+| `--gl-on-canvas` / `-hover` | `#24262a` / `#17181b` | `#ffffff` / `#f6f7f8` | 直接落在画布上的选中项与悬停（导航栏、顶栏） |
+| `--gl-media` / `--gl-on-media` | `#050607` / `#eeeff1` | 同左 | 视频、截图等媒体区域及其上的标注，两套主题相同 |
 | `--gl-pgm` / `-solid` / `-wash` / `-line` | `#ff6450` / `#d4301a` / `#2a1512` / `#7a2a1d` | `#c02e18` / `#d4301a` / `#fdece8` / `#f0b6aa` | PGM：文字 / 实底 / 浅底 / 线 |
 | `--gl-pvw` / `-solid` / `-wash` / `-line` | `#3ecf8a` / `#12844a` / `#0f2219` / `#1f6442` | `#0d7239` / `#12844a` / `#e6f5ec` / `#a5d9bb` | PVW 与成功 |
 | `--gl-warn` / `-wash` / `-line` | `#f0b23e` / `#2a2110` / `#6e5522` | `#855400` / `#fbf1dc` / `#e5c98a` | 警示、待处理 |
@@ -41,7 +43,8 @@
 
 规则：
 
-- 控制台样式里的颜色一律引用令牌。媒体区域（监视器、视频预览、截图）在两套主题下都保持固定的近黑底 `#050607`。
+- 控制台样式里的颜色一律引用令牌。媒体区域（监视器、视频预览、截图）在两套主题下都保持固定的近黑底 `--gl-media`。
+- 面板上的控件用 `--gl-control`；直接落在画布上的控件用 `--gl-on-canvas`，浅色主题下才看得清。
 - 实底信号色上的文字用 `--gl-on-signal`（白）。浅底（`-wash`）上的文字用对应的信号文字色。
 - 状态不能只靠颜色：配合文字、图标或位置。
 - PGM 红与红方红同屏时，PGM 用实底 Tally 标签，红方只用文字色或细条。
@@ -111,8 +114,10 @@
 ## 文件结构
 
 ```text
-src/styles.css             全局入口：按顺序引入下列文件
+src/main.tsx               先引入 ui/index.css，再引入应用与各组件样式，最后引入 broadcast-base.css
+src/styles.css             供组件校验页使用的单一入口（broadcast-base + ui/index）
 src/broadcast-base.css     节目画布沿用的元素默认值（冻结，不随界面改动）
+src/ui/index.css           控制台样式系统，按下列顺序引入
 src/ui/tokens.css          令牌（深色、浅色）
 src/ui/base.css            控制台元素默认值：字体、焦点、输入、表格、对话框
 src/ui/components.css      公共组件
@@ -125,7 +130,7 @@ src/pages/*.css            各页面自己的样式，由页面文件引入
 ## 边界
 
 - **节目输出不变。** `.broadcast-container` 及其后代、`/overlay` 各输出页、风格包贴图保持各自的色彩、字体与版式。`src/broadcast-base.css` 冻结了它们依赖的元素默认值；控制台的元素规则都排除了 `.broadcast-container` 内部。界面改动后用全部内置风格 × 全部场景的输出截图与上一版逐像素比对。
-- 控制台元素规则的作用域是 `.app-shell`、`.remote-workbench`、`.loading-screen`，并用 `:where()` 保持零特异性，页面样式用单个类名即可覆盖。
+- 控制台元素规则的作用域是 `.app-shell`、`.remote-workbench`、`.loading-screen`，并用 `:where()` 保持零特异性。样式系统先于组件样式加载，页面样式用单个类名即可覆盖公共组件。
 - 布局尺寸、可点击区域、首屏可见性与键盘流程由 `scripts/verify-operator-ui-150.mjs` 校验；主题切换与节目配色隔离由 `scripts/verify-ui-theme.mjs` 校验。
 
 ## 品牌标志
