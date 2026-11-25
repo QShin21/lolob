@@ -19,6 +19,83 @@ const localDate = (value: string) => {
     : "";
 };
 const roles = ["上单", "打野", "中单", "下路", "辅助"];
+
+/** Task tabs whose trailing count reads as a quiet figure. The accessible name stays "label · count". */
+export function CountTabs<T extends string>({
+  items,
+  value,
+  onChange,
+  label,
+}: {
+  items: readonly { id: T; label: string; count?: number }[];
+  value: T;
+  onChange: (id: T) => void;
+  label: string;
+}) {
+  return (
+    <div className="task-tabs" role="tablist" aria-label={label}>
+      {items.map((item, index) => (
+        <button
+          key={item.id}
+          role="tab"
+          aria-selected={value === item.id}
+          tabIndex={value === item.id ? 0 : -1}
+          onClick={() => onChange(item.id)}
+          onKeyDown={(e) => {
+            const next =
+              e.key === "ArrowRight"
+                ? (index + 1) % items.length
+                : e.key === "ArrowLeft"
+                  ? (index + items.length - 1) % items.length
+                  : e.key === "Home"
+                    ? 0
+                    : e.key === "End"
+                      ? items.length - 1
+                      : -1;
+            if (next >= 0) {
+              e.preventDefault();
+              onChange(items[next].id);
+              (
+                e.currentTarget.parentElement?.children[next] as HTMLElement
+              )?.focus();
+            }
+          }}
+        >
+          {item.label}
+          {item.count !== undefined && (
+            <span className="manage-tab-count">
+              <span className="sr-only"> · </span>
+              {item.count}
+            </span>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export type ScheduleBus = "pgm" | "pvw" | undefined;
+/** The bus that carries a schedule match: on air, or loaded into the prepared data behind preview. */
+export function scheduleBus(
+  state: BroadcastState,
+  onAir: BroadcastState,
+  matchId: string,
+): ScheduleBus {
+  if (onAir.match.seriesId === `${onAir.mode}:schedule:${matchId}`) return "pgm";
+  if (state.match.seriesId === `${state.mode}:schedule:${matchId}`) return "pvw";
+  return undefined;
+}
+export function BusTag({ bus }: { bus: ScheduleBus }) {
+  return bus ? (
+    <span
+      className={`bus-tag ${bus}`}
+      title={bus === "pgm" ? "这场比赛正在节目中" : "这场比赛已载入准备区"}
+    >
+      {bus === "pgm" ? "PGM" : "PVW"}
+    </span>
+  ) : null;
+}
+
 function Footer({
   disabled,
   onSave,
@@ -79,16 +156,16 @@ export function MatchForm({
         className="manage-fields domain-scroll"
         disabled={actions.disabled}
       >
-        <label>
-          赛事 / 比赛名称
+        <label className="field">
+          <span>赛事 / 比赛名称</span>
           <input
             maxLength={150}
             value={value.title}
             onChange={(e) => onChange({ ...value, title: e.target.value })}
           />
         </label>
-        <label>
-          开赛时间
+        <label className="field">
+          <span>开赛时间</span>
           <input
             type="datetime-local"
             value={localDate(value.scheduledAt)}
@@ -103,8 +180,8 @@ export function MatchForm({
           />
         </label>
         {(["blue", "red"] as const).map((side) => (
-          <label key={side}>
-            {side === "blue" ? "蓝色方" : "红色方"}
+          <label className="field" data-side={side} key={side}>
+            <span>{side === "blue" ? "蓝色方" : "红色方"}</span>
             <select
               value={value[`${side}TeamId`]}
               onChange={(e) =>
@@ -120,8 +197,8 @@ export function MatchForm({
             </select>
           </label>
         ))}
-        <label>
-          赛制
+        <label className="field">
+          <span>赛制</span>
           <select
             value={value.format}
             onChange={(e) => onChange({ ...value, format: e.target.value })}
@@ -131,8 +208,8 @@ export function MatchForm({
             ))}
           </select>
         </label>
-        <label>
-          比赛状态
+        <label className="field">
+          <span>比赛状态</span>
           <select
             value={value.status}
             onChange={(e) =>
@@ -145,8 +222,8 @@ export function MatchForm({
           </select>
         </label>
         {(["blue", "red"] as const).map((side) => (
-          <label key={side}>
-            {side === "blue" ? "蓝色方比分" : "红色方比分"}
+          <label className="field" data-side={side} key={side}>
+            <span>{side === "blue" ? "蓝色方比分" : "红色方比分"}</span>
             <input
               type="number"
               min={0}
@@ -192,24 +269,24 @@ export function TeamForm({
       </div>
       <div className="manage-team-form domain-scroll">
         <fieldset className="manage-fields" disabled={actions.disabled}>
-          <label>
-            战队名称
+          <label className="field">
+            <span>战队名称</span>
             <input
               maxLength={80}
               value={value.name}
               onChange={(e) => onChange({ ...value, name: e.target.value })}
             />
           </label>
-          <label>
-            战队缩写
+          <label className="field">
+            <span>战队缩写</span>
             <input
               maxLength={12}
               value={value.tag}
               onChange={(e) => onChange({ ...value, tag: e.target.value })}
             />
           </label>
-          <label>
-            战队标志
+          <label className="field">
+            <span>战队标志</span>
             <select
               value={value.logo || ""}
               onChange={(e) =>
@@ -224,8 +301,8 @@ export function TeamForm({
               ))}
             </select>
           </label>
-          <label>
-            战队颜色
+          <label className="field">
+            <span>战队颜色</span>
             <span className="manage-color">
               <input
                 type="color"
