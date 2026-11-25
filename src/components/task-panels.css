@@ -1,0 +1,80 @@
+/* Shared pieces for the packaging and production task panels (settings panes, studio dock, remote seats).
+   A task panel sits on a --gl-panel surface whose owner supplies the gutter, so nothing here draws a
+   card: groups are separated by spacing and hairlines only.
+   Everything is scoped under .tpanel (two-class specificity): parts of this file load before
+   ui/components.css in the entry bundle, and these rules must win over .muted, .panel-head and .button
+   regardless of order. Margins are reset explicitly because some verifiers mount these components
+   outside the operator shell. */
+.tpanel { display: flex; flex-direction: column; gap: 20px; min-width: 0; color: var(--gl-text); font-family: var(--gl-font); font-size: var(--gl-fs-sm); line-height: 1.5; }
+.tpanel .tpanel-section { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; }
+.tpanel > .tpanel-section + .tpanel-section, .tpanel .tpanel-divide { padding-top: 20px; border-top: 1px solid var(--gl-line); }
+
+/* Heading row: title and one line of explanation left, status or tools right. */
+.tpanel .tpanel-head, .tpanel > .panel-head { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; min-width: 0; min-height: 0; padding: 0; }
+.tpanel .tpanel-heading { display: grid; align-content: start; gap: 4px; min-width: 0; margin: 0; }
+.tpanel .tpanel-head > .tpanel-heading, .tpanel > .panel-head > .tpanel-heading { flex: 1 1 280px; }
+.tpanel .tpanel-title { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--gl-text); font-size: var(--gl-fs-lg); font-weight: 600; line-height: 1.3; }
+.tpanel .tpanel-title > svg { flex: none; color: var(--gl-text-3); }
+.tpanel .tpanel-subtitle { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--gl-text); font-size: var(--gl-fs-md); font-weight: 600; line-height: 1.3; }
+.tpanel .tpanel-subtitle > svg { flex: none; color: var(--gl-text-3); }
+.tpanel .tpanel-note { max-width: 80ch; margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 400; line-height: 1.6; text-wrap: pretty; }
+.tpanel .tpanel-hint { margin: 0; color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 400; line-height: 1.55; }
+.tpanel .tpanel-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; margin: 0; }
+
+/* Checkbox rows: label left, control right, hairlines between rows. */
+.tpanel .tpanel-toggles { display: flex; flex-direction: column; min-width: 0; }
+/* The hover tone bleeds 8px into the gutter so the label keeps the section's left edge; hairlines stay at content width. */
+.tpanel .tpanel-toggle { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 40px; margin: 0 -8px; padding: 6px 8px; border: 0; border-radius: var(--gl-r-control); color: var(--gl-text); font-size: var(--gl-fs-sm); font-weight: 500; line-height: 1.4; cursor: pointer; transition: background var(--gl-fast) var(--gl-ease); }
+.tpanel .tpanel-toggle::before, .tpanel .tpanel-toggle:last-child::after, .tpanel .tpanel-toggle.tpanel-toggle-closed::after { content: ""; position: absolute; top: 0; right: 8px; left: 8px; height: 1px; background: var(--gl-line); }
+.tpanel .tpanel-toggle:last-child::after, .tpanel .tpanel-toggle.tpanel-toggle-closed::after { top: auto; bottom: 0; }
+.tpanel .tpanel-toggle:hover:not(:has(input:disabled)) { background: color-mix(in srgb, var(--gl-control) 64%, transparent); }
+.tpanel .tpanel-toggle > span { display: grid; gap: 2px; min-width: 0; }
+.tpanel .tpanel-toggle small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 400; }
+.tpanel .tpanel-toggle > input { flex: none; order: 2; margin: 0; }
+.tpanel .tpanel-toggle:has(input:disabled) { color: var(--gl-text-off); cursor: not-allowed; }
+
+/* Fields: ui/components.css provides .field; these keep rows of fields aligned on their controls. */
+.tpanel .field { margin: 0; }
+.tpanel .field :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]), select, textarea) { width: 100%; min-width: 0; }
+.tpanel .field input[type="range"] { width: 100%; height: 20px; margin: 0; }
+.tpanel .field > small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.5; }
+.tpanel .tpanel-inline { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px; min-width: 0; }
+.tpanel .tpanel-inline > .field { flex: 0 1 220px; }
+
+/* Media sits on a fixed near-black tile. Its palette does not follow the UI theme (same values as the
+   studio monitors), so labels drawn over media read these instead of the --gl-text tokens. */
+.tpanel .tpanel-media {
+  --media-ink: #eeeff1; --media-ink-2: #b6b9bf; --media-ink-3: #969aa4; --media-raise: #2e3035; --media-chip: #0a0b0cd9;
+  position: relative; min-width: 0; border-radius: 6px; background: #050607; color: var(--media-ink); overflow: hidden;
+}
+/* Read-outs sink into the well; figures use the instrument face. */
+.tpanel .tpanel-readout { margin: 0; padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-well); color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.55; overflow-wrap: anywhere; }
+.tpanel .tpanel-mono { font-family: var(--gl-font-mono); font-variant-numeric: tabular-nums; }
+
+/* Destructive row action: a quiet icon button that turns rose on hover. */
+.tpanel button.tpanel-remove { display: inline-grid; place-items: center; flex: none; width: 32px; height: 32px; min-height: 32px; margin: 0; padding: 0; border: 0; border-radius: var(--gl-r-control); background: transparent; color: var(--gl-text-3); cursor: pointer; transition: background var(--gl-fast) var(--gl-ease), color var(--gl-fast) var(--gl-ease); }
+.tpanel button.tpanel-remove:hover:not(:disabled) { background: var(--gl-error-wash); color: var(--gl-error); }
+.tpanel button.tpanel-remove:active:not(:disabled) { background: color-mix(in srgb, var(--gl-error-solid) 26%, var(--gl-panel)); color: var(--gl-error); }
+.tpanel button.tpanel-remove:disabled { background: transparent; color: var(--gl-text-off); cursor: not-allowed; }
+
+/* Save row pinned to the bottom of the scrolling pane: status left, actions right. */
+/* The zero-blur shadow only extends the row's own surface downwards: a pane with scroll-padding holds a
+   sticky row above its edge, and content must not show in the strip beneath it. */
+.tpanel .tpanel-savebar { position: sticky; bottom: 0; z-index: 2; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-height: 52px; margin: 0; padding: 8px 0; border-top: 1px solid var(--gl-line); background: var(--gl-panel); box-shadow: 0 24px 0 var(--gl-panel); color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+.tpanel .tpanel-savebar > :first-child { flex: 1 1 160px; min-width: 0; margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+
+/* Empty list: what is missing and what to do, in the list's own place. The action sits next to it. */
+.tpanel .tpanel-empty { display: grid; gap: 2px; min-width: 0; margin: 0; padding: 14px 0; border-top: 1px solid var(--gl-line); border-bottom: 1px solid var(--gl-line); }
+.tpanel .tpanel-empty > strong { color: var(--gl-text); font-size: var(--gl-fs-md); font-weight: 600; line-height: 1.4; }
+.tpanel .tpanel-empty > p { max-width: 64ch; margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.55; }
+
+/* Notes reuse the shared callout; this only fixes spacing for stacked content. */
+.tpanel .gl-callout { margin: 0; overflow-wrap: anywhere; }
+.tpanel .tpanel-callout-body { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.tpanel .tpanel-callout-body > :is(p, strong, small) { margin: 0; }
+/* Empty live regions take no row. Embedded programme graphics are never matched. */
+.tpanel :is([role="status"], [role="alert"]):empty:not(:where(.broadcast-container *, .demo-stage *, .twitch-audience-graphic *)) { display: none; }
+
+/* Touch seats get 44px targets. */
+.remote-workbench .tpanel .tpanel-toggle { min-height: 44px; }
+.remote-workbench .tpanel button.tpanel-remove { width: 44px; height: 44px; }
