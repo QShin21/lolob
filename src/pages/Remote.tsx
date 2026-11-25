@@ -109,26 +109,26 @@ export function Remote(
     <main className={`remote-workbench ${owner ? "has-control" : ""} ${viewport.editing ? 'is-editing' : ''}`} data-keyboard={viewport.keyboardInset > 0 ? 'open' : 'closed'} style={{ '--remote-keyboard-inset': `${viewport.keyboardInset}px` } as CSSProperties}>
       <header className="remote-identity">
         <div className="remote-brand-line">
-          <strong><BrandMark size={22} />观澜</strong>
-          <span className={`remote-sync ${connected ? "is-connected" : ""}`}>
+          <strong><BrandMark size={22} tile={false} /><span className="gl-title">观澜</span></strong>
+          <span className={`remote-sync ${connected ? "is-connected" : ""} ${connected && !seat ? "is-pending" : ""}`}>
             {connected ? <Wifi size={14} /> : <WifiOff size={14} />}{" "}
             {connected ? seat ? "已同步" : "数据已同步 · 待验证席位" : "同步中断"}
           </span>
         </div>
         <div className="remote-seat-heading">
           <div>
-            <h1>{displaySeat ? roleNames[role] : "正在验证席位"}</h1>
+            <h1 className="gl-title">{displaySeat ? roleNames[role] : "正在验证席位"}</h1>
             <span title={displaySeat?.name}>{displaySeat?.name || "等待授权身份"}{displaySeat && !seat ? " · 尚未验证" : ""}</span>
           </div>
           {owner && (
             <span className="remote-own-control">
-              <ShieldCheck size={16} />
+              <ShieldCheck size={14} />
               持有控制权
             </span>
           )}
         </div>
         <div className="remote-controller">
-          <UserRound size={15} />
+          <UserRound size={14} />
           <span>节目控制者</span>
           <strong title={controller}>{controller}</strong>
         </div>
@@ -154,7 +154,11 @@ export function Remote(
           <Notification notice={toast} dismiss={dismissNotice} />
         </div>
       )}
-      <div className="remote-quick-status"><div><span className="bus-tag pgm">PGM</span><strong>{sceneDetails(onAir,state.programScene).name}</strong></div><div><span className="bus-tag pvw">PVW</span><strong>{sceneDetails(state,state.previewScene).name}</strong></div><small>{applicationLabel(state)} · {pending.length} 类待播变化</small></div>
+      <div className="remote-quick-status">
+        <div><span className="bus-tag pgm">PGM</span><strong title={sceneDetails(onAir,state.programScene).name}>{sceneDetails(onAir,state.programScene).name}</strong></div>
+        <div><span className="bus-tag pvw">PVW</span><strong title={sceneDetails(state,state.previewScene).name}>{sceneDetails(state,state.previewScene).name}</strong></div>
+        <small>{applicationLabel(state)} · {pending.length} 类待播变化</small>
+      </div>
       <div className="remote-surface-tabs"><TaskTabs label="遥控工作区" value={remoteView} onChange={setRemoteView} items={[{id:'tasks',label:role==='readonly'?'状态详情':'当前席位任务'},{id:'monitor',label:'节目与预监'}]}/></div>
       <section className="remote-monitor" aria-label="节目与预监核对" hidden={remoteView!=='monitor'}>
         <div className="remote-match">
@@ -205,7 +209,7 @@ export function Remote(
                 }
               }}
             >
-              <span>{kind === "program" ? "PGM" : "PVW"}</span>
+              <span className={`bus-tag ${kind === "program" ? "pgm" : "pvw"}`}>{kind === "program" ? "PGM" : "PVW"}</span>
               {kind === "program" ? "节目" : "预监"}
               {monitor === kind && <Check size={14} />}
             </button>
@@ -238,12 +242,14 @@ export function Remote(
                   )}
                 </span>
               </div>
-              <BroadcastCanvas
-                bus={monitor}
-                state={displayState}
-                champions={ctx.champions}
-                scene={scene}
-              />
+              <div className="remote-layout-surface">
+                <BroadcastCanvas
+                  bus={monitor}
+                  state={displayState}
+                  champions={ctx.champions}
+                  scene={scene}
+                />
+              </div>
               <p>排版示意 · OBS 合成仅在导播主机核对</p>
             </div>
           )}
@@ -266,19 +272,6 @@ export function Remote(
         )}
         {custom && customFacts && <details className="remote-composition-facts"><summary>自定义构图与来源核对</summary><dl><div><dt>当前画面配置</dt><dd>{monitor === 'program' ? '已切入的节目快照' : '已保存待播'}</dd></div><div><dt>可见来源</dt><dd>图片 {customFacts.images} / 窗口 {customFacts.windows} / 共享 OBS {customFacts.sharedInputs}</dd></div><div><dt>隐藏图层</dt><dd>{customFacts.hidden}</dd></div></dl><p>{customFacts.missingImages.length ? `${customFacts.missingImages.length} 张可见图片缺少素材记录。` : '图片文件及捕获来源在 TAKE 前核验。'}窗口与共享输入需在主机核对实际画面；共享输入内容和音频可受 OBS 外部修改影响。</p></details>}
       </section>
-      {!owner && (
-        <div className="remote-handoff">
-          <ShieldCheck size={17} />
-          <p>
-            {seat
-              ? `节目切入由 ${controller} 执行。`
-              : "席位验证完成后才能准备内容。"}
-            {role === "director" && seat && (
-              <span>主导播角色尚未持有当前节目控制权。</span>
-            )}
-          </p>
-        </div>
-      )}
       <section className="remote-role-task" aria-label={identity.title} hidden={remoteView!=='tasks'}>
         <header className="remote-task-heading">
           <h2>{identity.title}</h2>
@@ -351,20 +344,37 @@ export function Remote(
         )}
       </section>
       <details className="remote-composition-facts remote-overlay-check"><summary>字幕、暂停与回放核对</summary><dl><div><dt>节目字幕配置</dt><dd>{onAir.overlay.ticker ? onAir.overlay.tickerText || '内容为空' : '已撤下'}{state.programScene === 'teamfight' ? '；团战不绘制包装' : state.programScene.startsWith('custom:') ? '；自定义输出按 OBS 构图核对' : ''}</dd></div><div><dt>制作暂停记录</dt><dd>{state.production?.pause ? `${state.production.pause.reason}（${state.production.pause.actor}）` : '无暂停记录'}</dd></div><div><dt>引擎回放记录</dt><dd>{state.production?.playingClipId ? state.production.clips.find(clip => clip.id === state.production?.playingClipId)?.title || '片段待核对' : '未记录活动片段'}</dd></div></dl><p>这些是当前配置和引擎记录。实际画面、声音及平台接收由当前导播核对。</p></details>
+      {/* Seats without programme control read who takes at the place where the director's dock sits. */}
+      {!owner && (
+        <div className="remote-handoff">
+          <ShieldCheck size={16} />
+          <p>
+            {seat
+              ? `节目切入由 ${controller} 执行。`
+              : "席位验证完成后才能准备内容。"}
+            {role === "director" && seat && (
+              <span>主导播角色尚未持有当前节目控制权。</span>
+            )}
+          </p>
+        </div>
+      )}
       {owner && (
         <footer className="remote-take-dock">
-          <div>
-            <small>将切入当前预监</small>
-            <strong title={sceneDetails(state, state.previewScene).name}>
-              {sceneDetails(state, state.previewScene).name}
-            </strong>
-            <span>
-              {pending.length
-                ? `${pending.length} 类待播改动`
-                : "可再次应用当前场景"}
-            </span>
+          <div className="remote-take-panel">
+            <div className="remote-take-summary">
+              <small>将切入当前预监</small>
+              <strong title={sceneDetails(state, state.previewScene).name}>
+                <i className="bus-tag pvw" aria-hidden="true">PVW</i>
+                <b>{sceneDetails(state, state.previewScene).name}</b>
+              </strong>
+              <span>
+                {pending.length
+                  ? `${pending.length} 类待播改动`
+                  : "可再次应用当前场景"}
+              </span>
+            </div>
+            <TakeControl {...ctx} />
           </div>
-          <TakeControl {...ctx} />
         </footer>
       )}
     </main>
