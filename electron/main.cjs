@@ -518,7 +518,7 @@ function windowIcon() {
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1600, height: 1000, minWidth: 1080, minHeight: 720,
-    title: '观澜 · 英雄联盟赛事导播', backgroundColor: '#070b12', show: false, icon: windowIcon(),
+    title: '观澜 · 英雄联盟赛事导播', backgroundColor: '#0e0f11', show: false, icon: windowIcon(),
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false, preload: path.join(__dirname, 'preload.cjs') },
   });
   installPreviewBridge();

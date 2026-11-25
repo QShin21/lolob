@@ -1,10 +1,11 @@
 import { LayoutTemplate, Radio, Eye, PictureInPicture2 } from 'lucide-react';
 import { styleRef } from '../../shared/style-packs';
 import type { StateContext } from '../../shared/types';
+import './broadcast-look.css';
 
 export function BroadcastLook({state,send,overlay = state.overlay,onOverlayChange}:StateContext & {overlay?:StateContext['state']['overlay'];onOverlayChange?:(patch:Partial<StateContext['state']['overlay']>)=>void}) {
   return <section className="director-look" aria-label="转播风格">
-    <div className="look-heading"><LayoutTemplate size={18}/><div><strong>转播视觉</strong><span>赛前 / BP / 局内 / 赛后共用</span></div></div>
+    <div className="look-heading"><LayoutTemplate size={16}/><div><strong>转播视觉</strong><span>赛前 / BP / 局内 / 赛后共用</span></div></div>
     <div className="look-identity">
       <i className="look-identity-mark" aria-hidden="true">A</i>
       <div><strong>{styleRef(state.overlay.stylePack).name}</strong><span>场景库内管理与导入 · TAKE 后上节目</span></div>

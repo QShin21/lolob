@@ -1,3 +1,55 @@
-.integration-workspace{display:grid;gap:18px;min-width:0}.integration-actions,.integration-events{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0}.integration-hook{border:1px solid var(--ui-border);border-radius:12px;padding:16px;margin:12px 0;min-width:0}.integration-hook legend{padding:0 8px;font-weight:700}.integration-events label,.integration-check{display:flex;align-items:center;gap:6px}.integration-workspace .integration-events input,.integration-workspace .integration-check input{width:auto}.integration-code{display:grid;gap:8px;padding:16px;background:var(--ui-raised);border-radius:10px;overflow-wrap:anywhere}.integration-code code,.integration-remote code{white-space:normal;overflow-wrap:anywhere}.integration-remote code{display:block;font-size:11px;margin-top:6px}.integration-error{color:var(--ui-error)}.integration-table{overflow-x:auto}.integration-table table{width:100%;border-collapse:collapse}.integration-table th,.integration-table td{text-align:left;padding:10px;border-bottom:1px solid var(--ui-border)}.integration-workspace details{margin:16px 0}.integration-workspace p{line-height:1.6}.integration-workspace input{min-width:0}
+/* Data integrations: the read-only data feed and its key, production webhooks, and the delivery log.
+   One save scope ("保存集成设置"). Sections keep the pane's settings-block hook, so layout-critical
+   properties are stated at three-class specificity to stay independent of the pane's own block style. */
+.integration-workspace.tpanel { gap: 0; margin: 0; }
+.integration-workspace.tpanel .integration-section { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; padding: 0 0 20px; border: 0; border-radius: 0; background: none; overflow: visible; }
+.integration-workspace.tpanel .integration-section + .integration-section, .integration-workspace.tpanel .integration-savebar + .integration-section { padding-top: 20px; border-top: 1px solid var(--gl-line); }
+.integration-workspace.tpanel .integration-section > header { display: grid; gap: 4px; margin: 0; padding: 0; border: 0; }
+.integration-workspace.tpanel .integration-section > :is(.field, .integration-actions, .integration-code, .tpanel-actions, details, p) { margin: 0; }
 
-.integration-workspace .settings-block>.integration-actions,.integration-workspace .settings-block>.integration-events,.integration-workspace .settings-block>.integration-code,.integration-workspace .settings-block>.integration-remote,.integration-workspace .settings-block>.field,.integration-workspace .settings-block>details,.integration-workspace .settings-block>p,.integration-workspace .settings-block>.button{margin-left:18px;margin-right:18px}.integration-workspace .settings-block>p:last-child{margin-bottom:18px}
+.integration-workspace .integration-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; min-width: 0; }
+.integration-workspace .integration-key-state { display: inline-flex; align-items: center; gap: 8px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+.integration-workspace .integration-section > .field { max-width: 720px; }
+/* Request shape, as a read-out. */
+.integration-workspace .integration-code { display: grid; gap: 4px; max-width: 720px; padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-well); }
+.integration-workspace .integration-code code { color: var(--gl-text-2); font-size: var(--gl-fs-xs); line-height: 1.6; white-space: normal; overflow-wrap: anywhere; }
+
+/* Webhook receivers: one block per receiver, split by hairlines; remove sits at the block's top right. */
+.integration-workspace .integration-hooks { display: flex; flex-direction: column; min-width: 0; container-type: inline-size; container-name: hooks; }
+.integration-workspace .integration-hooks:empty { display: none; }
+.integration-workspace .integration-hook { position: relative; display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; padding: 14px 0 16px; border: 0; border-top: 1px solid var(--gl-line); border-radius: 0; }
+.integration-workspace .integration-hook:last-child { border-bottom: 1px solid var(--gl-line); }
+.integration-workspace .integration-hook > legend { float: left; width: 100%; min-height: 32px; padding: 0 44px 0 0; color: var(--gl-text); font-size: var(--gl-fs-md); font-weight: 600; line-height: 32px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.integration-workspace.tpanel .integration-hook .integration-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; gap: 12px 16px; min-width: 0; margin: 0; padding: 0; clear: both; }
+.integration-workspace.tpanel .integration-fields .field > input { width: 100%; min-width: 0; font-size: var(--gl-fs-sm); }
+.integration-workspace .integration-check { min-height: var(--gl-h-control); margin: 0; padding: 0 8px; }
+.integration-workspace .integration-check::before, .integration-workspace .integration-check::after { display: none; }
+.integration-workspace .integration-events { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; margin: 0; }
+.integration-workspace .integration-events > label { display: inline-flex; align-items: center; gap: 8px; min-height: var(--gl-h-small); padding: 0 12px 0 10px; border-radius: var(--gl-r-control); background: var(--gl-control); color: var(--gl-text); font-size: var(--gl-fs-sm); font-weight: 500; white-space: nowrap; cursor: pointer; transition: background var(--gl-fast) var(--gl-ease); }
+.integration-workspace .integration-events > label:hover { background: var(--gl-control-hover); }
+.integration-workspace .integration-events > label > input { width: 16px; margin: 0; }
+.integration-workspace .integration-hook:disabled .integration-events > label { color: var(--gl-text-off); cursor: not-allowed; }
+.integration-workspace .integration-hook > .integration-hook-remove { position: absolute; top: 14px; right: 0; }
+.integration-workspace .integration-section > details { padding-top: 4px; }
+.integration-workspace .integration-section > details > summary { min-height: 32px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; line-height: 32px; cursor: pointer; }
+.integration-workspace .integration-section > details > summary:hover, .integration-workspace .integration-section > details[open] > summary { color: var(--gl-text); }
+.integration-workspace .integration-section > details > p { max-width: 80ch; margin: 4px 0 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; overflow-wrap: anywhere; }
+
+/* Save row pinned to the pane bottom: result left, refresh and the one primary right. */
+.integration-workspace .integration-savebar { position: sticky; bottom: 0; z-index: 2; min-height: 52px; margin: 0; padding: 8px 0; border-top: 1px solid var(--gl-line); background: var(--gl-panel); box-shadow: 0 24px 0 var(--gl-panel); }
+.integration-workspace .integration-save-status { flex: 1 1 200px; min-width: 0; }
+.integration-workspace .integration-save-status > p { margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.5; overflow-wrap: anywhere; }
+.integration-workspace .integration-save-status > .integration-error { color: var(--gl-error); }
+
+.integration-workspace .integration-table { min-width: 0; overflow-x: auto; }
+.integration-workspace .integration-table table { width: 100%; border-collapse: collapse; font-size: var(--gl-fs-sm); text-align: left; }
+.integration-workspace .integration-table :is(th, td) { padding: 9px 12px; border: 0; border-top: 1px solid var(--gl-line); vertical-align: middle; white-space: nowrap; }
+.integration-workspace .integration-table th { border-top: 0; color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 500; }
+.integration-workspace .integration-table :is(th, td):first-child { padding-left: 0; }
+.integration-workspace .integration-table :is(th, td):nth-child(4) { font-family: var(--gl-font-mono); text-align: right; }
+.integration-workspace .integration-table td:last-child { width: 100%; color: var(--gl-text-2); white-space: normal; overflow-wrap: anywhere; }
+.integration-workspace .integration-table tbody tr:hover { background: var(--gl-control); }
+
+@container hooks (max-width: 560px) {
+  .integration-workspace.tpanel .integration-hook .integration-fields { grid-template-columns: minmax(0, 1fr); }
+}

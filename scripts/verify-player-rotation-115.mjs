@@ -19,7 +19,7 @@ state=applyAction(state,{type:'take'});
 state.production.pause={kind:'official',reason:'legacy pause',at:new Date().toISOString(),actor:'test'};
 state.production.feedHold=true;tickPlayerFeeds(state);
 await writeFile(path.join(dir,'index.html'),'<div id="root"></div><script type="module" src="./entry.tsx"></script>');
-await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{PlayerFeedSwitcher}from'/src/components/PlayerFeedSwitcher';import'/src/styles.css';import'/src/design-tokens.css';function App(){const[state,setState]=useState(${JSON.stringify(state)});window.renderState=setState;return <PlayerFeedSwitcher state={state} connected={true} notify={()=>{}} send={async action=>{const next=await window.dispatchAction(action);setState(next);}}/>}createRoot(document.getElementById('root')).render(<App/>);`);
+await writeFile(path.join(dir,'entry.tsx'),`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{PlayerFeedSwitcher}from'/src/components/PlayerFeedSwitcher';import'/src/styles.css';function App(){const[state,setState]=useState(${JSON.stringify(state)});window.renderState=setState;return <PlayerFeedSwitcher state={state} connected={true} notify={()=>{}} send={async action=>{const next=await window.dispatchAction(action);setState(next);}}/>}createRoot(document.getElementById('root')).render(<App/>);`);
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0}});
 await vite.listen();let browser;
 try{

@@ -1,3 +1,82 @@
-.cinematic-workspace{padding:20px;border:1px solid var(--ui-border);border-radius:14px;margin:16px 0;background:var(--ui-surface);color:var(--ui-text)}
-.cinematic-heading{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.cinematic-heading>div{flex:1;min-width:220px}.cinematic-heading h3{margin:0 0 6px}.cinematic-heading p{margin:0;font-size:13px;opacity:.72}.cinematic-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,1fr);gap:20px}.cinematic-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin:12px 0}.cinematic-toolbar label{flex:1;min-width:150px}.cinematic-workspace label{display:flex;flex-direction:column;gap:6px;font-size:12px}.cinematic-workspace input,.cinematic-workspace select{min-width:0;max-width:100%;padding:8px;border:1px solid var(--ui-border);border-radius:6px;background:var(--ui-bg);color:inherit}.cinematic-workspace h4{margin:16px 0 10px}.cinematic-path{display:block;width:100%;height:190px;border:1px solid var(--ui-border);border-radius:8px;margin:12px 0;color:var(--ui-accent);background:var(--ui-raised)}.cinematic-empty{display:flex;align-items:center;justify-content:center;padding:16px;font-size:13px;opacity:.7}.cinematic-frames{display:flex;gap:8px;overflow-x:auto;padding:8px 0}.cinematic-frame{display:flex;flex-direction:column;gap:4px;min-width:86px;padding:10px;border:1px solid var(--ui-border);border-radius:8px;background:transparent;color:inherit;cursor:pointer}.cinematic-frame.selected{border-color:var(--ui-selection-border);background:var(--ui-selected)}.cinematic-frame small{opacity:.65}.cinematic-frame-fields,.cinematic-bindings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;border:1px solid var(--ui-border);border-radius:8px;padding:12px}.cinematic-frame-fields legend{padding:0 6px;font-size:12px}.cinematic-frame-fields .cinematic-toolbar{grid-column:1/-1;margin:0}.cinematic-bindings{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px}.cinematic-workspace .cinematic-check{flex-direction:row;align-items:center}.cinematic-camera-readout{display:grid;gap:4px;font-size:11px;font-variant-numeric:tabular-nums;opacity:.7}.cinematic-monitor{min-width:0}.cinematic-monitor .obs-live-preview{max-height:300px}.cinematic-workspace .muted{font-size:12px;line-height:1.65}.cinematic-workspace details{margin-top:14px}.cinematic-workspace summary{cursor:pointer;font-size:13px}.cinematic-workspace button:disabled{opacity:.45}
-@media(max-width:900px){.cinematic-layout{grid-template-columns:1fr}.cinematic-frame-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.cinematic-workspace{padding:12px}}
+/* Camera work for replays: track library, keyframe list beside the X/Z plot, transport, keyframe
+   parameters; the monitor column carries the OBS composite, follow targets and the gamepad.
+   Also mounted bare by verify-cinematics, hence the explicit resets and the component-level container. */
+.cinematic-workspace, .cinematic-workspace *, .cinematic-workspace *::before, .cinematic-workspace *::after { box-sizing: border-box; }
+.cinematic-workspace { gap: 12px; margin: 0; padding: 0; container-type: inline-size; container-name: cinematic; }
+.cinematic-workspace .cinematic-heading { align-items: center; }
+.cinematic-workspace .cinematic-heading > .tpanel-heading { flex-basis: 320px; }
+
+/* Engine status line: dot tells connected from waiting, the text is what the replay client reported. */
+.cinematic-workspace .cinematic-status { display: flex; align-items: flex-start; gap: 8px; margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.5; overflow-wrap: anywhere; }
+.cinematic-workspace .cinematic-status::before { content: ""; flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: var(--gl-text-off); }
+.cinematic-workspace[data-connected="true"] .cinematic-status::before { background: var(--gl-pvw); }
+
+.cinematic-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); align-items: start; gap: 24px; min-width: 0; padding-top: 16px; border-top: 1px solid var(--gl-line); }
+.cinematic-editor { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.cinematic-toolbar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 8px; min-width: 0; margin: 0; }
+.cinematic-toolbar > .field { flex: 1 1 160px; }
+
+.cinematic-library { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: end; gap: 12px 16px; min-width: 0; }
+
+/* Keyframes are a sequence: numbered rows, selection by tone. The list takes its height from the plot. */
+.cinematic-track { display: grid; grid-template-columns: 196px minmax(0, 1fr); gap: 12px; min-width: 0; }
+.cinematic-frames { display: flex; flex-direction: column; height: 0; min-height: 100%; padding: 0; overflow-y: auto; overscroll-behavior: contain; }
+.cinematic-frame { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 8px; flex: none; min-width: 0; min-height: 36px; margin: 0; padding: 0 10px; border: 0; border-radius: var(--gl-r-control); background: transparent; color: var(--gl-text-2); font: inherit; text-align: left; cursor: pointer; transition: background var(--gl-fast) var(--gl-ease), color var(--gl-fast) var(--gl-ease); }
+.cinematic-frame + .cinematic-frame { box-shadow: 0 -1px 0 var(--gl-line); }
+.cinematic-frame:hover { background: var(--gl-control); color: var(--gl-text); box-shadow: none; }
+.cinematic-frame:active { background: var(--gl-control-hover); }
+.cinematic-frame:hover + .cinematic-frame, .cinematic-frame.selected + .cinematic-frame { box-shadow: none; }
+.cinematic-frame.selected { background: var(--gl-selected); color: var(--gl-text); box-shadow: none; }
+.cinematic-frame > strong { color: var(--gl-text-3); font-family: var(--gl-font-mono); font-size: var(--gl-fs-xs); font-weight: 500; }
+.cinematic-frame > span { font-family: var(--gl-font-mono); font-size: var(--gl-fs-sm); font-weight: 500; white-space: nowrap; }
+.cinematic-frame.selected > span { font-weight: 600; }
+.cinematic-frame > small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; }
+.cinematic-frames > p { margin: 0; padding: 10px 2px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.55; }
+/* X/Z plot in the well. The curve is an SVG stretched to the box; markers are positioned over it. */
+.cinematic-plot { position: relative; min-width: 0; height: 196px; border-radius: var(--gl-r-control); background: var(--gl-well); color: var(--gl-text-3); overflow: hidden; }
+.cinematic-path { display: block; width: 100%; height: 100%; margin: 0; }
+.cinematic-plot > i { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--gl-text-2); font-style: normal; }
+.cinematic-plot > i > b { position: absolute; bottom: 8px; left: 8px; color: var(--gl-text-2); font-family: var(--gl-font-mono); font-size: var(--gl-fs-xs); font-weight: 500; line-height: 1; }
+.cinematic-plot > i.selected { width: 12px; height: 12px; margin: -6px 0 0 -6px; background: var(--gl-solid); }
+.cinematic-plot > i.selected > b { bottom: 10px; left: 10px; color: var(--gl-text); font-weight: 600; }
+.cinematic-plot > small { position: absolute; bottom: 8px; left: 10px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.2; }
+.cinematic-path.cinematic-empty { display: flex; align-items: center; justify-content: center; height: 196px; padding: 16px; border-radius: var(--gl-r-control); background: var(--gl-well); color: var(--gl-text-3); font-size: var(--gl-fs-xs); text-align: center; }
+
+.cinematic-transport > .button.primary { margin-left: auto; }
+.cinematic-workspace .cinematic-dirty { align-items: center; flex-wrap: wrap; }
+.cinematic-workspace .cinematic-dirty > span { flex: 1 1 260px; min-width: 0; }
+
+.cinematic-frame-fields, .cinematic-bindings { display: grid; gap: 12px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.cinematic-frame-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); padding-top: 16px; border-top: 1px solid var(--gl-line); }
+.cinematic-frame-fields > legend { float: left; grid-column: 1 / -1; width: 100%; padding: 0; color: var(--gl-text); font-size: var(--gl-fs-md); font-weight: 600; line-height: 1.3; }
+.cinematic-frame-fields > .cinematic-toolbar { grid-column: 1 / -1; }
+.cinematic-workspace :is(.cinematic-frame-fields, .cinematic-bindings) input[type="number"] { font-family: var(--gl-font-mono); }
+.cinematic-files { padding-top: 4px; }
+.cinematic-workspace .button.cinematic-danger:hover:not(:disabled) { background: var(--gl-error-wash); color: var(--gl-error); }
+.cinematic-workspace .button[aria-pressed="true"]:not(.primary) { background: var(--gl-control-active); font-weight: 600; }
+
+/* Monitor column: three groups split by hairlines. */
+.cinematic-monitor { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.cinematic-group { display: flex; flex-direction: column; gap: 10px; min-width: 0; margin: 0; }
+.cinematic-group + .cinematic-group { padding-top: 16px; border-top: 1px solid var(--gl-line); }
+.cinematic-group > h4 { margin: 0; color: var(--gl-text); font-size: var(--gl-fs-md); font-weight: 600; line-height: 1.3; }
+.cinematic-monitor-surface > .obs-preview-visibility { display: block; }
+.cinematic-camera-readout { display: grid; gap: 2px; color: var(--gl-text-2); font-family: var(--gl-font-mono); font-size: var(--gl-fs-xs); font-variant-numeric: tabular-nums; line-height: 1.5; }
+.cinematic-camera-readout:empty { display: none; }
+.cinematic-pad { display: flex; align-items: flex-end; gap: 8px; min-width: 0; }
+.cinematic-pad > .field { flex: 1 1 160px; }
+.cinematic-group > details { padding-top: 10px; border-top: 1px solid var(--gl-line); }
+.cinematic-group > details > summary { min-height: 32px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; line-height: 32px; cursor: pointer; }
+.cinematic-group > details > summary:hover, .cinematic-group > details[open] > summary { color: var(--gl-text); }
+.cinematic-bindings { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 8px 0 10px; }
+.cinematic-bindings > :is(.cinematic-check, .button) { grid-column: 1 / -1; }
+.cinematic-bindings > .button { justify-self: start; }
+
+@container cinematic (max-width: 900px) {
+  .cinematic-layout { grid-template-columns: minmax(0, 1fr); }
+}
+@container cinematic (max-width: 560px) {
+  .cinematic-library, .cinematic-track { grid-template-columns: minmax(0, 1fr); }
+  .cinematic-frames { height: auto; min-height: 0; max-height: 196px; }
+  .cinematic-frame-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

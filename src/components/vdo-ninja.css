@@ -1,1 +1,36 @@
-.vdo-workspace{display:grid;gap:14px;min-width:0}.vdo-workspace h2,.vdo-workspace h3,.vdo-workspace p{margin:0}.vdo-workspace p,.vdo-workspace small{color:var(--ui-muted);line-height:1.6}.vdo-actions,.vdo-invitations article>div{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.vdo-actions label{display:flex;gap:8px}.vdo-invitations,.vdo-feed-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.vdo-workspace article{padding:16px;display:grid;gap:10px;border:1px solid var(--ui-border);border-radius:10px;min-width:0}.vdo-workspace input:not([type=checkbox]){width:100%;min-width:0;background:var(--ui-bg);color:var(--ui-text);padding:9px;border:1px solid var(--ui-control-border);border-radius:6px}.vdo-workspace [role=alert]{color:var(--ui-error)}.vdo-output{width:100vw;height:100vh;background:transparent;position:relative;overflow:hidden}.vdo-output iframe{width:100%;height:100%;border:0}.vdo-output-empty{display:grid;place-items:center;height:100%;background:#142333;color:#b8cadc;font:16px sans-serif}@media(max-width:760px){.vdo-invitations,.vdo-feed-links{grid-template-columns:1fr}}
+/* VDO.Ninja remote player cameras — operator workspace: generate invitations, enable the output and
+   copy the per-lane browser sources. This file loads before ui/components.css in the entry bundle, so
+   overrides of shared classes are written at two-class specificity. */
+.vdo-workspace.tpanel { gap: 16px; margin: 0; container-type: inline-size; container-name: vdo; }
+.vdo-workspace .vdo-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.vdo-workspace .vdo-actions > .tpanel-toggle { flex: 1 1 100%; margin-top: 4px; }
+.vdo-workspace .vdo-copied { color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+
+.vdo-workspace .vdo-list { display: flex; flex-direction: column; gap: 8px; min-width: 0; margin: 0; }
+.vdo-workspace .vdo-list > h3 { margin: 0; }
+.vdo-workspace :is(.vdo-invitations, .vdo-feed-links) { display: flex; flex-direction: column; min-width: 0; }
+.vdo-workspace :is(.vdo-invitations, .vdo-feed-links):empty { display: none; }
+.vdo-workspace :is(.vdo-invitations, .vdo-feed-links) > article { display: grid; align-items: center; column-gap: 16px; row-gap: 2px; min-width: 0; min-height: 48px; margin: 0; padding: 7px 0; border-top: 1px solid var(--gl-line); }
+.vdo-workspace :is(.vdo-invitations, .vdo-feed-links) > article:last-child { border-bottom: 1px solid var(--gl-line); }
+.vdo-workspace .vdo-invitations > article { grid-template-columns: minmax(140px, 240px) minmax(0, 1fr) auto; }
+.vdo-workspace .vdo-invitations h3 { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; min-width: 0; margin: 0; font-size: var(--gl-fs-sm); font-weight: 600; line-height: 1.4; }
+.vdo-workspace .vdo-invitations h3 > small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 400; }
+.vdo-workspace .vdo-invitations > article > div { display: flex; align-items: center; gap: 4px; }
+.vdo-workspace .vdo-feed-links > article { grid-template-columns: minmax(140px, 240px) minmax(0, 1fr) auto; grid-template-areas: "name url action" "note url action"; }
+.vdo-workspace .vdo-feed-links strong { grid-area: name; align-self: end; min-width: 0; font-size: var(--gl-fs-sm); font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.vdo-workspace .vdo-feed-links small { grid-area: note; align-self: start; min-width: 0; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.4; }
+.vdo-workspace .vdo-feed-links input { grid-area: url; }
+.vdo-workspace .vdo-feed-links .button { grid-area: action; }
+/* Links are read-outs: selectable, never edited. */
+.vdo-workspace article > input { width: 100%; min-width: 0; min-height: var(--gl-h-small); margin: 0; padding: 0 10px; border: 0; border-radius: var(--gl-r-control); background: var(--gl-well); color: var(--gl-text-2); font-size: var(--gl-fs-xs); text-overflow: ellipsis; }
+.vdo-workspace article > input:focus-visible { outline: 2px solid var(--gl-focus); outline-offset: 1px; color: var(--gl-text); }
+.vdo-workspace .vdo-footnote { max-width: 96ch; }
+
+@container vdo (max-width: 640px) {
+  .vdo-workspace .vdo-invitations > article { grid-template-columns: minmax(0, 1fr); row-gap: 6px; }
+  .vdo-workspace .vdo-feed-links > article { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name action" "note action" "url url"; row-gap: 4px; }
+  .vdo-workspace .vdo-invitations > article > div { flex-wrap: wrap; }
+}
+
+/* ── Broadcast output (frozen): /overlay/vdo. Pixel-compared with 2.0.0 — do not edit. ───────────── */
+.vdo-output{width:100vw;height:100vh;background:transparent;position:relative;overflow:hidden}.vdo-output iframe{width:100%;height:100%;border:0}.vdo-output-empty{display:grid;place-items:center;height:100%;background:#142333;color:#b8cadc;font:16px sans-serif}

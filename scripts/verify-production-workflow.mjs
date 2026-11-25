@@ -132,9 +132,10 @@ try {
     .getByRole("region", { name: "本次切入" })
     .getByRole("button", { name: "切入节目" });
   assert.equal(await take.isEnabled(), false);
+  // The reason sits beside the one executable TAKE in the fixed deck; hidden dock tasks repeat it.
   await page
+    .getByRole("region", { name: "本次切入" })
     .getByText("先连接 OBS，再核对预监", { exact: true })
-    .first()
     .waitFor();
   tests.push("UI blocks TAKE with a visible reason when OBS is disconnected");
   const offline = await page.evaluate(async () => {

@@ -1,0 +1,6 @@
+/* Native game HUD handling (operator control). The selector applies at once; the read-out shows what the
+   replay client answered. Scoped to the control only: this file is also bundled with the output graphics. */
+.ob-hud-controls { gap: 12px; margin: 0; }
+.tpanel.ob-hud-controls .ob-hud-form { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; padding: 0; }
+.ob-hud-mode { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 8px 12px; min-width: 0; }
+.ob-hud-mode > .field { flex: 1 1 320px; max-width: 520px; }
