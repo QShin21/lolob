@@ -1,38 +1,62 @@
-.live-bottom-controls .panel-head{align-items:flex-start;gap:16px}
-.live-bottom-controls .panel-head h2{font-size:15px;margin:0;font-weight:600}
-.live-bottom-controls .panel-head p{max-width:760px}
-.live-bottom-controls .live-bottom-unsaved{background:var(--ui-warning-bg);border-color:color-mix(in srgb, var(--ui-warning) 45%, transparent);color:var(--ui-warning);white-space:nowrap}
-.live-bottom-controls-body{padding:22px 23px}
-.live-bottom-text-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,.4fr);gap:16px}
-.live-bottom-camera-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:24px 0 10px;padding-top:22px;border-top:1px solid var(--border)}
-.live-bottom-camera-heading strong{font-size:13px;font-weight:600}
-.live-bottom-camera-heading p{font-size:11px;line-height:1.7;margin:6px 0 0}
-.live-bottom-camera-heading>.button{flex-shrink:0;white-space:nowrap}
-.live-bottom-camera-detail{font-size:11px;line-height:1.7;margin:0 0 16px;overflow-wrap:anywhere}
-.live-bottom-feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.live-bottom-feed-card{display:flex;min-width:0;flex-direction:column;gap:14px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:7px}
-.live-bottom-feed-title{display:flex;align-items:center;gap:8px}
-.live-bottom-feed-title i{width:6px;height:6px;border-radius:50%;background:var(--rc-side-blue)}
-.live-bottom-feed-card.red .live-bottom-feed-title i{background:var(--rc-side-red)}
-.live-bottom-feed-title h3{margin:0;font-size:12px;font-weight:600}
-.live-bottom-feed-preview{position:relative;aspect-ratio:1.15;background:#050809;border:1px solid #253644;overflow:hidden}
-.live-bottom-feed-preview>img{width:100%;height:100%;object-fit:cover;display:block}
-.live-bottom-feed-placeholder{display:flex;align-items:center;justify-content:center;gap:12px;flex-direction:column;height:100%;padding:24px 18px;text-align:center;color:var(--muted);font-size:11px;line-height:1.8}
-.live-bottom-feed-placeholder>svg{color:#547183;flex-shrink:0}
-.live-bottom-feed-nameplate{position:absolute;bottom:0;left:0;right:0;text-align:center;padding:8px 10px;background:#0006;color:#fff;font:24px Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.live-bottom-feed-card .field{gap:7px;font-size:11px}
-.live-bottom-feed-card .field small{font-size:10px;line-height:1.7}
-.live-bottom-feed-card .field input,.live-bottom-feed-card .field select{min-width:0;width:100%}
-.live-bottom-upload{position:relative;align-self:flex-start;cursor:pointer}
-.live-bottom-upload input{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0}
-.live-bottom-upload:focus-within{outline:2px solid var(--accent);outline-offset:2px}
-.live-bottom-upload.disabled{pointer-events:none;opacity:.5}
-.live-bottom-upload-note{font-size:10px;margin-top:-8px}
-.live-bottom-economy-note{font-size:11px;line-height:1.9;margin:19px 0 0}
-.live-bottom-error{font-size:12px;line-height:1.7;margin:12px 0 0}
-.live-bottom-camera-apply{margin-top:14px}
-.live-bottom-camera-apply p{font-size:11px;line-height:1.8;margin:0 0 10px}
-.live-bottom-save-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;margin-top:18px;border-top:1px solid var(--border)}
-.live-bottom-save-row>span{font-size:11px}
-@media(max-width:700px){.live-bottom-controls-body{padding:18px}.live-bottom-text-fields{grid-template-columns:1fr}.live-bottom-camera-heading{align-items:flex-start;flex-direction:column}.live-bottom-feed-grid{grid-template-columns:minmax(0,1fr)}.live-bottom-save-row{align-items:flex-start;flex-direction:column}}
-.live-bottom-edit-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.live-bottom-edit-tabs button{border:1px solid var(--ui-control-border);background:var(--ui-raised);color:var(--ui-muted);border-radius:6px;padding:8px 14px;cursor:pointer;font:inherit;font-size:12px}.live-bottom-edit-tabs button.selected{background:var(--ui-selected);border-color:var(--ui-selection-border);color:var(--ui-accent)}.live-bottom-controls .player-feed-switcher{margin:18px 0;border:1px solid var(--ui-control-border)}.live-bottom-controls .player-feed-switcher .panel-head{padding:15px}.live-bottom-controls .player-feed-pair-buttons{padding:0 15px 15px}
+/* Live bottom packaging: scoreboard text, the instant feed switcher and per-lane camera material.
+   One save scope ("保存底部配置") covers everything except the switcher, which cues straight to preview. */
+.live-bottom-controls { gap: 16px; margin: 0; }
+.live-bottom-controls > .panel-head { align-items: flex-start; min-height: 0; padding: 0; }
+.live-bottom-controls-body { display: flex; flex-direction: column; gap: 20px; min-width: 0; padding: 0; }
+
+.live-bottom-text-fields { display: grid; gap: 12px; min-width: 0; }
+.live-bottom-text-fields > .field { max-width: 280px; }
+
+.live-bottom-controls-body > .player-feed-switcher, .live-bottom-materials { padding-top: 20px; border-top: 1px solid var(--gl-line); }
+.live-bottom-controls-body > .player-feed-switcher { padding-bottom: 0; }
+.live-bottom-materials { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin: 0; }
+.live-bottom-controls .live-bottom-camera-heading { align-items: center; }
+.live-bottom-camera-detail { margin: 0; overflow-wrap: anywhere; }
+.live-bottom-edit-tabs { flex-wrap: wrap; }
+
+/* Blue and red material side by side; each side keeps its preview beside its fields while there is room. */
+.live-bottom-feed-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px 32px; min-width: 0; }
+.live-bottom-feed-card { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 0; border: 0; background: none; container-type: inline-size; container-name: feedcard; }
+.live-bottom-feed-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.live-bottom-feed-title i { flex: none; width: 3px; height: 14px; border-radius: 2px; background: var(--gl-blue); }
+.live-bottom-feed-title h3 { margin: 0; color: var(--gl-blue); font-size: var(--gl-fs-md); font-weight: 600; line-height: 1.3; }
+.live-bottom-feed-card.red .live-bottom-feed-title i { background: var(--gl-red); }
+.live-bottom-feed-card.red .live-bottom-feed-title h3 { color: var(--gl-red); }
+.live-bottom-feed-layout { display: grid; grid-template-columns: 184px minmax(0, 1fr); align-items: start; gap: 16px; min-width: 0; }
+
+/* Same crop as the programme feed window, so the focus sliders can be judged here. */
+.live-bottom-feed-preview { aspect-ratio: 1.15; }
+.live-bottom-feed-preview > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.live-bottom-feed-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; height: 100%; padding: 16px 12px; color: var(--media-ink-3); font-size: var(--gl-fs-xs); line-height: 1.5; text-align: center; }
+.live-bottom-feed-placeholder > svg { flex: none; stroke-width: 1.5; }
+.live-bottom-feed-nameplate { position: absolute; right: 0; bottom: 0; left: 0; padding: 5px 8px; background: var(--media-chip); color: var(--media-ink); font-size: var(--gl-fs-sm); font-weight: 600; line-height: 1.3; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+.live-bottom-feed-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 12px; min-width: 0; }
+.live-bottom-wide-field, .live-bottom-upload-row { grid-column: 1 / -1; }
+.live-bottom-upload-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; min-width: 0; }
+.live-bottom-upload { position: relative; cursor: pointer; }
+.live-bottom-upload input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+.live-bottom-upload:focus-within { outline: 2px solid var(--gl-focus); outline-offset: 2px; }
+.live-bottom-upload.disabled { color: var(--gl-text-off); pointer-events: none; }
+.live-bottom-upload-note { color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.live-bottom-economy-note { margin: 0; }
+
+.live-bottom-controls .live-bottom-camera-apply { align-items: center; flex-wrap: wrap; }
+.live-bottom-camera-apply > p { flex: 1 1 240px; min-width: 0; margin: 0; color: inherit; font-size: var(--gl-fs-sm); }
+.live-bottom-error { margin: 0; }
+.live-bottom-controls .live-bottom-conflict { flex-wrap: wrap; align-items: flex-start; }
+.live-bottom-conflict strong { color: var(--gl-warn); }
+.live-bottom-conflict details { color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+.live-bottom-conflict summary { min-height: 28px; line-height: 28px; cursor: pointer; }
+.live-bottom-conflict details p { margin: 8px 0 4px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.live-bottom-conflict pre { max-height: 220px; margin: 0; padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-well); color: var(--gl-text-2); font-family: var(--gl-font-mono); font-size: var(--gl-fs-xs); line-height: 1.5; overflow: auto; }
+
+.live-bottom-controls .live-bottom-save-row { justify-content: flex-start; margin: 0; padding: 8px 0; }
+
+@container feedcard (max-width: 460px) {
+  .live-bottom-feed-layout { grid-template-columns: minmax(0, 1fr); }
+  .live-bottom-feed-preview { max-width: 240px; }
+}
+@container feedcard (max-width: 300px) {
+  .live-bottom-feed-fields { grid-template-columns: minmax(0, 1fr); }
+}
