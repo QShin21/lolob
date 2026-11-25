@@ -1,0 +1,5 @@
+/* Media surfaces embedded in the console (broadcast canvases, OBS previews, capture frames) keep the
+   fixed broadcast palette in both themes. The values equal the :root defaults in broadcast-base.css. */
+:is(.app-shell,.remote-workbench) :is(.broadcast-container,.broadcast-canvas,.obs-live-preview,.embedded-obs-preview,.interview-safe-preview,.ocr-frame,.live-bottom-feed-preview,.economy-roi-map){
+  --bg:#0b1119;--panel:#121b25;--panel-soft:#17222e;--surface:#0d151e;--border:#273442;--line:#273442;--text:#f0f3ef;--muted:#8e9dac;--text-muted:#8e9dac;--accent:#96efd4;--blue:#71d5ee;--red:#ff8f83;--program:#ff8f83;--preview:#96efd4;color-scheme:dark;
+}
