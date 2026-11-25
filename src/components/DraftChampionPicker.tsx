@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Check, Search, X } from "lucide-react";
+import { Ban, Check, Search, X } from "lucide-react";
 import type { Champion, Side, StateContext } from "../../shared/types";
 import { productionKey } from "../../shared/production";
 import { championFor, getTeam } from "../lib";
@@ -12,6 +12,15 @@ import {
 } from "./FearlessControls";
 
 export type DraftSlot = { side: Side; kind: "Picks" | "Bans"; index: number };
+// Data Dragon class tags, in the order casters usually read a composition.
+const classFilters = [
+  { id: "Fighter", label: "战士" },
+  { id: "Tank", label: "坦克" },
+  { id: "Mage", label: "法师" },
+  { id: "Assassin", label: "刺客" },
+  { id: "Marksman", label: "射手" },
+  { id: "Support", label: "辅助" },
+] as const;
 export const draftSlotName = (slot: DraftSlot) =>
   `${slot.side === "blue" ? "B" : "R"}${slot.index + 1}${slot.kind === "Bans" ? " 禁用" : " 选择"}`;
 const sameChampion = (champions: Champion[], a: string, b: string) =>
@@ -39,7 +48,8 @@ export function DraftChampionPicker({
     noteId = useId();
   const key = `${slot.side}${slot.kind}` as const;
   const [choice, setChoice] = useState(state.draft[key][slot.index] ?? ""),
-    [search, setSearch] = useState("");
+    [search, setSearch] = useState(""),
+    [championClass, setChampionClass] = useState("");
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [baseVersion, setBaseVersion] = useState(
@@ -128,15 +138,20 @@ export function DraftChampionPicker({
       setBusy(false);
     }
   };
-  const visible = champions.filter((champion) =>
-    `${champion.name} ${champion.id} ${champion.title}`
-      .toLowerCase()
-      .includes(search.trim().toLowerCase()),
+  // Older cached catalogs may not carry class tags; the filter row only appears when they exist.
+  const classified = champions.some((champion) => champion.tags?.length);
+  const visible = champions.filter(
+    (champion) =>
+      `${champion.name} ${champion.id} ${champion.title}`
+        .toLowerCase()
+        .includes(search.trim().toLowerCase()) &&
+      (!championClass || !!champion.tags?.includes(championClass)),
   );
   return (
     <dialog
       ref={dialog}
       className="bp-champion-dialog"
+      data-side={slot.side}
       aria-labelledby={titleId}
       aria-describedby={noteId}
       onCancel={(event) => {
@@ -154,19 +169,19 @@ export function DraftChampionPicker({
     >
       <header className="bp-picker-heading">
         <div>
+          <h2 id={titleId}>{draftSlotName(slot)}英雄</h2>
           <small>
             {getTeam(state, slot.side)?.name ||
               (slot.side === "blue" ? "蓝色方" : "红色方")}
           </small>
-          <h2 id={titleId}>{draftSlotName(slot)}英雄</h2>
         </div>
         <button
-          className="bp-icon-button"
+          className="bp-icon-button icon-button"
           aria-label="关闭英雄选择"
           disabled={busy}
           onClick={onClose}
         >
-          <X size={21} />
+          <X size={20} />
         </button>
       </header>
       <p className="bp-picker-note" id={noteId}>
@@ -184,14 +199,37 @@ export function DraftChampionPicker({
           onChange={(event) => setSearch(event.target.value)}
         />
       </label>
-      <div className="bp-picker-count">
-        <span>{visible.length} 位英雄</span>
-        <span>
-          当前槽位：
-          {championFor(champions, state.draft[key][slot.index])?.name ||
-            state.draft[key][slot.index] ||
-            "未选择"}
-        </span>
+      <div className="bp-picker-filters">
+        {classified && (
+          <div className="bp-picker-classes" role="group" aria-label="按英雄定位筛选">
+            <button
+              type="button"
+              aria-pressed={!championClass}
+              onClick={() => setChampionClass("")}
+            >
+              全部
+            </button>
+            {classFilters.map((item) => (
+              <button
+                type="button"
+                key={item.id}
+                aria-pressed={championClass === item.id}
+                onClick={() => setChampionClass(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
+        <div className="bp-picker-count">
+          <span>{visible.length} 位英雄</span>
+          <span>
+            当前槽位：
+            {championFor(champions, state.draft[key][slot.index])?.name ||
+              state.draft[key][slot.index] ||
+              "未选择"}
+          </span>
+        </div>
       </div>
       <div className="bp-picker-results" aria-label="英雄候选">
         {visible.map((champion) => {
@@ -222,7 +260,12 @@ export function DraftChampionPicker({
                   previous ||
                   (selected ? "已选择，待保存" : champion.title)}
               </small>
-              {selected && <Check className="bp-candidate-check" size={15} />}
+              {selected && (
+                <Check className="bp-candidate-check" size={12} strokeWidth={3} aria-hidden="true" />
+              )}
+              {reason && !selected && (
+                <Ban className="bp-candidate-ban" size={18} aria-hidden="true" />
+              )}
             </button>
           );
         })}
@@ -250,7 +293,7 @@ export function DraftChampionPicker({
                 」。
               </p>
               <button
-                className="bp-button"
+                className="bp-button button small"
                 disabled={busy}
                 onClick={() => {
                   setBaseVersion(state.production?.configVersion);
@@ -281,12 +324,12 @@ export function DraftChampionPicker({
             <strong>
               {championFor(champions, choice)?.name || choice || "清空此槽位"}
             </strong>
-            <small>
+            <small data-blocked={blocked(choice) ? "true" : undefined}>
               {blocked(choice) || `将保存至 ${draftSlotName(slot)}`}
             </small>
           </div>
           <button
-            className="bp-button"
+            className="bp-button button small"
             disabled={busy}
             onClick={() => setChoice("")}
           >
@@ -294,11 +337,11 @@ export function DraftChampionPicker({
           </button>
         </div>
         <div className="bp-picker-actions">
-          <button className="bp-button" disabled={busy} onClick={onClose}>
+          <button className="bp-button button" disabled={busy} onClick={onClose}>
             取消
           </button>
           <button
-            className="bp-button bp-primary"
+            className="bp-button bp-primary button primary"
             disabled={
               busy ||
               !allowed ||

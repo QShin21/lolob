@@ -170,7 +170,7 @@ export function DraftRuleControls(ctx: StateContext) {
             ；例外局 {p.rules.exceptionGames.join("、") || "无"}。
           </p>
           <button
-            className="bp-button"
+            className="bp-button button small"
             disabled={busy}
             onClick={() => {
               form.rebase();
@@ -190,7 +190,7 @@ export function DraftRuleControls(ctx: StateContext) {
       <div className="bp-save-row">
         <span>{form.dirty ? "本地规则未保存" : "与已保存待播规则一致"}</span>
         <button
-          className="bp-button"
+          className="bp-button button"
           disabled={!form.dirty || busy}
           onClick={() => {
             form.discard();
@@ -200,7 +200,7 @@ export function DraftRuleControls(ctx: StateContext) {
           放弃规则修改
         </button>
         <button
-          className="bp-button bp-primary"
+          className="bp-button bp-primary button primary"
           disabled={
             !allowed ||
             busy ||

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   Check,
   ChevronRight,
-  CircleDot,
   Eye,
   LockKeyhole,
   RefreshCw,
@@ -26,6 +25,8 @@ import {
   usedDraftChampions,
 } from "../components/FearlessControls";
 import "./draft-workbench.css";
+
+const steps = ["英雄选择", "归属核对", "保存待播"];
 
 export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;sequence:number}}) {
   const { state, champions, send, notify, seat, connected } = ctx;
@@ -55,6 +56,8 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
     /等待/.test(state.draft.action)
       ? undefined
       : { side: state.draft.activeTeam, kind: activeKind, index: nextIndex };
+  // The page header already says which stage the draft is in; the stepper mirrors it.
+  const currentStep = state.draft.locked ? 1 : 0;
   const openTask = (next: DraftControlTask) => {
     setTask(next);
     setWorkspace(next);
@@ -88,11 +91,11 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
     <div className="bp-workbench">
       <header className="bp-round">
         <div
-          className={`bp-round-clock ${state.draft.activeTeam} ${state.draft.locked ? "is-complete" : ""}`}
+          className={`bp-round-clock ${state.draft.activeTeam} ${state.draft.locked ? "is-complete" : state.draft.timer > 0 ? "" : "is-idle"}`}
         >
           <b>
             {state.draft.locked ? (
-              <Check size={26} aria-hidden="true" />
+              <Check size={14} strokeWidth={2.5} aria-hidden="true" />
             ) : (
               Math.max(0, Math.ceil(state.draft.timer))
             )}
@@ -113,14 +116,17 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
         </div>
         <div className="bp-round-tools">
           <span className="bp-source">
-            <CircleDot size={14} />
+            <i
+              className={`status-dot ${mode === "auto" ? "green" : "amber"}`}
+              aria-hidden="true"
+            />
             {mode === "auto"
               ? "客户端自动同步"
               : mode === "manual"
                 ? "人工接管"
                 : "客户端差异核对"}
           </span>
-          <button className="bp-button" onClick={() => openTask("sync")}>
+          <button className="bp-button button small" onClick={() => openTask("sync")}>
             <RefreshCw size={14} />
             接管与差异
           </button>
@@ -139,7 +145,21 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
                 : "正在验证操作席位。")}
         </div>
       )}
-      <div className="bp-workspace-tabs"><TaskTabs label="BP 工作区" value={workspace} onChange={next=>{setWorkspace(next);if(next!=='overview')setTask(next);}} items={[{id:'overview',label:'BP 总览'},{id:'assignments',label:'最终归属'},{id:'sync',label:'接管与客户端差异'},{id:'rules',label:'规则与历史'}]}/><span>英雄选择 → 归属核对 → 保存待播</span></div>
+      <div className="bp-workspace-tabs">
+        <TaskTabs label="BP 工作区" value={workspace} onChange={next=>{setWorkspace(next);if(next!=='overview')setTask(next);}} items={[{id:'overview',label:'BP 总览'},{id:'assignments',label:'最终归属'},{id:'sync',label:'接管与客户端差异'},{id:'rules',label:'规则与历史'}]}/>
+        <ol className="bp-steps" aria-label="BP 流程">
+          {steps.map((step, index) => (
+            <li
+              key={step}
+              data-state={index < currentStep ? "done" : index === currentStep ? "current" : "next"}
+              aria-current={index === currentStep ? "step" : undefined}
+            >
+              {index < currentStep && <Check size={12} strokeWidth={2.5} aria-hidden="true" />}
+              {step}
+            </li>
+          ))}
+        </ol>
+      </div>
       <div className="bp-overview" hidden={workspace!=='overview'}>
       <div className="bp-team-boards">
         {(["blue", "red"] as const).map((side) => {
@@ -169,13 +189,21 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
                   <span>{side === "blue" ? "蓝色方" : "红色方"}</span>
                   <h2 title={team?.name}>{team?.name || "等待战队"}</h2>
                 </div>
-                <strong>{state.match[`${side}Score`]}</strong>
+                <strong title="系列赛比分">{state.match[`${side}Score`]}</strong>
                 <small>
-                  {picks.filter(Boolean).length}/5 已选
-                  <br />
-                  {locked}/5 人工归属
+                  <span>
+                    <b>{picks.filter(Boolean).length}/5</b> 已选
+                  </span>
+                  <span>
+                    <b>{locked}/5</b> 人工归属
+                  </span>
                 </small>
               </header>
+              <div className="bp-pick-progress" aria-hidden="true">
+                {Array.from({ length: 5 }, (_, index) => (
+                  <i key={index} data-filled={picks[index] ? "true" : undefined} />
+                ))}
+              </div>
               <div className="bp-pick-head">
                 <span>选择顺序 / 英雄</span>
                 <span>最终选手归属</span>
@@ -206,7 +234,7 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
                     nextSlot.index === index;
                   return (
                     <button
-                      className={`bp-pick-row ${current ? "is-current" : ""}`}
+                      className={`bp-pick-row ${current ? "is-current" : ""} ${id ? "" : "is-empty"}`}
                       key={index}
                       disabled={!canPrepare}
                       aria-label={`${side === "blue" ? "蓝方 B" : "红方 R"}${index + 1}，${championFor(champions, id)?.name || id || "未选择"}，编辑英雄`}
@@ -236,7 +264,9 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
                               : "尚未选择"}
                         </small>
                       </span>
-                      <span className="bp-pick-owner">
+                      <span
+                        className={`bp-pick-owner ${assignment && player ? "is-confirmed" : player ? "" : "is-pending"}`}
+                      >
                         {player ? (
                           <>
                             <strong title={player.name}>{player.name}</strong>
@@ -283,7 +313,7 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
                       nextSlot.index === index;
                   return (
                     <button
-                      className={`bp-ban ${current ? "is-current" : ""}`}
+                      className={`bp-ban ${current ? "is-current" : ""} ${id ? "" : "is-empty"}`}
                       key={index}
                       disabled={!canPrepare}
                       title={`${side === "blue" ? "蓝方" : "红方"}禁用 ${index + 1}：${championFor(champions, id)?.name || id || "未选择"}`}
@@ -313,7 +343,8 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
           选择顺序与选手归属分别核对；槽位修改保存到待播。
         </span>
         <button
-          className="bp-button"
+          className="bp-button button small"
+          data-active={state.previewScene === "draft" ? "true" : undefined}
           disabled={!canPrepare || preparing}
           onClick={() => void preparePreview()}
         >
@@ -325,19 +356,8 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
               : "将 BP 设为预监"}
         </button>
       </div>
-      </div>
-      <div ref={productionSection} hidden={workspace==='overview'}>
-        <DraftProductionControls
-          key={productionKey(state)}
-          {...ctx}
-          task={task}
-          onTaskChange={setTask}
-          hideNavigation
-        />
-      </div>
       <details
         className="bp-layout-review"
-        hidden={workspace!=='overview'}
         open={preview}
         onToggle={(event) => setPreview(event.currentTarget.open)}
       >
@@ -348,7 +368,7 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
               <p>待播排版示意。实际合成与画面应用回执在导播台核对。</p>
               <div className="bp-actions">
                 <button
-                  className="bp-button"
+                  className="bp-button button small"
                   disabled={!canPrepare || preparing}
                   onClick={() => void preparePreview()}
                 >
@@ -364,14 +384,26 @@ export function Draft(ctx: StateContext & {focusTask?:{task:DraftControlTask;seq
                 )}
               </div>
             </div>
-            <BroadcastCanvas
-              state={state}
-              champions={champions}
-              scene="draft"
-            />
+            <div className="bp-layout-canvas">
+              <BroadcastCanvas
+                state={state}
+                champions={champions}
+                scene="draft"
+              />
+            </div>
           </>
         )}
       </details>
+      </div>
+      <div ref={productionSection} className="bp-task-pane" hidden={workspace==='overview'}>
+        <DraftProductionControls
+          key={productionKey(state)}
+          {...ctx}
+          task={task}
+          onTaskChange={setTask}
+          hideNavigation
+        />
+      </div>
       {slot && (
         <DraftChampionPicker
           ctx={ctx}
