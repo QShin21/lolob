@@ -27,6 +27,7 @@ import { NativeHudControls } from '../components/ObserverGraphics';
 import { LiveBottomControls } from '../components/LiveBottomControls';
 import { AppearanceSettings } from '../components/AppearanceSettings';
 import './settings.css';
+import '../components/economy-source.css';
 
 type Target = keyof BroadcastState['connections'];
 type NetworkInfo = { enabled: boolean; urls: string[]; controlToken?: string };

@@ -2,7 +2,8 @@ import { currentGameResult } from '../../shared/game-results';
 import { objectiveCount, objectiveKeys, objectiveLabels } from '../../shared/objective-counts';
 import type { StateContext } from '../../shared/types';
 import { gold } from '../lib';
-import './economy-source.css';
+// Styles live in economy-source.css and are imported by the pages that host this panel:
+// a server test renders this component in Node, where stylesheet imports cannot load.
 const labels={none:'等待经济来源',memory:'国服观战直读',api:'游戏 API',manual:'历史人工校准',ocr:'历史 HUD 读数'};
 export function EconomySourcePanel({state}:Pick<StateContext,'state'|'notify'>){
  const frozen=!!currentGameResult(state),feed=frozen?undefined:state.economyFeed;

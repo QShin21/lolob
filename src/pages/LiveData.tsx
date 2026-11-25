@@ -17,6 +17,7 @@ import {
 } from "../components/useItemCatalog";
 import "../components/domain-workspace.css";
 import "./data-workspace.css";
+import "../components/economy-source.css";
 
 const sampleTime = (value?: string) =>
   value && Number.isFinite(Date.parse(value))
