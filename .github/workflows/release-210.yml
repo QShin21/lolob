@@ -67,6 +67,14 @@ jobs:
           if (!(Test-Path -LiteralPath $browser)) { throw 'Playwright Chromium is missing' }
           "RIFTCAST_PLAYWRIGHT_MODULE=$(Join-Path $module 'index.mjs')" >> $env:GITHUB_ENV
           "RIFTCAST_BROWSER_EXECUTABLE=$browser" >> $env:GITHUB_ENV
+      - name: Verify paired collaboration with isolated services
+        # Screen-share encoding needs the runner's Microsoft Edge; the pinned Chromium build produced no frames here.
+        # It runs first: late in the sequence the host service lost its connections as sharing started,
+        # while the same verifier passes on a fresh runner.
+        env:
+          RIFTCAST_BROWSER_EXECUTABLE: ''
+          RIFTCAST_CHROMIUM_PATH: ''
+        run: ./scripts/ci-retry.ps1 node scripts/verify-collaboration-170.mjs
       - name: Verify operator UI, keyboard workflows and responsive layouts
         run: ./scripts/ci-retry.ps1 npm run verify:operator-ui
       - name: Verify theme persistence and programme colour isolation
@@ -141,12 +149,6 @@ jobs:
         run: ./scripts/ci-retry.ps1 node scripts/verify-draft-focus-111.mjs
       - name: Verify teamfights, objectives and third report page
         run: ./scripts/ci-retry.ps1 node scripts/verify-combat-112.mjs
-      - name: Verify paired collaboration with isolated services
-        # Screen-share encoding needs the runner's Microsoft Edge; the pinned Chromium build produced no frames here.
-        env:
-          RIFTCAST_BROWSER_EXECUTABLE: ''
-          RIFTCAST_CHROMIUM_PATH: ''
-        run: ./scripts/ci-retry.ps1 node scripts/verify-collaboration-170.mjs
       - name: Check verification reports and committed manual
         run: node scripts/publish-release-210.mjs --preflight
       - name: Select the runner's Windows x64 MinGW compiler
