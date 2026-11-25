@@ -1,0 +1,28 @@
+/* Replay API probe. A self-contained panel: outcome, next step, then endpoint detail on demand. */
+.diagnostic-content { display: grid; gap: 12px; min-width: 0; padding: 0 var(--gl-pad) var(--gl-pad); font-size: var(--gl-fs-sm); }
+.diagnostic-content p { color: var(--gl-text-2); line-height: 1.6; overflow-wrap: anywhere; }
+.diagnostic-content > .muted { color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.diagnostic-content > .request-error { color: var(--gl-error); }
+
+.diagnostic-outcome { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 8px; padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-warn-wash); }
+.diagnostic-outcome strong { color: var(--gl-warn); font-size: var(--gl-fs-md); font-weight: 600; }
+.diagnostic-outcome p { grid-column: 1 / -1; }
+.diagnostic-outcome.ready { background: var(--gl-pvw-wash); }
+.diagnostic-outcome.ready strong { color: var(--gl-pvw); }
+
+.diagnostic-next-step { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: baseline; gap: 4px 12px; }
+.diagnostic-next-step strong { color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 500; }
+.diagnostic-next-step p { color: var(--gl-text); }
+
+.replay-diagnostics details { padding-top: 8px; border-top: 1px solid var(--gl-line); }
+.replay-diagnostics summary { min-height: 32px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; line-height: 32px; }
+.replay-diagnostics summary:hover, .replay-diagnostics details[open] > summary { color: var(--gl-text); }
+.diagnostic-config { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: center; gap: 4px 16px; padding: 4px 0 10px; }
+.diagnostic-config > span { color: var(--gl-text-3); }
+.diagnostic-config > b { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+.diagnostic-config > b svg { color: var(--gl-pvw); }
+.diagnostic-config > code { grid-column: 1 / -1; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.5; overflow-wrap: anywhere; }
+.diagnostic-endpoints { display: grid; }
+.diagnostic-endpoints > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-width: 0; padding: 7px 0; border-top: 1px solid var(--gl-line); }
+.diagnostic-endpoints code { min-width: 0; color: var(--gl-text-2); font-size: var(--gl-fs-xs); overflow-wrap: anywhere; }
+.diagnostic-endpoints span { flex: none; font-size: var(--gl-fs-xs); font-weight: 500; }

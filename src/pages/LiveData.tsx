@@ -1,5 +1,5 @@
 import { objectiveCount, objectiveKeys, objectiveLabels } from '../../shared/objective-counts';
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Activity, ArrowDownToLine, List, Search, UserRound, Users } from "lucide-react";
 import type { Player, Side, StateContext } from "../../shared/types";
 import {
@@ -7,7 +7,7 @@ import {
   frozenGameState,
   gameResultAwaitingTerminalSample,
 } from "../../shared/game-results";
-import { getTeam, gold, playerKda, time } from "../lib";
+import { getTeam, gold, time } from "../lib";
 import { ChampionImage, EconomyChart } from "../components/BroadcastCanvas";
 import { TaskTabs } from "../components/ConsoleUI";
 import { EconomySourcePanel } from "../components/EconomySourcePanel";
@@ -136,6 +136,40 @@ export function LiveData({
   }
   const exportUrl = (format: string) =>
     `/api/export?format=${format}${result ? `&recordingId=${encodeURIComponent(result.snapshot.id)}` : ""}`;
+  const sideName = (side: Side) => (side === "blue" ? "蓝方" : "红方");
+  const focused = !!player && sourceState.selectedPlayerId === player.id;
+  // Column the table is currently ranked by; pairs view keeps lane order.
+  const sorted = (key: typeof ranking) =>
+    group !== "pair" && ranking === key
+      ? ascending
+        ? ("ascending" as const)
+        : ("descending" as const)
+      : undefined;
+  // Presentation only: the larger of two comparable team figures reads brighter.
+  const teamRows = (side: Side) => {
+    const other = side === "blue" ? "red" : "blue";
+    const row = (label: string, value: (side: Side) => string | number | null | undefined) => {
+      const own = value(side),
+        opposing = value(other);
+      return {
+        label,
+        own,
+        lead: typeof own === "number" && typeof opposing === "number" && own > opposing,
+      };
+    };
+    return [
+      { ...row("团队累计经济", (s) => state.stats[s].gold), text: gold(state.stats[side].gold) },
+      { ...row("击杀", teamKills), text: teamKills(side) },
+      ...objectiveKeys.map((key) => {
+        const item = row(objectiveLabels[key], (s) => objectiveCount(state, s, key));
+        return { ...item, text: item.own ?? "—" };
+      }),
+    ];
+  };
+  const goldLead =
+    state.stats.blue.gold == null || state.stats.red.gold == null
+      ? null
+      : state.stats.blue.gold - state.stats.red.gold;
   return (
     <section
       className="domain-workspace data-workbench"
@@ -155,7 +189,7 @@ export function LiveData({
             </p>
           </div>
           <span className="data-clock">
-            {time(state.gameTime)}
+            <b className="gl-num">{time(state.gameTime)}</b>
             <small>
               {source} · 样本 {sampleTime(state.economyFeed?.sampledAt)}
             </small>
@@ -179,7 +213,7 @@ export function LiveData({
         </div>
       )}
       <div className="data-stage" hidden={tab !== "players"}>
-        <section className="data-comparison">
+        <section className="data-comparison gl-panel">
           <div className="data-tools">
             <div className="data-toolbar">
               <h2>
@@ -241,19 +275,36 @@ export function LiveData({
             </div>
           </div>
           <div className="data-grid-scroll">
-            <table className="data-grid">
+            <table
+              className="data-grid"
+              data-paired={group === "pair" && !query}
+              data-extra={extra}
+            >
               <thead>
                 <tr>
                   <th>选手 / 阵营</th>
                   <th>英雄 / 分路</th>
-                  <th>等级</th>
-                  <th>K / D / A</th>
-                  <th>补刀</th>
-                  <th>累计经济</th>
+                  <th className="data-number" aria-sort={sorted("level")}>
+                    等级
+                  </th>
+                  <th className="data-number" aria-sort={sorted("kills")}>
+                    K / D / A
+                  </th>
+                  <th className="data-number" aria-sort={sorted("cs")}>
+                    补刀
+                  </th>
+                  <th className="data-number" aria-sort={sorted("gold")}>
+                    累计经济
+                  </th>
                   {extra && (
                     <>
-                      <th>当前金币</th>
-                      <th>装备目录价值</th>
+                      <th className="data-number">当前金币</th>
+                      <th
+                        className="data-number"
+                        aria-sort={sorted("equipment")}
+                      >
+                        装备目录价值
+                      </th>
                       <th>装备清单</th>
                     </>
                   )}
@@ -267,13 +318,19 @@ export function LiveData({
                     key={p.id}
                     data-selected={player?.id === p.id}
                     data-side={p.team}
+                    onClick={() => setInspectedId(p.id)}
                   >
                     <td>
-                      <strong title={p.name}>{p.name}</strong>
-                      <small>
-                        {getTeam(state, p.team)?.tag} ·{" "}
-                        {p.team === "blue" ? "蓝方" : "红方"}
-                      </small>
+                      <div className="data-player">
+                        <strong title={p.name}>{p.name}</strong>
+                        <small data-side={p.team}>
+                          {getTeam(state, p.team)?.tag}
+                          <span className="sr-only">
+                            {" "}
+                            · {sideName(p.team)}
+                          </span>
+                        </small>
+                      </div>
                     </td>
                     <td>
                       <div className="data-champion">
@@ -287,25 +344,36 @@ export function LiveData({
                         </span>
                       </div>
                     </td>
-                    <td className="data-number">{p.level ?? "—"}</td>
-                    <td className="data-number" title={statsDetail(p)}>
-                      {available(p) ? playerKda(p) : "—"}
+                    <td className="data-number gl-num">{p.level ?? "—"}</td>
+                    <td className="data-number gl-num" title={statsDetail(p)}>
+                      {available(p) ? (
+                        <span className="data-kda">
+                          <b>{p.kills}</b> / <b>{p.deaths}</b> /{" "}
+                          <b>{p.assists}</b>
+                        </span>
+                      ) : (
+                        "—"
+                      )}
                     </td>
-                    <td className="data-number" title={statsDetail(p)}>{available(p) ? p.cs : "—"}</td>
+                    <td className="data-number gl-num" title={statsDetail(p)}>
+                      {available(p) ? p.cs : "—"}
+                    </td>
                     <td
-                      className="data-number"
+                      className="data-number gl-num"
                       title={`累计经济 · ${p.goldSource || "来源未提供"} · ${sampleTime(p.goldSampledAt)}`}
                     >
                       {p.gold == null ? "—" : p.gold.toLocaleString("zh-CN")}
                     </td>
                     {extra && (
                       <>
-                        <td className="data-number">
+                        <td className="data-number gl-num">
                           {p.currentGold == null
                             ? "—"
                             : p.currentGold.toLocaleString("zh-CN")}
                         </td>
-                        <td className="data-number">{gold(equipmentValue(p))}</td>
+                        <td className="data-number gl-num">
+                          {gold(equipmentValue(p))}
+                        </td>
                         <td>
                           <div className="data-grid-equipment">
                             {p.items.slice(0, 7).map((id, i) => {
@@ -361,7 +429,7 @@ export function LiveData({
           </div>
         </section>
         <aside
-          className="data-inspector domain-scroll"
+          className="data-inspector domain-scroll gl-panel"
           aria-label="选手数据检查"
         >
           {player ? (
@@ -370,7 +438,7 @@ export function LiveData({
                 <ChampionImage champions={champions} id={player.championId} />
                 <div>
                   <small>
-                    {getTeam(state, player.team)?.name} · {player.role}
+                    <b>{getTeam(state, player.team)?.name}</b> · {player.role}
                   </small>
                   <h2>{player.name}</h2>
                   <p>{player.championName || "待选择英雄"}</p>
@@ -383,11 +451,11 @@ export function LiveData({
                 </div>
                 <div>
                   <dt>统计采样</dt>
-                  <dd>{sampleTime(player.statsSampledAt)}</dd>
+                  <dd className="gl-num">{sampleTime(player.statsSampledAt)}</dd>
                 </div>
                 <div>
                   <dt>统计有效至</dt>
-                  <dd>{sampleTime(player.statsExpiresAt)}</dd>
+                  <dd className="gl-num">{sampleTime(player.statsExpiresAt)}</dd>
                 </div>
                 <div>
                   <dt>经济来源</dt>
@@ -401,7 +469,7 @@ export function LiveData({
                 </div>
                 <div>
                   <dt>经济采样 / 到期</dt>
-                  <dd>
+                  <dd className="gl-num">
                     {sampleTime(player.goldSampledAt)} /{" "}
                     {sampleTime(player.goldExpiresAt)}
                   </dd>
@@ -440,14 +508,15 @@ export function LiveData({
                 装备目录 {version || "未提供"} ·{" "}
                 {status === "unavailable" ? "素材暂不可用" : "静态购买价"}
               </small>
-              <div className="data-focus-actions">
+              <div className="data-focus-actions" data-focused={focused}>
                 <strong>
+                  {focused && <i className="status-dot green" aria-hidden="true" />}
                   {sourceState.selectedPlayerId === player.id
                     ? "已设为待播焦点"
                     : "准备选手焦点"}
                 </strong>
                 <button
-                  className="button"
+                  className={focused ? "button" : "button primary"}
                   onClick={() =>
                     void act(
                       {
@@ -467,30 +536,32 @@ export function LiveData({
                     ? "取消待播焦点"
                     : "设为待播焦点"}
                 </button>
-                <button
-                  className="button small"
-                  disabled={!sourceState.selectedPlayerId}
-                  onClick={() =>
-                    void act(
-                      { type: "preview-scene", scene: "ranking" },
-                      "选手出装详情已设为预监",
-                    )
-                  }
-                >
-                  出装详情发送至预监
-                </button>
-                <button
-                  className="button small"
-                  disabled={!sourceState.selectedPlayerId}
-                  onClick={() =>
-                    void act(
-                      { type: "preview-scene", scene: "interview" },
-                      "采访名牌已设为预监",
-                    )
-                  }
-                >
-                  采访名牌发送至预监
-                </button>
+                <div className="data-focus-sends">
+                  <button
+                    className="button small"
+                    disabled={!sourceState.selectedPlayerId}
+                    onClick={() =>
+                      void act(
+                        { type: "preview-scene", scene: "ranking" },
+                        "选手出装详情已设为预监",
+                      )
+                    }
+                  >
+                    出装详情发送至预监
+                  </button>
+                  <button
+                    className="button small"
+                    disabled={!sourceState.selectedPlayerId}
+                    onClick={() =>
+                      void act(
+                        { type: "preview-scene", scene: "interview" },
+                        "采访名牌已设为预监",
+                      )
+                    }
+                  >
+                    采访名牌发送至预监
+                  </button>
+                </div>
                 <small>
                   检查选手只改变本页；设置焦点和预监后，再由主导播 TAKE。
                 </small>
@@ -506,58 +577,80 @@ export function LiveData({
         </aside>
       </div>
       <div className="data-analysis domain-scroll" hidden={tab !== "overview"}>
-        <div className="data-team-comparison">
-          {(["blue", "red"] as const).map((side) => (
-            <section key={side} data-side={side}>
-              <h2>
-                {getTeam(state, side)?.name}
-                <small>{side === "blue" ? "蓝方" : "红方"}</small>
-              </h2>
-              <dl>
-                <div>
-                  <dt>团队累计经济</dt>
-                  <dd>{gold(state.stats[side].gold)}</dd>
-                </div>
-                <div>
-                  <dt>击杀</dt>
-                  <dd>{teamKills(side)}</dd>
-                </div>
-                {objectiveKeys.map(key=><div key={key}><dt>{objectiveLabels[key]}</dt><dd>{objectiveCount(state,side,key)??'—'}</dd></div>)}
-              </dl>
-            </section>
-          ))}
-        </div>
-        <div className="data-chart-heading">
-          <h2>
-            <Activity size={17} />
-            经济差曲线
-          </h2>
-          <button
-            className="button small"
-            onClick={() =>
-              void act(
-                { type: "preview-scene", scene: "economy" },
-                "经济曲线已设为预监",
-              )
-            }
-          >
-            发送至预监
-          </button>
-        </div>
-        <EconomyChart state={state} interactive />
-        <p className="data-table-foot">
-          {state.economyFeed?.detail || "等待有效团队经济。"}{" "}
-          保留采样来源与断采缺口；正值为蓝方领先，负值为红方领先。
-        </p>
+        <section className="data-compare-panel gl-panel" aria-label="团队对比">
+          <div className="data-team-comparison">
+            {(["blue", "red"] as const).map((side) => (
+              <section key={side} data-side={side}>
+                <h2>
+                  {getTeam(state, side)?.name}
+                  <small>{sideName(side)}</small>
+                </h2>
+                <dl>
+                  {teamRows(side).map((row, index) => (
+                    <div
+                      key={row.label}
+                      style={{ "--row": index + 1 } as CSSProperties}
+                    >
+                      <dt>{row.label}</dt>
+                      <dd className="gl-num" data-lead={row.lead}>
+                        {row.text}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            ))}
+          </div>
+        </section>
+        <section className="data-chart-panel gl-panel">
+          <div className="data-chart-heading">
+            <h2>
+              <Activity size={17} />
+              经济差曲线
+            </h2>
+            {goldLead !== null && (
+              <span
+                className="data-lead"
+                data-side={goldLead > 0 ? "blue" : goldLead < 0 ? "red" : undefined}
+              >
+                {goldLead > 0 ? "蓝方领先" : goldLead < 0 ? "红方领先" : "经济持平"}
+                {goldLead !== 0 && (
+                  <b className="gl-num">{gold(Math.abs(goldLead))}</b>
+                )}
+              </span>
+            )}
+            <button
+              className="button small"
+              onClick={() =>
+                void act(
+                  { type: "preview-scene", scene: "economy" },
+                  "经济曲线已设为预监",
+                )
+              }
+            >
+              发送至预监
+            </button>
+          </div>
+          <div className="data-chart">
+            <EconomyChart state={state} interactive />
+          </div>
+          <p className="data-table-foot">
+            {state.economyFeed?.detail || "等待有效团队经济。"}{" "}
+            保留采样来源与断采缺口；正值为蓝方领先，负值为红方领先。
+          </p>
+        </section>
       </div>
-      <div className="data-events domain-scroll" hidden={tab !== "events"}>
+      <div
+        className="data-events domain-scroll gl-panel"
+        hidden={tab !== "events"}
+      >
         <header>
           <h2><List size={17} aria-hidden="true" /> 比赛事件</h2>
           <span>{state.events.length} 条 · 最近在前</span>
         </header>
         {[...state.events].reverse().map((e) => (
           <div className="data-event" key={e.id}>
-            <time>{time(e.time)}</time>
+            <time className="gl-num">{time(e.time)}</time>
             <span data-side={e.team}>
               {e.team === "blue" ? "蓝方" : e.team === "red" ? "红方" : "比赛"}
             </span>
@@ -573,10 +666,11 @@ export function LiveData({
         )}
       </div>
       <div className="data-health domain-scroll" hidden={tab !== "health"}>
-        <div className="data-connection-list">
+        <div className="data-connection-list gl-panel" aria-label="采集连接状态">
           {Object.entries(sourceState.connections).map(([key, c]) => (
-            <div key={key}>
+            <div key={key} data-state={c.status}>
               <strong>
+                <i className="status-dot" aria-hidden="true" />
                 {connectionNames[key as keyof typeof connectionNames]}
               </strong>
               <span data-status={c.status}>{connectionStatus[c.status]}</span>

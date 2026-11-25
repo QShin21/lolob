@@ -1,5 +1,27 @@
-.match-lifecycle{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 14px;margin:0 0 12px;border:1px solid var(--ui-border);border-radius:8px;background:var(--ui-surface);color:var(--text)}
-.match-lifecycle-status{display:flex;gap:9px;align-items:center;min-width:0}.match-lifecycle-status>svg{color:var(--ui-info);flex-shrink:0}.match-lifecycle-status strong{display:block;font-size:12px;font-weight:600}.match-lifecycle-status small{display:block;font-size:10px;line-height:1.5;margin-top:3px;color:var(--ui-muted)}
-.match-lifecycle-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.match-lifecycle-actions .button{white-space:nowrap}.match-lifecycle-error{width:100%;margin:0;color:var(--ui-error);font-size:11px}.match-lifecycle:has(.match-lifecycle-error){flex-wrap:wrap}
-@media(max-width:1200px){.match-lifecycle{flex-wrap:wrap}.match-lifecycle-actions{margin-left:auto}}
-@media(max-width:700px){.match-lifecycle{padding:10px;gap:10px}.match-lifecycle-actions{justify-content:flex-start;margin-left:0}.match-lifecycle-actions .button{font-size:10px}}
+/* Small post-game controls.
+   MatchLifecycle sits in the studio's 本局资料 dialog (a hairline-separated strip on the dialog panel);
+   PostgamePageControl sits in 赛后收尾 › 报告核对. Both lie flat on a panel surface. */
+
+/* ── 本局结束与下一局 ───────────────────────────────────────────────────── */
+.match-lifecycle { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; min-width: 0; margin: 0 0 12px; color: var(--gl-text); font-size: var(--gl-fs-sm); }
+.match-lifecycle-status { display: flex; align-items: center; gap: 10px; flex: 1 1 260px; min-width: 0; }
+.match-lifecycle-status > svg { flex: none; color: var(--gl-pvw); }
+.match-lifecycle-status > span { display: grid; gap: 1px; min-width: 0; }
+.match-lifecycle-status strong { font-size: var(--gl-fs-md); font-weight: 600; line-height: 1.4; }
+.match-lifecycle-status small { color: var(--gl-text-2); font-size: var(--gl-fs-xs); line-height: 1.5; overflow-wrap: anywhere; }
+.match-lifecycle-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; margin-left: auto; }
+.match-lifecycle > p { flex: 1 1 100%; margin: 0; color: var(--gl-text-2); font-size: var(--gl-fs-xs); line-height: 1.5; }
+.match-lifecycle > .match-lifecycle-note { color: var(--gl-warn); }
+.match-lifecycle > .match-lifecycle-error { color: var(--gl-error); font-size: var(--gl-fs-sm); }
+.match-lifecycle-accept { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex: 1 1 100%; min-width: 0; }
+.match-lifecycle-accept input { flex: 1 1 240px; min-width: 0; min-height: var(--gl-h-small); }
+
+/* ── 赛后报告分页: three pages chosen like page tabs ───────────────────── */
+.postgame-pages { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; min-width: 0; }
+.postgame-pages > .button { min-height: var(--gl-h-small); padding: 0 10px; background: transparent; color: var(--gl-text-2); font-weight: 500; }
+.postgame-pages > .button:hover:not(:disabled) { background: color-mix(in srgb, var(--gl-control) 60%, transparent); color: var(--gl-text); }
+.postgame-pages > .button:active:not(:disabled) { background: var(--gl-control-hover); }
+.postgame-pages > .button[aria-pressed="true"] { background: var(--gl-control); color: var(--gl-text); box-shadow: none; font-weight: 600; }
+.postgame-pages > .button:disabled { color: var(--gl-text-off); }
+.postgame-pages > small { margin-left: 10px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.postgame-pages > [role="alert"] { flex: 1 1 100%; color: var(--gl-error); font-size: var(--gl-fs-sm); }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Check, RefreshCw, Search } from 'lucide-react';
 import { api } from '../lib';
+import './replay-diagnostics.css';
 
 interface Diagnostic {status:string;detail:string;configPath?:string;configEnabled?:boolean;restartRequired:boolean;lastProbeAt:string;endpoints:{path:string;available:boolean;statusCode?:number;errorKind?:string}[];playback?:{paused:boolean;time:number;speed:number;length?:number}}
 export function ReplayDiagnostics({status}:{status:string}) {

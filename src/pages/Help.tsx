@@ -217,15 +217,15 @@ export function Help({
           <h1>使用指南</h1>
           <p>按当前任务和故障找到下一步</p>
         </div>
-        <span>
+        <span className="guide-version">
           观澜 {version} ·{" "}
           {window.riftcastDesktop ? "桌面窗口" : "浏览器窗口"} ·{" "}
           {"本地实况"}
         </span>
+        <div className="help-operation-links"><button className="button" onClick={()=>openAppOperation('guide')}>重新打开首次引导</button><button className="button" onClick={()=>openAppOperation('update')}>应用版本与下载</button><button className="button" onClick={()=>openAppOperation('report')}>本机故障报告</button></div>
       </header>
-      <div className="help-operation-links"><button className="button" onClick={()=>openAppOperation('guide')}>重新打开首次引导</button><button className="button" onClick={()=>openAppOperation('update')}>应用版本与下载</button><button className="button" onClick={()=>openAppOperation('report')}>本机故障报告</button></div>
       <div className="guide-stage">
-        <aside className="guide-directory">
+        <aside className="guide-directory gl-panel">
           <label className="domain-search">
             <Search size={16} />
             <input
@@ -263,7 +263,8 @@ export function Help({
             )}
           </nav>
           <button
-            className="button"
+            className="button guide-keys-button"
+            aria-pressed={shortcuts}
             onClick={() => {
               setQuery("");
               setSelected("keys");
@@ -272,11 +273,11 @@ export function Help({
             当前快捷键
           </button>
         </aside>
-        <article className="guide-article domain-scroll">
+        <article className="guide-article domain-scroll gl-panel">
           {shortcuts ? (
             <>
               <header>
-                <BookOpen size={24} />
+                <BookOpen size={18} aria-hidden="true" />
                 <h2>当前快捷键</h2>
                 <p>以下读取实际配置与内置场景键位。自定义场景不编造快捷键。</p>
               </header>
