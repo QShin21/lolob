@@ -1,3 +1,10 @@
+/* Operator controls for the gold ranking scene (hosted in 本局资料). */
+.gold-ranking-controls { padding-bottom: var(--gl-pad); }
+.gold-ranking-controls > :is(.muted, .inline-buttons) { margin: 0 var(--gl-pad); }
+.gold-ranking-controls > .muted { max-width: 78ch; margin-bottom: 12px; line-height: 1.6; }
+.gold-ranking-controls > .inline-buttons { align-items: flex-start; }
+
+/* ── Frozen broadcast output: 十人经济排行. Kept byte-for-byte; do not restyle. ────────────────── */
 /* Two consecutive five-player groups; the bars encode actual cumulative gold. */
 .cast-gold-ranking { position:absolute; left:16%; width:68%; bottom:1.5%; background:var(--cast-ink); color:var(--cast-paper); border:1px solid var(--cast-line); overflow:hidden; z-index:2; transform:scale(clamp(.5,var(--hud-scale,1),1)); transform-origin:bottom center; }
 .cast-gold-ranking > header { display:flex; align-items:center; gap:1cqw; height:3.5cqw; padding:.65cqw 1.3cqw; border-bottom:1px solid var(--cast-line); }
@@ -21,5 +28,3 @@
 .cast-gold-amount { font-size:1.55cqw; text-align:right; font-variant-numeric:tabular-nums; }
 .cast-gold-columns .is-unavailable .cast-gold-amount { color:var(--cast-muted); }
 .cast-scene-gold-ranking.has-ticker .cast-gold-ranking { bottom:2.3cqw; }
-.gold-ranking-controls { padding-bottom:18px; }
-.gold-ranking-controls > p, .gold-ranking-controls > .inline-buttons { margin:0 20px 14px; }
