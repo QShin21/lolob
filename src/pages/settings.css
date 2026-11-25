@@ -1,169 +1,258 @@
-/* Task directory and settings work surfaces. Component layouts stay in their own stylesheets. */
-.settings-workspace { display: grid; grid-template-columns: 176px minmax(0, 1fr); height: 100%; min-height: 0; min-width: 0; border: 1px solid var(--ui-border); border-radius: 5px; background: var(--ui-surface); color: var(--ui-text); overflow: hidden; }
-.settings-directory { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--ui-border); background: var(--ui-bg); padding: 18px 10px 12px; gap: 18px; overflow-y: auto; }
-.settings-directory-title { display: flex; align-items: center; gap: 8px; padding-inline: 8px; }
-.settings-directory-title > strong { font-size: 14px; font-weight: 600; }
-.settings-directory-title > svg { color: var(--ui-muted); flex-shrink: 0; }
-.settings-directory nav { display: flex; flex-direction: column; gap: 5px; }
-.settings-directory nav > button { display: flex; align-items: center; gap: 10px; min-height: 42px; text-align: left; color: var(--ui-muted); border: 1px solid transparent; border-radius: 4px; padding: 8px; font-size: 14px; }
-.settings-directory nav > button > svg { flex-shrink: 0; }
-.settings-directory nav > button[aria-selected="true"] { background: var(--ui-selected); border-color: var(--ui-selection-border); color: var(--ui-text); }
-.settings-directory nav > button:hover { color: var(--ui-text); background: var(--ui-hover); }
-.settings-directory nav i { width: 5px; height: 5px; border-radius: 50%; background: var(--ui-warning); margin-left: auto; flex-shrink: 0; }
-.settings-directory-footer { display: flex; flex-direction: column; gap: 6px; padding: 12px 8px 0; margin-top: auto; border-top: 1px solid var(--ui-border); }
-.settings-directory-footer > span { font-size: 12px; }
-.settings-directory-footer > small { color: var(--ui-muted); font-size: 12px; overflow-wrap: anywhere; }
-.settings-directory-footer > .button { margin-top: 8px; }
-.settings-task-workspace { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
-.settings-task-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--ui-border); flex-shrink: 0; }
-.settings-task-heading h1 { font-size: 20px; line-height: 1.3; margin: 0; font-weight: 600; }
-.settings-task-heading p { color: var(--ui-muted); font-size: 12px; margin: 5px 0 0; }
-.settings-task-state { color: var(--ui-muted); font-size: 12px; white-space: nowrap; }
-.settings-task-scroll { min-height: 0; min-width: 0; flex: 1; overflow-y: auto; padding: 16px; scrollbar-gutter: stable; scroll-padding: 16px; }
-.settings-task-pane { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-.settings-task-pane[hidden] { display: none; }
-.settings-task-pane:not([hidden]) ~ .settings-task-pane:not([hidden]) { margin-top: 16px; }
-.settings-block { border: 1px solid var(--ui-border); border-radius: 5px; background: var(--ui-surface); min-width: 0; overflow: hidden; }
-.settings-block > header { padding: 16px 18px; border-bottom: 1px solid var(--ui-border); }
-.settings-block > header h2 { font-size: 15px; font-weight: 600; margin: 0; }
-.settings-block > header p { color: var(--ui-muted); font-size: 12px; line-height: 1.7; margin: 6px 0 0; }
-.settings-fields { display: flex; flex-direction: column; align-items: stretch; gap: 18px; padding: 18px; min-width: 0; }
-.settings-two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
-.settings-fields .field { display: flex; flex-direction: column; gap: 7px; font-size: 13px; color: var(--ui-text); min-width: 0; }
-.settings-fields .field > input, .settings-fields .field > select, .settings-fields .field > textarea { width: 100%; min-width: 0; font-size: 14px; }
-.settings-fields .field small, .settings-note { font-size: 12px; color: var(--ui-muted); line-height: 1.7; }
-.settings-fields .field > .button { align-self: flex-start; }
-.settings-fields > .button { align-self: flex-start; }
-.settings-note { margin: 0; }
-.settings-inline-field { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.settings-inline-field > input, .settings-inline-field > select { flex: 1; width: 100%; min-width: 0; font-size: 14px; }
-.settings-inline-field > .button { flex-shrink: 0; }
-.settings-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.settings-source-mode { display: flex; align-items: center; gap: 20px; padding: 4px 2px 16px; border-bottom: 1px solid var(--ui-border); }
-.settings-source-mode > div:first-child { flex: 1; min-width: 0; }
-.settings-source-mode strong { font-size: 15px; }
-.settings-source-mode p { color: var(--ui-muted); font-size: 12px; margin: 6px 0 0; line-height: 1.6; }
-.settings-choice-group { display: flex; gap: 3px; background: var(--ui-bg); border: 1px solid var(--ui-border); border-radius: 5px; padding: 3px; flex-shrink: 0; }
-.settings-choice-group > button { display: flex; align-items: center; gap: 7px; padding: 8px 10px; font-size: 13px; border: 1px solid transparent; border-radius: 3px; color: var(--ui-muted); }
-.settings-choice-group > button[aria-pressed="true"] { color: var(--ui-text); border-color: var(--ui-selection-border); background: var(--ui-selected); }
-.settings-connection-list { display: flex; flex-direction: column; border: 1px solid var(--ui-border); border-radius: 5px; }
-.settings-connection-row { display: grid; grid-template-columns: 24px minmax(140px, .75fr) minmax(0, 1.6fr) auto; align-items: center; gap: 14px; padding: 16px 18px; }
-.settings-connection-row + .settings-connection-row { border-top: 1px solid var(--ui-border); }
-.settings-connection-row > svg { color: var(--ui-muted); }
-.settings-connection-row > div:nth-child(2) { display: flex; flex-direction: column; gap: 4px; }
-.settings-connection-row strong { font-size: 14px; font-weight: 600; }
-.settings-connection-row small { font-size: 12px; color: var(--ui-muted); }
-.settings-connection-detail p { margin: 4px 0 0; color: var(--ui-muted); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
-.settings-connection-state { font-size: 12px; color: var(--ui-muted); }
-.settings-connection-state.is-connected { color: var(--ui-accent); }
-.settings-connection-state.is-error { color: var(--ui-error); }
-.settings-connection-state.is-connecting { color: var(--ui-warning); }
-.settings-toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; font-size: 13px; }
-.settings-toggle > span { display: flex; flex-direction: column; gap: 5px; }
-.settings-toggle small { color: var(--ui-muted); font-size: 12px; line-height: 1.6; }
-.settings-toggle input[type="checkbox"] { width: 18px; height: 18px; padding: 0; margin: 0; flex-shrink: 0; accent-color: var(--ui-accent); }
-.settings-toggle-list, .settings-field-stack { display: flex; flex-direction: column; gap: 16px; }
+/* 连接与输出 · a task directory beside one task pane.
+   The frame owns the directory, the pane heading, scrolling, save bars and the settings-* building blocks.
+   Components rendered inside a pane keep their own stylesheets; the pane gives them a plain panel surface. */
+
+.settings-workspace { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: var(--gl-gap); height: 100%; min-width: 0; min-height: 0; }
+.settings-workspace .spinning { animation: gl-spin 900ms linear infinite; }
+
+/* ── Directory ──────────────────────────────────────────────────────────── */
+.settings-directory { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-radius: var(--gl-r-panel); background: var(--gl-panel); overflow: hidden; }
+.settings-directory-search { display: flex; align-items: center; gap: 8px; flex: none; height: 34px; margin: 8px 8px 0; padding: 0 1px 0 10px; border-radius: var(--gl-r-control); background: var(--gl-control); color: var(--gl-text-3); cursor: text; }
+.settings-directory-search:has(input:focus-visible) { outline: 2px solid var(--gl-focus); outline-offset: 1px; }
+.settings-directory-search input { flex: 1; width: 100%; min-width: 0; min-height: 0; height: 32px; padding: 0; border: 0; background: none; font-size: var(--gl-fs-sm); outline: none; }
+.settings-directory-search button { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 7px; color: var(--gl-text-3); transition: background var(--gl-fast) var(--gl-ease), color var(--gl-fast) var(--gl-ease); }
+.settings-directory-search button:hover { background: var(--gl-control-hover); color: var(--gl-text); }
+
+.settings-directory nav { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 0 8px 8px; overflow-y: auto; overscroll-behavior: contain; scroll-padding-block: 8px; }
+.settings-directory-group { display: flex; flex-direction: column; gap: 1px; }
+.settings-directory-group h2 { padding: 14px 10px 4px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 500; line-height: 1.5; }
+.settings-directory-group > button {
+  display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: var(--gl-r-control);
+  color: var(--gl-text-2); font-size: var(--gl-fs-md); white-space: nowrap; text-align: left;
+  transition: background var(--gl-fast) var(--gl-ease), color var(--gl-fast) var(--gl-ease);
+}
+.settings-directory-group > button > svg { color: var(--gl-text-3); transition: color var(--gl-fast) var(--gl-ease); }
+.settings-directory-group > button > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.settings-directory-group > button:hover { background: color-mix(in srgb, var(--gl-control) 60%, transparent); color: var(--gl-text); }
+.settings-directory-group > button:active { background: var(--gl-control); }
+.settings-directory-group > button[aria-selected="true"] { background: var(--gl-control); color: var(--gl-text); font-weight: 600; }
+.settings-directory-group > button[aria-selected="true"] > svg { color: var(--gl-text); }
+/* Unsaved local edits in a task: a pending signal. */
+.settings-directory-group > button > i { width: 6px; height: 6px; margin-left: auto; flex: none; border-radius: 50%; background: var(--gl-warn); }
+.settings-search-empty { padding: 16px 10px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; }
+
+.settings-directory-footer { display: grid; flex: none; padding: 12px 8px 8px; border-top: 1px solid var(--gl-line); }
+.settings-directory-footer > span { padding: 0 10px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; }
+.settings-directory-footer > span[data-state="offline"] { color: var(--gl-warn); }
+.settings-directory-footer > small { padding: 0 10px; overflow: hidden; color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; text-overflow: ellipsis; }
+.settings-directory-footer > .button { width: 100%; margin-top: 10px; }
+
+/* ── Task pane ──────────────────────────────────────────────────────────── */
+.settings-task-workspace { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-radius: var(--gl-r-panel); background: var(--gl-panel); overflow: hidden; container-type: inline-size; container-name: task; }
+.settings-task-heading { display: flex; align-items: center; gap: 16px; flex: none; min-height: 56px; padding: 10px 20px; }
+.settings-task-title { flex: 1; min-width: 0; }
+.settings-task-title > div { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.settings-task-heading h1 { flex: none; font-size: var(--gl-fs-xl); font-weight: 600; line-height: 1.3; white-space: nowrap; }
+.settings-task-heading p { min-width: 0; overflow: hidden; color: var(--gl-text-2); font-size: var(--gl-fs-sm); white-space: nowrap; text-overflow: ellipsis; }
+.settings-task-state { flex: none; color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; }
+.settings-audio-toolbar { display: flex; align-items: center; gap: 12px; flex: none; min-width: 0; }
+.settings-audio-toolbar > span { display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; text-overflow: ellipsis; }
+
+.settings-subtask-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; flex: none; padding: 0 20px 12px; }
+.settings-subtask-heading .task-tabs { flex-wrap: wrap; }
+.settings-scope-note { display: flex; align-items: center; flex-wrap: wrap; gap: 0 12px; min-height: 32px; color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.settings-scope-note button { min-height: 32px; padding: 0 2px; border-radius: 4px; color: var(--gl-warn); font-size: var(--gl-fs-xs); font-weight: 500; text-decoration: underline; text-decoration-color: var(--gl-warn-line); text-underline-offset: 3px; }
+.settings-scope-note button:hover { text-decoration-color: currentColor; }
+
+.settings-task-scroll { flex: 1; min-width: 0; min-height: 0; padding: 0 12px 24px 20px; border-top: 1px solid var(--gl-line); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-block: 16px; }
+.settings-task-pane { display: flex; flex-direction: column; gap: 20px; min-width: 0; padding-top: 20px; }
+.settings-task-pane:empty { display: none; }
+/* Two panes can share a task (engine + mixer, engine + external OBS). */
+.settings-task-pane:not([hidden], :empty) ~ .settings-task-pane:not([hidden], :empty) { margin-top: 20px; border-top: 1px solid var(--gl-line); }
+.graphics-subtask { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+/* Pane-level messages. */
+.settings-conflict, .settings-operation-error, .settings-operation-receipt { margin-top: 16px; border-radius: var(--gl-r-control); font-size: var(--gl-fs-sm); line-height: 1.55; overflow-wrap: anywhere; }
+.settings-conflict { padding: 12px 14px; background: var(--gl-warn-wash); color: var(--gl-text); }
+.settings-conflict strong { display: block; color: var(--gl-warn); font-size: var(--gl-fs-md); font-weight: 600; }
+.settings-conflict p { margin: 2px 0 10px; color: var(--gl-text-2); }
+.settings-conflict > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.settings-operation-error { padding: 10px 12px; background: var(--gl-error-wash); color: var(--gl-error); }
+.settings-operation-receipt { display: flex; align-items: center; gap: 8px; color: var(--gl-pvw); }
+.settings-operation-receipt::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 50%; background: currentColor; }
+.settings-fields > .settings-operation-error { margin-top: 0; }
+
+/* ── Sections: a title, 12px rhythm, hairline between sections. No boxes. ── */
+.settings-block { display: grid; align-content: start; gap: 12px; min-width: 0; }
+:not([hidden]) ~ .settings-block { padding-top: 20px; border-top: 1px solid var(--gl-line); }
+.settings-block > header { display: grid; gap: 4px; min-width: 0; }
+.settings-block > header h2, .settings-block > h3 { font-size: var(--gl-fs-lg); font-weight: 600; }
+.settings-block > header p { max-width: 78ch; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; text-wrap: pretty; }
+.settings-block > small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.settings-block > .field { max-width: 420px; }
+
+.settings-fields, .settings-form { display: grid; align-content: start; gap: 16px; min-width: 0; }
+.settings-two-column { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 32px; }
 .settings-span-all { grid-column: 1 / -1; }
-.settings-external-layout { display: grid; grid-template-columns: 1fr 1.2fr; }
-.settings-external-layout > div + div { border-left: 1px solid var(--ui-border); }
-.settings-look { padding: 16px 18px 0; }
-.settings-look .director-look { margin: 0; }
+.settings-field-stack { display: grid; align-content: start; gap: 16px; min-width: 0; }
+/* Fields whose label is a bare text node read like the shared .field > span. */
+:is(.settings-fields, .settings-block, .settings-field-stack, .settings-countdown) > .field { color: var(--gl-text-2); font-weight: 500; }
+:is(.settings-fields, .settings-block, .settings-field-stack, .settings-countdown) > .field > :is(input, select, textarea, small) { font-weight: 400; }
+:is(.settings-fields, .settings-block, .settings-field-stack) > .field > :is(input:not([type="checkbox"], [type="radio"], [type="color"]), select, textarea) { width: 100%; }
+.settings-fields .field > small, .settings-note { color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 400; line-height: 1.6; }
+.settings-note { max-width: 78ch; }
+.settings-fields > .button, .settings-form > .button { justify-self: start; }
+/* A browse button sits beside its path field. */
+.settings-fields .field:has(> .button) { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 8px; }
+.settings-fields .field:has(> .button) > :is(span, small) { grid-column: 1 / -1; }
+.settings-fields .field:has(> .button) > .button { grid-column: 2; grid-row: 2; min-height: var(--gl-h-control); }
+.settings-fields .field:has(> .button) > small { grid-row: 3; }
+.settings-inline-field { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.settings-inline-field > :is(input, select) { flex: 1; width: 100%; min-width: 0; font-weight: 400; }
+.settings-inline-field > .button { min-height: var(--gl-h-control); }
+.settings-inline-field > .button[aria-label] { width: var(--gl-h-control); padding: 0; }
+.settings-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .settings-color-field { display: flex; align-items: center; gap: 10px; }
-.settings-color-field input { width: 52px; height: 34px; padding: 3px; }
-.settings-color-field span { color: var(--ui-muted); font-size: 12px; }
-.settings-countdown { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; padding: 18px; }
-.settings-countdown .field { display: flex; flex-direction: column; gap: 6px; width: 144px; font-size: 13px; }
-.settings-countdown .field input { width: 100%; }
-.settings-countdown > span { font-size: 12px; color: var(--ui-muted); margin-left: auto; padding-bottom: 8px; }
-.settings-diagnostic-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 1fr); gap: 16px; align-items: start; }
-.settings-diagnostic-layout > * { min-width: 0; margin: 0; }
-.settings-access-links { display: grid; grid-template-columns: 1fr 1fr; }
-.settings-access-links > div { display: flex; flex-direction: column; gap: 12px; padding: 18px; min-width: 0; }
-.settings-access-links > div + div { border-left: 1px solid var(--ui-border); }
-.settings-access-links strong { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
-.settings-access-links code { background: var(--ui-bg); color: var(--ui-muted); padding: 10px 12px; border: 1px solid var(--ui-border); border-radius: 4px; font-size: 12px; overflow-wrap: anywhere; }
-.settings-network { border-top: 1px solid var(--ui-border); padding: 18px; }
-.settings-network-heading { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.settings-network-heading strong { font-size: 14px; font-weight: 600; }
-.settings-network-heading > span { font-size: 12px; color: var(--ui-muted); }
-.settings-network-heading > .button { margin-left: auto; }
-.settings-lan-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-.settings-lan-list > div { display: flex; align-items: center; gap: 12px; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--ui-border); background: var(--ui-bg); border-radius: 4px; }
-.settings-lan-list code { color: var(--ui-muted); overflow-wrap: anywhere; font-size: 12px; min-width: 0; }
-.settings-lan-list .button { flex-shrink: 0; }
-.settings-conflict { padding: 14px 16px; border-left: 2px solid var(--ui-warning); background: var(--ui-warning-bg); margin-bottom: 16px; }
-.settings-conflict strong { font-size: 14px; color: var(--ui-warning); }
-.settings-conflict p { font-size: 12px; line-height: 1.6; margin: 6px 0 12px; overflow-wrap: anywhere; }
-.settings-conflict > div { display: flex; gap: 8px; flex-wrap: wrap; }
-.settings-operation-error { font-size: 13px; color: var(--ui-error); background: var(--ui-danger-bg); padding: 12px 14px; border-left: 2px solid var(--ui-error); margin: 0 0 16px; line-height: 1.7; overflow-wrap: anywhere; }
-.settings-operation-receipt { color: var(--ui-accent); font-size: 12px; padding: 10px 0; margin: 0 0 10px; }
-.settings-savebar { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid var(--ui-border); background: var(--ui-raised); }
-.settings-savebar > div { flex: 1; min-width: 0; }
-.settings-savebar strong { font-size: 13px; font-weight: 600; }
-.settings-savebar small { display: block; color: var(--ui-muted); font-size: 12px; margin-top: 3px; }
-.settings-savebar .button { flex-shrink: 0; }
-.settings-mixer-pane .production-desk { margin: 0; }
-.settings-mixer-pane .task-content { max-height: none; }
-.settings-workspace :is(button, a, input, select, textarea, summary):focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 3px; }
+.settings-color-field span { color: var(--gl-text-2); font-family: var(--gl-font-mono); font-size: var(--gl-fs-sm); font-weight: 500; }
+
+/* A checkbox row: control first, then what it does. */
+.settings-toggle { display: flex; flex-direction: row-reverse; align-items: flex-start; justify-content: flex-end; gap: 10px; min-height: 32px; padding: 6px 0; color: var(--gl-text); font-size: var(--gl-fs-md); font-weight: 500; line-height: 1.45; cursor: pointer; }
+.settings-toggle > span { display: grid; gap: 1px; min-width: 0; }
+.settings-toggle small { color: var(--gl-text-3); font-size: var(--gl-fs-xs); font-weight: 400; line-height: 1.5; }
+.settings-toggle > input[type="checkbox"] { margin-top: 2px; }
+.settings-toggle-list { display: grid; align-content: start; gap: 4px; }
+
+.settings-status-line { display: flex; align-items: baseline; gap: 8px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+.settings-status-line::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--gl-text-off); translate: 0 -1px; }
+.settings-status-line[data-status="connected"] { color: var(--gl-pvw); }
+.settings-status-line[data-status="connected"]::before { background: var(--gl-pvw); }
+
+/* ── 数据连接: one row per source — lamp, name, state, action ───────────── */
+.settings-source { display: grid; gap: 8px; min-width: 0; }
+.settings-source-mode { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.settings-source-mode strong { display: block; font-size: var(--gl-fs-lg); font-weight: 600; line-height: 1.3; }
+.settings-source-mode p { margin-top: 4px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); line-height: 1.6; }
+.settings-choice-group { display: flex; gap: 6px; flex: none; }
+.settings-connection-list { display: grid; min-width: 0; }
+.settings-connection-row { display: grid; grid-template-columns: 8px minmax(168px, .62fr) minmax(0, 1.6fr) auto; align-items: center; column-gap: 14px; min-height: 64px; padding: 10px 0; }
+.settings-connection-row + .settings-connection-row { border-top: 1px solid var(--gl-line); }
+.settings-connection-lamp { width: 8px; height: 8px; border-radius: 50%; background: var(--gl-text-off); }
+.settings-connection-row[data-status="connected"] .settings-connection-lamp { background: var(--gl-pvw); }
+.settings-connection-row[data-status="connecting"] .settings-connection-lamp { background: var(--gl-warn); }
+.settings-connection-row[data-status="error"] .settings-connection-lamp { background: var(--gl-error); }
+.settings-connection-name { display: grid; gap: 1px; min-width: 0; }
+.settings-connection-name strong { overflow: hidden; font-size: var(--gl-fs-md); font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+.settings-connection-name small { overflow: hidden; color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; text-overflow: ellipsis; }
+.settings-connection-detail { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 1px 10px; min-width: 0; font-size: var(--gl-fs-sm); }
+.settings-connection-state { color: var(--gl-text-2); font-weight: 500; white-space: nowrap; }
+.settings-connection-state.is-connected { color: var(--gl-pvw); }
+.settings-connection-state.is-connecting { color: var(--gl-warn); }
+.settings-connection-state.is-error { color: var(--gl-error); }
+.settings-connection-detail p { min-width: 0; color: var(--gl-text-2); overflow-wrap: anywhere; }
+.settings-connection-row[data-status="error"] .settings-connection-detail p { color: var(--gl-error); }
+.settings-connection-detail small { grid-column: 1 / -1; color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.5; }
+
+/* ── 画面: external OBS ─────────────────────────────────────────────────── */
+.settings-external-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px 32px; align-items: start; }
 #external-obs-setup { scroll-margin-top: 16px; }
 
-@media (max-width: 1200px) {
-  .settings-workspace { grid-template-columns: 148px minmax(0, 1fr); }
-  .settings-directory { padding-inline: 8px; }
-  .settings-directory-title { gap: 6px; padding-inline: 4px; }
-  .settings-directory-title strong { font-size: 13px; }
-  .settings-directory nav > button { gap: 8px; padding-inline: 6px; }
-  .settings-task-scroll { padding: 12px; }
-  .settings-source-mode { flex-wrap: wrap; }
-  .settings-connection-row { grid-template-columns: 20px minmax(120px, .8fr) minmax(0, 1.3fr) auto; gap: 10px; padding: 14px; }
-  .settings-connection-row > .button { font-size: 12px; }
-  .settings-diagnostic-layout { grid-template-columns: 1fr; }
-}
-@media (max-width: 900px) {
-  .settings-workspace { height: auto; min-height: 620px; overflow: visible; }
-  .settings-directory { position: sticky; top: 0; height: fit-content; max-height: 100dvh; }
-  .settings-task-scroll { overflow: visible; }
-  .settings-task-state { display: none; }
-  .settings-connection-row { grid-template-columns: 20px minmax(0, 1fr) auto; }
-  .settings-connection-detail { grid-column: 2 / -1; }
-  .settings-connection-row > .button { grid-column: 3; grid-row: 1; }
-  .settings-two-column, .settings-external-layout, .settings-access-links { grid-template-columns: 1fr; }
-  .settings-external-layout > div + div, .settings-access-links > div + div { border-left: 0; border-top: 1px solid var(--ui-border); }
-  .settings-savebar { position: sticky; bottom: 0; z-index: 2; flex-wrap: wrap; }
-  .settings-savebar > div { flex-basis: 100%; }
-}
-@media (max-width: 620px) {
-  .settings-workspace { display: flex; flex-direction: column; }
-  .settings-directory { padding: 10px; border-right: 0; border-bottom: 1px solid var(--ui-border); position: static; gap: 10px; }
-  .settings-directory-title { padding: 0; }
-  .settings-directory nav { flex-direction: row; overflow-x: auto; gap: 4px; }
-  .settings-directory nav > button { flex-shrink: 0; min-height: 44px; padding: 9px 10px; font-size: 13px; }
-  .settings-directory nav > button > svg { display: none; }
-  .settings-directory-footer { display: none; }
-  .settings-task-heading { padding: 14px 12px; }
-  .settings-task-heading h1 { font-size: 18px; }
-  .settings-task-scroll { padding: 10px; }
-  .settings-block > header, .settings-fields, .settings-access-links > div, .settings-network { padding: 14px 12px; }
-  .settings-choice-group { width: 100%; }
-  .settings-choice-group > button { flex: 1; justify-content: center; min-height: 44px; }
-  .settings-connection-row { padding: 12px; }
-  .settings-connection-row > svg { width: 16px; }
-  .settings-connection-row strong { font-size: 13px; }
-  .settings-connection-row .button > svg { display: none; }
-  .settings-countdown { padding: 14px 12px; }
-  .settings-countdown > span { margin-left: 0; width: 100%; padding: 0; }
-  .settings-lan-list > div { flex-wrap: wrap; }
-  .settings-network-heading > .button { margin-left: 0; }
-  .settings-savebar { padding: 12px; }
-  .settings-savebar .button { flex: 1; min-height: 44px; }
-}
-@media (max-height: 760px) and (min-width: 901px) {
-  .settings-directory { gap: 14px; padding-top: 14px; }
-  .settings-directory nav > button { min-height: 36px; padding-block: 6px; }
-  .settings-task-heading { padding-block: 12px; }
-  .settings-task-heading > div { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
-  .settings-task-heading p { margin: 0; }
-  .settings-directory-footer { padding-top: 10px; }
-}
+/* ── 声音: the dock's mixer laid out for a wide pane ────────────────────── */
+.settings-mixer-pane .production-desk { overflow: visible; border-radius: 0; background: none; }
+.settings-mixer-pane .production-task-nav { display: none; }
+.settings-mixer-pane .production-task-heading { padding: 0 0 12px; }
+/* The pane heading already states that the mixer acts on the programme. */
+.settings-mixer-pane .production-task-heading > span { display: none; }
+.settings-mixer-pane .production-desk .task-content { overflow: visible; }
+.settings-mixer-pane .production-desk :is(.production-error, .production-health-details) { margin-inline: 0; }
+.settings-mixer-pane .audio-workspace { grid-template-columns: minmax(0, 468px) minmax(0, 1fr); grid-template-rows: auto auto 1fr auto; gap: 12px 32px; align-items: start; padding: 0; }
+.settings-mixer-pane .audio-channel-bank { grid-column: 1; grid-row: 1 / span 3; }
+.settings-mixer-pane .audio-more-channels { grid-column: 1; grid-row: 4; margin-top: -4px; }
+.settings-mixer-pane .audio-workspace > :is(.program-audio-bus, .music-transport, .audio-track-settings) { grid-column: 2; }
+.settings-mixer-pane .music-transport { padding-top: 0; border-top: 0; }
+.settings-mixer-pane .production-desk .production-health-details { margin-top: 20px; padding: 12px 0 0; }
 
-.settings-analysis-block .broadcast-analysis-controls{border:0;border-radius:0;margin:0}.settings-analysis-block .broadcast-analysis-controls>.panel-head{display:none}.settings-analysis-block>.settings-toggle{margin:12px 18px;padding:10px 0;border-bottom:1px solid var(--line)}
+/* ── 节目包装 ───────────────────────────────────────────────────────────── */
+/* The block header already carries this title. */
+.settings-analysis-block .broadcast-analysis-controls > .panel-head { display: none; }
+.settings-look { min-width: 0; }
+.settings-countdown { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 8px; }
+.settings-countdown > .field { width: 144px; margin-right: 4px; }
+.settings-countdown > .field > input { width: 100%; }
+.settings-countdown > span { display: inline-flex; align-items: center; gap: 8px; min-height: var(--gl-h-control); margin-left: 8px; color: var(--gl-text-3); font-size: var(--gl-fs-sm); }
+.settings-countdown > span::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--gl-text-off); }
+.settings-countdown[data-running="true"] > span { color: var(--gl-warn); }
+.settings-countdown[data-running="true"] > span::before { background: var(--gl-warn); }
+
+/* ── 诊断 ───────────────────────────────────────────────────────────────── */
+.settings-diagnostic-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr); gap: 20px 32px; align-items: start; }
+.settings-diagnostic-layout > * { min-width: 0; }
+.settings-diagnostic-layout > .settings-block { padding-top: 0; border-top: 0; }
+
+/* ── 协作: links, LAN access, seats ─────────────────────────────────────── */
+.settings-access-links { display: grid; min-width: 0; }
+.settings-access-links > div { display: grid; grid-template-columns: minmax(150px, 200px) minmax(0, 1fr) auto; align-items: center; gap: 8px 16px; min-height: 52px; padding: 8px 0; }
+.settings-access-links > div + div { border-top: 1px solid var(--gl-line); }
+.settings-access-links strong { display: flex; align-items: center; gap: 8px; font-size: var(--gl-fs-md); font-weight: 600; }
+.settings-access-links strong svg { color: var(--gl-text-3); }
+.settings-access-links code, .settings-lan-list code { min-width: 0; color: var(--gl-text-2); font-size: var(--gl-fs-xs); overflow-wrap: anywhere; user-select: all; }
+.settings-access-links code { padding: 8px 10px; border-radius: var(--gl-r-control); background: var(--gl-well); }
+.settings-network { display: grid; gap: 8px; min-width: 0; padding-top: 16px; border-top: 1px solid var(--gl-line); }
+.settings-network-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-height: var(--gl-h-small); }
+.settings-network-heading > svg { color: var(--gl-text-3); }
+.settings-network-heading strong { font-size: var(--gl-fs-md); font-weight: 600; }
+.settings-network-heading > span { display: inline-flex; align-items: center; min-height: 20px; margin-left: 2px; padding: 0 7px; border-radius: var(--gl-r-chip); background: var(--gl-control); color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; }
+.settings-network-heading > span[data-state="enabled"] { background: var(--gl-pvw-wash); color: var(--gl-pvw); }
+.settings-network-heading > .button { margin-left: auto; }
+.settings-lan-list { display: grid; }
+.settings-lan-list > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 6px 0; }
+.settings-lan-list > div + div { border-top: 1px solid var(--gl-line); }
+.settings-lan-list code { font-size: var(--gl-fs-sm); }
+
+/* Seats and pre-show checks reuse the dock's tasks; here they read as one more section. */
+.settings-collaboration-pane .production-desk { position: relative; overflow: visible; padding-top: 20px; border-top: 1px solid var(--gl-line); border-radius: 0; background: none; }
+.settings-collaboration-pane .production-task-nav { position: absolute; top: 14px; right: 0; padding: 0; }
+.settings-collaboration-pane .production-task-nav > .task-tabs { display: none; }
+.settings-collaboration-pane .production-task-nav > select { max-width: none; background-color: var(--gl-control); color: var(--gl-text); }
+.settings-collaboration-pane .production-task-nav > select:hover { background-color: var(--gl-control-hover); }
+.settings-collaboration-pane .production-task-heading { padding: 0 140px 12px 0; }
+.settings-collaboration-pane .production-task-heading > span { display: none; }
+.settings-collaboration-pane .production-desk .task-content { overflow: visible; }
+.settings-collaboration-pane .production-desk .task-content > div > :is(div, section) { margin-inline: 0; }
+.settings-collaboration-pane .production-desk :is(.production-error, .production-health-details) { margin-inline: 0; }
+.settings-collaboration-pane .production-desk .production-health-details { padding: 12px 0 0; }
+.settings-collaboration-pane .production-task { grid-template-columns: minmax(0, 420px) max-content minmax(0, 1fr); align-items: end; gap: 12px; }
+.settings-collaboration-pane .production-task > * { grid-column: 1 / -1; min-width: 0; }
+.settings-collaboration-pane .production-task > label { grid-column: 1; }
+.settings-collaboration-pane .production-task > label + .button { grid-column: 2; justify-self: start; }
+.settings-collaboration-pane .production-task > .button { justify-self: start; }
+.settings-collaboration-pane .production-task > a { justify-self: start; color: var(--gl-text-2); text-decoration: underline; text-decoration-color: var(--gl-line-strong); text-underline-offset: 3px; }
+.settings-collaboration-pane .production-task > a:hover { color: var(--gl-text); text-decoration-color: currentColor; }
+.settings-collaboration-pane .production-task label { display: grid; gap: 6px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; }
+.settings-collaboration-pane .production-task label > :is(input, select) { width: 100%; font-weight: 400; }
+.settings-collaboration-pane .production-task .incident-card { display: grid; grid-template-columns: minmax(0, 260px) 132px max-content; align-items: end; gap: 12px; padding-top: 16px; border-top: 1px solid var(--gl-line); }
+.settings-collaboration-pane .production-task .incident-card > :is(h4, input) { grid-column: 1 / -1; }
+.settings-collaboration-pane .production-task .incident-card > input { max-width: 660px; font-family: var(--gl-font-mono); font-size: var(--gl-fs-xs); }
+.settings-collaboration-pane .production-task details > label { display: inline-grid; width: 184px; margin: 0 12px 12px 0; vertical-align: top; }
+.settings-collaboration-pane .production-task details > label > input { font-family: var(--gl-font-mono); }
+
+/* ── Save bar: pinned under the scroll area ─────────────────────────────── */
+.settings-savebar { display: flex; align-items: center; gap: 8px; flex: none; min-height: 58px; padding: 10px 20px; border-top: 1px solid var(--gl-line); background: var(--gl-panel); }
+.settings-savebar > div { display: grid; flex: 1; min-width: 0; line-height: 1.4; }
+.settings-savebar strong { overflow: hidden; font-size: var(--gl-fs-sm); font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+.settings-savebar[data-dirty="true"] strong { color: var(--gl-warn); }
+.settings-savebar small { overflow: hidden; color: var(--gl-text-3); font-size: var(--gl-fs-xs); white-space: nowrap; text-overflow: ellipsis; }
+
+/* ── Responsive steps ───────────────────────────────────────────────────── */
+@container task (max-width: 740px) {
+  .settings-two-column, .settings-external-layout, .settings-diagnostic-layout { grid-template-columns: minmax(0, 1fr); }
+  .settings-connection-row { grid-template-columns: 8px minmax(0, 1fr) auto; row-gap: 6px; }
+  .settings-connection-detail { grid-column: 2 / -1; grid-row: 2; }
+  .settings-access-links > div { grid-template-columns: minmax(0, 1fr) auto; }
+  .settings-access-links code { grid-column: 1 / -1; grid-row: 2; }
+  .settings-mixer-pane .audio-workspace { grid-template-columns: minmax(0, 1fr); }
+  .settings-mixer-pane .audio-workspace > * { grid-column: 1; grid-row: auto; }
+  .settings-mixer-pane .music-transport { padding-top: 12px; border-top: 1px solid var(--gl-line); }
+  .settings-collaboration-pane .production-task .incident-card { grid-template-columns: minmax(0, 1fr) 132px; }
+  .settings-audio-toolbar > span { display: none; }
+}
+@container body (max-width: 1100px) {
+  .settings-workspace { grid-template-columns: 196px minmax(0, 1fr); }
+}
+@container body (max-width: 860px) {
+  .settings-workspace { grid-template-columns: minmax(0, 1fr); height: auto; min-height: 100%; }
+  .settings-directory nav { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 0 8px; max-height: 232px; }
+  .settings-directory-footer { display: none; }
+  .settings-task-workspace { overflow: visible; }
+  .settings-task-scroll { overflow: visible; }
+  .settings-savebar { position: sticky; bottom: 0; z-index: 2; flex-wrap: wrap; border-radius: 0 0 var(--gl-r-panel) var(--gl-r-panel); }
+}

@@ -1,1 +1,55 @@
-.team-workspace{display:grid;gap:18px}.team-workspace header h2{display:flex;align-items:center;gap:12px}.team-pill{font-size:12px;padding:4px 9px;border-radius:20px;background:var(--ui-raised);color:var(--ui-muted)}.team-pill.online{color:var(--ui-info)}.team-connect-grid,.team-monitors{display:grid;grid-template-columns:1fr 1fr;gap:16px}.team-card{padding:20px;border:1px solid var(--ui-border);border-radius:12px;display:grid;gap:12px;align-content:start}.team-card h3,.team-share h3,.team-requests h3{margin:0 0 8px}.team-card label{display:grid;gap:6px;font-size:13px}.team-workspace input:not([type=checkbox]),.team-workspace select{min-height:38px;border:1px solid var(--ui-control-border);border-radius:7px;background:var(--ui-bg);color:var(--ui-text);padding:7px 10px;max-width:100%;min-width:0}.team-check{display:flex!important;align-items:center;gap:8px}.team-workspace p,.team-workspace small{font-size:13px;line-height:1.7;color:var(--ui-muted);margin:4px 0}.team-toolbar,.team-session,.team-monitor-header{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.team-toolbar select{flex:1;min-width:170px}.team-session{padding:15px;border:1px solid var(--ui-border);border-radius:10px}.team-session p{flex-basis:100%}.team-session code{user-select:all}.team-session button{flex-shrink:0}.team-alert{padding:12px 15px;background:var(--ui-warning-bg);border-left:3px solid var(--ui-warning);border-radius:5px}.team-share{display:grid;gap:10px}.team-monitors>div{display:grid;gap:8px;min-width:0}.team-monitors iframe,.team-empty{aspect-ratio:16/9;width:100%;border:1px solid var(--ui-border);border-radius:9px;background:var(--rc-ink)}.team-empty{display:grid;place-items:center;color:var(--ui-muted);font-size:13px}.team-request{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--ui-border);font-size:13px}.team-request small{flex:1}.team-monitor-header h3{margin:0;flex:1}@media(max-width:1000px){.team-connect-grid,.team-monitors{grid-template-columns:1fr}}
+/* Team collaboration: establish or join first; once a session runs, sharing, monitors and requests.
+   The section frame (title, hairline) comes from .settings-block. */
+.team-workspace header h2 { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; }
+.team-pill { display: inline-flex; align-items: center; min-height: 20px; padding: 0 7px; border-radius: var(--gl-r-chip); background: var(--gl-control); color: var(--gl-text-2); font-size: var(--gl-fs-xs); font-weight: 500; line-height: 1.5; white-space: nowrap; }
+.team-pill.online { background: var(--gl-pvw-wash); color: var(--gl-pvw); }
+.team-workspace h3 { font-size: var(--gl-fs-md); font-weight: 600; }
+.team-workspace :is(p, small) { color: var(--gl-text-3); font-size: var(--gl-fs-xs); line-height: 1.6; }
+.team-workspace > header p { color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+.team-alert { padding: 10px 12px; border-radius: var(--gl-r-control); background: var(--gl-warn-wash); color: var(--gl-warn); font-size: var(--gl-fs-sm); line-height: 1.55; overflow-wrap: anywhere; }
+.team-alert[role="alert"] { background: var(--gl-error-wash); color: var(--gl-error); }
+.team-check { display: flex; align-items: center; gap: 8px; min-height: var(--gl-h-small); color: var(--gl-text); font-size: var(--gl-fs-sm); cursor: pointer; }
+
+/* ── Idle: two ways in, side by side ────────────────────────────────────── */
+.team-connect-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 480px)); }
+.team-card { display: grid; align-content: start; gap: 12px; min-width: 0; padding: 4px 32px 4px 0; }
+.team-card + .team-card { padding: 4px 0 4px 32px; border-left: 1px solid var(--gl-line); }
+.team-card label:not(.team-check) { display: grid; gap: 6px; color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; }
+.team-card label > input:not([type="checkbox"]) { width: 100%; font-weight: 400; }
+.team-card > .button { justify-self: start; min-width: 112px; }
+
+/* ── Session ────────────────────────────────────────────────────────────── */
+.team-session { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.team-session > strong { font-size: var(--gl-fs-md); font-weight: 600; }
+.team-session > span { color: var(--gl-text-3); font-size: var(--gl-fs-xs); }
+.team-session > code { padding: 5px 9px; border-radius: 6px; background: var(--gl-well); color: var(--gl-text-2); font-size: var(--gl-fs-xs); user-select: all; }
+.team-session > p { flex-basis: 100%; order: 9; }
+.team-session > .button:last-of-type { margin-left: auto; }
+.team-share, .team-requests { display: grid; gap: 8px; min-width: 0; padding-top: 16px; border-top: 1px solid var(--gl-line); }
+.team-share > p { max-width: 88ch; color: var(--gl-text-2); font-size: var(--gl-fs-sm); }
+.team-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.team-toolbar select { flex: 1 1 180px; min-width: 0; max-width: 320px; }
+.team-monitor-header { display: flex; align-items: center; gap: 12px; padding-top: 16px; border-top: 1px solid var(--gl-line); }
+.team-monitor-header h3 { flex: 1; min-width: 0; }
+.team-monitor-header select { max-width: 280px; }
+.team-monitors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.team-monitors > div { display: grid; gap: 6px; min-width: 0; }
+.team-monitors strong { color: var(--gl-text-2); font-size: var(--gl-fs-sm); font-weight: 500; }
+/* Media surfaces keep the fixed near-black in both themes. */
+.team-monitors iframe, .team-empty { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 6px; background: #050607; }
+.team-empty { display: grid; place-items: center; padding: 16px; color: #9a9ea6; font-size: var(--gl-fs-sm); text-align: center; }
+.team-request { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; min-height: 44px; padding: 6px 0; font-size: var(--gl-fs-sm); }
+.team-request + .team-request { border-top: 1px solid var(--gl-line); }
+.team-request > strong { font-weight: 600; }
+.team-request > span { color: var(--gl-text-2); }
+.team-request > span + span { font-weight: 500; }
+.team-request[data-status="pending"] > span + span { color: var(--gl-warn); }
+.team-request[data-status="applied"] > span + span { color: var(--gl-pvw); }
+.team-request:is([data-status="rejected"], [data-status="failed"]) > span + span { color: var(--gl-error); }
+.team-request > small { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+
+@container task (max-width: 740px) {
+  .team-connect-grid, .team-monitors { grid-template-columns: minmax(0, 1fr); }
+  .team-card { padding: 0 0 16px; }
+  .team-card + .team-card { padding: 16px 0 0; border-top: 1px solid var(--gl-line); border-left: 0; }
+}

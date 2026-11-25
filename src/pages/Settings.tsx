@@ -33,10 +33,10 @@ type NetworkInfo = { enabled: boolean; urls: string[]; controlToken?: string };
 type ObsScene = { sceneName: string };
 const errorMessage = (error: unknown) => error instanceof Error ? error.message : '操作失败，请检查服务连接';
 const connectionLabels = { connected: '已连接', disconnected: '未连接', connecting: '连接中', error: '连接失败' };
-const connectionCards: { target: Target; name: string; subtitle: string; icon: typeof Plug; note: string }[] = [
-  { target: 'lcu', name: 'League Client', subtitle: '客户端 · BP / 比赛阶段', icon: Plug, note: '打开英雄联盟客户端后连接，可自动发现本地 lockfile。' },
-  { target: 'live', name: 'Live Client Data', subtitle: '局内数据 · 端口 2999', icon: Radio, note: '进入本地游戏或观战后连接，字段以客户端实际返回为准。' },
-  { target: 'replay', name: 'Replay API', subtitle: '回放 · 暂停 / 倍速 / 跳转', icon: Play, note: '打开录像回放，并在游戏配置中启用 Replay API。' },
+const connectionCards: { target: Target; name: string; subtitle: string; note: string }[] = [
+  { target: 'lcu', name: 'League Client', subtitle: '客户端 · BP / 比赛阶段', note: '打开英雄联盟客户端后连接，可自动发现本地 lockfile。' },
+  { target: 'live', name: 'Live Client Data', subtitle: '局内数据 · 端口 2999', note: '进入本地游戏或观战后连接，字段以客户端实际返回为准。' },
+  { target: 'replay', name: 'Replay API', subtitle: '回放 · 暂停 / 倍速 / 跳转', note: '打开录像回放，并在游戏配置中启用 Replay API。' },
 ];
 async function request<T = Record<string, unknown>>(url: string, body?: Record<string, unknown>): Promise<T> {
   return api<T>(url, body ? { method: 'POST', body: JSON.stringify(body) } : undefined);
@@ -165,8 +165,9 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
 
   return <div className="settings-workspace">
     <aside className="settings-directory">
-      <div className="settings-directory-title"><Settings2 size={18} /><strong>连接与输出</strong></div>
-      <label className="settings-directory-search"><Search size={16}/><input aria-label="搜索设置任务" placeholder="搜索任务" value={taskSearch} onChange={event=>setTaskSearch(event.target.value)}/>{taskSearch&&<button aria-label="清空任务搜索" onClick={()=>setTaskSearch('')}><X size={15}/></button>}</label>
+      {/* The top bar already names the page; the title stays for assistive technology. */}
+      <div className="settings-directory-title sr-only"><Settings2 size={18} /><strong>连接与输出</strong></div>
+      <label className="settings-directory-search"><Search size={15}/><input aria-label="搜索设置任务" placeholder="搜索任务" value={taskSearch} onChange={event=>setTaskSearch(event.target.value)}/>{taskSearch&&<button aria-label="清空任务搜索" onClick={()=>setTaskSearch('')}><X size={15}/></button>}</label>
       <nav role="tablist" aria-orientation="vertical" aria-label="连接与输出任务">
         {settingsGroups.map(group=><div className="settings-directory-group" key={group.label} hidden={!directoryTasks.some(task=>group.ids.includes(task.id))}><h2>{group.label}</h2>{directoryTasks.filter(task=>group.ids.includes(task.id)).map(task => <button key={task.id} id={'settings-nav-' + task.id} role="tab"
           aria-selected={section === task.id} aria-controls="settings-current-task" tabIndex={directoryTabStop === task.id ? 0 : -1}
@@ -180,26 +181,26 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
             event.preventDefault(); setSection(directoryTasks[next].id);
             document.getElementById('settings-nav-'+directoryTasks[next].id)?.focus();
           }}>
-          <task.icon size={17} /><span>{task.label}</span>
+          <task.icon size={16} /><span>{task.label}</span>
           {(task.id === 'data' && settingsDraft.dirty || task.id === 'graphics' && overlayDraft.dirty) && <i aria-label="有本地修改" />}
         </button>)}</div>)}
         {!directoryTasks.length&&<p className="settings-search-empty">没有匹配任务，试试“声音”“包装”或“外观”。</p>}
       </nav>
       <div className="settings-directory-footer">
-        <span>{connected === false ? '同步中断' : '工作台已同步'}</span>
+        <span data-state={connected === false ? 'offline' : 'synced'}>{connected === false ? '同步中断' : '工作台已同步'}</span>
         <small>{state.production?.control?.name ? '当前控制：' + state.production.control.name : '主机工作台'}</small>
         {onOpenStudio && <button className="button small" onClick={onOpenStudio}>返回导播台</button>}
       </div>
     </aside>
 
     <section className="settings-task-workspace" id="settings-current-task" role="tabpanel" aria-labelledby={'settings-nav-' + section}>
-      <header className="settings-task-heading"><div className="settings-task-title"><currentTask.icon size={20} aria-hidden="true"/><div><h1>{currentTask.label}</h1><p>{currentTask.description}</p></div></div>
+      <header className="settings-task-heading"><div className="settings-task-title"><div><h1>{currentTask.label}</h1><p>{currentTask.description}</p></div></div>
         {section === 'data' && <span className="settings-task-state">{'客户端实时数据'}</span>}
         {section === 'graphics' && <span className="settings-task-state">修改先进入待播</span>}
         {section === 'appearance' && <span className="settings-task-state">不改变节目画面</span>}
+        {section==='audio'&&<div className="settings-audio-toolbar"><span><Volume2 size={14}/>增益、静音与播放直接作用于节目</span><button className="button small" aria-expanded={audioDevices} onClick={()=>setAudioDevices(!audioDevices)}><Settings2 size={15}/>{audioDevices?'收起采集设备':'采集设备'}</button></div>}
       </header>
       {section==='graphics'&&<div className="settings-subtask-heading"><TaskTabs items={graphicsTasks} value={graphicsTask} onChange={setGraphicsTask} label="节目包装子任务"/><p className="settings-scope-note">{sharedGraphics?'基础包装草稿 · 身份、品牌与局内分析共用下方保存条':graphicsTask==='countdown'?'独立操作 · 倒计时按钮直接提交到待播':graphicsTask==='players'?'独立保存 · 选手画面使用本面板的保存按钮':graphicsTask==='native'?'独立保存 · 原生 HUD 与 BP 统计各自提交配置':'独立保存 · 各临场图形使用自身保存按钮'}{!sharedGraphics&&graphicsChanges>0&&<button onClick={()=>setGraphicsTask('identity')}>{graphicsChanges} 项基础包装待保存 →</button>}</p></div>}
-      {section==='audio'&&<div className="settings-audio-toolbar"><span><Volume2 size={16}/>增益、静音与播放直接作用于节目</span><button className="button small" aria-expanded={audioDevices} onClick={()=>setAudioDevices(!audioDevices)}><Settings2 size={15}/>{audioDevices?'收起采集设备':'采集设备'}</button></div>}
       <div className="settings-task-scroll" ref={workspaceScroll}>
         {(settingsDraft.conflict || overlayDraft.conflict) && <div className="settings-conflict" role="alert">
           <strong>其他席位更新了配置，本地输入已保留</strong>
@@ -210,44 +211,47 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
         {operationReceipt && <p className="settings-operation-receipt" role="status">{operationReceipt}</p>}
 
         <div className="settings-task-pane" hidden={section !== 'data'}>
-          <section className="settings-source-mode">
-            <div><strong>数据来源</strong><p>{'读取本机客户端，进入游戏后再核对实时样本。'}</p></div>
-<div className="settings-choice-group"><span className="badge"><Radio size={15} />客户端实时</span></div>
-          </section>
-          <section className="settings-connection-list" aria-label="数据连接状态">
-            {connectionCards.map(({ target, name, subtitle, icon: Icon, note }) => <div className="settings-connection-row" key={target}>
-              <Icon size={20} />
-              <div><strong>{name}</strong><small>{subtitle}</small></div>
-              <div className="settings-connection-detail"><span className={'settings-connection-state is-' + state.connections[target].status}>{connectionLabels[state.connections[target].status]}</span><p>{state.connections[target].detail || note}</p></div>
-              <button className="button small" disabled={busy} onClick={() => connect(target)}><RefreshCw size={14} className={pending === target ? 'spinning' : ''} />{pending === target ? '正在连接…' : state.connections[target].status === 'connected' ? '重新连接' : '连接服务'}</button>
-            </div>)}
-          </section>
+          <div className="settings-source">
+            <section className="settings-source-mode">
+              <div><strong>数据来源</strong><p>{'读取本机客户端，进入游戏后再核对实时样本。'}</p></div>
+              <div className="settings-choice-group"><span className="badge"><Radio size={13} />客户端实时</span></div>
+            </section>
+            <section className="settings-connection-list" aria-label="数据连接状态">
+              {connectionCards.map(({ target, name, subtitle, note }) => { const connection = state.connections[target]; return <div className="settings-connection-row" data-status={connection.status} key={target}>
+                <i className="settings-connection-lamp" aria-hidden="true" />
+                <div className="settings-connection-name"><strong>{name}</strong><small>{subtitle}</small></div>
+                <div className="settings-connection-detail"><span className={'settings-connection-state is-' + connection.status}>{connectionLabels[connection.status]}</span><p>{connection.detail || note}</p>{connection.status !== 'connected' && !!connection.detail && <small>{note}</small>}</div>
+                <button className="button small" disabled={busy} onClick={() => connect(target)}><RefreshCw size={14} className={pending === target ? 'spinning' : ''} />{pending === target ? '正在连接…' : connection.status === 'connected' ? '重新连接' : '连接服务'}</button>
+              </div>; })}
+            </section>
+          </div>
           <section className="settings-block">
             <header><h2>观战遥测</h2><p>自动补充技能冷却、生命、资源、经验与头像增益。连接完整观战数据后开始采样。</p></header>
-            <p role="status">{state.observerTelemetry?.detail??'等待国服观战或回放'}</p>
+            <p className="settings-status-line" data-status={state.observerTelemetry?.status ?? 'waiting'} role="status">{state.observerTelemetry?.detail??'等待国服观战或回放'}</p>
             {state.observerTelemetry?.profile&&<small>匹配版本：{state.observerTelemetry.profile}</small>}
           </section>
           <section className="settings-block">
             <header><h2>本机客户端</h2><p>路径与轮询配置保存到本地服务；认证信息仅由本地服务读取。</p></header>
             <div className="settings-fields settings-two-column">
-              <label className="field">LCU lockfile 路径<input maxLength={1024} value={settings.lockfilePath} onChange={event => setSettings({ ...settings, lockfilePath: event.target.value })} placeholder="留空自动查找，或填写完整路径" />
+              <label className="field"><span>LCU lockfile 路径</span><input maxLength={1024} value={settings.lockfilePath} onChange={event => setSettings({ ...settings, lockfilePath: event.target.value })} placeholder="留空自动查找，或填写完整路径" />
                 {window.riftcastDesktop && <button className="button small" onClick={() => void window.riftcastDesktop!.choosePath('lockfile').then(path => { if (path) setSettings({ ...settings, lockfilePath: path }); }).catch(error => notify(error.message, 'error'))}>选择 lockfile</button>}
               </label>
-              <label className="field">英雄联盟安装目录<input maxLength={1024} value={settings.gamePath} onChange={event => setSettings({ ...settings, gamePath: event.target.value })} placeholder="选择英雄联盟客户端的安装目录" /><small>用于查找本机 lockfile。</small>
+              <label className="field"><span>英雄联盟安装目录</span><input maxLength={1024} value={settings.gamePath} onChange={event => setSettings({ ...settings, gamePath: event.target.value })} placeholder="选择英雄联盟客户端的安装目录" /><small>用于查找本机 lockfile。</small>
                 {window.riftcastDesktop && <button className="button small" onClick={() => void window.riftcastDesktop!.choosePath('game').then(path => { if (path) setSettings({ ...settings, gamePath: path }); }).catch(error => notify(error.message, 'error'))}>选择安装目录</button>}
               </label>
-              <label className="field">客户端 API 轮询间隔（毫秒）<input type="number" min={CLIENT_POLL_MIN} max={CLIENT_POLL_MAX} step="100" value={settings.pollInterval} onChange={event => setSettings({ ...settings, pollInterval: Number(event.target.value) })} /><small>默认 500 毫秒，可调整为 100–1000 毫秒，保存后生效。接口响应较慢时会等待当前请求完成。</small></label>
+              <label className="field"><span>客户端 API 轮询间隔（毫秒）</span><input type="number" min={CLIENT_POLL_MIN} max={CLIENT_POLL_MAX} step="100" value={settings.pollInterval} onChange={event => setSettings({ ...settings, pollInterval: Number(event.target.value) })} /><small>默认 500 毫秒，可调整为 100–1000 毫秒，保存后生效。接口响应较慢时会等待当前请求完成。</small></label>
               <label className="settings-toggle"><span>自动跟随比赛阶段<small>客户端阶段变化时更新工作台</small></span><input type="checkbox" checked={settings.autoPhase} onChange={event => setSettings({ ...settings, autoPhase: event.target.checked })} /></label>
             </div>
           </section>
         </div>
 
-        <div className="settings-task-pane settings-mixer-pane" hidden={section !== 'audio'}>
-          <ProductionDesk {...{ state, send, notify, champions, seat, connected }} initialTask="audio" allowedTasks={['audio']} />
-        </div>
+        {/* The engine comes first: status and capture sit above the mixer, and the device disclosure opens under its toggle. */}
         <div className="settings-task-pane settings-engine-pane" hidden={!(['video', 'audio', 'output'] as string[]).includes(section) || section==='audio'&&!audioDevices}>
           <EmbeddedObs notify={notify} onStatus={setObsEngine} onOpenStudio={onOpenStudio} onConnectExternal={() => connect('obs')}
             outputReady={outputReady} onOutputReady={onOutputReady} connectionBusy={busy} section={section} onSection={setSection} controlReason={controlReason} />
+        </div>
+        <div className="settings-task-pane settings-mixer-pane" hidden={section !== 'audio'}>
+          <ProductionDesk {...{ state, send, notify, champions, seat, connected }} initialTask="audio" allowedTasks={['audio']} />
         </div>
 
         <div className="settings-task-pane" hidden={section !== 'video'}>
@@ -255,12 +259,12 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
             <header><h2>外部 OBS 连接与场景</h2><p>在 OBS「工具 → WebSocket 服务器设置」启用服务，然后保存连接配置。</p></header>
             <div className="settings-external-layout">
               <div className="settings-fields">
-                <label className="field">WebSocket 地址<input maxLength={200} value={settings.obsUrl} onChange={event => setSettings({ ...settings, obsUrl: event.target.value })} placeholder="ws://127.0.0.1:4455" /></label>
-                <label className="field">服务器密码<input type="password" autoComplete="new-password" maxLength={300} value={settings.obsPassword || ''} onChange={event => setSettings({ ...settings, obsPassword: event.target.value })} placeholder="本次 OBS WebSocket 服务器密码" /></label>
+                <label className="field"><span>WebSocket 地址</span><input maxLength={200} value={settings.obsUrl} onChange={event => setSettings({ ...settings, obsUrl: event.target.value })} placeholder="ws://127.0.0.1:4455" /></label>
+                <label className="field"><span>服务器密码</span><input type="password" autoComplete="new-password" maxLength={300} value={settings.obsPassword || ''} onChange={event => setSettings({ ...settings, obsPassword: event.target.value })} placeholder="本次 OBS WebSocket 服务器密码" /></label>
                 <button className="button primary" disabled={busy || !!controlReason} onClick={() => connect('obs')}><Plug size={14} />保存并连接外部 OBS</button>
               </div>
               <div className="settings-fields">
-                <label className="field">外部 OBS 场景<div className="settings-inline-field"><select value={obsScene} disabled={!scenes.length} onChange={event => setObsScene(event.target.value)}><option value="">{scenes.length ? '选择场景' : '连接 OBS 后刷新场景'}</option>{scenes.map(scene => <option key={scene.sceneName} value={scene.sceneName}>{scene.sceneName}</option>)}</select><button className="button small" disabled={busy || !obsConnected} onClick={refreshScenes} aria-label="刷新外部 OBS 场景"><RefreshCw size={15} /></button></div></label>
+                <label className="field"><span>外部 OBS 场景</span><div className="settings-inline-field"><select value={obsScene} disabled={!scenes.length} onChange={event => setObsScene(event.target.value)}><option value="">{scenes.length ? '选择场景' : '连接 OBS 后刷新场景'}</option>{scenes.map(scene => <option key={scene.sceneName} value={scene.sceneName}>{scene.sceneName}</option>)}</select><button className="button small" disabled={busy || !obsConnected} onClick={refreshScenes} aria-label="刷新外部 OBS 场景"><RefreshCw size={15} /></button></div></label>
                 <div className="settings-actions"><button className="button" disabled={busy || !!controlReason || !obsScene || !obsConnected} onClick={() => run('switch-scene', async () => { await request('/api/obs/scene', { sceneName: obsScene }); }, 'OBS 已切换至 ' + obsScene)}>切换外部 OBS 场景</button><button className="button" disabled={busy || !!controlReason || !obsScene || !obsConnected || engineActive} onClick={() => void addExternalHud()}><Layers size={14} />{pending === 'add-hud' ? '正在添加…' : '添加 HUD 浏览器来源'}</button></div>
                 <p className="settings-note">HUD 画布为 1920 × 1080。场景切换即时影响外部 OBS；请先核对游戏捕获、系统声音与解说音频。</p>
               </div>
@@ -276,7 +280,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
         {section === 'audience' && <div className="settings-task-pane"><TwitchAudienceWorkspace/></div>}
         {section === 'integrations' && <div className="settings-task-pane"><IntegrationWorkspace disabled={seat?.role!=='director'||state.production?.control?.owner!==seat.id}/></div>}
         <div className="settings-task-pane" hidden={section !== 'graphics'}>
-          <section className="settings-block" hidden={graphicsTask!=='identity'}><header><h2>BP 与选手布局</h2></header><label className="field">BP 构图<select aria-label="BP 构图" value={overlay.draftLayout??'bottom'} onChange={e=>setOverlay({...overlay,draftLayout:e.target.value as 'bottom'|'full-height'})}><option value="bottom">底部横排</option><option value="full-height">全高双队</option></select></label><label className="settings-toggle"><span>双侧英雄状态栏<small>英雄、等级、生命资源、技能冷却、计分与复活倒计时</small></span><input type="checkbox" checked={!!overlay.championTabs} onChange={e=>setOverlay({...overlay,championTabs:e.target.checked})}/></label></section>
+          <section className="settings-block" hidden={graphicsTask!=='identity'}><header><h2>BP 与选手布局</h2></header><label className="field"><span>BP 构图</span><select aria-label="BP 构图" value={overlay.draftLayout??'bottom'} onChange={e=>setOverlay({...overlay,draftLayout:e.target.value as 'bottom'|'full-height'})}><option value="bottom">底部横排</option><option value="full-height">全高双队</option></select></label><label className="settings-toggle"><span>双侧英雄状态栏<small>英雄、等级、生命资源、技能冷却、计分与复活倒计时</small></span><input type="checkbox" checked={!!overlay.championTabs} onChange={e=>setOverlay({...overlay,championTabs:e.target.checked})}/></label></section>
           <section className="settings-block settings-analysis-block" hidden={graphicsTask!=='analysis'}><header><h2>局内分析与事件图层</h2><p>保存到待播后，在导播台预监局内计分板并 TAKE。</p></header><BroadcastAnalysisControls mode={overlay.analysisMode??'off'} onModeChange={analysisMode=>setOverlay({...overlay,analysisMode})} killFeed={!!overlay.killFeed} onKillFeedChange={killFeed=>setOverlay({...overlay,killFeed})} announcer={!!overlay.announcer} onAnnouncerChange={announcer=>setOverlay({...overlay,announcer})} inhibitors={!!overlay.inhibitorTimers} onInhibitorsChange={inhibitorTimers=>setOverlay({...overlay,inhibitorTimers})}/><label className="settings-toggle"><span>L 形品牌框<small>内置 OBS 游戏画面等比缩放，左侧选手与底部品牌</small></span><input type="checkbox" checked={!!overlay.lFrame} onChange={e=>setOverlay({...overlay,lFrame:e.target.checked})}/></label><label className="settings-toggle"><span>完整顶部计分板<small>显示击杀、双方经济、资源与比赛时钟</small></span><input type="checkbox" checked={!!overlay.fullScoreboard} onChange={e=>setOverlay({...overlay,fullScoreboard:e.target.checked})}/></label></section>
           <section className="settings-block" hidden={graphicsTask!=='identity'}>
             <header><h2>ARENA 节目身份</h2><p>基础包装草稿保存后进入待播；在预监核对，再由主导播切入正式节目。</p></header>
@@ -286,19 +290,19 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
                 {([{ key: 'objectives', name: '地图资源', note: '顶部显示防御塔、巨龙与男爵' }, { key: 'goldDiff', name: '经济差', note: '数据可用时显示双方经济' }] as const).map(item => <label className="settings-toggle" key={item.key}><span>{item.name}<small>{item.note}</small></span><input type="checkbox" checked={overlay[item.key]} onChange={event => setOverlay({ ...overlay, [item.key]: event.target.checked })} /></label>)}
               </div>
               <div className="settings-field-stack">
-                <label className="field">品牌强调色<div className="settings-color-field"><input type="color" value={overlay.accent} onChange={event => setOverlay({ ...overlay, accent: event.target.value })} /><span>{overlay.accent.toUpperCase()}</span></div></label>
-                <label className="field">HUD 缩放：{Math.round(overlay.scale * 100)}%<input type="range" min="0.5" max="2" step="0.05" value={overlay.scale} onChange={event => setOverlay({ ...overlay, scale: Number(event.target.value) })} /></label>
+                <label className="field"><span>品牌强调色</span><div className="settings-color-field"><input type="color" value={overlay.accent} onChange={event => setOverlay({ ...overlay, accent: event.target.value })} /><span>{overlay.accent.toUpperCase()}</span></div></label>
+                <label className="field"><span>HUD 缩放：{Math.round(overlay.scale * 100)}%</span><input type="range" min="0.5" max="2" step="0.05" value={overlay.scale} onChange={event => setOverlay({ ...overlay, scale: Number(event.target.value) })} /></label>
               </div>
-              <label className="field">赞助商 / 品牌名称<input maxLength={80} value={overlay.sponsor} onChange={event => setOverlay({ ...overlay, sponsor: event.target.value })} placeholder="填写赞助商或赛事品牌" /></label>
-              <label className="field">赞助商图片<select value={overlay.sponsorLogo || ''} onChange={event => setOverlay({ ...overlay, sponsorLogo: event.target.value })}><option value="">使用品牌文字</option>{state.assets.map(asset => <option key={asset.id} value={asset.url}>{asset.name}</option>)}</select><small>图片来自赛事素材库；保存后进入待播。</small></label>
-              <label className="field settings-span-all">底部公告<textarea rows={3} maxLength={500} value={overlay.tickerText} onChange={event => setOverlay({ ...overlay, tickerText: event.target.value })} placeholder="填写本场赛事的公告内容" /></label>
+              <label className="field"><span>赞助商 / 品牌名称</span><input maxLength={80} value={overlay.sponsor} onChange={event => setOverlay({ ...overlay, sponsor: event.target.value })} placeholder="填写赞助商或赛事品牌" /></label>
+              <label className="field"><span>赞助商图片</span><select value={overlay.sponsorLogo || ''} onChange={event => setOverlay({ ...overlay, sponsorLogo: event.target.value })}><option value="">使用品牌文字</option>{state.assets.map(asset => <option key={asset.id} value={asset.url}>{asset.name}</option>)}</select><small>图片来自赛事素材库；保存后进入待播。</small></label>
+              <label className="field settings-span-all"><span>底部公告</span><textarea rows={3} maxLength={500} value={overlay.tickerText} onChange={event => setOverlay({ ...overlay, tickerText: event.target.value })} placeholder="填写本场赛事的公告内容" /></label>
             </div>
           </section>
           <section className="settings-block" hidden={graphicsTask!=='countdown'}>
             <header><h2>赛前倒计时</h2><p>倒计时单独提交；按既有待播与切入流程核对节目。</p></header>
-            <div className="settings-countdown">
-              <label className="field">时长（秒）<input type="number" min="1" max="86400" value={countdown} onChange={event => setCountdown(Number(event.target.value))} /></label>
-              <button className="button" disabled={busy} onClick={() => run('countdown', () => send({ type: 'set-overlay', patch: { countdownEnd: Date.now() + Math.max(1, Math.min(86400, countdown || 180)) * 1000 } }), '赛前倒计时已开始')}><Timer size={14} />开始倒计时</button>
+            <div className="settings-countdown" data-running={!!state.overlay.countdownEnd}>
+              <label className="field"><span>时长（秒）</span><input type="number" min="1" max="86400" value={countdown} onChange={event => setCountdown(Number(event.target.value))} /></label>
+              <button className="button primary" disabled={busy} onClick={() => run('countdown', () => send({ type: 'set-overlay', patch: { countdownEnd: Date.now() + Math.max(1, Math.min(86400, countdown || 180)) * 1000 } }), '赛前倒计时已开始')}><Timer size={14} />开始倒计时</button>
               <button className="button" disabled={busy || !state.overlay.countdownEnd} onClick={() => run('countdown-clear', () => send({ type: 'set-overlay', patch: { countdownEnd: null } }), '倒计时已清除')}>清除</button>
               <span>{state.overlay.countdownEnd ? '结束时间 ' + new Date(state.overlay.countdownEnd).toLocaleTimeString('zh-CN') : '尚未启动倒计时'}</span>
             </div>
@@ -315,8 +319,8 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
               <header><h2>回放控制</h2><p>控制本机 Replay API；修改即时作用于当前录像回放。</p></header>
               <div className="settings-fields">
                 <div className="settings-actions"><button className="button" disabled={busy || state.connections.replay.status !== 'connected'} onClick={() => replay({ paused: !replayPaused })}>{replayPaused ? <Play size={15} /> : <Pause size={15} />}{replayPaused ? '继续播放' : '暂停回放'}</button></div>
-                <label className="field">回放倍速<div className="settings-inline-field"><select aria-label="回放倍速" value={speed} onChange={event => setSpeed(event.target.value)}>{['0.25', '0.5', '1', '2', '4', '8'].map(value => <option value={value} key={value}>{value} ×</option>)}</select><button className="button" disabled={busy || state.connections.replay.status !== 'connected'} onClick={() => replay({ speed: Number(speed) })}>应用倍速</button></div></label>
-                <label className="field">跳转到（秒）<div className="settings-inline-field"><input type="number" min="0" step="1" value={seekTime} onChange={event => setSeekTime(event.target.value)} placeholder="600 = 10:00" /><button className="button" disabled={busy || seekTime === '' || state.connections.replay.status !== 'connected'} onClick={() => replay({ time: Math.max(0, Number(seekTime)) })}>跳转</button></div></label>
+                <label className="field"><span>回放倍速</span><div className="settings-inline-field"><select aria-label="回放倍速" value={speed} onChange={event => setSpeed(event.target.value)}>{['0.25', '0.5', '1', '2', '4', '8'].map(value => <option value={value} key={value}>{value} ×</option>)}</select><button className="button" disabled={busy || state.connections.replay.status !== 'connected'} onClick={() => replay({ speed: Number(speed) })}>应用倍速</button></div></label>
+                <label className="field"><span>跳转到（秒）</span><div className="settings-inline-field"><input type="number" min="0" step="1" value={seekTime} onChange={event => setSeekTime(event.target.value)} placeholder="600 = 10:00" /><button className="button" disabled={busy || seekTime === '' || state.connections.replay.status !== 'connected'} onClick={() => replay({ time: Math.max(0, Number(seekTime)) })}>跳转</button></div></label>
                 {replayError && <p className="settings-operation-error" role="alert">{replayError}</p>}
                 <p className="settings-note">Replay API 未启用时，先按诊断建议处理，再返回数据连接重新连接。</p>
               </div>
@@ -325,7 +329,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
           <EconomySourcePanel {...{ state, notify }} />
         </div>
 
-        <div className="settings-task-pane" hidden={section !== 'collaboration'}>
+        <div className="settings-task-pane settings-collaboration-pane" hidden={section !== 'collaboration'}>
           <TeamWorkspace />
           <section className="settings-block">
             <header><h2>画面链接与移动接入</h2><p>内置引擎自动加载 HUD；外部 OBS 可使用画面链接，协作席位从遥控页面进入。</p></header>
@@ -334,7 +338,7 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
               <div><strong><Smartphone size={16} />本机遥控页面</strong><code>{remoteUrl}</code><div className="settings-actions"><button className="button small" onClick={() => copy(remoteUrl, '遥控链接')}><Copy size={13} />复制链接</button><a className="button small" href={remoteUrl} target="_blank" rel="noreferrer"><ExternalLink size={13} />打开遥控</a></div></div>
             </div>
             <div className="settings-network">
-              <div className="settings-network-heading"><Wifi size={17} /><strong>局域网多设备协作</strong><span>{network ? network.enabled ? '已启用' : '未启用' : '状态待查询'}</span><button className="button small" disabled={busy} onClick={() => run('network', async () => { setNetwork(await request<NetworkInfo>('/api/network')); }, '网络信息已刷新')}><RefreshCw size={13} />刷新网络信息</button></div>
+              <div className="settings-network-heading"><Wifi size={16} /><strong>局域网多设备协作</strong><span data-state={network ? network.enabled ? 'enabled' : 'disabled' : 'unknown'}>{network ? network.enabled ? '已启用' : '未启用' : '状态待查询'}</span><button className="button small" disabled={busy} onClick={() => run('network', async () => { setNetwork(await request<NetworkInfo>('/api/network')); }, '网络信息已刷新')}><RefreshCw size={13} />刷新网络信息</button></div>
               {network?.enabled && network.urls.length ? <><div className="settings-lan-list">{network.urls.map(url => {
                 const base = url.replace(/\/$/, '');
                 const remote = (base.endsWith('/remote') ? base : base + '/remote') + (network.controlToken ? '?token=' + encodeURIComponent(network.controlToken) : '');
@@ -348,8 +352,8 @@ export function Settings({ state, send, notify, champions, seat, connected, onOp
         <div className="settings-task-pane" hidden={section !== 'appearance'}><AppearanceSettings /></div>
       </div>
 
-      {section === 'data' && <footer className="settings-savebar"><div><strong>{settingsDraft.dirty ? '客户端配置有未保存修改' : '客户端配置已同步'}</strong><small>连接服务时会一并提交当前客户端设置</small></div><button className="button" disabled={!settingsDraft.dirty || busy} onClick={settingsDraft.discard}>放弃修改</button><button className="button primary" disabled={!settingsDraft.dirty || busy} onClick={() => void saveSettings()}><Save size={14} />{pending === 'save-settings' ? '保存中…' : '保存客户端设置'}</button></footer>}
-      {section === 'graphics' && sharedGraphics && <footer className="settings-savebar" aria-label="基础包装草稿保存"><div><strong>{overlayDraft.dirty ? `${graphicsChanges} 项基础包装修改待保存` : '基础包装与待播配置一致'}</strong><small>范围：身份、品牌与局内分析 · 核对预监后 TAKE</small></div><button className="button" disabled={!overlayDraft.dirty || busy} onClick={overlayDraft.discard}>放弃修改</button><button className="button primary" disabled={!overlayDraft.dirty || busy} onClick={() => void saveOverlay()}><Save size={14} />{pending === 'save-overlay' ? '保存中…' : '保存基础包装到待播'}</button></footer>}
+      {section === 'data' && <footer className="settings-savebar" data-dirty={settingsDraft.dirty}><div><strong>{settingsDraft.dirty ? '客户端配置有未保存修改' : '客户端配置已同步'}</strong><small>连接服务时会一并提交当前客户端设置</small></div><button className="button" disabled={!settingsDraft.dirty || busy} onClick={settingsDraft.discard}>放弃修改</button><button className="button primary" disabled={!settingsDraft.dirty || busy} onClick={() => void saveSettings()}><Save size={14} />{pending === 'save-settings' ? '保存中…' : '保存客户端设置'}</button></footer>}
+      {section === 'graphics' && sharedGraphics && <footer className="settings-savebar" aria-label="基础包装草稿保存" data-dirty={overlayDraft.dirty}><div><strong>{overlayDraft.dirty ? `${graphicsChanges} 项基础包装修改待保存` : '基础包装与待播配置一致'}</strong><small>范围：身份、品牌与局内分析 · 核对预监后 TAKE</small></div><button className="button" disabled={!overlayDraft.dirty || busy} onClick={overlayDraft.discard}>放弃修改</button><button className="button primary" disabled={!overlayDraft.dirty || busy} onClick={() => void saveOverlay()}><Save size={14} />{pending === 'save-overlay' ? '保存中…' : '保存基础包装到待播'}</button></footer>}
     </section>
   </div>;
 }
