@@ -169,11 +169,20 @@ async function main() {
   assert.ok(smoke.checks.length > 0);
 
   assertBranchTip(sha);
-  assert.equal(findRelease(tag), undefined, 'A release or draft already exists for this tag');
+  // An empty draft left by an interrupted run of this same commit is reused; anything else stops the release.
+  let draft = findRelease(tag);
+  if (draft) assert.ok(draft.draft && !draft.prerelease && draft.target_commitish === sha && draft.assets.length === 0,
+    'A release or a different draft already exists for this tag');
   const priorTag = remoteTagRevision();
   if (priorTag) assert.equal(priorTag, sha, 'Existing version tag points to a different commit');
-  gh(['release', 'create', tag, '--repo', repository, '--target', sha, '--draft', '--title', title, '--notes-file', notesFile]);
-  const draft = findRelease(tag);
+  if (!draft) {
+    gh(['release', 'create', tag, '--repo', repository, '--target', sha, '--draft', '--title', title, '--notes-file', notesFile]);
+    // The release listing can trail the create call by a few seconds.
+    for (let attempt = 0; attempt < 20 && !draft; attempt++) {
+      draft = findRelease(tag);
+      if (!draft) await delay(3000);
+    }
+  }
   assert.ok(draft?.draft && !draft.prerelease, 'Expected a new formal release draft');
   assert.equal(draft.target_commitish, sha);
   assert.deepEqual(draft.assets, []);
